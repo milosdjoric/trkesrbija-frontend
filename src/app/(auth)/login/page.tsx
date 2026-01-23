@@ -9,22 +9,29 @@ import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Strong, Text, TextLink } from '@/components/text'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Login() {
   const router = useRouter()
-  const { login, loading } = useAuth()
+  const { login, isLoading, user } = useAuth()
+  const loading = isLoading
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/')
+    }
+  }, [user, router])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
 
     try {
-      await login({ email, password })
+      await login(email, password)
       router.push('/')
     } catch (err: any) {
       setError(err?.message ?? 'Login failed')
@@ -40,7 +47,16 @@ export default function Login() {
 
       <Field>
         <Label>Email</Label>
-        <Input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <Input
+          type="email"
+          name="email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value)
+            if (error) setError(null)
+          }}
+          required
+        />
       </Field>
 
       <Field>
@@ -49,7 +65,10 @@ export default function Login() {
           type="password"
           name="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value)
+            if (error) setError(null)
+          }}
           required
         />
       </Field>
@@ -66,7 +85,7 @@ export default function Login() {
         </Text>
       </div>
 
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button type="submit" className="w-full" disabled={loading || !email.trim() || !password}>
         {loading ? 'Signing in…' : 'Login'}
       </Button>
 

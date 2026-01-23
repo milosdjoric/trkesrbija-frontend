@@ -1,6 +1,7 @@
+import { UserGreeting } from '@/app/(app)/user-greeting'
 import { Stat } from '@/app/stat'
 import { Avatar } from '@/components/avatar'
-import { Heading, Subheading } from '@/components/heading'
+import { Subheading } from '@/components/heading'
 import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { getRecentOrders } from '@/data'
@@ -10,7 +11,7 @@ export default async function Home() {
 
   return (
     <>
-      <Heading>Good afternoon, Erica</Heading>
+      <UserGreeting />
       <div className="mt-8 flex items-end justify-between">
         <Subheading>Overview</Subheading>
         <div>

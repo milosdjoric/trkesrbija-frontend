@@ -43,27 +43,55 @@ import {
 } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
 
+import { useAuth } from '@/app/auth/auth-context'
+
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
+  const { user, logout } = useAuth()
+  console.log('user', user)
+  const isLoggedIn = !!user
+
   return (
     <DropdownMenu className="min-w-64" anchor={anchor}>
-      <DropdownItem href="#">
-        <UserCircleIcon />
-        <DropdownLabel>My account</DropdownLabel>
-      </DropdownItem>
-      <DropdownDivider />
-      <DropdownItem href="#">
-        <ShieldCheckIcon />
-        <DropdownLabel>Privacy policy</DropdownLabel>
-      </DropdownItem>
-      <DropdownItem href="#">
-        <LightBulbIcon />
-        <DropdownLabel>Share feedback</DropdownLabel>
-      </DropdownItem>
-      <DropdownDivider />
-      <DropdownItem href="/login">
-        <ArrowRightStartOnRectangleIcon />
-        <DropdownLabel>Sign out</DropdownLabel>
-      </DropdownItem>
+      {isLoggedIn ? (
+        <>
+          <DropdownItem href="#">
+            <UserCircleIcon />
+            <DropdownLabel>My account</DropdownLabel>
+          </DropdownItem>
+          <DropdownDivider />
+          <DropdownItem href="#">
+            <ShieldCheckIcon />
+            <DropdownLabel>Privacy policy</DropdownLabel>
+          </DropdownItem>
+          <DropdownItem href="#">
+            <LightBulbIcon />
+            <DropdownLabel>Share feedback</DropdownLabel>
+          </DropdownItem>
+          <DropdownDivider />
+          <DropdownItem
+            href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              logout()
+            }}
+          >
+            <ArrowRightStartOnRectangleIcon />
+            <DropdownLabel>Sign out</DropdownLabel>
+          </DropdownItem>
+        </>
+      ) : (
+        <>
+          <DropdownItem href="#">
+            <LightBulbIcon />
+            <DropdownLabel>Share feedback</DropdownLabel>
+          </DropdownItem>
+          <DropdownDivider />
+          <DropdownItem href="/login">
+            <ArrowRightStartOnRectangleIcon />
+            <DropdownLabel>Log in</DropdownLabel>
+          </DropdownItem>
+        </>
+      )}
     </DropdownMenu>
   )
 }

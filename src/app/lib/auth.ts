@@ -1,11 +1,10 @@
-
-
 // src/app/lib/auth.ts
 import { gql } from './api'
 
 export type User = {
   id: string
   email: string
+  name?: string
   role?: string
   isParticipant?: boolean
 }
@@ -22,6 +21,7 @@ const LOGIN_MUTATION = `
       user {
         id
         email
+        name
         role
         isParticipant
       }
@@ -36,6 +36,7 @@ const REGISTER_MUTATION = `
       user {
         id
         email
+        name
         role
         isParticipant
       }
@@ -50,6 +51,7 @@ const REFRESH_MUTATION = `
       user {
         id
         email
+        name
         role
         isParticipant
       }
@@ -68,6 +70,7 @@ const ME_QUERY = `
     me {
       id
       email
+      name
       role
       isParticipant
     }
