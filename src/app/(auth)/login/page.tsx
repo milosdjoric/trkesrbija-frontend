@@ -73,7 +73,7 @@ export default function Login() {
         />
       </Field>
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between hidden">
         <CheckboxField>
           <Checkbox name="remember" />
           <Label>Remember me</Label>

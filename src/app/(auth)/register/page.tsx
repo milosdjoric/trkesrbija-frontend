@@ -45,7 +45,7 @@ export default function Register() {
       <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
       <Heading>Create your account</Heading>
 
-      {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}
+      {error && <Text className="!text-red-600 !dark:text-red-500 capitalize">{error}</Text>}
 
       <Field>
         <Label>Email</Label>
@@ -56,12 +56,19 @@ export default function Register() {
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"
           required
+          disabled={loading}
         />
       </Field>
 
       <Field>
         <Label>Full name</Label>
-        <Input name="name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+        <Input
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          autoComplete="name"
+          disabled={loading}
+        />
       </Field>
 
       <Field>
@@ -73,10 +80,11 @@ export default function Register() {
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="new-password"
           required
+          disabled={loading}
         />
       </Field>
 
-      <CheckboxField>
+      <CheckboxField className="hidden">
         <Checkbox
           name="marketing"
           checked={marketingOptIn}

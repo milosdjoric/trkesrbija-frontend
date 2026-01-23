@@ -54,20 +54,18 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
     <DropdownMenu className="min-w-64" anchor={anchor}>
       {isLoggedIn ? (
         <>
-          <DropdownItem href="#">
+          <DropdownItem href="#" className="hidden">
             <UserCircleIcon />
             <DropdownLabel>My account</DropdownLabel>
           </DropdownItem>
-          <DropdownDivider />
-          <DropdownItem href="#">
+          <DropdownItem href="#" className="hidden">
             <ShieldCheckIcon />
             <DropdownLabel>Privacy policy</DropdownLabel>
           </DropdownItem>
-          <DropdownItem href="#">
+          <DropdownItem href="#" className="">
             <LightBulbIcon />
             <DropdownLabel>Share feedback</DropdownLabel>
           </DropdownItem>
-          <DropdownDivider />
           <DropdownItem
             href="#"
             onClick={(e) => {
@@ -104,6 +102,7 @@ export function ApplicationLayout({
   children: React.ReactNode
 }) {
   let pathname = usePathname()
+  const { user } = useAuth()
 
   return (
     <SidebarLayout
@@ -113,7 +112,19 @@ export function ApplicationLayout({
           <NavbarSection>
             <Dropdown>
               <DropdownButton as={NavbarItem}>
-                <Avatar src="/users/erica.jpg" square />
+                <Avatar
+                  square
+                  initials={
+                    user?.name
+                      ? user.name
+                          .split(' ')
+                          .map((n) => n[0])
+                          .join('')
+                          .slice(0, 2)
+                          .toUpperCase()
+                      : user?.email?.[0]?.toUpperCase()
+                  }
+                />
               </DropdownButton>
               <AccountDropdownMenu anchor="bottom end" />
             </Dropdown>
@@ -199,11 +210,27 @@ export function ApplicationLayout({
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
-                  <Avatar src="/users/erica.jpg" className="size-10" square alt="" />
+                  <Avatar
+                    className="size-10"
+                    square
+                    alt={user?.name ?? user?.email ?? 'User'}
+                    initials={
+                      user?.name
+                        ? user.name
+                            .split(' ')
+                            .map((n) => n[0])
+                            .join('')
+                            .slice(0, 2)
+                            .toUpperCase()
+                        : user?.email?.[0]?.toUpperCase()
+                    }
+                  />
                   <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">Erica</span>
+                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
+                      {user?.name ?? user?.email ?? 'User'}
+                    </span>
                     <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      erica@example.com
+                      {user?.email ?? ''}
                     </span>
                   </span>
                 </span>
