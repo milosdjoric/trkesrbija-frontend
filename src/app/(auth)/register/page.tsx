@@ -25,8 +25,15 @@ export default function Register() {
     e.preventDefault()
     setError(null)
 
+    const emailTrimmed = email.trim()
+    const nameTrimmed = name.trim()
+
     try {
-      await register({ email, name, password })
+      await register({
+        email: emailTrimmed,
+        password,
+        ...(nameTrimmed ? { name: nameTrimmed } : {}),
+      })
       router.push('/')
     } catch (err: any) {
       setError(err?.message ?? 'Registration failed')
@@ -42,12 +49,19 @@ export default function Register() {
 
       <Field>
         <Label>Email</Label>
-        <Input type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+        <Input
+          type="email"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
+          required
+        />
       </Field>
 
       <Field>
         <Label>Full name</Label>
-        <Input name="name" value={name} onChange={(e) => setName(e.target.value)} required />
+        <Input name="name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
       </Field>
 
       <Field>

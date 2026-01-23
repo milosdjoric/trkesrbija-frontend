@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import * as authApi from "@/app/lib/auth";
 import { ApiError } from "@/app/lib/api";
 
@@ -26,26 +26,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  async function refreshSession() {
-    setIsLoading(true);
-    try {
-      const refreshed = await authApi.refresh();
-      setAccessToken(refreshed.accessToken);
-      setUser(refreshed.user);
-    } catch (err) {
-      // If not logged in / cookie missing / revoked etc.
-      setAccessToken(null);
-      setUser(null);
+  const refreshInFlightRef = useRef<Promise<void> | null>(null);
 
-      // Keep dev-friendly logs (do not throw, so app can render logged-out UI)
-      if (process.env.NODE_ENV !== "production") {
-        const e = err as ApiError;
-        // eslint-disable-next-line no-console
-        console.warn("[auth] refreshSession failed", { message: e.message, code: e.code, field: e.field });
-      }
-    } finally {
-      setIsLoading(false);
+  async function refreshSession() {
+    if (refreshInFlightRef.current) {
+      return refreshInFlightRef.current;
     }
+
+    const p = (async () => {
+      setIsLoading(true);
+      try {
+        const refreshed = await authApi.refresh();
+        setAccessToken(refreshed.accessToken);
+        setUser(refreshed.user);
+      } catch (err) {
+        // If not logged in / cookie missing / revoked etc.
+        setAccessToken(null);
+        setUser(null);
+
+        // Keep dev-friendly logs (do not throw, so app can render logged-out UI)
+        if (process.env.NODE_ENV !== "production") {
+          const e = err as ApiError;
+          // eslint-disable-next-line no-console
+          console.warn("[auth] refreshSession failed", { message: e.message, code: e.code, field: e.field });
+        }
+      } finally {
+        setIsLoading(false);
+        refreshInFlightRef.current = null;
+      }
+    })();
+
+    refreshInFlightRef.current = p;
+    return p;
   }
 
   async function login(email: string, password: string) {
