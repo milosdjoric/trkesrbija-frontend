@@ -164,7 +164,7 @@ export default async function Events() {
                     <Link href={event.url}>{event.name}</Link>
                   </div>
                   <div className="flex gap-2">
-                    <div className="text-xs/6 text-zinc-500">
+                    <div className="text-xs/6 text-zinc-500 flex items-center">
                       {event.hasSharedStart ? (
                         <>
                           {event.date} at {event.time}
@@ -175,33 +175,42 @@ export default async function Events() {
                       <span aria-hidden="true">·</span>{' '}
                       {event.hasSharedLocation ? <>{event.location}</> : <>Various locations</>}
                     </div>
-                    <div className="text-xs/6 text-red-600">
-                      {event.races?.length
-                        ? event.races
-                            .map((r: any) => {
-                              const name = r.raceName ?? 'Race'
+                    <div className="text-xs/6">
+                      {event.races?.length ? (
+                        <div className="flex items-center gap-1">
+                          {event.races.map((r: any) => {
+                            const name = r.raceName ?? 'Race'
 
-                              const dt = r.startDateTime ? new Date(r.startDateTime) : null
-                              const date =
-                                !event.hasSharedStart && dt && !Number.isNaN(dt.getTime())
-                                  ? `${formatDate(dt)} ${formatTime(dt)}`
-                                  : ''
+                            const dt = r.startDateTime ? new Date(r.startDateTime) : null
+                            const date =
+                              !event.hasSharedStart && dt && !Number.isNaN(dt.getTime())
+                                ? `${formatDate(dt)} ${formatTime(dt)}`
+                                : ''
 
-                              const length = typeof r.length === 'number' ? `${r.length} km` : ''
-                              const elevation = r.elevation != null ? `${r.elevation} m` : ''
+                            const length = typeof r.length === 'number' ? `${r.length} km` : ''
+                            const elevation = r.elevation != null ? `${r.elevation} m` : ''
 
-                              const location = event.hasSharedLocation
-                                ? ''
-                                : typeof r.startLocation === 'string' && r.startLocation.trim().length
-                                  ? r.startLocation
-                                  : ''
+                            const location = event.hasSharedLocation
+                              ? ''
+                              : typeof r.startLocation === 'string' && r.startLocation.trim().length
+                                ? r.startLocation
+                                : ''
 
-                              const details = [date, length, elevation, location].filter(Boolean).join(' / ')
+                            const details = [date, length, elevation, location].filter(Boolean).join(' / ')
 
-                              return details ? `${name} — ${details}` : name
-                            })
-                            .join(' | ')
-                        : 'No races yet'}
+                            return (
+                              <div key={r.id} className="flex flex-wrap items-center gap-2">
+                                <Badge color="zinc" className="flex items-start gap-0.5">
+                                  <span className="font-medium">{name} -</span>
+                                  {details ? <span className="">{details}</span> : null}
+                                </Badge>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      ) : (
+                        'No races yet'
+                      )}
                     </div>
                   </div>
                 </div>
