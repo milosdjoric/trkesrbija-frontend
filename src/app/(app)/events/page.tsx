@@ -14,7 +14,11 @@ export const metadata: Metadata = {
   title: 'Events',
 }
 
-export default async function Events() {
+export default async function Events({
+  searchParams,
+}: {
+  searchParams?: Record<string, string | string[] | undefined>
+}) {
   type BackendRace = {
     id: string
     raceName: string | null
@@ -87,10 +91,54 @@ export default async function Events() {
 
   const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, { limit: 50, skip: 0 })
 
+  function getParam(name: string): string {
+    const v = searchParams?.[name]
+    if (Array.isArray(v)) return v[0] ?? ''
+    return typeof v === 'string' ? v : ''
+  }
+
+  const qRaw = getParam('q').trim()
+  const q = qRaw.toLowerCase()
+
+  const lenMinRaw = getParam('lenMin').trim()
+  const lenMaxRaw = getParam('lenMax').trim()
+  const elevMinRaw = getParam('elevMin').trim()
+  const elevMaxRaw = getParam('elevMax').trim()
+
+  const lenMin = lenMinRaw ? Number(lenMinRaw) : null
+  const lenMax = lenMaxRaw ? Number(lenMaxRaw) : null
+  const elevMin = elevMinRaw ? Number(elevMinRaw) : null
+  const elevMax = elevMaxRaw ? Number(elevMaxRaw) : null
+
+  const hasLenMin = lenMin != null && !Number.isNaN(lenMin)
+  const hasLenMax = lenMax != null && !Number.isNaN(lenMax)
+  const hasElevMin = elevMin != null && !Number.isNaN(elevMin)
+  const hasElevMax = elevMax != null && !Number.isNaN(elevMax)
+
+  function raceMatchesNumericFilters(r: BackendRace) {
+    if (hasLenMin && !(r.length >= (lenMin as number))) return false
+    if (hasLenMax && !(r.length <= (lenMax as number))) return false
+
+    // elevation is nullable; if user filters by elevation, require a value
+    if ((hasElevMin || hasElevMax) && r.elevation == null) return false
+    if (hasElevMin && !((r.elevation as number) >= (elevMin as number))) return false
+    if (hasElevMax && !((r.elevation as number) <= (elevMax as number))) return false
+
+    return true
+  }
+
+  function raceMatchesText(r: BackendRace) {
+    if (!q) return true
+    const rn = (r.raceName ?? '').toLowerCase()
+    const loc = (r.startLocation ?? '').toLowerCase()
+    return rn.includes(q) || loc.includes(q)
+  }
+
   // Map backend RaceEvents into the existing UI-friendly `events` shape.
   // Fields that do not exist in the DB yet are filled with reasonable placeholders.
   let events = (data.raceEvents ?? []).map((re) => {
-    const races = re.races ?? []
+    const racesAll = re.races ?? []
+    const races = racesAll.filter((r) => raceMatchesNumericFilters(r) && raceMatchesText(r))
 
     const sameLocation = allSameString(races.map((r) => r.startLocation))
     const sameStart = allSameDateTime(races.map((r) => r.startDateTime))
@@ -125,28 +173,89 @@ export default async function Events() {
     }
   })
 
+  const anyFilterActive = Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax
+
+  events = events.filter((ev) => {
+    if (!anyFilterActive) return true
+
+    const eventNameMatches = q ? String(ev.name).toLowerCase().includes(q) : true
+
+    // If the event name matches, keep it even if all races were filtered out by text,
+    // but still respect numeric filters (races already filtered numerically).
+    if (eventNameMatches) return true
+
+    // Otherwise keep only if there is at least one matching race.
+    return (ev.races?.length ?? 0) > 0
+  })
+
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
           <Heading>Events</Heading>
-          <div className="mt-4 flex max-w-xl gap-4">
-            <div className="flex-1">
+          <form method="GET" className="mt-4 flex flex-wrap items-center gap-4">
+            <div className="min-w-64 flex-1">
               <InputGroup>
                 <MagnifyingGlassIcon />
-                <Input name="search" placeholder="Search events&hellip;" />
+                <Input name="q" placeholder="Search events or races…" defaultValue={qRaw} />
               </InputGroup>
             </div>
+
+            <div className="flex items-center gap-2">
+              <Input
+                name="lenMin"
+                placeholder="Min km"
+                inputMode="decimal"
+                className="w-24"
+                defaultValue={lenMinRaw}
+                aria-label="Minimum length (km)"
+              />
+              <Input
+                name="lenMax"
+                placeholder="Max km"
+                inputMode="decimal"
+                className="w-24"
+                defaultValue={lenMaxRaw}
+                aria-label="Maximum length (km)"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Input
+                name="elevMin"
+                placeholder="Min m"
+                inputMode="decimal"
+                className="w-24"
+                defaultValue={elevMinRaw}
+                aria-label="Minimum elevation (m)"
+              />
+              <Input
+                name="elevMax"
+                placeholder="Max m"
+                inputMode="decimal"
+                className="w-24"
+                defaultValue={elevMaxRaw}
+                aria-label="Maximum elevation (m)"
+              />
+            </div>
+
             <div>
-              <Select name="sort_by">
+              <Select name="sort_by" defaultValue={getParam('sort_by') || 'name'}>
                 <option value="name">Sort by name</option>
                 <option value="date">Sort by date</option>
                 <option value="status">Sort by status</option>
               </Select>
             </div>
-          </div>
+
+            <Button type="submit">Apply</Button>
+
+            {qRaw || lenMinRaw || lenMaxRaw || elevMinRaw || elevMaxRaw ? (
+              <Link href="/events" className="text-sm/6 text-zinc-500 hover:text-zinc-700">
+                Clear
+              </Link>
+            ) : null}
+          </form>
         </div>
-        <Button>Create event</Button>
       </div>
       <ul className="mt-10">
         {events.map((event, index) => (
@@ -164,7 +273,7 @@ export default async function Events() {
                     <Link href={event.url}>{event.name}</Link>
                   </div>
                   <div className="flex gap-2">
-                    <div className="text-xs/6 text-zinc-500 flex items-center">
+                    <div className="flex items-center text-xs/6 text-zinc-500">
                       {event.hasSharedStart ? (
                         <>
                           {event.date} at {event.time}
