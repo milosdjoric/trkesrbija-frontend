@@ -6,7 +6,6 @@ import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/componen
 import { Heading } from '@/components/heading'
 import { Input, InputGroup } from '@/components/input'
 import { Link } from '@/components/link'
-import { Select } from '@/components/select'
 import { EllipsisVerticalIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 
@@ -197,7 +196,16 @@ export default async function Events({
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
           <Heading>Events</Heading>
-          <form method="GET" className="mt-4 flex flex-wrap items-center gap-4">
+          <form
+            id="filtersForm"
+            method="GET"
+            className="mt-4 flex flex-wrap items-center gap-4"
+            data-initial-q={qRaw}
+            data-initial-len-min={lenMinRaw}
+            data-initial-len-max={lenMaxRaw}
+            data-initial-elev-min={elevMinRaw}
+            data-initial-elev-max={elevMaxRaw}
+          >
             <div className="min-w-64 flex-1">
               <InputGroup>
                 <MagnifyingGlassIcon />
@@ -243,15 +251,14 @@ export default async function Events({
               />
             </div>
 
-            <div>
-              <Select name="sort_by" defaultValue={getParam('sort_by') || 'name'}>
-                <option value="name">Sort by name</option>
-                <option value="date">Sort by date</option>
-                <option value="status">Sort by status</option>
-              </Select>
+            <div className="flex items-center gap-3">
+              <Button id="applyBtn" type="submit">
+                <span id="applyBtnLabel">Apply</span>
+              </Button>
+              <span id="dirtyHint" className="hidden text-sm/6 text-zinc-500">
+                Changes not applied
+              </span>
             </div>
-
-            <Button type="submit">Apply</Button>
 
             {qRaw || lenMinRaw || lenMaxRaw || elevMinRaw || elevMaxRaw ? (
               <Link href="/events" className="text-sm/6 text-zinc-500 hover:text-zinc-700">
@@ -259,6 +266,82 @@ export default async function Events({
               </Link>
             ) : null}
           </form>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+(function () {
+  function normalize(v) {
+    return (v ?? '').toString().trim();
+  }
+
+  function getFormValue(form, name) {
+    var el = form.querySelector('[name="' + name + '"]');
+    if (!el) return '';
+    // handle inputs/selects
+    return normalize(el.value);
+  }
+
+  function isDirty(form) {
+    var initial = {
+      q: normalize(form.getAttribute('data-initial-q')),
+      lenMin: normalize(form.getAttribute('data-initial-len-min')),
+      lenMax: normalize(form.getAttribute('data-initial-len-max')),
+      elevMin: normalize(form.getAttribute('data-initial-elev-min')),
+      elevMax: normalize(form.getAttribute('data-initial-elev-max')),
+    };
+
+    var current = {
+      q: getFormValue(form, 'q'),
+      lenMin: getFormValue(form, 'lenMin'),
+      lenMax: getFormValue(form, 'lenMax'),
+      elevMin: getFormValue(form, 'elevMin'),
+      elevMax: getFormValue(form, 'elevMax'),
+    };
+
+    return (
+      current.q !== initial.q ||
+      current.lenMin !== initial.lenMin ||
+      current.lenMax !== initial.lenMax ||
+      current.elevMin !== initial.elevMin ||
+      current.elevMax !== initial.elevMax
+    );
+  }
+
+  function applyDirtyUI(form) {
+    var btn = document.getElementById('applyBtn');
+    var hint = document.getElementById('dirtyHint');
+    if (!btn || !hint) return;
+
+    var dirty = isDirty(form);
+
+    var label = document.getElementById('applyBtnLabel');
+    if (!label) return;
+
+    // Update label + hint visibility
+    label.textContent = dirty ? 'Apply changes' : 'Apply';
+    hint.classList.toggle('hidden', !dirty);
+  }
+
+  function init() {
+    var form = document.getElementById('filtersForm');
+    if (!form) return;
+
+    // Initial render
+    applyDirtyUI(form);
+
+    // Listen for changes
+    form.addEventListener('input', function () { applyDirtyUI(form); });
+    form.addEventListener('change', function () { applyDirtyUI(form); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();`,
+            }}
+          />
         </div>
       </div>
       {events.length === 0 ? (
