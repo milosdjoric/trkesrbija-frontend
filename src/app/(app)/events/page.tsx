@@ -138,10 +138,18 @@ export default async function Events({
   // Fields that do not exist in the DB yet are filled with reasonable placeholders.
   let events = (data.raceEvents ?? []).map((re) => {
     const racesAll = re.races ?? []
-    const races = racesAll.filter((r) => raceMatchesNumericFilters(r) && raceMatchesText(r))
 
-    const sameLocation = allSameString(races.map((r) => r.startLocation))
-    const sameStart = allSameDateTime(races.map((r) => r.startDateTime))
+    // Keep all races for display, but mark which ones match current filters.
+    const racesWithMatch = racesAll.map((r) => ({
+      ...r,
+      _matchesFilters: raceMatchesNumericFilters(r) && raceMatchesText(r),
+    }))
+
+    const matchingRaces = racesWithMatch.filter((r) => r._matchesFilters)
+
+    // Shared fields should be computed from the matching races (the ones that make the event visible)
+    const sameLocation = allSameString(matchingRaces.map((r) => r.startLocation))
+    const sameStart = allSameDateTime(matchingRaces.map((r) => r.startDateTime))
 
     const sharedDate = sameStart.allSame && sameStart.value ? formatDate(sameStart.value) : 'TBD'
     const sharedTime = sameStart.allSame && sameStart.value ? formatTime(sameStart.value) : ''
@@ -153,7 +161,7 @@ export default async function Events({
       url: `/events/${re.slug}`,
       imgUrl: re.mainImage ?? 'https://placehold.co/600x400?text=Event',
 
-      // Shared fields are only meaningful if ALL races share them.
+      // Shared fields are only meaningful if ALL matching races share them.
       date: sharedDate,
       time: sharedTime,
       location: sharedLocation,
@@ -169,7 +177,9 @@ export default async function Events({
       ticketsAvailable: 0,
       status: 'On Sale',
 
-      races,
+      // Keep ALL races, but annotated.
+      races: racesWithMatch,
+      matchingRacesCount: matchingRaces.length,
     }
   })
 
@@ -178,14 +188,8 @@ export default async function Events({
   events = events.filter((ev) => {
     if (!anyFilterActive) return true
 
-    const eventNameMatches = q ? String(ev.name).toLowerCase().includes(q) : true
-
-    // If the event name matches, keep it even if all races were filtered out by text,
-    // but still respect numeric filters (races already filtered numerically).
-    if (eventNameMatches) return true
-
-    // Otherwise keep only if there is at least one matching race.
-    return (ev.races?.length ?? 0) > 0
+    // When filters are active, hide events that have zero matching races.
+    return (ev as any).matchingRacesCount > 0
   })
 
   return (
@@ -257,6 +261,26 @@ export default async function Events({
           </form>
         </div>
       </div>
+      {events.length === 0 ? (
+        <div className="mt-10 rounded-lg border border-zinc-200 bg-white p-6 text-sm/6 text-zinc-700">
+          {anyFilterActive ? (
+            <>
+              <div className="font-medium">No results for the selected filters.</div>
+              <div className="mt-1 text-zinc-600">
+                Try adjusting the search, length, or elevation filters, or clear filters to see all events.
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="font-medium">No events yet.</div>
+              <div className="mt-1 text-zinc-600">
+                There are currently no race events in the database. Create one in the backend and refresh this page.
+              </div>
+            </>
+          )}
+        </div>
+      ) : null}
+
       <ul className="mt-10">
         {events.map((event, index) => (
           <li key={event.id}>
@@ -290,6 +314,8 @@ export default async function Events({
                           {event.races.map((r: any) => {
                             const name = r.raceName ?? 'Race'
 
+                            const matches = !anyFilterActive || Boolean(r._matchesFilters)
+
                             const dt = r.startDateTime ? new Date(r.startDateTime) : null
                             const date =
                               !event.hasSharedStart && dt && !Number.isNaN(dt.getTime())
@@ -309,7 +335,10 @@ export default async function Events({
 
                             return (
                               <div key={r.id} className="flex flex-wrap items-center gap-2">
-                                <Badge color="zinc" className="flex items-start gap-0.5">
+                                <Badge
+                                  color="zinc"
+                                  className={`flex items-start gap-0.5 ${matches ? '' : 'line-through opacity-60'}`}
+                                >
                                   <span className="font-medium">{name} -</span>
                                   {details ? <span className="">{details}</span> : null}
                                 </Badge>
