@@ -1,13 +1,12 @@
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
-import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
 import { Heading } from '@/components/heading'
-import { Input, InputGroup } from '@/components/input'
 import { Link } from '@/components/link'
-import { EllipsisVerticalIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
+import { EllipsisVerticalIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
+import { FiltersBar } from './filters-bar'
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
 
 export const metadata: Metadata = {
   title: 'Events',
@@ -26,6 +25,11 @@ export default async function Events({
     elevation: number | null
     startLocation: string
     startDateTime: string
+    competitionId: string | null
+  }
+  type BackendCompetition = {
+    id: string
+    name: string
   }
 
   type BackendRaceEvent = {
@@ -52,7 +56,17 @@ export default async function Events({
           elevation
           startLocation
           startDateTime
+          competitionId
         }
+      }
+    }
+  `
+
+  const COMPETITIONS_QUERY = `
+    query CompetitionsForFilters {
+      competitions {
+        id
+        name
       }
     }
   `
@@ -90,6 +104,9 @@ export default async function Events({
   }
 
   const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, { limit: 50, skip: 0 })
+  const competitionsData = await gql<{ competitions: BackendCompetition[] }>(COMPETITIONS_QUERY)
+  const competitions = competitionsData.competitions ?? []
+  const competitionNameById = new Map<string, string>(competitions.map((c) => [c.id, c.name]))
 
   function getParam(name: string): string {
     const v = sp?.[name]
@@ -98,6 +115,7 @@ export default async function Events({
   }
 
   const qRaw = getParam('q').trim()
+  const competitionIdRaw = getParam('competitionId').trim()
   const q = qRaw.toLowerCase()
 
   const lenMinRaw = getParam('lenMin').trim()
@@ -114,8 +132,10 @@ export default async function Events({
   const hasLenMax = lenMax != null && !Number.isNaN(lenMax)
   const hasElevMin = elevMin != null && !Number.isNaN(elevMin)
   const hasElevMax = elevMax != null && !Number.isNaN(elevMax)
+  const hasCompetition = Boolean(competitionIdRaw)
 
   function raceMatchesNumericFilters(r: BackendRace) {
+    if (hasCompetition && r.competitionId !== competitionIdRaw) return false
     if (hasLenMin && !(r.length >= (lenMin as number))) return false
     if (hasLenMax && !(r.length <= (lenMax as number))) return false
 
@@ -131,7 +151,9 @@ export default async function Events({
     if (!q) return true
     const rn = (r.raceName ?? '').toLowerCase()
     const loc = (r.startLocation ?? '').toLowerCase()
-    return rn.includes(q) || loc.includes(q)
+    const compName = (r.competitionId ? competitionNameById.get(r.competitionId) : '') ?? ''
+    const cn = compName.toLowerCase()
+    return rn.includes(q) || loc.includes(q) || cn.includes(q)
   }
 
   function eventMatchesText(re: BackendRaceEvent) {
@@ -194,7 +216,7 @@ export default async function Events({
     }
   })
 
-  const anyFilterActive = Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax
+  const anyFilterActive = Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition
 
   events = events.filter((ev) => {
     if (!anyFilterActive) return true
@@ -208,151 +230,16 @@ export default async function Events({
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
           <Heading>Events</Heading>
-          <form
-            id="filtersForm"
-            method="GET"
-            className="mt-4 flex flex-wrap items-center gap-4"
-            data-initial-q={qRaw}
-            data-initial-len-min={lenMinRaw}
-            data-initial-len-max={lenMaxRaw}
-            data-initial-elev-min={elevMinRaw}
-            data-initial-elev-max={elevMaxRaw}
-          >
-            <div className="input w-full">
-              <div className="min-w-64 flex-1">
-                <InputGroup>
-                  <MagnifyingGlassIcon />
-                  <Input name="q" placeholder="Search events or races…" defaultValue={qRaw} />
-                </InputGroup>
-              </div>
-            </div>
-            <div className="filters flex w-full gap-4">
-              <div className="flex items-center gap-1 grow">
-                <Input
-                  name="lenMin"
-                  placeholder="Length from (km)"
-                  inputMode="decimal"
-                  defaultValue={lenMinRaw}
-                  aria-label="Minimum length (km)"
-                />
-                <Input
-                  name="lenMax"
-                  placeholder="Length to (km)"
-                  inputMode="decimal"
-                  defaultValue={lenMaxRaw}
-                  aria-label="Maximum length (km)"
-                />
-              </div>
-
-              <div className="flex items-center gap-1 grow">
-                <Input
-                  name="elevMin"
-                  placeholder="Elevation from (m)"
-                  inputMode="decimal"
-                  defaultValue={elevMinRaw}
-                  aria-label="Minimum elevation (m)"
-                />
-                <Input
-                  name="elevMax"
-                  placeholder="Elevation to (m)"
-                  inputMode="decimal"
-                  defaultValue={elevMaxRaw}
-                  aria-label="Maximum elevation (m)"
-                />
-              </div>
-            </div>
-            <div className="buttons flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <Button id="applyBtn" type="submit">
-                  <span id="applyBtnLabel">Apply</span>
-                </Button>
-                <span id="dirtyHint" className="hidden text-sm/6 text-zinc-500">
-                  Changes not applied
-                </span>
-              </div>
-
-              {qRaw || lenMinRaw || lenMaxRaw || elevMinRaw || elevMaxRaw ? (
-                <Link href="/events" className="text-sm/6 text-zinc-500 hover:text-zinc-700">
-                  Clear
-                </Link>
-              ) : null}
-            </div>
-          </form>
-          <script
-            dangerouslySetInnerHTML={{
-              __html: `
-(function () {
-  function normalize(v) {
-    return (v ?? '').toString().trim();
-  }
-
-  function getFormValue(form, name) {
-    var el = form.querySelector('[name="' + name + '"]');
-    if (!el) return '';
-    // handle inputs/selects
-    return normalize(el.value);
-  }
-
-  function isDirty(form) {
-    var initial = {
-      q: normalize(form.getAttribute('data-initial-q')),
-      lenMin: normalize(form.getAttribute('data-initial-len-min')),
-      lenMax: normalize(form.getAttribute('data-initial-len-max')),
-      elevMin: normalize(form.getAttribute('data-initial-elev-min')),
-      elevMax: normalize(form.getAttribute('data-initial-elev-max')),
-    };
-
-    var current = {
-      q: getFormValue(form, 'q'),
-      lenMin: getFormValue(form, 'lenMin'),
-      lenMax: getFormValue(form, 'lenMax'),
-      elevMin: getFormValue(form, 'elevMin'),
-      elevMax: getFormValue(form, 'elevMax'),
-    };
-
-    return (
-      current.q !== initial.q ||
-      current.lenMin !== initial.lenMin ||
-      current.lenMax !== initial.lenMax ||
-      current.elevMin !== initial.elevMin ||
-      current.elevMax !== initial.elevMax
-    );
-  }
-
-  function applyDirtyUI(form) {
-    var btn = document.getElementById('applyBtn');
-    var hint = document.getElementById('dirtyHint');
-    if (!btn || !hint) return;
-
-    var dirty = isDirty(form);
-
-    var label = document.getElementById('applyBtnLabel');
-    if (!label) return;
-
-    // Update label + hint visibility
-    label.textContent = dirty ? 'Apply changes' : 'Apply';
-    hint.classList.toggle('hidden', !dirty);
-  }
-
-  function init() {
-    var form = document.getElementById('filtersForm');
-    if (!form) return;
-
-    // Initial render
-    applyDirtyUI(form);
-
-    // Listen for changes
-    form.addEventListener('input', function () { applyDirtyUI(form); });
-    form.addEventListener('change', function () { applyDirtyUI(form); });
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();`,
+          <FiltersBar
+            initial={{
+              q: qRaw,
+              lenMin: lenMinRaw,
+              lenMax: lenMaxRaw,
+              elevMin: elevMinRaw,
+              elevMax: elevMaxRaw,
+              competitionId: competitionIdRaw,
             }}
+            competitions={competitions}
           />
         </div>
       </div>
@@ -382,17 +269,12 @@ export default async function Events({
             <Divider soft={index > 0} />
             <div className="flex items-center justify-between">
               <div key={event.id} className="flex gap-6 py-6">
-                <div className="w-32 shrink-0">
-                  <Link href={event.url} aria-hidden="true">
-                    <img className="aspect-3/2 rounded-lg shadow-sm" src={event.imgUrl} alt="" />
-                  </Link>
-                </div>
                 <div className="space-y-1.5">
                   <div className="text-base/6 font-semibold">
                     <Link href={event.url}>{event.name}</Link>
                   </div>
-                  <div className="flex gap-2">
-                    <div className="flex items-center text-xs/6 text-zinc-500">
+                  <div className="flex flex-col gap-2 md:flex-row">
+                    <div className="flex items-center gap-1 text-xs/6 text-zinc-500">
                       {event.hasSharedStart ? (
                         <>
                           {event.date} at {event.time}
@@ -400,12 +282,12 @@ export default async function Events({
                       ) : (
                         <>Various dates</>
                       )}{' '}
-                      <span aria-hidden="true">·</span>{' '}
+                      <span aria-hidden="true">/</span>{' '}
                       {event.hasSharedLocation ? <>{event.location}</> : <>Various locations</>}
                     </div>
                     <div className="text-xs/6">
                       {event.races?.length ? (
-                        <div className="flex items-center gap-1">
+                        <div className="flex flex-col items-center gap-1 md:flex-row">
                           {event.races.map((r: any) => {
                             const name = r.raceName ?? 'Race'
 
@@ -426,7 +308,9 @@ export default async function Events({
                                 ? r.startLocation
                                 : ''
 
-                            const details = [date, length, elevation, location].filter(Boolean).join(' / ')
+                            const competition = r.competitionId ? (competitionNameById.get(r.competitionId) ?? '') : ''
+
+                            const details = [date, competition, length, elevation, location].filter(Boolean).join(' / ')
 
                             return (
                               <div key={r.id} className="flex flex-wrap items-center gap-2">
@@ -448,7 +332,7 @@ export default async function Events({
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex hidden items-center gap-4">
                 <Badge className="max-sm:hidden" color={event.status === 'On Sale' ? 'lime' : 'zinc'}>
                   {event.status}
                 </Badge>

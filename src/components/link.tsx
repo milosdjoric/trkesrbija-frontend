@@ -6,9 +6,5 @@ export const Link = forwardRef(function Link(
   props: LinkProps & React.ComponentPropsWithoutRef<'a'>,
   ref: React.ForwardedRef<HTMLAnchorElement>
 ) {
-  return (
-    <Headless.DataInteractive>
-      <NextLink {...props} ref={ref} />
-    </Headless.DataInteractive>
-  )
+  return <Headless.DataInteractive as={NextLink} {...props} ref={ref} />
 })

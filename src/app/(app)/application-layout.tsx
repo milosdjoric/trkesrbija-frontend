@@ -22,25 +22,16 @@ import {
   SidebarSpacer,
 } from '@/components/sidebar'
 import { SidebarLayout } from '@/components/sidebar-layout'
-import { getEvents } from '@/data'
 import {
   ArrowRightStartOnRectangleIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   Cog8ToothIcon,
   LightBulbIcon,
-  PlusIcon,
   ShieldCheckIcon,
   UserCircleIcon,
 } from '@heroicons/react/16/solid'
-import {
-  Cog6ToothIcon,
-  HomeIcon,
-  QuestionMarkCircleIcon,
-  SparklesIcon,
-  Square2StackIcon,
-  TicketIcon,
-} from '@heroicons/react/20/solid'
+import { HomeIcon, QuestionMarkCircleIcon, SparklesIcon, Square2StackIcon, TicketIcon } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
 
 import { useAuth } from '@/app/auth/auth-context'
@@ -98,7 +89,9 @@ export function ApplicationLayout({
   events,
   children,
 }: {
-  events: Awaited<ReturnType<typeof getEvents>>
+  // NOTE: `events` are now provided by the server/layout using the backend fetcher.
+  // Shape expected (minimum): { id, eventName|name, slug?, url?, races?: Array<{ id, raceName|name, url? }> }
+  events: any[]
   children: React.ReactNode
 }) {
   let pathname = usePathname()
@@ -145,14 +138,6 @@ export function ApplicationLayout({
                   <Cog8ToothIcon />
                   <DropdownLabel>Settings</DropdownLabel>
                 </DropdownItem>
-                <DropdownItem href="#" className="hidden">
-                  <Avatar slot="icon" src="/teams/catalyst.svg" />
-                  <DropdownLabel>Catalyst</DropdownLabel>
-                </DropdownItem>
-                <DropdownItem href="#" className="hidden">
-                  <Avatar slot="icon" initials="BE" className="bg-purple-500 text-white" />
-                  <DropdownLabel>Big Events</DropdownLabel>
-                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </SidebarHeader>
@@ -165,9 +150,9 @@ export function ApplicationLayout({
               </SidebarItem>
               <SidebarItem href="/events" current={pathname.startsWith('/events')}>
                 <Square2StackIcon />
-                <SidebarLabel>Events (All race events)</SidebarLabel>
+                <SidebarLabel>All race events</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/orders" current={pathname.startsWith('/orders')}>
+              <SidebarItem className="hidden" href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />
                 <SidebarLabel>Orders</SidebarLabel>
               </SidebarItem>
@@ -175,17 +160,47 @@ export function ApplicationLayout({
 
             <SidebarSection className="max-lg:hidden">
               <SidebarHeading>Upcoming Race Events</SidebarHeading>
-              {events.map((event) => (
-                <SidebarItem key={event.id} href={event.url}>
-                  {event.name}
-                </SidebarItem>
-              ))}
+              {events.map((event: any) => {
+                const eventLabel = (event?.eventName ?? event?.name ?? '').toString()
+                const eventUrl = (
+                  event?.url ?? (event?.slug ? `/events#${event.slug}` : `/events#${event.id}`)
+                ).toString()
+
+                return (
+                  <div key={event.id}>
+                    <SidebarItem href={eventUrl}>{eventLabel}</SidebarItem>
+
+                    {Array.isArray(event.races) && event.races.length > 0 && (
+                      <div className="pl-6">
+                        {event.races.map((race: any) => {
+                          const raceLabel = (race?.raceName ?? race?.name ?? '').toString()
+                          const raceUrl = race?.url
+                            ? race.url
+                            : event?.slug
+                              ? `/events#${event.slug}`
+                              : `/events#${event.id}`
+
+                          return race?.url ? (
+                            <SidebarItem key={race.id} href={raceUrl}>
+                              {raceLabel}
+                            </SidebarItem>
+                          ) : (
+                            <SidebarItem key={race.id} as="div">
+                              {raceLabel}
+                            </SidebarItem>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </SidebarSection>
 
             <SidebarSpacer />
 
             <SidebarSection>
-              <SidebarItem href="mailto:djoric.inbox@gmail.com?subject=Support%20request">
+              <SidebarItem href="mailto:djoric.inbox@gmail.com?subject=Tkre%20Srbija%20Support%20request">
                 <QuestionMarkCircleIcon />
                 <SidebarLabel>Support via Email</SidebarLabel>
               </SidebarItem>
