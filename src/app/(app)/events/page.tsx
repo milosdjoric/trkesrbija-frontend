@@ -16,8 +16,9 @@ export const metadata: Metadata = {
 export default async function Events({
   searchParams,
 }: {
-  searchParams?: Record<string, string | string[] | undefined>
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
 }) {
+  const sp = (await searchParams) ?? {}
   type BackendRace = {
     id: string
     raceName: string | null
@@ -91,7 +92,7 @@ export default async function Events({
   const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, { limit: 50, skip: 0 })
 
   function getParam(name: string): string {
-    const v = searchParams?.[name]
+    const v = sp?.[name]
     if (Array.isArray(v)) return v[0] ?? ''
     return typeof v === 'string' ? v : ''
   }
@@ -133,15 +134,26 @@ export default async function Events({
     return rn.includes(q) || loc.includes(q)
   }
 
+  function eventMatchesText(re: BackendRaceEvent) {
+    if (!q) return true
+    const en = (re.eventName ?? '').toLowerCase()
+    const type = (re.type ?? '').toLowerCase()
+    return en.includes(q) || type.includes(q)
+  }
+
   // Map backend RaceEvents into the existing UI-friendly `events` shape.
   // Fields that do not exist in the DB yet are filled with reasonable placeholders.
   let events = (data.raceEvents ?? []).map((re) => {
     const racesAll = re.races ?? []
 
     // Keep all races for display, but mark which ones match current filters.
+    // Text match should include event name/type as well; if the event matches the text,
+    // individual races only need to satisfy numeric filters.
+    const evTextMatch = eventMatchesText(re)
+
     const racesWithMatch = racesAll.map((r) => ({
       ...r,
-      _matchesFilters: raceMatchesNumericFilters(r) && raceMatchesText(r),
+      _matchesFilters: raceMatchesNumericFilters(r) && (evTextMatch || raceMatchesText(r)),
     }))
 
     const matchingRaces = racesWithMatch.filter((r) => r._matchesFilters)
@@ -206,65 +218,65 @@ export default async function Events({
             data-initial-elev-min={elevMinRaw}
             data-initial-elev-max={elevMaxRaw}
           >
-            <div className="min-w-64 flex-1">
-              <InputGroup>
-                <MagnifyingGlassIcon />
-                <Input name="q" placeholder="Search events or races…" defaultValue={qRaw} />
-              </InputGroup>
+            <div className="input w-full">
+              <div className="min-w-64 flex-1">
+                <InputGroup>
+                  <MagnifyingGlassIcon />
+                  <Input name="q" placeholder="Search events or races…" defaultValue={qRaw} />
+                </InputGroup>
+              </div>
             </div>
+            <div className="filters flex w-full gap-4">
+              <div className="flex items-center gap-1 grow">
+                <Input
+                  name="lenMin"
+                  placeholder="Length from (km)"
+                  inputMode="decimal"
+                  defaultValue={lenMinRaw}
+                  aria-label="Minimum length (km)"
+                />
+                <Input
+                  name="lenMax"
+                  placeholder="Length to (km)"
+                  inputMode="decimal"
+                  defaultValue={lenMaxRaw}
+                  aria-label="Maximum length (km)"
+                />
+              </div>
 
-            <div className="flex items-center gap-2">
-              <Input
-                name="lenMin"
-                placeholder="Min km"
-                inputMode="decimal"
-                className="w-24"
-                defaultValue={lenMinRaw}
-                aria-label="Minimum length (km)"
-              />
-              <Input
-                name="lenMax"
-                placeholder="Max km"
-                inputMode="decimal"
-                className="w-24"
-                defaultValue={lenMaxRaw}
-                aria-label="Maximum length (km)"
-              />
+              <div className="flex items-center gap-1 grow">
+                <Input
+                  name="elevMin"
+                  placeholder="Elevation from (m)"
+                  inputMode="decimal"
+                  defaultValue={elevMinRaw}
+                  aria-label="Minimum elevation (m)"
+                />
+                <Input
+                  name="elevMax"
+                  placeholder="Elevation to (m)"
+                  inputMode="decimal"
+                  defaultValue={elevMaxRaw}
+                  aria-label="Maximum elevation (m)"
+                />
+              </div>
             </div>
+            <div className="buttons flex items-center gap-2">
+              <div className="flex items-center gap-2">
+                <Button id="applyBtn" type="submit">
+                  <span id="applyBtnLabel">Apply</span>
+                </Button>
+                <span id="dirtyHint" className="hidden text-sm/6 text-zinc-500">
+                  Changes not applied
+                </span>
+              </div>
 
-            <div className="flex items-center gap-2">
-              <Input
-                name="elevMin"
-                placeholder="Min m"
-                inputMode="decimal"
-                className="w-24"
-                defaultValue={elevMinRaw}
-                aria-label="Minimum elevation (m)"
-              />
-              <Input
-                name="elevMax"
-                placeholder="Max m"
-                inputMode="decimal"
-                className="w-24"
-                defaultValue={elevMaxRaw}
-                aria-label="Maximum elevation (m)"
-              />
+              {qRaw || lenMinRaw || lenMaxRaw || elevMinRaw || elevMaxRaw ? (
+                <Link href="/events" className="text-sm/6 text-zinc-500 hover:text-zinc-700">
+                  Clear
+                </Link>
+              ) : null}
             </div>
-
-            <div className="flex items-center gap-3">
-              <Button id="applyBtn" type="submit">
-                <span id="applyBtnLabel">Apply</span>
-              </Button>
-              <span id="dirtyHint" className="hidden text-sm/6 text-zinc-500">
-                Changes not applied
-              </span>
-            </div>
-
-            {qRaw || lenMinRaw || lenMaxRaw || elevMinRaw || elevMaxRaw ? (
-              <Link href="/events" className="text-sm/6 text-zinc-500 hover:text-zinc-700">
-                Clear
-              </Link>
-            ) : null}
           </form>
           <script
             dangerouslySetInnerHTML={{
