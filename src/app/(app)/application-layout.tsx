@@ -9,7 +9,7 @@ import {
   DropdownLabel,
   DropdownMenu,
 } from '@/components/dropdown'
-import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from '@/components/navbar'
+import { Navbar, NavbarSection, NavbarSpacer } from '@/components/navbar'
 import {
   Sidebar,
   SidebarBody,
@@ -104,22 +104,17 @@ export function ApplicationLayout({
           <NavbarSpacer />
           <NavbarSection>
             <Dropdown>
-              <DropdownButton as={NavbarItem}>
-                <Avatar
-                  square
-                  initials={
-                    user?.name
-                      ? user.name
-                          .split(' ')
-                          .map((n) => n[0])
-                          .join('')
-                          .slice(0, 2)
-                          .toUpperCase()
-                      : user?.email?.[0]?.toUpperCase()
-                  }
-                />
+              <DropdownButton as={SidebarItem}>
+                <span className="flex min-w-0 items-center gap-3">
+                  <span className="min-w-0">
+                    <span className="font-sm block truncate text-sm/5 text-zinc-950 dark:text-white">
+                      Hi, {user?.name ?? user?.email ?? 'User'}
+                    </span>
+                  </span>
+                </span>
+                <ChevronDownIcon />
               </DropdownButton>
-              <AccountDropdownMenu anchor="bottom end" />
+              <AccountDropdownMenu anchor="bottom start" />
             </Dropdown>
           </NavbarSection>
         </Navbar>
@@ -215,21 +210,6 @@ export function ApplicationLayout({
             <Dropdown>
               <DropdownButton as={SidebarItem}>
                 <span className="flex min-w-0 items-center gap-3">
-                  <Avatar
-                    className="size-10"
-                    square
-                    alt={user?.name ?? user?.email ?? 'User'}
-                    initials={
-                      user?.name
-                        ? user.name
-                            .split(' ')
-                            .map((n) => n[0])
-                            .join('')
-                            .slice(0, 2)
-                            .toUpperCase()
-                        : user?.email?.[0]?.toUpperCase()
-                    }
-                  />
                   <span className="min-w-0">
                     <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
                       {user?.name ?? user?.email ?? 'User'}

@@ -1,12 +1,12 @@
 'use client'
 
 import { Button } from '@/components/button'
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
 import { Input, InputGroup } from '@/components/input'
 import { Link } from '@/components/link'
+import { Select } from '@/components/select'
 import { MagnifyingGlassIcon } from '@heroicons/react/16/solid'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type Competition = { id: string; name: string }
 
@@ -46,10 +46,6 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     setCompetitionId(sp.get('competitionId') ?? '')
   }, [sp])
 
-  const competitionNameById = useMemo(() => {
-    return new Map<string, string>(competitions.map((c) => [c.id, c.name]))
-  }, [competitions])
-
   const dirty =
     (q ?? '').trim() !== (initial.q ?? '').trim() ||
     (lenMin ?? '').trim() !== (initial.lenMin ?? '').trim() ||
@@ -82,10 +78,6 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     e.preventDefault()
     router.push(`/events${buildQueryString()}`)
   }
-
-  const competitionLabel = competitionId
-    ? (competitionNameById.get(competitionId) ?? 'All competitions')
-    : 'All competitions'
 
   return (
     <form onSubmit={onApply} className="mt-4 flex flex-wrap items-center gap-4">
@@ -137,37 +129,20 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
           />
         </div>
 
-        <div className="flex grow items-center gap-1">
-          <Dropdown>
-            <DropdownButton type="button" aria-label="Competition">
-              <span className="truncate">{competitionLabel}</span>
-            </DropdownButton>
-
-            <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
-              <DropdownItem
-                href="#"
-                onClick={(e: any) => {
-                  e?.preventDefault?.()
-                  setCompetitionId('')
-                }}
-              >
-                All competitions
-              </DropdownItem>
-
-              {competitions.map((c) => (
-                <DropdownItem
-                  key={c.id}
-                  href="#"
-                  onClick={(e: any) => {
-                    e?.preventDefault?.()
-                    setCompetitionId(c.id)
-                  }}
-                >
-                  {c.name}
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
+        <div className="">
+          <Select
+            aria-label="Competition"
+            className="min-w-80 lg:min-w-64"
+            value={competitionId}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCompetitionId(e.target.value)}
+          >
+            <option value="">All competitions</option>
+            {competitions.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </Select>
         </div>
       </div>
 
@@ -176,11 +151,11 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
           <Button id="applyBtn" type="submit">
             {dirty ? 'Apply changes' : 'Apply'}
           </Button>
-          <span className={`text-sm/6 text-zinc-500 ${dirty ? '' : 'hidden'}`}>Changes not applied</span>
+          <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Changes not applied</span>
         </div>
 
         {clearVisible ? (
-          <Link href="/events" className="text-sm/6 text-zinc-500 hover:text-zinc-700">
+          <Link href="/events" className="text-sm">
             Clear
           </Link>
         ) : null}

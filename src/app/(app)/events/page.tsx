@@ -1,12 +1,12 @@
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
 import { Heading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { EllipsisVerticalIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { FiltersBar } from './filters-bar'
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
 
 export const metadata: Metadata = {
   title: 'Events',
@@ -244,18 +244,18 @@ export default async function Events({
         </div>
       </div>
       {events.length === 0 ? (
-        <div className="mt-10 rounded-lg border border-zinc-200 bg-white p-6 text-sm/6 text-zinc-700">
+        <div className="mt-10 rounded-lg border border-zinc-200 p-6 text-sm/6">
           {anyFilterActive ? (
             <>
               <div className="font-medium">No results for the selected filters.</div>
-              <div className="mt-1 text-zinc-600">
+              <div className="mt-1">
                 Try adjusting the search, length, or elevation filters, or clear filters to see all events.
               </div>
             </>
           ) : (
             <>
               <div className="font-medium">No events yet.</div>
-              <div className="mt-1 text-zinc-600">
+              <div className="mt-1">
                 There are currently no race events in the database. Create one in the backend and refresh this page.
               </div>
             </>
@@ -287,7 +287,7 @@ export default async function Events({
                     </div>
                     <div className="text-xs/6">
                       {event.races?.length ? (
-                        <div className="flex flex-col items-center gap-1 md:flex-row">
+                        <div className="flex flex-col items-start gap-1 md:flex-row md:items-center">
                           {event.races.map((r: any) => {
                             const name = r.raceName ?? 'Race'
 
