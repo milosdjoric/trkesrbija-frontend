@@ -53,7 +53,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
             <ShieldCheckIcon />
             <DropdownLabel>Privacy policy</DropdownLabel>
           </DropdownItem>
-          <DropdownItem href="#" className="">
+          <DropdownItem href="https://tally.so/r/Y547W6" className="">
             <LightBulbIcon />
             <DropdownLabel>Share feedback</DropdownLabel>
           </DropdownItem>
@@ -70,7 +70,7 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
         </>
       ) : (
         <>
-          <DropdownItem href="#">
+          <DropdownItem href="https://tally.so/r/Y547W6">
             <LightBulbIcon />
             <DropdownLabel>Share feedback</DropdownLabel>
           </DropdownItem>
@@ -139,11 +139,11 @@ export function ApplicationLayout({
 
           <SidebarBody>
             <SidebarSection>
-              <SidebarItem href="/" current={pathname === '/'}>
+              <SidebarItem href="/" current={pathname === '/'} className="hidden">
                 <HomeIcon />
                 <SidebarLabel>Home</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/events" current={pathname.startsWith('/events')}>
+              <SidebarItem href="/events" current={pathname.startsWith('/events')} className="hidden">
                 <Square2StackIcon />
                 <SidebarLabel>All race events</SidebarLabel>
               </SidebarItem>
@@ -153,7 +153,7 @@ export function ApplicationLayout({
               </SidebarItem>
             </SidebarSection>
 
-            <SidebarSection className="max-lg:hidden">
+            <SidebarSection className="hidden max-lg:hidden">
               <SidebarHeading>Upcoming Race Events</SidebarHeading>
               {events.map((event: any) => {
                 const eventLabel = (event?.eventName ?? event?.name ?? '').toString()

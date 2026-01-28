@@ -71,14 +71,6 @@ export default async function Events({
     }
   `
 
-  function formatDate(dt: Date) {
-    return dt.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
-  }
-
-  function formatTime(dt: Date) {
-    return dt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
-  }
-
   function allSameString(values: Array<string | null | undefined>) {
     const normalized = values.map((v) => (typeof v === 'string' ? v.trim() : '')).filter(Boolean)
     if (!normalized.length) return { allSame: false as const, value: null as string | null }
@@ -184,8 +176,14 @@ export default async function Events({
     const sameLocation = allSameString(matchingRaces.map((r) => r.startLocation))
     const sameStart = allSameDateTime(matchingRaces.map((r) => r.startDateTime))
 
-    const sharedDate = sameStart.allSame && sameStart.value ? formatDate(sameStart.value) : 'TBD'
-    const sharedTime = sameStart.allSame && sameStart.value ? formatTime(sameStart.value) : ''
+    const sharedDate =
+      sameStart.allSame && sameStart.value
+        ? sameStart.value.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+        : 'TBD'
+    const sharedTime =
+      sameStart.allSame && sameStart.value
+        ? sameStart.value.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+        : ''
     const sharedLocation = sameLocation.allSame && sameLocation.value ? sameLocation.value : 'TBD'
 
     return {
