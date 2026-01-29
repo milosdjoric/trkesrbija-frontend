@@ -6,7 +6,7 @@ import { Heading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { EllipsisVerticalIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
-import { FiltersBar } from './filters-bar'
+import { FiltersBar } from './events/filters-bar'
 
 export const metadata: Metadata = {
   title: 'Events',
@@ -193,15 +193,38 @@ export default async function Events({
 
     // Shared fields should be computed from the matching races (the ones that make the event visible)
     const sameLocation = allSameString(matchingRaces.map((r) => r.startLocation))
-    const sameStart = allSameDateTime(matchingRaces.map((r) => r.startDateTime))
+
+    // Shared start logic:
+    // - hasSharedDateTime: all matching races share the exact same DateTime
+    // - hasSharedDate: all matching races share the same calendar date (but possibly different times)
+    const sameStartDateTime = allSameDateTime(matchingRaces.map((r) => r.startDateTime))
+
+    const dateKeys = matchingRaces
+      .map((r) => (typeof r.startDateTime === 'string' ? r.startDateTime : null))
+      .filter(Boolean)
+      .map((iso) => {
+        const d = new Date(iso as string)
+        return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10) // YYYY-MM-DD (UTC)
+      })
+      .filter(Boolean)
+
+    const hasSharedDate = dateKeys.length > 0 && dateKeys.every((k) => k === dateKeys[0])
+
+    const sharedDateBase = (() => {
+      const firstIso = matchingRaces.find((r) => typeof r.startDateTime === 'string' && r.startDateTime)?.startDateTime
+      if (!firstIso) return null
+      const d = new Date(firstIso)
+      return Number.isNaN(d.getTime()) ? null : d
+    })()
 
     const sharedDate =
-      sameStart.allSame && sameStart.value
-        ? sameStart.value.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+      sharedDateBase && hasSharedDate
+        ? sharedDateBase.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
         : 'TBD'
+
     const sharedTime =
-      sameStart.allSame && sameStart.value
-        ? sameStart.value.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+      sameStartDateTime.allSame && sameStartDateTime.value
+        ? sameStartDateTime.value.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
         : ''
     const sharedLocation = sameLocation.allSame && sameLocation.value ? sameLocation.value : 'TBD'
 
@@ -217,7 +240,8 @@ export default async function Events({
       location: sharedLocation,
 
       // Used by the UI and for conditional display in the list.
-      hasSharedStart: sameStart.allSame,
+      hasSharedStart: sameStartDateTime.allSame,
+      hasSharedDate: hasSharedDate,
       hasSharedLocation: sameLocation.allSame,
 
       eventType: re.type,
@@ -262,11 +286,34 @@ export default async function Events({
     return an.localeCompare(bn)
   })
 
+  // Helper for formatting month headings
+  function formatMonthHeading(ts: number) {
+    if (!Number.isFinite(ts)) return null
+    const d = new Date(ts)
+    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
+  }
+
+  // Helpers for formatting race date/time inside badges
+  function formatDate(d: Date) {
+    return d.toLocaleDateString(undefined, {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    })
+  }
+
+  function formatTime(d: Date) {
+    return d.toLocaleTimeString(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  }
+
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
-          <Heading>Events 2</Heading>
+          <Heading>All Race Events</Heading>
           <FiltersBar
             initial={{
               q: qRaw,
@@ -300,94 +347,163 @@ export default async function Events({
         </div>
       ) : null}
 
-      <ul className="mt-10">
-        {events.map((event, index) => (
-          <li key={event.id}>
-            <Divider soft={index > 0} />
-            <div className="flex items-center justify-between">
-              <div key={event.id} className="flex gap-6 py-6">
-                <div className="space-y-1.5">
-                  <div className="text-base/6 font-semibold">
-                    <Link href={event.url}>{event.name}</Link>
-                  </div>
-                  <div className="flex flex-col gap-2 md:flex-row">
-                    <div className="flex items-center gap-1 text-xs/6 text-zinc-500">
-                      {event.hasSharedStart ? (
-                        <>
-                          {event.date} at {event.time}
-                        </>
-                      ) : (
-                        <>Various dates</>
-                      )}{' '}
-                      <span aria-hidden="true">/</span>{' '}
-                      {event.hasSharedLocation ? <>{event.location}</> : <>Various locations</>}
-                    </div>
-                    <div className="text-xs/6">
-                      {event.races?.length ? (
-                        <div className="flex flex-col items-start gap-1 md:flex-row md:items-center">
-                          {event.races.map((r: any) => {
-                            const name = r.raceName ?? 'Race'
+      {(() => {
+        // Group already-sorted events by month (based on the same sort timestamp we use elsewhere)
+        type Group = { month: string; items: any[] }
 
-                            const matches = !anyFilterActive || Boolean(r._matchesFilters)
+        const groups: Group[] = []
+        const tsFor = (ev: any) => (anyFilterActive ? ev._sortTsMatch : ev._sortTsAll)
 
-                            const dt = r.startDateTime ? new Date(r.startDateTime) : null
-                            const date =
-                              !event.hasSharedStart && dt && !Number.isNaN(dt.getTime())
-                                ? `${formatDate(dt)} ${formatTime(dt)}`
-                                : ''
+        const monthLabelFor = (ts: number) => {
+          if (!Number.isFinite(ts)) return 'TBD'
+          const d = new Date(ts)
+          return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
+        }
 
-                            const length = typeof r.length === 'number' ? `${r.length} km` : ''
-                            const elevation = r.elevation != null ? `${r.elevation} m` : ''
+        for (const ev of events) {
+          const ts = tsFor(ev)
+          const month = monthLabelFor(ts)
+          const last = groups[groups.length - 1]
+          if (!last || last.month !== month) {
+            groups.push({ month, items: [ev] })
+          } else {
+            last.items.push(ev)
+          }
+        }
 
-                            const location = event.hasSharedLocation
-                              ? ''
-                              : typeof r.startLocation === 'string' && r.startLocation.trim().length
-                                ? r.startLocation
-                                : ''
+        return (
+          <div className="mt-10 space-y-4">
+            {groups.map((g, gi) => (
+              <details key={`${g.month}-${gi}`} className="rounded-xl" open>
+                <summary className="cursor-pointer px-4 py-3 text-sm font-normal select-none">
+                  {g.month} <span className="font-normal text-zinc-500">({g.items.length})</span>
+                </summary>
 
-                            const competition = r.competitionId ? (competitionNameById.get(r.competitionId) ?? '') : ''
+                <ul className="px-4 pb-4">
+                  {g.items.map((event: any, index: number) => (
+                    <li key={event.id}>
+                      <Divider soft={index > 0} />
 
-                            const details = [date, competition, length, elevation, location].filter(Boolean).join(' / ')
-
-                            return (
-                              <div key={r.id} className="flex flex-wrap items-center gap-2">
-                                <Badge
-                                  color="zinc"
-                                  className={`flex items-start gap-0.5 ${matches ? '' : 'line-through opacity-60'}`}
-                                >
-                                  <span className="font-medium">{name} -</span>
-                                  {details ? <span className="">{details}</span> : null}
-                                </Badge>
+                      {/* postojeći sadržaj event kartice ostaje NEPROMENJEN */}
+                      <div className="flex items-center justify-between">
+                        <div key={event.id} className="flex w-full gap-6 py-6 md:w-fit">
+                          <div className="w-full space-y-1.5 md:w-fit">
+                            <div className="text-lg font-semibold md:text-base/6">
+                              <Link href={event.url}>{event.name}</Link>
+                            </div>
+                            <div className="flex flex-col flex-wrap gap-2 md:flex-row">
+                              <div className="flex flex-wrap items-center gap-1 text-sm/6 text-zinc-500">
+                                {event.hasSharedStart ? (
+                                  <>
+                                    {event.date} at {event.time}
+                                  </>
+                                ) : event.hasSharedDate ? (
+                                  <>{event.date}</>
+                                ) : (
+                                  <>Various dates</>
+                                )}{' '}
+                                <span aria-hidden="true">/</span>{' '}
+                                {event.hasSharedLocation ? (
+                                  typeof event.location === 'string' && event.location.startsWith('http') ? (
+                                    <a
+                                      href={event.location}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="underline underline-offset-2 hover:text-zinc-700"
+                                    >
+                                      Start location
+                                    </a>
+                                  ) : (
+                                    <>{event.location}</>
+                                  )
+                                ) : (
+                                  <>Various locations</>
+                                )}
                               </div>
-                            )
-                          })}
+                              <div className="text-xs/6">
+                                {event.races?.length ? (
+                                  <div className="flex flex-col flex-wrap items-start gap-1 md:flex-row md:items-center">
+                                    {event.races.map((r: any) => {
+                                      const name = r.raceName ?? 'Race'
+
+                                      const matches = !anyFilterActive || Boolean(r._matchesFilters)
+
+                                      const dt = r.startDateTime ? new Date(r.startDateTime) : null
+                                      const date =
+                                        dt && !Number.isNaN(dt.getTime())
+                                          ? event.hasSharedStart
+                                            ? ''
+                                            : event.hasSharedDate
+                                              ? formatTime(dt)
+                                              : `${formatDate(dt)} ${formatTime(dt)}`
+                                          : ''
+
+                                      const length = typeof r.length === 'number' ? `${r.length} km` : ''
+                                      const elevation = r.elevation != null ? `${r.elevation} m` : ''
+
+                                      const location = event.hasSharedLocation
+                                        ? ''
+                                        : typeof r.startLocation === 'string' && r.startLocation.trim().length
+                                          ? r.startLocation
+                                          : ''
+
+                                      const competition = r.competitionId
+                                        ? (competitionNameById.get(r.competitionId) ?? '')
+                                        : ''
+
+                                      const details = [date, competition, length, elevation, location]
+                                        .filter(Boolean)
+                                        .join(' / ')
+
+                                      return (
+                                        <div key={r.id} className="flex w-full flex-wrap items-center gap-2 md:w-fit">
+                                          <Badge
+                                            color="zinc"
+                                            className={`flex w-full flex-col items-center gap-0.5 md:w-fit md:flex-row md:items-start ${matches ? '' : 'line-through opacity-60'}`}
+                                          >
+                                            <span className="font-medium">{name}</span>
+                                            {details ? (
+                                              <div className="flex flex-row gap-2">
+                                                <div className="hidden md:block">-</div>
+                                                {details}
+                                              </div>
+                                            ) : null}
+                                          </Badge>
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                ) : (
+                                  'No races yet'
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      ) : (
-                        'No races yet'
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="flex hidden items-center gap-4">
-                <Badge className="max-sm:hidden" color={event.status === 'On Sale' ? 'lime' : 'zinc'}>
-                  {event.status}
-                </Badge>
-                <Dropdown>
-                  <DropdownButton plain aria-label="More options">
-                    <EllipsisVerticalIcon />
-                  </DropdownButton>
-                  <DropdownMenu anchor="bottom end">
-                    <DropdownItem href={event.url}>View</DropdownItem>
-                    <DropdownItem>Edit</DropdownItem>
-                    <DropdownItem>Delete</DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+                        <div className="flex hidden items-center gap-4">
+                          <Badge className="max-sm:hidden" color={event.status === 'On Sale' ? 'lime' : 'zinc'}>
+                            {event.status}
+                          </Badge>
+                          <Dropdown>
+                            <DropdownButton plain aria-label="More options">
+                              <EllipsisVerticalIcon />
+                            </DropdownButton>
+                            <DropdownMenu anchor="bottom end">
+                              <DropdownItem href={event.url}>View</DropdownItem>
+                              <DropdownItem>Edit</DropdownItem>
+                              <DropdownItem>Delete</DropdownItem>
+                            </DropdownMenu>
+                          </Dropdown>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
+        )
+      })()}
     </>
   )
 }
