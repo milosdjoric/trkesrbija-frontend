@@ -6,7 +6,7 @@ import { Heading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { EllipsisVerticalIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
-import { FiltersBar } from './events/filters-bar'
+import { FiltersBar } from './filters-bar'
 
 export const metadata: Metadata = {
   title: 'Events',
