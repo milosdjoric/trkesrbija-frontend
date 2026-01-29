@@ -160,17 +160,36 @@ export default async function Events({
   let events = (data.raceEvents ?? []).map((re) => {
     const racesAll = re.races ?? []
 
+    const eventStartTs = (() => {
+      const ts = racesAll.map((r) => new Date(r.startDateTime).getTime()).filter((t) => Number.isFinite(t))
+      return ts.length ? Math.min(...ts) : Number.POSITIVE_INFINITY
+    })()
+
+    const racesSorted = [...racesAll].sort((a, b) => {
+      const da = new Date(a.startDateTime).getTime()
+      const db = new Date(b.startDateTime).getTime()
+      return da - db
+    })
+
     // Keep all races for display, but mark which ones match current filters.
     // Text match should include event name/type as well; if the event matches the text,
     // individual races only need to satisfy numeric filters.
     const evTextMatch = eventMatchesText(re)
 
-    const racesWithMatch = racesAll.map((r) => ({
+    const racesWithMatch = racesSorted.map((r) => ({
       ...r,
       _matchesFilters: raceMatchesNumericFilters(r) && (evTextMatch || raceMatchesText(r)),
     }))
 
     const matchingRaces = racesWithMatch.filter((r) => r._matchesFilters)
+
+    const earliestTsFrom = (items: Array<{ startDateTime: string }>) => {
+      const ts = items.map((r) => new Date(r.startDateTime).getTime()).filter((n) => Number.isFinite(n))
+      return ts.length ? Math.min(...ts) : Number.POSITIVE_INFINITY
+    }
+
+    const eventEarliestTsAll = earliestTsFrom(racesSorted)
+    const eventEarliestTsMatch = earliestTsFrom(matchingRaces)
 
     // Shared fields should be computed from the matching races (the ones that make the event visible)
     const sameLocation = allSameString(matchingRaces.map((r) => r.startLocation))
@@ -202,6 +221,7 @@ export default async function Events({
       hasSharedLocation: sameLocation.allSame,
 
       eventType: re.type,
+      _eventStartTs: eventStartTs,
 
       // These are not in the backend model yet; keep placeholders so the UI stays unchanged.
       ticketsSold: 0,
@@ -211,6 +231,8 @@ export default async function Events({
       // Keep ALL races, but annotated.
       races: racesWithMatch,
       matchingRacesCount: matchingRaces.length,
+      _sortTsAll: eventEarliestTsAll,
+      _sortTsMatch: eventEarliestTsMatch,
     }
   })
 
@@ -223,11 +245,28 @@ export default async function Events({
     return (ev as any).matchingRacesCount > 0
   })
 
+  // Sort events chronologically by earliest race date.
+  // - When filters are active: sort by earliest *matching* race date.
+  // - Otherwise: sort by earliest race date in the event.
+  events = [...events].sort((a: any, b: any) => {
+    const rawA = anyFilterActive ? a._sortTsMatch : a._sortTsAll
+    const rawB = anyFilterActive ? b._sortTsMatch : b._sortTsAll
+
+    const ta = typeof rawA === 'number' && Number.isFinite(rawA) ? rawA : Number.POSITIVE_INFINITY
+    const tb = typeof rawB === 'number' && Number.isFinite(rawB) ? rawB : Number.POSITIVE_INFINITY
+
+    if (ta !== tb) return ta < tb ? -1 : 1
+
+    const an = (a?.name ?? '').toString().toLowerCase()
+    const bn = (b?.name ?? '').toString().toLowerCase()
+    return an.localeCompare(bn)
+  })
+
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
-          <Heading>Events</Heading>
+          <Heading>Events 2</Heading>
           <FiltersBar
             initial={{
               q: qRaw,
