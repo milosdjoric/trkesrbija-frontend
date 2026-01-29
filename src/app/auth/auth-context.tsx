@@ -3,7 +3,7 @@
 import { ApiError } from '@/app/lib/api'
 import * as authApi from '@/app/lib/auth'
 import { useRouter } from 'next/navigation'
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 export type AuthUser = authApi.User
 
@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshInFlightRef = useRef<Promise<void> | null>(null)
 
-  async function refreshSession() {
+  const refreshSession = useCallback(async () => {
     if (process.env.NODE_ENV !== 'production') {
       // eslint-disable-next-line no-console
       console.log('[auth] refreshSession() called')
@@ -79,16 +79,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (process.env.NODE_ENV !== 'production') {
           // eslint-disable-next-line no-console
-          console.log('[auth] refreshSession() done', { user, accessToken })
+          console.log('[auth] refreshSession() done')
         }
       }
     })()
 
     refreshInFlightRef.current = p
     return p
-  }
+  }, [])
 
-  async function login(email: string, password: string) {
+  const login = useCallback(async (email: string, password: string) => {
     setIsLoading(true)
     try {
       const res = await authApi.login(email, password)
@@ -97,9 +97,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  async function register(payload: { email: string; password: string; name?: string }) {
+  const register = useCallback(async (payload: { email: string; password: string; name?: string }) => {
     setIsLoading(true)
     try {
       const res = await authApi.register(payload)
@@ -108,9 +108,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  async function logout() {
+  const logout = useCallback(async () => {
     setIsLoading(true)
     try {
       await authApi.logout()
@@ -123,7 +123,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Using replace prevents going back to protected pages via browser back button.
       router.replace('/login')
     }
-  }
+  }, [router])
 
   // On first load, try to restore session via refresh cookie.
   useEffect(() => {
@@ -141,7 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       logout,
       refreshSession,
     }),
-    [user, accessToken, isLoading]
+    [user, accessToken, isLoading, login, register, logout, refreshSession]
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
