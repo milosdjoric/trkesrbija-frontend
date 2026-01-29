@@ -13,8 +13,8 @@ import { useState } from 'react'
 
 export default function Register() {
   const router = useRouter()
-  const { register, loading } = useAuth()
-
+  const { register } = useAuth()
+  const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
@@ -45,7 +45,7 @@ export default function Register() {
       <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
       <Heading>Create your account</Heading>
 
-      {error && <Text className="!text-red-600 !dark:text-red-500 capitalize">{error}</Text>}
+      {error && <Text className="!dark:text-red-500 !text-red-600 capitalize">{error}</Text>}
 
       <Field>
         <Label>Email</Label>
