@@ -114,7 +114,7 @@ export function ApplicationLayout({
                 </span>
                 <ChevronDownIcon />
               </DropdownButton>
-              <AccountDropdownMenu anchor="bottom start" />
+              <AccountDropdownMenu anchor="top start" />
             </Dropdown>
           </NavbarSection>
         </Navbar>
