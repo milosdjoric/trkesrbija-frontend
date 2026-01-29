@@ -180,9 +180,7 @@ export function ApplicationLayout({
                               {raceLabel}
                             </SidebarItem>
                           ) : (
-                            <SidebarItem key={race.id} as="div">
-                              {raceLabel}
-                            </SidebarItem>
+                            <SidebarItem key={race.id}>{raceLabel}</SidebarItem>
                           )
                         })}
                       </div>
