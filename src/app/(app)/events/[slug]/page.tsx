@@ -3,7 +3,7 @@ import { Badge } from '@/components/badge'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
-import { ChevronLeftIcon, MapPinIcon, CalendarIcon, ClockIcon } from '@heroicons/react/16/solid'
+import { CalendarIcon, ChevronLeftIcon, ClockIcon, MapPinIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -74,13 +74,19 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <div className="flex flex-wrap items-start gap-6">
           {event.mainImage && (
             <div className="w-40 shrink-0">
-              <img className="aspect-3/2 rounded-lg object-cover shadow-sm" src={event.mainImage} alt={event.eventName} />
+              <img
+                className="aspect-3/2 rounded-lg object-cover shadow-sm"
+                src={event.mainImage}
+                alt={event.eventName}
+              />
             </div>
           )}
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Heading>{event.eventName}</Heading>
-              <Badge color={event.type === 'TRAIL' ? 'amber' : 'sky'}>{event.type}</Badge>
+              <Badge color={event.type === 'TRAIL' ? 'amber' : 'sky'}>
+                {event.type === 'TRAIL' ? 'Trail' : 'Road'}
+              </Badge>
             </div>
             {event.description && (
               <p className="max-w-2xl text-sm/6 text-zinc-600 dark:text-zinc-400">{event.description}</p>
@@ -127,46 +133,90 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div className="mt-1 text-zinc-500">This event does not have any races configured.</div>
         </div>
       ) : (
-        <Table className="mt-4 [--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]">
-          <TableHead>
-            <TableRow>
-              <TableHeader>Race</TableHeader>
-              <TableHeader>Date & Time</TableHeader>
-              <TableHeader>Location</TableHeader>
-              <TableHeader className="text-right">Distance</TableHeader>
-              <TableHeader className="text-right">Elevation</TableHeader>
-            </TableRow>
-          </TableHead>
-          <TableBody>
+        <>
+          {/* Mobile: Card layout */}
+          <div className="mt-4 flex flex-col gap-3 lg:hidden">
             {sortedRaces.map((race) => (
-              <TableRow key={race.id}>
-                <TableCell className="font-medium">{race.raceName ?? 'Unnamed Race'}</TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-1.5 text-zinc-500">
-                    <ClockIcon className="size-4" />
-                    {formatDateTime(race.startDateTime)}
+              <div
+                key={race.id}
+                className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="font-medium text-zinc-900 dark:text-zinc-100">{race.raceName ?? 'Unnamed Race'}</div>
+                  <div className="shrink-0 text-right text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                    {race.length} km
                   </div>
-                </TableCell>
-                <TableCell>
-                  {race.startLocation.startsWith('http') ? (
-                    <a
-                      href={race.startLocation}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
-                    >
-                      View location
-                    </a>
-                  ) : (
-                    <span className="text-zinc-500">{race.startLocation}</span>
+                </div>
+                <div className="mt-2 flex flex-col gap-1 text-sm text-zinc-500 dark:text-zinc-400">
+                  <div className="flex items-center gap-1.5">
+                    <ClockIcon className="size-4 shrink-0" />
+                    <span>{formatDateTime(race.startDateTime)}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <MapPinIcon className="size-4 shrink-0" />
+                    {race.startLocation.startsWith('http') ? (
+                      <a
+                        href={race.startLocation}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      >
+                        View location
+                      </a>
+                    ) : (
+                      <span>{race.startLocation}</span>
+                    )}
+                  </div>
+                  {race.elevation != null && (
+                    <div className="text-xs text-zinc-400 dark:text-zinc-500">Elevation: {race.elevation} m</div>
                   )}
-                </TableCell>
-                <TableCell className="text-right">{race.length} km</TableCell>
-                <TableCell className="text-right">{race.elevation != null ? `${race.elevation} m` : '-'}</TableCell>
-              </TableRow>
+                </div>
+              </div>
             ))}
-          </TableBody>
-        </Table>
+          </div>
+
+          {/* Desktop: Table layout */}
+          <Table className="mt-4 hidden [--gutter:--spacing(6)] lg:table lg:[--gutter:--spacing(10)]">
+            <TableHead>
+              <TableRow>
+                <TableHeader>Race</TableHeader>
+                <TableHeader>Date & Time</TableHeader>
+                <TableHeader>Location</TableHeader>
+                <TableHeader className="text-right">Distance</TableHeader>
+                <TableHeader className="text-right">Elevation</TableHeader>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {sortedRaces.map((race) => (
+                <TableRow key={race.id}>
+                  <TableCell className="font-medium">{race.raceName ?? 'Unnamed Race'}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5 text-zinc-500">
+                      <ClockIcon className="size-4" />
+                      {formatDateTime(race.startDateTime)}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {race.startLocation.startsWith('http') ? (
+                      <a
+                        href={race.startLocation}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      >
+                        View location
+                      </a>
+                    ) : (
+                      <span className="text-zinc-500">{race.startLocation}</span>
+                    )}
+                  </TableCell>
+                  <TableCell className="text-right">{race.length} km</TableCell>
+                  <TableCell className="text-right">{race.elevation != null ? `${race.elevation} m` : '-'}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </>
       )}
     </>
   )
