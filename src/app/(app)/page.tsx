@@ -114,6 +114,8 @@ export default async function Events({
   const lenMaxRaw = getParam('lenMax').trim()
   const elevMinRaw = getParam('elevMin').trim()
   const elevMaxRaw = getParam('elevMax').trim()
+  const eventTypeRaw = getParam('eventType').trim()
+  const sortByRaw = getParam('sortBy').trim()
 
   const lenMin = lenMinRaw ? Number(lenMinRaw) : null
   const lenMax = lenMaxRaw ? Number(lenMaxRaw) : null
@@ -125,6 +127,7 @@ export default async function Events({
   const hasElevMin = elevMin != null && !Number.isNaN(elevMin)
   const hasElevMax = elevMax != null && !Number.isNaN(elevMax)
   const hasCompetition = Boolean(competitionIdRaw)
+  const hasEventType = Boolean(eventTypeRaw)
 
   function raceMatchesNumericFilters(r: BackendRace) {
     if (hasCompetition && r.competitionId !== competitionIdRaw) return false
@@ -260,30 +263,71 @@ export default async function Events({
     }
   })
 
-  const anyFilterActive = Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition
+  const anyFilterActive =
+    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType
 
   events = events.filter((ev) => {
+    // Filter by event type
+    if (hasEventType && ev.eventType !== eventTypeRaw) return false
+
     if (!anyFilterActive) return true
 
     // When filters are active, hide events that have zero matching races.
     return (ev as any).matchingRacesCount > 0
   })
 
-  // Sort events chronologically by earliest race date.
-  // - When filters are active: sort by earliest *matching* race date.
-  // - Otherwise: sort by earliest race date in the event.
+  // Helper functions for sorting by race attributes
+  function getMinRaceLength(ev: any): number {
+    const matchingRaces = (ev.races ?? []).filter((r: any) => r._matchesFilters)
+    const racesToUse = matchingRaces.length > 0 ? matchingRaces : (ev.races ?? [])
+    const lengths = racesToUse.map((r: any) => r.length).filter((l: any) => typeof l === 'number')
+    return lengths.length > 0 ? Math.min(...lengths) : Infinity
+  }
+
+  function getMaxRaceLength(ev: any): number {
+    const matchingRaces = (ev.races ?? []).filter((r: any) => r._matchesFilters)
+    const racesToUse = matchingRaces.length > 0 ? matchingRaces : (ev.races ?? [])
+    const lengths = racesToUse.map((r: any) => r.length).filter((l: any) => typeof l === 'number')
+    return lengths.length > 0 ? Math.max(...lengths) : -Infinity
+  }
+
+  function getMinRaceElevation(ev: any): number {
+    const matchingRaces = (ev.races ?? []).filter((r: any) => r._matchesFilters)
+    const racesToUse = matchingRaces.length > 0 ? matchingRaces : (ev.races ?? [])
+    const elevations = racesToUse.map((r: any) => r.elevation).filter((e: any) => typeof e === 'number')
+    return elevations.length > 0 ? Math.min(...elevations) : Infinity
+  }
+
+  function getMaxRaceElevation(ev: any): number {
+    const matchingRaces = (ev.races ?? []).filter((r: any) => r._matchesFilters)
+    const racesToUse = matchingRaces.length > 0 ? matchingRaces : (ev.races ?? [])
+    const elevations = racesToUse.map((r: any) => r.elevation).filter((e: any) => typeof e === 'number')
+    return elevations.length > 0 ? Math.max(...elevations) : -Infinity
+  }
+
+  // Sort events based on sortBy parameter
   events = [...events].sort((a: any, b: any) => {
-    const rawA = anyFilterActive ? a._sortTsMatch : a._sortTsAll
-    const rawB = anyFilterActive ? b._sortTsMatch : b._sortTsAll
-
-    const ta = typeof rawA === 'number' && Number.isFinite(rawA) ? rawA : Number.POSITIVE_INFINITY
-    const tb = typeof rawB === 'number' && Number.isFinite(rawB) ? rawB : Number.POSITIVE_INFINITY
-
-    if (ta !== tb) return ta < tb ? -1 : 1
-
-    const an = (a?.name ?? '').toString().toLowerCase()
-    const bn = (b?.name ?? '').toString().toLowerCase()
-    return an.localeCompare(bn)
+    switch (sortByRaw) {
+      case 'distance_asc':
+        return getMinRaceLength(a) - getMinRaceLength(b)
+      case 'distance_desc':
+        return getMaxRaceLength(b) - getMaxRaceLength(a)
+      case 'elevation_asc':
+        return getMinRaceElevation(a) - getMinRaceElevation(b)
+      case 'elevation_desc':
+        return getMaxRaceElevation(b) - getMaxRaceElevation(a)
+      case 'name':
+        return (a.name ?? '').localeCompare(b.name ?? '')
+      default: {
+        // Default: sort by date
+        const rawA = anyFilterActive ? a._sortTsMatch : a._sortTsAll
+        const rawB = anyFilterActive ? b._sortTsMatch : b._sortTsAll
+        const ta = typeof rawA === 'number' && Number.isFinite(rawA) ? rawA : Number.POSITIVE_INFINITY
+        const tb = typeof rawB === 'number' && Number.isFinite(rawB) ? rawB : Number.POSITIVE_INFINITY
+        if (ta !== tb) return ta < tb ? -1 : 1
+        return (a.name ?? '').localeCompare(b.name ?? '')
+      }
+    }
   })
 
   // Helper for formatting month headings
@@ -322,6 +366,8 @@ export default async function Events({
               elevMin: elevMinRaw,
               elevMax: elevMaxRaw,
               competitionId: competitionIdRaw,
+              eventType: eventTypeRaw,
+              sortBy: sortByRaw,
             }}
             competitions={competitions}
           />
@@ -391,7 +437,7 @@ export default async function Events({
                             <div className="text-lg font-semibold md:text-base/6">
                               <Link href={event.url}>{event.name}</Link>
                             </div>
-                            <div className="flex flex-col gap-2 md:flex-row flex-wrap">
+                            <div className="flex flex-col flex-wrap gap-2 md:flex-row">
                               <div className="flex flex-wrap items-center gap-1 text-sm/6 text-zinc-500">
                                 {event.hasSharedStart ? (
                                   <>
