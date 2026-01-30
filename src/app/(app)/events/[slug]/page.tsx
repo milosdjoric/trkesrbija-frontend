@@ -139,9 +139,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 dark:border-zinc-700"
             >
               <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-6">
-                <div className="font-medium text-zinc-900 lg:w-40 dark:text-zinc-100">
-                  {race.raceName ?? 'Unnamed Race'}
-                </div>
+                <div className="font-medium text-zinc-900 dark:text-zinc-100">{race.raceName ?? 'Unnamed Race'}</div>
                 <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
                   <ClockIcon className="size-4 shrink-0" />
                   <span>{formatDateTime(race.startDateTime)}</span>

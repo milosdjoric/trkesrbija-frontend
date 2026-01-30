@@ -17,6 +17,8 @@ type Initial = {
   elevMin: string
   elevMax: string
   competitionId: string
+  eventType: string
+  sortBy: string
 }
 
 export function FiltersBar({ initial, competitions }: { initial: Initial; competitions: Competition[] }) {
@@ -29,6 +31,8 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   const [elevMin, setElevMin] = useState(initial.elevMin ?? '')
   const [elevMax, setElevMax] = useState(initial.elevMax ?? '')
   const [competitionId, setCompetitionId] = useState(initial.competitionId ?? '')
+  const [eventType, setEventType] = useState(initial.eventType ?? '')
+  const [sortBy, setSortBy] = useState(initial.sortBy ?? '')
 
   // Ako se user vrati nazad/forward ili ručno menja URL, uskladi state sa URL-om.
   // (Ovo rešava “ne filtrira ništa” situacije kad URL i UI odlutaju.)
@@ -44,6 +48,8 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     setElevMin(sp.get('elevMin') ?? '')
     setElevMax(sp.get('elevMax') ?? '')
     setCompetitionId(sp.get('competitionId') ?? '')
+    setEventType(sp.get('eventType') ?? '')
+    setSortBy(sp.get('sortBy') ?? '')
   }, [sp])
 
   const dirty =
@@ -52,7 +58,9 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     (lenMax ?? '').trim() !== (initial.lenMax ?? '').trim() ||
     (elevMin ?? '').trim() !== (initial.elevMin ?? '').trim() ||
     (elevMax ?? '').trim() !== (initial.elevMax ?? '').trim() ||
-    (competitionId ?? '').trim() !== (initial.competitionId ?? '').trim()
+    (competitionId ?? '').trim() !== (initial.competitionId ?? '').trim() ||
+    (eventType ?? '').trim() !== (initial.eventType ?? '').trim() ||
+    (sortBy ?? '').trim() !== (initial.sortBy ?? '').trim()
 
   const clearVisible =
     Boolean((initial.q ?? '').trim()) ||
@@ -60,7 +68,9 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     Boolean((initial.lenMax ?? '').trim()) ||
     Boolean((initial.elevMin ?? '').trim()) ||
     Boolean((initial.elevMax ?? '').trim()) ||
-    Boolean((initial.competitionId ?? '').trim())
+    Boolean((initial.competitionId ?? '').trim()) ||
+    Boolean((initial.eventType ?? '').trim()) ||
+    Boolean((initial.sortBy ?? '').trim())
 
   function buildQueryString() {
     const params = new URLSearchParams()
@@ -70,6 +80,8 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     if (elevMin.trim()) params.set('elevMin', elevMin.trim())
     if (elevMax.trim()) params.set('elevMax', elevMax.trim())
     if (competitionId.trim()) params.set('competitionId', competitionId.trim())
+    if (eventType.trim()) params.set('eventType', eventType.trim())
+    if (sortBy.trim()) params.set('sortBy', sortBy.trim())
     const s = params.toString()
     return s ? `?${s}` : ''
   }
@@ -129,7 +141,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
           />
         </div>
 
-        <div className="">
+        <div>
           <Select
             aria-label="Competition"
             className="min-w-80 lg:min-w-64"
@@ -142,6 +154,33 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
                 {c.name}
               </option>
             ))}
+          </Select>
+        </div>
+
+        <div>
+          <Select
+            aria-label="Event type"
+            value={eventType}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEventType(e.target.value)}
+          >
+            <option value="">All types</option>
+            <option value="TRAIL">Trail</option>
+            <option value="ROAD">Road</option>
+          </Select>
+        </div>
+
+        <div>
+          <Select
+            aria-label="Sort by"
+            value={sortBy}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value)}
+          >
+            <option value="">Sort by date</option>
+            <option value="distance_asc">Distance (shortest first)</option>
+            <option value="distance_desc">Distance (longest first)</option>
+            <option value="elevation_asc">Elevation (lowest first)</option>
+            <option value="elevation_desc">Elevation (highest first)</option>
+            <option value="name">Name (A-Z)</option>
           </Select>
         </div>
       </div>
