@@ -92,17 +92,17 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   }
 
   return (
-    <form onSubmit={onApply} className="mt-4 flex flex-wrap items-center gap-4">
-      <div className="input w-full">
-        <div className="min-w-64 flex-1">
-          <InputGroup>
-            <MagnifyingGlassIcon />
-            <Input name="q" placeholder="Search events or races…" value={q} onChange={(e) => setQ(e.target.value)} />
-          </InputGroup>
-        </div>
+    <form onSubmit={onApply} className="mt-4 flex flex-col gap-4">
+      {/* Row 1: Search input */}
+      <div className="w-full">
+        <InputGroup>
+          <MagnifyingGlassIcon />
+          <Input name="q" placeholder="Search events or races…" value={q} onChange={(e) => setQ(e.target.value)} />
+        </InputGroup>
       </div>
 
-      <div className="filters flex w-full flex-col gap-4 md:flex-row">
+      {/* Row 2: Input filters (distance, elevation) */}
+      <div className="flex flex-col gap-2 md:flex-row md:gap-4">
         <div className="flex grow items-center gap-1">
           <Input
             name="lenMin"
@@ -121,7 +121,6 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             aria-label="Maximum length (km)"
           />
         </div>
-
         <div className="flex grow items-center gap-1">
           <Input
             name="elevMin"
@@ -140,11 +139,13 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             aria-label="Maximum elevation (m)"
           />
         </div>
+      </div>
 
-        <div>
+      {/* Row 3: Dropdowns (competition, type, sort) */}
+      <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+        <div className="grow">
           <Select
             aria-label="Competition"
-            className="min-w-80 lg:min-w-64"
             value={competitionId}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCompetitionId(e.target.value)}
           >
@@ -156,8 +157,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             ))}
           </Select>
         </div>
-
-        <div>
+        <div className="grow">
           <Select
             aria-label="Event type"
             value={eventType}
@@ -168,8 +168,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             <option value="ROAD">Road</option>
           </Select>
         </div>
-
-        <div>
+        <div className="grow">
           <Select
             aria-label="Sort by"
             value={sortBy}
@@ -185,14 +184,12 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         </div>
       </div>
 
-      <div className="buttons flex items-center gap-2">
-        <div className="flex items-center gap-2">
-          <Button id="applyBtn" type="submit">
-            {dirty ? 'Apply changes' : 'Apply'}
-          </Button>
-          <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Changes not applied</span>
-        </div>
-
+      {/* Row 4: Buttons */}
+      <div className="flex items-center gap-2">
+        <Button id="applyBtn" type="submit">
+          {dirty ? 'Apply changes' : 'Apply'}
+        </Button>
+        <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Changes not applied</span>
         {clearVisible ? (
           <Link href="/events" className="text-sm">
             Clear
