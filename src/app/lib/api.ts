@@ -176,6 +176,41 @@ export async function fetchRaces(params?: {
 
 export type RaceEventWithRaces = RaceEvent & { races: Race[] }
 
+const RACE_EVENT_BY_SLUG_QUERY = `
+  query RaceEventBySlug($slug: String!) {
+    raceEvent(slug: $slug) {
+      id
+      eventName
+      slug
+      type
+      description
+      mainImage
+      tags
+      createdAt
+      updatedAt
+      races {
+        id
+        raceName
+        length
+        elevation
+        gpsFile
+        startLocation
+        startDateTime
+        endDateTime
+        raceEventId
+        competitionId
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`
+
+export async function fetchRaceEventBySlug(slug: string, signal?: AbortSignal): Promise<RaceEventWithRaces | null> {
+  const data = await gql<{ raceEvent: RaceEventWithRaces | null }>(RACE_EVENT_BY_SLUG_QUERY, { slug }, { signal })
+  return data.raceEvent
+}
+
 export function buildEventsWithRaces(events: RaceEvent[], races: Race[]): RaceEventWithRaces[] {
   const byEventId = new Map<string, Race[]>()
   for (const r of races) {
