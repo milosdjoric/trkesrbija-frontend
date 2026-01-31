@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from '@/app/auth/auth-context'
 import { Badge } from '@/components/badge'
 import { FavoriteButton } from '@/components/favorite-button'
 import { Heading } from '@/components/heading'
@@ -44,11 +45,22 @@ function formatTime(iso: string) {
 }
 
 export default function FavoritesPage() {
+  const { accessToken, isLoading: authLoading } = useAuth()
   const [favorites, setFavorites] = useState<FavoriteRace[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    // Wait for auth to finish loading
+    if (authLoading) return
+
+    // If no token, show login prompt
+    if (!accessToken) {
+      setError('Please log in to view your favorites')
+      setLoading(false)
+      return
+    }
+
     async function fetchFavorites() {
       try {
         const res = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL ?? 'http://localhost:4000/graphql', {
@@ -56,6 +68,7 @@ export default function FavoritesPage() {
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
             query: `
@@ -105,13 +118,13 @@ export default function FavoritesPage() {
     }
 
     fetchFavorites()
-  }, [])
+  }, [accessToken, authLoading])
 
   function handleRemove(raceId: string) {
     setFavorites((prev) => prev.filter((f) => f.raceId !== raceId))
   }
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <>
         <Heading>My Favorites</Heading>

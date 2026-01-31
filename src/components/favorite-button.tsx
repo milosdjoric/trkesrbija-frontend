@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from '@/app/auth/auth-context'
 import { HeartIcon } from '@heroicons/react/24/outline'
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid'
 import { useState, useTransition } from 'react'
@@ -20,12 +21,19 @@ export function FavoriteButton({
   className,
   size = 'md',
 }: FavoriteButtonProps) {
+  const { accessToken } = useAuth()
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
   const [isPending, startTransition] = useTransition()
 
   const iconSize = size === 'sm' ? 'size-4' : 'size-5'
 
   async function handleToggle() {
+    if (!accessToken) {
+      // Redirect to login or show message
+      window.location.href = '/login'
+      return
+    }
+
     const newValue = !isFavorite
     setIsFavorite(newValue) // Optimistic update
 
@@ -40,6 +48,7 @@ export function FavoriteButton({
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({
             query: mutation,
