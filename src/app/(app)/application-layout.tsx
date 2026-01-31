@@ -27,6 +27,7 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   Cog8ToothIcon,
+  HeartIcon,
   LightBulbIcon,
   ShieldCheckIcon,
   UserCircleIcon,
@@ -146,6 +147,10 @@ export function ApplicationLayout({
               <SidebarItem href="/events" current={pathname.startsWith('/events')} className="hidden">
                 <Square2StackIcon />
                 <SidebarLabel>All race events</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
+                <HeartIcon />
+                <SidebarLabel>My Favorites</SidebarLabel>
               </SidebarItem>
               <SidebarItem className="hidden" href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />

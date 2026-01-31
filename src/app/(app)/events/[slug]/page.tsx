@@ -1,5 +1,6 @@
 import { fetchRaceEventBySlug } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
+import { FavoriteButton } from '@/components/favorite-button'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { CalendarIcon, ChevronLeftIcon, ClockIcon, MapPinIcon } from '@heroicons/react/16/solid'
@@ -163,6 +164,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               <div className="flex items-center gap-4 text-sm lg:shrink-0">
                 <span className="font-medium text-zinc-900 dark:text-zinc-100">{race.length} km</span>
                 {race.elevation != null && <span className="text-zinc-500 dark:text-zinc-400">{race.elevation} m</span>}
+                <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
               </div>
             </div>
           ))}
