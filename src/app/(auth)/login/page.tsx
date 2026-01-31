@@ -73,11 +73,7 @@ export default function Login() {
         />
       </Field>
 
-      <div className="flex items-center justify-between hidden">
-        <CheckboxField>
-          <Checkbox name="remember" />
-          <Label>Remember me</Label>
-        </CheckboxField>
+      <div className="flex items-center justify-end">
         <Text>
           <TextLink href="/forgot-password">
             <Strong>Forgot password?</Strong>

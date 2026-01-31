@@ -131,6 +131,35 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Auto-refresh token before expiry (every 14 minutes, since token expires at 15)
+  useEffect(() => {
+    // Only set up interval if user is logged in
+    if (!accessToken) return
+
+    const REFRESH_INTERVAL = 14 * 60 * 1000 // 14 minutes
+
+    if (process.env.NODE_ENV !== 'production') {
+      // eslint-disable-next-line no-console
+      console.log('[auth] Setting up auto-refresh interval')
+    }
+
+    const intervalId = setInterval(() => {
+      if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.log('[auth] Auto-refreshing token...')
+      }
+      refreshSession()
+    }, REFRESH_INTERVAL)
+
+    return () => {
+      if (process.env.NODE_ENV !== 'production') {
+        // eslint-disable-next-line no-console
+        console.log('[auth] Clearing auto-refresh interval')
+      }
+      clearInterval(intervalId)
+    }
+  }, [accessToken, refreshSession])
+
   const value = useMemo<AuthContextValue>(
     () => ({
       user,

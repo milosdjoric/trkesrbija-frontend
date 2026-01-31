@@ -7,6 +7,7 @@ import { Checkbox, CheckboxField } from '@/components/checkbox'
 import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
+import { PasswordStrength, validatePassword } from '@/components/password-strength'
 import { Strong, Text, TextLink } from '@/components/text'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -21,13 +22,22 @@ export default function Register() {
   const [marketingOptIn, setMarketingOptIn] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const passwordValidation = validatePassword(password)
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
 
+    // Validate password before submit
+    if (!passwordValidation.isValid) {
+      setError('Please meet all password requirements')
+      return
+    }
+
     const emailTrimmed = email.trim()
     const nameTrimmed = name.trim()
 
+    setLoading(true)
     try {
       await register({
         email: emailTrimmed,
@@ -37,6 +47,8 @@ export default function Register() {
       router.push('/')
     } catch (err: any) {
       setError(err?.message ?? 'Registration failed')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -82,6 +94,7 @@ export default function Register() {
           required
           disabled={loading}
         />
+        <PasswordStrength password={password} className="mt-2" />
       </Field>
 
       <CheckboxField className="hidden">
@@ -93,7 +106,11 @@ export default function Register() {
         <Label>Get emails about product updates and news.</Label>
       </CheckboxField>
 
-      <Button type="submit" className="w-full" disabled={loading}>
+      <Button
+        type="submit"
+        className="w-full"
+        disabled={loading || !passwordValidation.isValid || !email.trim()}
+      >
         {loading ? 'Creating…' : 'Create account'}
       </Button>
 

@@ -36,6 +36,7 @@ import { HomeIcon, QuestionMarkCircleIcon, SparklesIcon, Square2StackIcon, Ticke
 import { usePathname } from 'next/navigation'
 
 import { useAuth } from '@/app/auth/auth-context'
+import { EmailVerificationBanner } from '@/components/email-verification-banner'
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   const { user, logout } = useAuth()
@@ -230,6 +231,7 @@ export function ApplicationLayout({
         </Sidebar>
       }
     >
+      <EmailVerificationBanner />
       {children}
     </SidebarLayout>
   )

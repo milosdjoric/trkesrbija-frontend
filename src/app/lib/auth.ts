@@ -6,6 +6,7 @@ export type User = {
   email: string
   name?: string
   role?: string
+  emailVerified?: boolean
   isParticipant?: boolean
 }
 
@@ -23,6 +24,7 @@ const LOGIN_MUTATION = `
         email
         name
         role
+        emailVerified
         isParticipant
       }
     }
@@ -38,6 +40,7 @@ const REGISTER_MUTATION = `
         email
         name
         role
+        emailVerified
         isParticipant
       }
     }
@@ -53,6 +56,7 @@ const REFRESH_MUTATION = `
         email
         name
         role
+        emailVerified
         isParticipant
       }
     }
@@ -72,6 +76,7 @@ const ME_QUERY = `
       email
       name
       role
+      emailVerified
       isParticipant
     }
   }
