@@ -56,7 +56,7 @@ export default function FavoritesPage() {
 
     // If no token, show login prompt
     if (!accessToken) {
-      setError('Please log in to view your favorites')
+      setError('Prijavite se da vidite svoje favorite')
       setLoading(false)
       return
     }
@@ -101,7 +101,7 @@ export default function FavoritesPage() {
         if (json.errors?.length) {
           const firstError = json.errors[0]
           if (firstError.extensions?.code === 'UNAUTHENTICATED') {
-            setError('Please log in to view your favorites')
+            setError('Prijavite se da vidite svoje favorite')
           } else {
             setError(firstError.message)
           }
@@ -110,7 +110,7 @@ export default function FavoritesPage() {
 
         setFavorites(json.data?.myFavorites ?? [])
       } catch (err) {
-        setError('Failed to load favorites')
+        setError('Učitavanje favorita nije uspelo')
         console.error(err)
       } finally {
         setLoading(false)
@@ -127,8 +127,8 @@ export default function FavoritesPage() {
   if (loading || authLoading) {
     return (
       <>
-        <Heading>My Favorites</Heading>
-        <div className="mt-6 text-sm text-zinc-500">Loading...</div>
+        <Heading>Moji favoriti</Heading>
+        <div className="mt-6 text-sm text-zinc-500">Učitavanje...</div>
       </>
     )
   }
@@ -136,13 +136,13 @@ export default function FavoritesPage() {
   if (error) {
     return (
       <>
-        <Heading>My Favorites</Heading>
+        <Heading>Moji favoriti</Heading>
         <div className="mt-6 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
           <div className="font-medium">{error}</div>
-          {error.includes('log in') && (
+          {error.includes('Prijavite se') && (
             <div className="mt-2">
               <Link href="/login" className="text-blue-600 underline hover:text-blue-700">
-                Go to login
+                Idi na prijavu
               </Link>
             </div>
           )}
@@ -153,13 +153,13 @@ export default function FavoritesPage() {
 
   return (
     <>
-      <Heading>My Favorites</Heading>
+      <Heading>Moji favoriti</Heading>
 
       {favorites.length === 0 ? (
         <div className="mt-6 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
-          <div className="font-medium">No favorites yet</div>
+          <div className="font-medium">Još nemate favorite</div>
           <div className="mt-1 text-zinc-500">
-            Browse <Link href="/events" className="underline">events</Link> and click the heart icon to add races to your favorites.
+            Pretražite <Link href="/events" className="underline">događaje</Link> i kliknite na srce da dodate trke u favorite.
           </div>
         </div>
       ) : (
@@ -173,7 +173,7 @@ export default function FavoritesPage() {
               >
                 <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-6">
                   <div className="font-medium text-zinc-900 dark:text-zinc-100">
-                    {race.raceName ?? 'Unnamed Race'}
+                    {race.raceName ?? 'Neimenovana trka'}
                   </div>
                   <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
                     <CalendarIcon className="size-4 shrink-0" />
@@ -192,7 +192,7 @@ export default function FavoritesPage() {
                         rel="noopener noreferrer"
                         className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
                       >
-                        View location
+                        Prikaži lokaciju
                       </a>
                     ) : (
                       <span>{race.startLocation}</span>

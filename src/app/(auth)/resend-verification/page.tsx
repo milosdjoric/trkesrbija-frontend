@@ -46,7 +46,7 @@ export default function ResendVerification() {
 
       setSubmitted(true)
     } catch (err: any) {
-      setError(err?.message ?? 'Something went wrong')
+      setError(err?.message ?? 'Došlo je do greške')
     } finally {
       setLoading(false)
     }
@@ -56,24 +56,24 @@ export default function ResendVerification() {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8">
         <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-        <Heading>Check your email</Heading>
+        <Heading>Proveri svoju email poštu</Heading>
         <Text>
-          If an account exists for <Strong>{email}</Strong> and is not yet verified, we&apos;ve sent a new verification
+          Ako postoji nalog za <Strong>{email}</Strong> koji još nije verifikovan, poslali smo novi verifikacioni
           link.
         </Text>
         <Text className="text-sm text-zinc-500">
-          Didn&apos;t receive the email? Check your spam folder or{' '}
+          Niste primili email? Proverite spam folder ili{' '}
           <button
             type="button"
             onClick={() => setSubmitted(false)}
             className="font-semibold text-zinc-950 hover:underline dark:text-white"
           >
-            try again
+            pokušajte ponovo
           </button>
         </Text>
         <Text>
           <TextLink href="/login">
-            <Strong>Back to login</Strong>
+            <Strong>Nazad na prijavu</Strong>
           </TextLink>
         </Text>
       </div>
@@ -84,8 +84,8 @@ export default function ResendVerification() {
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
       <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
       <div>
-        <Heading>Resend verification email</Heading>
-        <Text className="mt-2">Enter your email address and we&apos;ll send a new verification link.</Text>
+        <Heading>Pošalji ponovo verifikacioni email</Heading>
+        <Text className="mt-2">Unesi svoju email adresu i poslaćemo ti novi verifikacioni link.</Text>
       </div>
 
       {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}
@@ -107,13 +107,13 @@ export default function ResendVerification() {
       </Field>
 
       <Button type="submit" className="w-full" disabled={loading || !email.trim()}>
-        {loading ? 'Sending...' : 'Send verification link'}
+        {loading ? 'Slanje…' : 'Pošalji verifikacioni link'}
       </Button>
 
       <Text>
-        Already verified?{' '}
+        Već ste verifikovani?{' '}
         <TextLink href="/login">
-          <Strong>Sign in</Strong>
+          <Strong>Prijavi se</Strong>
         </TextLink>
       </Text>
     </form>

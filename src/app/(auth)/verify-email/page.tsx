@@ -52,7 +52,7 @@ function VerifyEmailContent() {
 
         setStatus('success')
       } catch (err: any) {
-        setErrorMessage(err?.message ?? 'Something went wrong')
+        setErrorMessage(err?.message ?? 'Došlo je do greške')
         setStatus('error')
       }
     }
@@ -64,7 +64,7 @@ function VerifyEmailContent() {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
         <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-        <Heading>Verifying your email...</Heading>
+        <Heading>Verifikacija emaila…</Heading>
         <div className="flex justify-center">
           <div className="size-8 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900 dark:border-zinc-700 dark:border-t-white" />
         </div>
@@ -77,13 +77,13 @@ function VerifyEmailContent() {
       <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
         <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
         <XCircleIcon className="mx-auto size-16 text-red-500" />
-        <Heading>Invalid verification link</Heading>
+        <Heading>Neispravan link za verifikaciju</Heading>
         <Text>
-          This verification link is invalid or missing. Please check your email for the correct link or request a new
-          one.
+          Ovaj link za verifikaciju je neispravan ili nedostaje. Molimo proverite vaš email za ispravan link ili
+          zatražite novi.
         </Text>
         <Button onClick={() => router.push('/login')} className="w-full">
-          Go to login
+          Idi na prijavu
         </Button>
       </div>
     )
@@ -94,17 +94,17 @@ function VerifyEmailContent() {
       <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
         <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
         <XCircleIcon className="mx-auto size-16 text-red-500" />
-        <Heading>Verification failed</Heading>
+        <Heading>Verifikacija nije uspela</Heading>
         <Text className="text-red-600 dark:text-red-400">{errorMessage}</Text>
-        <Text>The verification link may have expired or already been used.</Text>
+        <Text>Link za verifikaciju je možda istekao ili je već korišćen.</Text>
         <div className="space-y-3">
           <Button onClick={() => router.push('/login')} className="w-full">
-            Go to login
+            Idi na prijavu
           </Button>
           <Text className="text-sm">
-            Need a new link?{' '}
+            Treba vam novi link?{' '}
             <TextLink href="/resend-verification">
-              <Strong>Resend verification email</Strong>
+              <Strong>Pošalji ponovo verifikacioni email</Strong>
             </TextLink>
           </Text>
         </div>
@@ -117,10 +117,10 @@ function VerifyEmailContent() {
     <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
       <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
       <CheckCircleIcon className="mx-auto size-16 text-green-500" />
-      <Heading>Email verified!</Heading>
-      <Text>Your email has been successfully verified. You can now access all features of your account.</Text>
+      <Heading>Email verifikovan!</Heading>
+      <Text>Vaš email je uspešno verifikovan. Sada možete pristupiti svim funkcijama vašeg naloga.</Text>
       <Button onClick={() => router.push('/')} className="w-full">
-        Go to dashboard
+        Idi na početnu
       </Button>
     </div>
   )
@@ -132,7 +132,7 @@ export default function VerifyEmail() {
       fallback={
         <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
           <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-          <Heading>Loading...</Heading>
+          <Heading>Učitavanje…</Heading>
         </div>
       }
     >

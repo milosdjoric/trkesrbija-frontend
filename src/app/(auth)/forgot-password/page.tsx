@@ -46,7 +46,7 @@ export default function ForgotPassword() {
 
       setSubmitted(true)
     } catch (err: any) {
-      setError(err?.message ?? 'Something went wrong')
+      setError(err?.message ?? 'Došlo je do greške')
     } finally {
       setLoading(false)
     }
@@ -56,24 +56,24 @@ export default function ForgotPassword() {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8">
         <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-        <Heading>Check your email</Heading>
+        <Heading>Proveri svoju email poštu</Heading>
         <Text>
-          If an account exists for <Strong>{email}</Strong>, we&apos;ve sent a password reset link.
-          Please check your inbox and spam folder.
+          Ako postoji nalog za <Strong>{email}</Strong>, poslali smo link za resetovanje lozinke.
+          Molimo proverite inbox i spam folder.
         </Text>
         <Text className="text-sm text-zinc-500">
-          Didn&apos;t receive the email?{' '}
+          Niste primili email?{' '}
           <button
             type="button"
             onClick={() => setSubmitted(false)}
             className="font-semibold text-zinc-950 hover:underline dark:text-white"
           >
-            Try again
+            Pokušaj ponovo
           </button>
         </Text>
         <Text>
           <TextLink href="/login">
-            <Strong>Back to login</Strong>
+            <Strong>Nazad na prijavu</Strong>
           </TextLink>
         </Text>
       </div>
@@ -84,9 +84,9 @@ export default function ForgotPassword() {
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
       <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
       <div>
-        <Heading>Forgot your password?</Heading>
+        <Heading>Zaboravljena lozinka?</Heading>
         <Text className="mt-2">
-          Enter your email address and we&apos;ll send you a link to reset your password.
+          Unesi svoju email adresu i poslaćemo ti link za resetovanje lozinke.
         </Text>
       </div>
 
@@ -109,13 +109,13 @@ export default function ForgotPassword() {
       </Field>
 
       <Button type="submit" className="w-full" disabled={loading || !email.trim()}>
-        {loading ? 'Sending...' : 'Send reset link'}
+        {loading ? 'Slanje…' : 'Pošalji link za resetovanje'}
       </Button>
 
       <Text>
-        Remember your password?{' '}
+        Sećaš se lozinke?{' '}
         <TextLink href="/login">
-          <Strong>Sign in</Strong>
+          <Strong>Prijavi se</Strong>
         </TextLink>
       </Text>
     </form>

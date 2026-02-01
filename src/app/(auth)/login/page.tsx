@@ -34,14 +34,14 @@ export default function Login() {
       await login(email, password)
       router.push('/')
     } catch (err: any) {
-      setError(err?.message ?? 'Login failed')
+      setError(err?.message ?? 'Prijava nije uspela')
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
       <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-      <Heading>Sign in to your account</Heading>
+      <Heading>Prijavi se na svoj nalog</Heading>
 
       {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}
 
@@ -60,7 +60,7 @@ export default function Login() {
       </Field>
 
       <Field>
-        <Label>Password</Label>
+        <Label>Lozinka</Label>
         <Input
           type="password"
           name="password"
@@ -76,19 +76,19 @@ export default function Login() {
       <div className="flex items-center justify-end">
         <Text>
           <TextLink href="/forgot-password">
-            <Strong>Forgot password?</Strong>
+            <Strong>Zaboravljena lozinka?</Strong>
           </TextLink>
         </Text>
       </div>
 
       <Button type="submit" className="w-full" disabled={loading || !email.trim() || !password}>
-        {loading ? 'Signing in…' : 'Login'}
+        {loading ? 'Prijavljivanje…' : 'Prijavi se'}
       </Button>
 
       <Text>
-        Don’t have an account?{' '}
+        Nemaš nalog?{' '}
         <TextLink href="/register">
-          <Strong>Sign up</Strong>
+          <Strong>Registruj se</Strong>
         </TextLink>
       </Text>
     </form>

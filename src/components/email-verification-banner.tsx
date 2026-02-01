@@ -55,11 +55,11 @@ export function EmailVerificationBanner() {
             <ExclamationTriangleIcon className="size-5 text-amber-600 dark:text-amber-400" />
             <p className="text-sm text-amber-800 dark:text-amber-200">
               {resent ? (
-                <span>Verification email sent! Check your inbox.</span>
+                <span>Verifikacioni email je poslat! Proverite inbox.</span>
               ) : (
                 <>
-                  <span className="font-medium">Please verify your email address.</span>
-                  <span className="hidden sm:inline"> Check your inbox for a verification link.</span>
+                  <span className="font-medium">Molimo verifikujte vašu email adresu.</span>
+                  <span className="hidden sm:inline"> Proverite inbox za verifikacioni link.</span>
                 </>
               )}
             </p>
@@ -72,14 +72,14 @@ export function EmailVerificationBanner() {
                 disabled={resending}
                 className="text-sm font-medium text-amber-800 underline hover:text-amber-900 disabled:opacity-50 dark:text-amber-200 dark:hover:text-amber-100"
               >
-                {resending ? 'Sending...' : 'Resend email'}
+                {resending ? 'Slanje…' : 'Pošalji ponovo'}
               </button>
             )}
             <button
               type="button"
               onClick={() => setDismissed(true)}
               className="rounded p-1 text-amber-600 hover:bg-amber-100 dark:text-amber-400 dark:hover:bg-amber-900/50"
-              aria-label="Dismiss"
+              aria-label="Zatvori"
             >
               <XMarkIcon className="size-5" />
             </button>

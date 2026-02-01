@@ -50,15 +50,15 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
         <>
           <DropdownItem href="#" className="hidden">
             <UserCircleIcon />
-            <DropdownLabel>My account</DropdownLabel>
+            <DropdownLabel>Moj nalog</DropdownLabel>
           </DropdownItem>
           <DropdownItem href="#" className="hidden">
             <ShieldCheckIcon />
-            <DropdownLabel>Privacy policy</DropdownLabel>
+            <DropdownLabel>Politika privatnosti</DropdownLabel>
           </DropdownItem>
           <DropdownItem href="https://tally.so/r/Y547W6" className="">
             <LightBulbIcon />
-            <DropdownLabel>Share feedback</DropdownLabel>
+            <DropdownLabel>Pošalji povratne informacije</DropdownLabel>
           </DropdownItem>
           <DropdownItem
             href="#"
@@ -68,19 +68,19 @@ function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' })
             }}
           >
             <ArrowRightStartOnRectangleIcon />
-            <DropdownLabel>Sign out</DropdownLabel>
+            <DropdownLabel>Odjavi se</DropdownLabel>
           </DropdownItem>
         </>
       ) : (
         <>
           <DropdownItem href="https://tally.so/r/Y547W6">
             <LightBulbIcon />
-            <DropdownLabel>Share feedback</DropdownLabel>
+            <DropdownLabel>Pošalji povratne informacije</DropdownLabel>
           </DropdownItem>
           <DropdownDivider />
           <DropdownItem href="/login">
             <ArrowRightStartOnRectangleIcon />
-            <DropdownLabel>Log in</DropdownLabel>
+            <DropdownLabel>Prijavi se</DropdownLabel>
           </DropdownItem>
         </>
       )}
@@ -141,7 +141,7 @@ export function ApplicationLayout({
               <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
                 <DropdownItem href="/settings">
                   <Cog8ToothIcon />
-                  <DropdownLabel>Settings</DropdownLabel>
+                  <DropdownLabel>Podešavanja</DropdownLabel>
                 </DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -151,21 +151,21 @@ export function ApplicationLayout({
             <SidebarSection>
               <SidebarItem href="/" current={pathname === '/'} className="hidden">
                 <HomeIcon />
-                <SidebarLabel>Home</SidebarLabel>
+                <SidebarLabel>Početna</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="/events" current={pathname.startsWith('/events')} className="hidden">
                 <Square2StackIcon />
-                <SidebarLabel>All race events</SidebarLabel>
+                <SidebarLabel>Svi događaji</SidebarLabel>
               </SidebarItem>
               {user ? (
                 <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
                   <HeartIcon />
-                  <SidebarLabel>My Favorites</SidebarLabel>
+                  <SidebarLabel>Moji favoriti</SidebarLabel>
                 </SidebarItem>
               ) : (
                 <SidebarItem href="/login">
                   <HeartIcon />
-                  <SidebarLabel className="text-zinc-400">My Favorites</SidebarLabel>
+                  <SidebarLabel className="text-zinc-400">Moji favoriti</SidebarLabel>
                 </SidebarItem>
               )}
               {user ? (
@@ -181,12 +181,12 @@ export function ApplicationLayout({
               )}
               <SidebarItem className="hidden" href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />
-                <SidebarLabel>Orders</SidebarLabel>
+                <SidebarLabel>Narudžbine</SidebarLabel>
               </SidebarItem>
             </SidebarSection>
 
             <SidebarSection className="hidden max-lg:hidden">
-              <SidebarHeading>Upcoming Race Events</SidebarHeading>
+              <SidebarHeading>Predstojeći događaji</SidebarHeading>
               {events.map((event: any) => {
                 const eventLabel = (event?.eventName ?? event?.name ?? '').toString()
                 const eventUrl = (
@@ -227,11 +227,11 @@ export function ApplicationLayout({
             <SidebarSection>
               <SidebarItem href="mailto:djoric.inbox@gmail.com?subject=Tkre%20Srbija%20Support%20request">
                 <QuestionMarkCircleIcon />
-                <SidebarLabel>Support via Email</SidebarLabel>
+                <SidebarLabel>Podrška putem emaila</SidebarLabel>
               </SidebarItem>
               <SidebarItem href="#" className="hidden">
                 <SparklesIcon />
-                <SidebarLabel>Changelog</SidebarLabel>
+                <SidebarLabel>Dnevnik promena</SidebarLabel>
               </SidebarItem>
             </SidebarSection>
           </SidebarBody>

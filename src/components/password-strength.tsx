@@ -9,11 +9,11 @@ type PasswordRequirement = {
 }
 
 const PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
-  { label: 'At least 8 characters', test: (p) => p.length >= 8 },
-  { label: 'One lowercase letter', test: (p) => /[a-z]/.test(p) },
-  { label: 'One uppercase letter', test: (p) => /[A-Z]/.test(p) },
-  { label: 'One number', test: (p) => /[0-9]/.test(p) },
-  { label: 'One special character (!@#$%^&*)', test: (p) => /[^a-zA-Z0-9]/.test(p) },
+  { label: 'Najmanje 8 karaktera', test: (p) => p.length >= 8 },
+  { label: 'Jedno malo slovo', test: (p) => /[a-z]/.test(p) },
+  { label: 'Jedno veliko slovo', test: (p) => /[A-Z]/.test(p) },
+  { label: 'Jedan broj', test: (p) => /[0-9]/.test(p) },
+  { label: 'Jedan specijalni karakter (!@#$%^&*)', test: (p) => /[^a-zA-Z0-9]/.test(p) },
 ]
 
 export function validatePassword(password: string): {
@@ -52,10 +52,10 @@ export function PasswordStrength({ password, showRequirements = true, className 
 
   const getStrengthLabel = () => {
     if (strengthPercent === 0) return ''
-    if (strengthPercent <= 40) return 'Weak'
-    if (strengthPercent <= 60) return 'Fair'
-    if (strengthPercent <= 80) return 'Good'
-    return 'Strong'
+    if (strengthPercent <= 40) return 'Slaba'
+    if (strengthPercent <= 60) return 'Osrednja'
+    if (strengthPercent <= 80) return 'Dobra'
+    return 'Jaka'
   }
 
   if (!password) return null

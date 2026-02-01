@@ -97,7 +97,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
       <div className="w-full">
         <InputGroup>
           <MagnifyingGlassIcon />
-          <Input name="q" placeholder="Search events or races…" value={q} onChange={(e) => setQ(e.target.value)} />
+          <Input name="q" placeholder="Pretraži događaje ili trke…" value={q} onChange={(e) => setQ(e.target.value)} />
         </InputGroup>
       </div>
 
@@ -106,37 +106,37 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         <div className="flex grow items-center gap-1">
           <Input
             name="lenMin"
-            placeholder="Distance from (km)"
+            placeholder="Dužina od (km)"
             inputMode="decimal"
             value={lenMin}
             onChange={(e) => setLenMin(e.target.value)}
-            aria-label="Minimum length (km)"
+            aria-label="Minimalna dužina (km)"
           />
           <Input
             name="lenMax"
-            placeholder="Distance to (km)"
+            placeholder="Dužina do (km)"
             inputMode="decimal"
             value={lenMax}
             onChange={(e) => setLenMax(e.target.value)}
-            aria-label="Maximum length (km)"
+            aria-label="Maksimalna dužina (km)"
           />
         </div>
         <div className="flex grow items-center gap-1">
           <Input
             name="elevMin"
-            placeholder="Elevation from (m)"
+            placeholder="Previšenje od (m)"
             inputMode="decimal"
             value={elevMin}
             onChange={(e) => setElevMin(e.target.value)}
-            aria-label="Minimum elevation (m)"
+            aria-label="Minimalno previšenje (m)"
           />
           <Input
             name="elevMax"
-            placeholder="Elevation to (m)"
+            placeholder="Previšenje do (m)"
             inputMode="decimal"
             value={elevMax}
             onChange={(e) => setElevMax(e.target.value)}
-            aria-label="Maximum elevation (m)"
+            aria-label="Maksimalno previšenje (m)"
           />
         </div>
       </div>
@@ -145,11 +145,11 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
       <div className="flex flex-col gap-2 md:flex-row md:gap-4">
         <div className="grow">
           <Select
-            aria-label="Competition"
+            aria-label="Takmičenje"
             value={competitionId}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCompetitionId(e.target.value)}
           >
-            <option value="">All competitions</option>
+            <option value="">Sva takmičenja</option>
             {competitions.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -159,27 +159,27 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         </div>
         <div className="grow">
           <Select
-            aria-label="Event type"
+            aria-label="Tip događaja"
             value={eventType}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEventType(e.target.value)}
           >
-            <option value="">All types</option>
+            <option value="">Svi tipovi</option>
             <option value="TRAIL">Trail</option>
-            <option value="ROAD">Road</option>
+            <option value="ROAD">Asfalt</option>
           </Select>
         </div>
         <div className="grow">
           <Select
-            aria-label="Sort by"
+            aria-label="Sortiraj po"
             value={sortBy}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value)}
           >
-            <option value="">Sort by date</option>
-            <option value="distance_asc">Distance (shortest first)</option>
-            <option value="distance_desc">Distance (longest first)</option>
-            <option value="elevation_asc">Elevation (lowest first)</option>
-            <option value="elevation_desc">Elevation (highest first)</option>
-            <option value="name">Name (A-Z)</option>
+            <option value="">Sortiraj po datumu</option>
+            <option value="distance_asc">Dužina (najkraće prvo)</option>
+            <option value="distance_desc">Dužina (najduže prvo)</option>
+            <option value="elevation_asc">Previšenje (najniže prvo)</option>
+            <option value="elevation_desc">Previšenje (najviše prvo)</option>
+            <option value="name">Naziv (A-Ž)</option>
           </Select>
         </div>
       </div>
@@ -187,12 +187,12 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
       {/* Row 4: Buttons */}
       <div className="flex items-center gap-2">
         <Button id="applyBtn" type="submit">
-          {dirty ? 'Apply changes' : 'Apply'}
+          {dirty ? 'Primeni izmene' : 'Primeni'}
         </Button>
-        <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Changes not applied</span>
+        <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Izmene nisu primenjene</span>
         {clearVisible ? (
           <Link href="/events" className="text-sm">
-            Clear
+            Očisti
           </Link>
         ) : null}
       </div>

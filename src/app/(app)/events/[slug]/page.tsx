@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const event = await fetchRaceEventBySlug(slug)
 
   return {
-    title: event?.eventName ?? 'Event',
+    title: event?.eventName ?? 'Događaj',
   }
 }
 
@@ -40,7 +40,7 @@ function formatTime(iso: string) {
 function formatDateTime(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  return `${formatDate(iso)} at ${formatTime(iso)}`
+  return `${formatDate(iso)} u ${formatTime(iso)}`
 }
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -67,7 +67,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       <div className="max-lg:hidden">
         <Link href="/events" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
           <ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
-          Events
+          Događaji
         </Link>
       </div>
 
@@ -86,7 +86,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Heading>{event.eventName}</Heading>
               <Badge color={event.type === 'TRAIL' ? 'amber' : 'sky'}>
-                {event.type === 'TRAIL' ? 'Trail' : 'Road'}
+                {event.type === 'TRAIL' ? 'Trail' : 'Asfalt'}
               </Badge>
             </div>
             {event.description && (
@@ -106,7 +106,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     rel="noopener noreferrer"
                     className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
                   >
-                    View location
+                    Prikaži lokaciju
                   </a>
                 ) : (
                   eventLocation
@@ -126,12 +126,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         </div>
       </div>
 
-      <Subheading className="mt-10">Races ({races.length})</Subheading>
+      <Subheading className="mt-10">Trke ({races.length})</Subheading>
 
       {races.length === 0 ? (
         <div className="mt-4 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
-          <div className="font-medium">No races yet</div>
-          <div className="mt-1 text-zinc-500">This event does not have any races configured.</div>
+          <div className="font-medium">Još nema trka</div>
+          <div className="mt-1 text-zinc-500">Ovaj događaj još nema konfiguriranih trka.</div>
         </div>
       ) : (
         <div className="mt-4 flex flex-col gap-3">
@@ -141,7 +141,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 dark:border-zinc-700"
             >
               <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-6">
-                <div className="font-medium text-zinc-900 dark:text-zinc-100">{race.raceName ?? 'Unnamed Race'}</div>
+                <div className="font-medium text-zinc-900 dark:text-zinc-100">{race.raceName ?? 'Neimenovana trka'}</div>
                 <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
                   <ClockIcon className="size-4 shrink-0" />
                   <span>{formatDateTime(race.startDateTime)}</span>
@@ -155,7 +155,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                       rel="noopener noreferrer"
                       className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
                     >
-                      View location
+                      Prikaži lokaciju
                     </a>
                   ) : (
                     <span>{race.startLocation}</span>

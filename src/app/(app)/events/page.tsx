@@ -9,7 +9,7 @@ import type { Metadata } from 'next'
 import { FiltersBar } from './filters-bar'
 
 export const metadata: Metadata = {
-  title: 'Events',
+  title: 'Događaji',
 }
 
 export default async function Events({
@@ -357,7 +357,7 @@ export default async function Events({
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
-          <Heading>All Race Events</Heading>
+          <Heading>Svi događaji</Heading>
           <FiltersBar
             initial={{
               q: qRaw,
@@ -377,16 +377,16 @@ export default async function Events({
         <div className="mt-10 rounded-lg border border-zinc-200 p-6 text-sm/6">
           {anyFilterActive ? (
             <>
-              <div className="font-medium">No results for the selected filters.</div>
+              <div className="font-medium">Nema rezultata za izabrane filtere.</div>
               <div className="mt-1">
-                Try adjusting the search, length, or elevation filters, or clear filters to see all events.
+                Pokušajte da prilagodite pretragu, dužinu ili previšenje, ili očistite filtere da vidite sve događaje.
               </div>
             </>
           ) : (
             <>
-              <div className="font-medium">No events yet.</div>
+              <div className="font-medium">Još nema događaja.</div>
               <div className="mt-1">
-                There are currently no race events in the database. Create one in the backend and refresh this page.
+                Trenutno nema događaja u bazi podataka.
               </div>
             </>
           )}
@@ -441,12 +441,12 @@ export default async function Events({
                               <div className="flex flex-wrap items-center gap-1 text-sm/6 text-zinc-500">
                                 {event.hasSharedStart ? (
                                   <>
-                                    {event.date} at {event.time}
+                                    {event.date} u {event.time}
                                   </>
                                 ) : event.hasSharedDate ? (
                                   <>{event.date}</>
                                 ) : (
-                                  <>Various dates</>
+                                  <>Različiti datumi</>
                                 )}{' '}
                                 <span aria-hidden="true">/</span>{' '}
                                 {event.hasSharedLocation ? (
@@ -457,20 +457,20 @@ export default async function Events({
                                       rel="noopener noreferrer"
                                       className="underline underline-offset-2 hover:text-zinc-700"
                                     >
-                                      Start location
+                                      Startna lokacija
                                     </a>
                                   ) : (
                                     <>{event.location}</>
                                   )
                                 ) : (
-                                  <>Various locations</>
+                                  <>Različite lokacije</>
                                 )}
                               </div>
                               <div className="text-xs/6">
                                 {event.races?.length ? (
                                   <div className="flex flex-col flex-wrap items-start gap-1 md:flex-row md:items-center">
                                     {event.races.map((r: any) => {
-                                      const name = r.raceName ?? 'Race'
+                                      const name = r.raceName ?? 'Trka'
 
                                       const matches = !anyFilterActive || Boolean(r._matchesFilters)
 
@@ -520,7 +520,7 @@ export default async function Events({
                                     })}
                                   </div>
                                 ) : (
-                                  'No races yet'
+                                  'Još nema trka'
                                 )}
                               </div>
                             </div>
@@ -535,9 +535,9 @@ export default async function Events({
                               <EllipsisVerticalIcon />
                             </DropdownButton>
                             <DropdownMenu anchor="bottom end">
-                              <DropdownItem href={event.url}>View</DropdownItem>
-                              <DropdownItem>Edit</DropdownItem>
-                              <DropdownItem>Delete</DropdownItem>
+                              <DropdownItem href={event.url}>Prikaži</DropdownItem>
+                              <DropdownItem>Izmeni</DropdownItem>
+                              <DropdownItem>Obriši</DropdownItem>
                             </DropdownMenu>
                           </Dropdown>
                         </div>

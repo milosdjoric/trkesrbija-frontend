@@ -30,7 +30,7 @@ export default function Register() {
 
     // Validate password before submit
     if (!passwordValidation.isValid) {
-      setError('Please meet all password requirements')
+      setError('Molimo ispunite sve zahteve za lozinku')
       return
     }
 
@@ -46,7 +46,7 @@ export default function Register() {
       })
       router.push('/')
     } catch (err: any) {
-      setError(err?.message ?? 'Registration failed')
+      setError(err?.message ?? 'Registracija nije uspela')
     } finally {
       setLoading(false)
     }
@@ -55,7 +55,7 @@ export default function Register() {
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
       <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-      <Heading>Create your account</Heading>
+      <Heading>Kreiraj svoj nalog</Heading>
 
       {error && <Text className="!dark:text-red-500 !text-red-600 capitalize">{error}</Text>}
 
@@ -73,7 +73,7 @@ export default function Register() {
       </Field>
 
       <Field>
-        <Label>Full name</Label>
+        <Label>Ime i prezime</Label>
         <Input
           name="name"
           value={name}
@@ -84,7 +84,7 @@ export default function Register() {
       </Field>
 
       <Field>
-        <Label>Password</Label>
+        <Label>Lozinka</Label>
         <Input
           type="password"
           name="password"
@@ -103,7 +103,7 @@ export default function Register() {
           checked={marketingOptIn}
           onChange={(checked) => setMarketingOptIn(Boolean(checked))}
         />
-        <Label>Get emails about product updates and news.</Label>
+        <Label>Primaj obaveštenja o novostima.</Label>
       </CheckboxField>
 
       <Button
@@ -111,13 +111,13 @@ export default function Register() {
         className="w-full"
         disabled={loading || !passwordValidation.isValid || !email.trim()}
       >
-        {loading ? 'Creating…' : 'Create account'}
+        {loading ? 'Kreiranje…' : 'Kreiraj nalog'}
       </Button>
 
       <Text>
-        Already have an account?{' '}
+        Već imaš nalog?{' '}
         <TextLink href="/login">
-          <Strong>Sign in</Strong>
+          <Strong>Prijavi se</Strong>
         </TextLink>
       </Text>
     </form>

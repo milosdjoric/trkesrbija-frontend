@@ -30,17 +30,17 @@ function ResetPasswordForm() {
     setError(null)
 
     if (!token) {
-      setError('Invalid reset link. Please request a new password reset.')
+      setError('Neispravan link za resetovanje. Molimo zatražite novi.')
       return
     }
 
     if (!passwordValidation.isValid) {
-      setError('Please meet all password requirements')
+      setError('Molimo ispunite sve zahteve za lozinku')
       return
     }
 
     if (password !== confirmPassword) {
-      setError('Passwords do not match')
+      setError('Lozinke se ne poklapaju')
       return
     }
 
@@ -71,7 +71,7 @@ function ResetPasswordForm() {
 
       setSuccess(true)
     } catch (err: any) {
-      setError(err?.message ?? 'Something went wrong')
+      setError(err?.message ?? 'Došlo je do greške')
     } finally {
       setLoading(false)
     }
@@ -81,12 +81,12 @@ function ResetPasswordForm() {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8">
         <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-        <Heading>Invalid reset link</Heading>
+        <Heading>Neispravan link za resetovanje</Heading>
         <Text>
-          This password reset link is invalid or has expired. Please request a new one.
+          Ovaj link za resetovanje lozinke je neispravan ili je istekao. Molimo zatražite novi.
         </Text>
         <Button onClick={() => router.push('/forgot-password')} className="w-full">
-          Request new reset link
+          Zatraži novi link
         </Button>
       </div>
     )
@@ -96,12 +96,12 @@ function ResetPasswordForm() {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8">
         <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-        <Heading>Password reset successful</Heading>
+        <Heading>Lozinka uspešno resetovana</Heading>
         <Text>
-          Your password has been reset successfully. You can now log in with your new password.
+          Vaša lozinka je uspešno resetovana. Sada se možete prijaviti sa novom lozinkom.
         </Text>
         <Button onClick={() => router.push('/login')} className="w-full">
-          Go to login
+          Idi na prijavu
         </Button>
       </div>
     )
@@ -111,14 +111,14 @@ function ResetPasswordForm() {
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
       <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
       <div>
-        <Heading>Set new password</Heading>
-        <Text className="mt-2">Enter your new password below.</Text>
+        <Heading>Postavi novu lozinku</Heading>
+        <Text className="mt-2">Unesi svoju novu lozinku ispod.</Text>
       </div>
 
       {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}
 
       <Field>
-        <Label>New password</Label>
+        <Label>Nova lozinka</Label>
         <Input
           type="password"
           name="password"
@@ -135,7 +135,7 @@ function ResetPasswordForm() {
       </Field>
 
       <Field>
-        <Label>Confirm new password</Label>
+        <Label>Potvrdi novu lozinku</Label>
         <Input
           type="password"
           name="confirmPassword"
@@ -149,7 +149,7 @@ function ResetPasswordForm() {
           disabled={loading}
         />
         {confirmPassword && password !== confirmPassword && (
-          <Text className="mt-1 text-sm text-red-600 dark:text-red-500">Passwords do not match</Text>
+          <Text className="mt-1 text-sm text-red-600 dark:text-red-500">Lozinke se ne poklapaju</Text>
         )}
       </Field>
 
@@ -158,13 +158,13 @@ function ResetPasswordForm() {
         className="w-full"
         disabled={loading || !passwordValidation.isValid || password !== confirmPassword}
       >
-        {loading ? 'Resetting...' : 'Reset password'}
+        {loading ? 'Resetovanje…' : 'Resetuj lozinku'}
       </Button>
 
       <Text>
-        Remember your password?{' '}
+        Sećaš se lozinke?{' '}
         <TextLink href="/login">
-          <Strong>Sign in</Strong>
+          <Strong>Prijavi se</Strong>
         </TextLink>
       </Text>
     </form>
@@ -177,7 +177,7 @@ export default function ResetPassword() {
       fallback={
         <div className="grid w-full max-w-sm grid-cols-1 gap-8">
           <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
-          <Heading>Loading...</Heading>
+          <Heading>Učitavanje…</Heading>
         </div>
       }
     >
