@@ -379,7 +379,7 @@ export default async function Events({
             <>
               <div className="font-medium">Nema rezultata za izabrane filtere.</div>
               <div className="mt-1">
-                Pokušajte da prilagodite pretragu, dužinu ili previšenje, ili očistite filtere da vidite sve događaje.
+                Pokušajte da prilagodite pretragu, dužinu ili elevaciju, ili očistite filtere da vidite sve događaje.
               </div>
             </>
           ) : (
