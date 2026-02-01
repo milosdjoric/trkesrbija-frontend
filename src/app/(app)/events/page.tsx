@@ -490,7 +490,7 @@ export default async function Events({
                                       <Badge
                                         key={r.id}
                                         color={badgeColor}
-                                        className={matches ? '' : 'opacity-50'}
+                                        className={matches ? '' : 'line-through opacity-50'}
                                       >
                                         {name}{parts && ` · ${parts}`}
                                       </Badge>
