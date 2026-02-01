@@ -701,3 +701,190 @@ export async function recordTime(bibNumber: string, accessToken?: string | null)
   const data = await gql<{ recordTime: Timing }>(RECORD_TIME_MUTATION, { input: { bibNumber } }, { accessToken })
   return data.recordTime
 }
+
+// -----------------------------
+// Admin Checkpoint Management
+// -----------------------------
+
+export type JudgeUser = {
+  id: string
+  email: string
+  name?: string | null
+}
+
+export type CheckpointWithJudges = Checkpoint & {
+  assignedJudges: JudgeUser[]
+}
+
+export type CreateCheckpointInput = {
+  raceId: string
+  name: string
+  distance?: number | null
+  orderIndex: number
+}
+
+export type UpdateCheckpointInput = {
+  name?: string
+  distance?: number | null
+  orderIndex?: number
+}
+
+const CHECKPOINTS_WITH_JUDGES_QUERY = `
+  query Checkpoints($raceId: ID!) {
+    checkpoints(raceId: $raceId) {
+      id
+      name
+      raceId
+      distance
+      orderIndex
+      assignedJudges {
+        id
+        email
+        name
+      }
+    }
+  }
+`
+
+const USERS_QUERY = `
+  query Users($search: String, $limit: Int) {
+    users(search: $search, limit: $limit) {
+      id
+      email
+      name
+      role
+    }
+  }
+`
+
+const CREATE_CHECKPOINT_MUTATION = `
+  mutation CreateCheckpoint($input: CreateCheckpointInput!) {
+    createCheckpoint(input: $input) {
+      id
+      name
+      raceId
+      distance
+      orderIndex
+      assignedJudges {
+        id
+        email
+        name
+      }
+    }
+  }
+`
+
+const UPDATE_CHECKPOINT_MUTATION = `
+  mutation UpdateCheckpoint($checkpointId: ID!, $input: UpdateCheckpointInput!) {
+    updateCheckpoint(checkpointId: $checkpointId, input: $input) {
+      id
+      name
+      raceId
+      distance
+      orderIndex
+      assignedJudges {
+        id
+        email
+        name
+      }
+    }
+  }
+`
+
+const DELETE_CHECKPOINT_MUTATION = `
+  mutation DeleteCheckpoint($checkpointId: ID!) {
+    deleteCheckpoint(checkpointId: $checkpointId)
+  }
+`
+
+const ASSIGN_JUDGE_MUTATION = `
+  mutation AssignJudge($userId: ID!, $checkpointId: ID!) {
+    assignJudge(userId: $userId, checkpointId: $checkpointId) {
+      id
+      email
+      name
+    }
+  }
+`
+
+const UNASSIGN_JUDGE_MUTATION = `
+  mutation UnassignJudge($userId: ID!) {
+    unassignJudge(userId: $userId) {
+      id
+      email
+      name
+    }
+  }
+`
+
+export type User = {
+  id: string
+  email: string
+  name?: string | null
+  role: 'STANDARD' | 'ADMIN'
+}
+
+export async function fetchCheckpointsWithJudges(
+  raceId: string,
+  accessToken?: string | null
+): Promise<CheckpointWithJudges[]> {
+  const data = await gql<{ checkpoints: CheckpointWithJudges[] }>(
+    CHECKPOINTS_WITH_JUDGES_QUERY,
+    { raceId },
+    { accessToken }
+  )
+  return data.checkpoints
+}
+
+export async function fetchUsers(
+  search?: string,
+  limit = 50,
+  accessToken?: string | null
+): Promise<User[]> {
+  const data = await gql<{ users: User[] }>(USERS_QUERY, { search, limit }, { accessToken })
+  return data.users
+}
+
+export async function createCheckpoint(
+  input: CreateCheckpointInput,
+  accessToken?: string | null
+): Promise<CheckpointWithJudges> {
+  const data = await gql<{ createCheckpoint: CheckpointWithJudges }>(
+    CREATE_CHECKPOINT_MUTATION,
+    { input },
+    { accessToken }
+  )
+  return data.createCheckpoint
+}
+
+export async function updateCheckpoint(
+  checkpointId: string,
+  input: UpdateCheckpointInput,
+  accessToken?: string | null
+): Promise<CheckpointWithJudges> {
+  const data = await gql<{ updateCheckpoint: CheckpointWithJudges }>(
+    UPDATE_CHECKPOINT_MUTATION,
+    { checkpointId, input },
+    { accessToken }
+  )
+  return data.updateCheckpoint
+}
+
+export async function deleteCheckpoint(checkpointId: string, accessToken?: string | null): Promise<boolean> {
+  const data = await gql<{ deleteCheckpoint: boolean }>(DELETE_CHECKPOINT_MUTATION, { checkpointId }, { accessToken })
+  return data.deleteCheckpoint
+}
+
+export async function assignJudge(
+  userId: string,
+  checkpointId: string,
+  accessToken?: string | null
+): Promise<User> {
+  const data = await gql<{ assignJudge: User }>(ASSIGN_JUDGE_MUTATION, { userId, checkpointId }, { accessToken })
+  return data.assignJudge
+}
+
+export async function unassignJudge(userId: string, accessToken?: string | null): Promise<User> {
+  const data = await gql<{ unassignJudge: User }>(UNASSIGN_JUDGE_MUTATION, { userId }, { accessToken })
+  return data.unassignJudge
+}

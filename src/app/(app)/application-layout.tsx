@@ -27,11 +27,13 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
   ClipboardDocumentListIcon,
+  ClockIcon,
   Cog8ToothIcon,
   HeartIcon,
   LightBulbIcon,
   ShieldCheckIcon,
   UserCircleIcon,
+  WrenchScrewdriverIcon,
 } from '@heroicons/react/16/solid'
 import { HomeIcon, QuestionMarkCircleIcon, SparklesIcon, Square2StackIcon, TicketIcon } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
@@ -183,7 +185,25 @@ export function ApplicationLayout({
                 <TicketIcon />
                 <SidebarLabel>Narudžbine</SidebarLabel>
               </SidebarItem>
+              {/* Judge section - shown if user has assigned checkpoint */}
+              {user && (
+                <SidebarItem href="/judge" current={pathname.startsWith('/judge')}>
+                  <ClockIcon />
+                  <SidebarLabel>Sudijska tabla</SidebarLabel>
+                </SidebarItem>
+              )}
             </SidebarSection>
+
+            {/* Admin section */}
+            {user?.role === 'ADMIN' && (
+              <SidebarSection>
+                <SidebarHeading>Admin</SidebarHeading>
+                <SidebarItem href="/events" current={pathname === '/events'}>
+                  <WrenchScrewdriverIcon />
+                  <SidebarLabel>Upravljanje događajima</SidebarLabel>
+                </SidebarItem>
+              </SidebarSection>
+            )}
 
             <SidebarSection className="hidden max-lg:hidden">
               <SidebarHeading>Predstojeći događaji</SidebarHeading>
