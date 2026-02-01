@@ -466,50 +466,32 @@ export default async function Events({
                                   <>Različite lokacije</>
                                 )}
                               </div>
-                              <div className="text-xs/6">
+                              <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs text-zinc-600">
                                 {event.races?.length ? (
-                                  <div className="flex flex-wrap items-center gap-1.5">
-                                    {event.races.map((r: any) => {
-                                      const name = r.raceName ?? 'Trka'
-
-                                      const matches = !anyFilterActive || Boolean(r._matchesFilters)
-
-                                      const dt = r.startDateTime ? new Date(r.startDateTime) : null
-                                      const time =
-                                        dt && !Number.isNaN(dt.getTime())
-                                          ? event.hasSharedStart
-                                            ? ''
-                                            : formatTime(dt)
-                                          : ''
-
-                                      const length = typeof r.length === 'number' ? `${r.length} km` : ''
-                                      const elevation = r.elevation != null ? `${r.elevation} m` : ''
-
-                                      const competition = r.competitionId
-                                        ? (competitionNameById.get(r.competitionId) ?? '')
+                                  event.races.map((r: any, idx: number) => {
+                                    const name = r.raceName ?? 'Trka'
+                                    const matches = !anyFilterActive || Boolean(r._matchesFilters)
+                                    const dt = r.startDateTime ? new Date(r.startDateTime) : null
+                                    const time =
+                                      dt && !Number.isNaN(dt.getTime())
+                                        ? event.hasSharedStart
+                                          ? ''
+                                          : formatTime(dt)
                                         : ''
+                                    const length = typeof r.length === 'number' ? `${r.length}km` : ''
+                                    const elevation = r.elevation != null ? `${r.elevation}m` : ''
+                                    const parts = [time, length, elevation].filter(Boolean).join('/')
 
-                                      const parts = [time, competition, length, elevation].filter(Boolean)
-
-                                      return (
-                                        <Badge
-                                          key={r.id}
-                                          color="zinc"
-                                          className={`inline-flex items-center gap-1.5 ${matches ? '' : 'line-through opacity-60'}`}
-                                        >
-                                          <span className="font-medium">{name}</span>
-                                          {parts.length > 0 && (
-                                            <>
-                                              <span className="text-zinc-400">-</span>
-                                              <span>{parts.join(' / ')}</span>
-                                            </>
-                                          )}
-                                        </Badge>
-                                      )
-                                    })}
-                                  </div>
+                                    return (
+                                      <span key={r.id} className={matches ? '' : 'line-through opacity-50'}>
+                                        {idx > 0 && <span className="text-zinc-300 mx-1">|</span>}
+                                        <span className="font-medium text-zinc-800">{name}</span>
+                                        {parts && <span className="text-zinc-500 ml-1">{parts}</span>}
+                                      </span>
+                                    )
+                                  })
                                 ) : (
-                                  'Još nema trka'
+                                  <span className="text-zinc-400">Još nema trka</span>
                                 )}
                               </div>
                             </div>

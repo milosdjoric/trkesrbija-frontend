@@ -135,27 +135,23 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div className="mt-1 text-zinc-500">Ovaj događaj još nema konfiguriranih trka.</div>
         </div>
       ) : (
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          {sortedRaces.map((race) => {
+        <div className="mt-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs">
+          {sortedRaces.map((race, idx) => {
             const time = formatTime(race.startDateTime)
-            const length = `${race.length} km`
-            const elevation = race.elevation != null ? `${race.elevation} m` : ''
-            const details = [time, length, elevation].filter(Boolean).join(' / ')
+            const length = `${race.length}km`
+            const elevation = race.elevation != null ? `${race.elevation}m` : ''
+            const details = [time, length, elevation].filter(Boolean).join('/')
 
             return (
-              <div
-                key={race.id}
-                className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800/50"
-              >
+              <span key={race.id} className="inline-flex items-center gap-1.5">
+                {idx > 0 && <span className="text-zinc-300 dark:text-zinc-600">|</span>}
                 <span className="font-medium text-zinc-900 dark:text-zinc-100">
                   {race.raceName ?? 'Trka'}
                 </span>
-                <span className="text-zinc-400 dark:text-zinc-500">-</span>
-                <span className="text-zinc-600 dark:text-zinc-400">{details}</span>
-                <span className="text-zinc-300 dark:text-zinc-600">|</span>
+                <span className="text-zinc-500 dark:text-zinc-400">{details}</span>
                 <RegisterRaceButton raceId={race.id} size="sm" />
                 <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
-              </div>
+              </span>
             )
           })}
         </div>
