@@ -225,3 +225,261 @@ export function buildEventsWithRaces(events: RaceEvent[], races: Race[]): RaceEv
     races: byEventId.get(e.id) ?? [],
   }))
 }
+
+// -----------------------------
+// Race Registration Types & Queries
+// -----------------------------
+
+export type Gender = 'MALE' | 'FEMALE'
+export type RegistrationStatus = 'PENDING' | 'CONFIRMED' | 'PAID' | 'CANCELLED'
+
+export type RaceRegistration = {
+  id: string
+  userId?: string | null
+  raceId: string
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string | null
+  dateOfBirth: string
+  gender: Gender
+  status: RegistrationStatus
+  bibNumber?: string | null
+  notes?: string | null
+  createdAt: string
+  updatedAt: string
+  race?: Race & { raceEvent?: RaceEvent }
+  user?: {
+    id: string
+    email: string
+    name?: string | null
+  } | null
+}
+
+export type SelfRegistrationInput = {
+  raceId: string
+  firstName: string
+  lastName: string
+  phone?: string | null
+  dateOfBirth: string
+  gender: Gender
+}
+
+export type AdminRegistrationInput = SelfRegistrationInput & {
+  email: string
+  status?: RegistrationStatus
+  bibNumber?: string | null
+  notes?: string | null
+}
+
+// GraphQL Queries & Mutations for Registration
+
+const MY_RACE_REGISTRATIONS_QUERY = `
+  query MyRaceRegistrations {
+    myRaceRegistrations {
+      id
+      firstName
+      lastName
+      email
+      phone
+      dateOfBirth
+      gender
+      status
+      bibNumber
+      createdAt
+      race {
+        id
+        raceName
+        length
+        startDateTime
+        startLocation
+        raceEvent {
+          id
+          eventName
+          slug
+        }
+      }
+    }
+  }
+`
+
+const RACE_REGISTRATIONS_QUERY = `
+  query RaceRegistrations($raceId: ID!, $status: RegistrationStatus, $search: String) {
+    raceRegistrations(raceId: $raceId, status: $status, search: $search) {
+      id
+      firstName
+      lastName
+      email
+      phone
+      dateOfBirth
+      gender
+      status
+      bibNumber
+      notes
+      createdAt
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
+`
+
+const REGISTER_FOR_RACE_MUTATION = `
+  mutation RegisterForRace($input: SelfRegistrationInput!) {
+    registerForRace(input: $input) {
+      id
+      firstName
+      lastName
+      email
+      status
+      createdAt
+    }
+  }
+`
+
+const CANCEL_MY_REGISTRATION_MUTATION = `
+  mutation CancelMyRegistration($registrationId: ID!) {
+    cancelMyRegistration(registrationId: $registrationId) {
+      id
+      status
+    }
+  }
+`
+
+const ADMIN_REGISTER_MUTATION = `
+  mutation AdminRegisterForRace($input: AdminRegistrationInput!) {
+    adminRegisterForRace(input: $input) {
+      id
+      firstName
+      lastName
+      email
+      status
+      bibNumber
+      createdAt
+    }
+  }
+`
+
+const UPDATE_REGISTRATION_STATUS_MUTATION = `
+  mutation UpdateRegistrationStatus($registrationId: ID!, $status: RegistrationStatus!) {
+    updateRegistrationStatus(registrationId: $registrationId, status: $status) {
+      id
+      status
+    }
+  }
+`
+
+const ASSIGN_BIB_NUMBER_MUTATION = `
+  mutation AssignBibNumber($registrationId: ID!, $bibNumber: String!) {
+    assignBibNumber(registrationId: $registrationId, bibNumber: $bibNumber) {
+      id
+      bibNumber
+    }
+  }
+`
+
+const DELETE_REGISTRATION_MUTATION = `
+  mutation DeleteRegistration($registrationId: ID!) {
+    deleteRegistration(registrationId: $registrationId)
+  }
+`
+
+// API Functions
+
+export async function fetchMyRaceRegistrations(accessToken?: string | null): Promise<RaceRegistration[]> {
+  const data = await gql<{ myRaceRegistrations: RaceRegistration[] }>(
+    MY_RACE_REGISTRATIONS_QUERY,
+    {},
+    { accessToken }
+  )
+  return data.myRaceRegistrations
+}
+
+export async function fetchRaceRegistrations(
+  raceId: string,
+  params?: { status?: RegistrationStatus; search?: string },
+  accessToken?: string | null
+): Promise<RaceRegistration[]> {
+  const data = await gql<{ raceRegistrations: RaceRegistration[] }>(
+    RACE_REGISTRATIONS_QUERY,
+    { raceId, status: params?.status, search: params?.search },
+    { accessToken }
+  )
+  return data.raceRegistrations
+}
+
+export async function registerForRace(
+  input: SelfRegistrationInput,
+  accessToken?: string | null
+): Promise<RaceRegistration> {
+  const data = await gql<{ registerForRace: RaceRegistration }>(
+    REGISTER_FOR_RACE_MUTATION,
+    { input },
+    { accessToken }
+  )
+  return data.registerForRace
+}
+
+export async function cancelMyRegistration(
+  registrationId: string,
+  accessToken?: string | null
+): Promise<RaceRegistration> {
+  const data = await gql<{ cancelMyRegistration: RaceRegistration }>(
+    CANCEL_MY_REGISTRATION_MUTATION,
+    { registrationId },
+    { accessToken }
+  )
+  return data.cancelMyRegistration
+}
+
+export async function adminRegisterForRace(
+  input: AdminRegistrationInput,
+  accessToken?: string | null
+): Promise<RaceRegistration> {
+  const data = await gql<{ adminRegisterForRace: RaceRegistration }>(
+    ADMIN_REGISTER_MUTATION,
+    { input },
+    { accessToken }
+  )
+  return data.adminRegisterForRace
+}
+
+export async function updateRegistrationStatus(
+  registrationId: string,
+  status: RegistrationStatus,
+  accessToken?: string | null
+): Promise<RaceRegistration> {
+  const data = await gql<{ updateRegistrationStatus: RaceRegistration }>(
+    UPDATE_REGISTRATION_STATUS_MUTATION,
+    { registrationId, status },
+    { accessToken }
+  )
+  return data.updateRegistrationStatus
+}
+
+export async function assignBibNumber(
+  registrationId: string,
+  bibNumber: string,
+  accessToken?: string | null
+): Promise<RaceRegistration> {
+  const data = await gql<{ assignBibNumber: RaceRegistration }>(
+    ASSIGN_BIB_NUMBER_MUTATION,
+    { registrationId, bibNumber },
+    { accessToken }
+  )
+  return data.assignBibNumber
+}
+
+export async function deleteRegistration(
+  registrationId: string,
+  accessToken?: string | null
+): Promise<boolean> {
+  const data = await gql<{ deleteRegistration: boolean }>(
+    DELETE_REGISTRATION_MUTATION,
+    { registrationId },
+    { accessToken }
+  )
+  return data.deleteRegistration
+}

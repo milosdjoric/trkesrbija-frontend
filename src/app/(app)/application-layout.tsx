@@ -26,6 +26,7 @@ import {
   ArrowRightStartOnRectangleIcon,
   ChevronDownIcon,
   ChevronUpIcon,
+  ClipboardDocumentListIcon,
   Cog8ToothIcon,
   HeartIcon,
   LightBulbIcon,
@@ -152,6 +153,10 @@ export function ApplicationLayout({
               <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
                 <HeartIcon />
                 <SidebarLabel>My Favorites</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
+                <ClipboardDocumentListIcon />
+                <SidebarLabel>Moje prijave</SidebarLabel>
               </SidebarItem>
               <SidebarItem className="hidden" href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />
