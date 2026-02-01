@@ -466,9 +466,9 @@ export default async function Events({
                                   <>Različite lokacije</>
                                 )}
                               </div>
-                              <div className="flex flex-wrap items-center gap-x-1 gap-y-0.5 text-xs text-zinc-600">
+                              <div className="flex flex-wrap items-center gap-1">
                                 {event.races?.length ? (
-                                  event.races.map((r: any, idx: number) => {
+                                  event.races.map((r: any) => {
                                     const name = r.raceName ?? 'Trka'
                                     const matches = !anyFilterActive || Boolean(r._matchesFilters)
                                     const dt = r.startDateTime ? new Date(r.startDateTime) : null
@@ -480,18 +480,24 @@ export default async function Events({
                                         : ''
                                     const length = typeof r.length === 'number' ? `${r.length}km` : ''
                                     const elevation = r.elevation != null ? `${r.elevation}m` : ''
-                                    const parts = [time, length, elevation].filter(Boolean).join('/')
+                                    const parts = [time, length, elevation].filter(Boolean).join(' / ')
+                                    const isTrail = event.eventType === 'TRAIL'
+
+                                    // Boja: siva ako ne ispunjava filter, zelena za trail, plava za asfalt
+                                    const badgeColor = !matches ? 'zinc' : isTrail ? 'emerald' : 'sky'
 
                                     return (
-                                      <span key={r.id} className={matches ? '' : 'line-through opacity-50'}>
-                                        {idx > 0 && <span className="text-zinc-300 mx-1">|</span>}
-                                        <span className="font-medium text-zinc-800">{name}</span>
-                                        {parts && <span className="text-zinc-500 ml-1">{parts}</span>}
-                                      </span>
+                                      <Badge
+                                        key={r.id}
+                                        color={badgeColor}
+                                        className={matches ? '' : 'opacity-50'}
+                                      >
+                                        {name}{parts && ` · ${parts}`}
+                                      </Badge>
                                     )
                                   })
                                 ) : (
-                                  <span className="text-zinc-400">Još nema trka</span>
+                                  <span className="text-xs text-zinc-400">Još nema trka</span>
                                 )}
                               </div>
                             </div>

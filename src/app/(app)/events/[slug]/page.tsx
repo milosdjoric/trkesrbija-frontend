@@ -135,20 +135,19 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div className="mt-1 text-zinc-500">Ovaj događaj još nema konfiguriranih trka.</div>
         </div>
       ) : (
-        <div className="mt-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs">
-          {sortedRaces.map((race, idx) => {
+        <div className="mt-4 flex flex-wrap items-center gap-1.5">
+          {sortedRaces.map((race) => {
             const time = formatTime(race.startDateTime)
             const length = `${race.length}km`
             const elevation = race.elevation != null ? `${race.elevation}m` : ''
-            const details = [time, length, elevation].filter(Boolean).join('/')
+            const details = [time, length, elevation].filter(Boolean).join(' / ')
+            const isTrail = event.type === 'TRAIL'
 
             return (
               <span key={race.id} className="inline-flex items-center gap-1.5">
-                {idx > 0 && <span className="text-zinc-300 dark:text-zinc-600">|</span>}
-                <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                  {race.raceName ?? 'Trka'}
-                </span>
-                <span className="text-zinc-500 dark:text-zinc-400">{details}</span>
+                <Badge color={isTrail ? 'emerald' : 'sky'}>
+                  {race.raceName ?? 'Trka'}{details && ` · ${details}`}
+                </Badge>
                 <RegisterRaceButton raceId={race.id} size="sm" />
                 <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
               </span>
