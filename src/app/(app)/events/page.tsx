@@ -468,54 +468,43 @@ export default async function Events({
                               </div>
                               <div className="text-xs/6">
                                 {event.races?.length ? (
-                                  <div className="flex flex-col flex-wrap items-start gap-1 md:flex-row md:items-center">
+                                  <div className="flex flex-wrap items-center gap-1.5">
                                     {event.races.map((r: any) => {
                                       const name = r.raceName ?? 'Trka'
 
                                       const matches = !anyFilterActive || Boolean(r._matchesFilters)
 
                                       const dt = r.startDateTime ? new Date(r.startDateTime) : null
-                                      const date =
+                                      const time =
                                         dt && !Number.isNaN(dt.getTime())
                                           ? event.hasSharedStart
                                             ? ''
-                                            : event.hasSharedDate
-                                              ? formatTime(dt)
-                                              : `${formatDate(dt)} ${formatTime(dt)}`
+                                            : formatTime(dt)
                                           : ''
 
                                       const length = typeof r.length === 'number' ? `${r.length} km` : ''
                                       const elevation = r.elevation != null ? `${r.elevation} m` : ''
 
-                                      const location = event.hasSharedLocation
-                                        ? ''
-                                        : typeof r.startLocation === 'string' && r.startLocation.trim().length
-                                          ? r.startLocation
-                                          : ''
-
                                       const competition = r.competitionId
                                         ? (competitionNameById.get(r.competitionId) ?? '')
                                         : ''
 
-                                      const details = [date, competition, length, elevation, location]
-                                        .filter(Boolean)
-                                        .join(' / ')
+                                      const parts = [time, competition, length, elevation].filter(Boolean)
 
                                       return (
-                                        <div key={r.id} className="flex w-full flex-wrap items-center gap-2 md:w-fit">
-                                          <Badge
-                                            color="zinc"
-                                            className={`flex w-full flex-col items-center gap-0.5 md:w-fit md:flex-row md:items-start ${matches ? '' : 'line-through opacity-60'}`}
-                                          >
-                                            <span className="font-medium">{name}</span>
-                                            {details ? (
-                                              <div className="flex flex-row gap-2">
-                                                <div className="hidden md:block">-</div>
-                                                {details}
-                                              </div>
-                                            ) : null}
-                                          </Badge>
-                                        </div>
+                                        <Badge
+                                          key={r.id}
+                                          color="zinc"
+                                          className={`inline-flex items-center gap-1.5 ${matches ? '' : 'line-through opacity-60'}`}
+                                        >
+                                          <span className="font-medium">{name}</span>
+                                          {parts.length > 0 && (
+                                            <>
+                                              <span className="text-zinc-400">-</span>
+                                              <span>{parts.join(' / ')}</span>
+                                            </>
+                                          )}
+                                        </Badge>
                                       )
                                     })}
                                   </div>
