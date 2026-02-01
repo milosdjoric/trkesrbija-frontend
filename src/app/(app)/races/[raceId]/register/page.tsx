@@ -218,7 +218,7 @@ export default function RaceRegistrationPage() {
             Vaša prijava za trku <strong>{race.raceName ?? race.raceEvent.eventName}</strong> je primljena.
           </Text>
           <Text className="mt-1 text-sm text-zinc-500">
-            Status prijave možete pratiti na stranici "Moje prijave".
+            Status prijave možete pratiti na stranici &ldquo;Moje prijave&rdquo;.
           </Text>
           <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
             <Button href="/my-registrations">Moje prijave</Button>
