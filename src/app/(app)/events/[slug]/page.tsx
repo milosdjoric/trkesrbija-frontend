@@ -135,37 +135,42 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div className="mt-1 text-zinc-500">Ovaj događaj još nema konfiguriranih trka.</div>
         </div>
       ) : (
-        <div className="mt-4 flex flex-col gap-3">
+        <div className="mt-4 flex flex-wrap gap-3">
           {sortedRaces.map((race) => (
             <div
               key={race.id}
-              className="flex flex-col gap-2 rounded-lg border border-zinc-200 p-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6 dark:border-zinc-700"
+              className="flex min-w-[280px] flex-1 basis-[calc(50%-0.75rem)] flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700"
             >
-              <div className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-6">
-                <div className="font-medium text-zinc-900 dark:text-zinc-100">{race.raceName ?? 'Neimenovana trka'}</div>
-                <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-                  <ClockIcon className="size-4 shrink-0" />
-                  <span>{formatDateTime(race.startDateTime)}</span>
-                </div>
-                <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-                  <MapPinIcon className="size-4 shrink-0" />
-                  {race.startLocation.startsWith('http') ? (
-                    <a
-                      href={race.startLocation}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
-                    >
-                      Prikaži lokaciju
-                    </a>
-                  ) : (
-                    <span>{race.startLocation}</span>
-                  )}
-                </div>
+              {/* Ime trke */}
+              <div className="font-medium text-zinc-900 dark:text-zinc-100">
+                {race.raceName ?? 'Neimenovana trka'}
               </div>
-              <div className="flex items-center gap-4 text-sm lg:shrink-0">
+
+              {/* Separator */}
+              <span className="text-zinc-300 dark:text-zinc-600">-</span>
+
+              {/* Vreme */}
+              <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
+                <ClockIcon className="size-4 shrink-0" />
+                <span>{formatTime(race.startDateTime)}</span>
+              </div>
+
+              {/* Separator */}
+              <span className="text-zinc-300 dark:text-zinc-600">/</span>
+
+              {/* Dužina i visinska */}
+              <div className="flex items-center gap-2 text-sm">
                 <span className="font-medium text-zinc-900 dark:text-zinc-100">{race.length} km</span>
-                {race.elevation != null && <span className="text-zinc-500 dark:text-zinc-400">{race.elevation} m</span>}
+                {race.elevation != null && (
+                  <>
+                    <span className="text-zinc-300 dark:text-zinc-600">/</span>
+                    <span className="text-zinc-500 dark:text-zinc-400">{race.elevation} m</span>
+                  </>
+                )}
+              </div>
+
+              {/* Akcije - uvek na kraju */}
+              <div className="ml-auto flex items-center gap-2">
                 <RegisterRaceButton raceId={race.id} size="sm" />
                 <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
               </div>
