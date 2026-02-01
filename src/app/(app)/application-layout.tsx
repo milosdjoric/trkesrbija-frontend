@@ -106,19 +106,26 @@ export function ApplicationLayout({
         <Navbar>
           <NavbarSpacer />
           <NavbarSection>
-            <Dropdown>
-              <DropdownButton as={SidebarItem}>
-                <span className="flex min-w-0 items-center gap-3">
-                  <span className="min-w-0">
-                    <span className="font-sm block truncate text-sm/5 text-zinc-950 dark:text-white">
-                      Hi, {user?.name ?? user?.email ?? 'User'}
+            {user ? (
+              <Dropdown>
+                <DropdownButton as={SidebarItem}>
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="min-w-0">
+                      <span className="font-sm block truncate text-sm/5 text-zinc-950 dark:text-white">
+                        {user.name ?? user.email}
+                      </span>
                     </span>
                   </span>
-                </span>
-                <ChevronDownIcon />
-              </DropdownButton>
-              <AccountDropdownMenu anchor="top start" />
-            </Dropdown>
+                  <ChevronDownIcon />
+                </DropdownButton>
+                <AccountDropdownMenu anchor="top start" />
+              </Dropdown>
+            ) : (
+              <SidebarItem href="/login">
+                <ArrowRightStartOnRectangleIcon />
+                <SidebarLabel>Prijavi se</SidebarLabel>
+              </SidebarItem>
+            )}
           </NavbarSection>
         </Navbar>
       }
@@ -150,14 +157,28 @@ export function ApplicationLayout({
                 <Square2StackIcon />
                 <SidebarLabel>All race events</SidebarLabel>
               </SidebarItem>
-              <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
-                <HeartIcon />
-                <SidebarLabel>My Favorites</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
-                <ClipboardDocumentListIcon />
-                <SidebarLabel>Moje prijave</SidebarLabel>
-              </SidebarItem>
+              {user ? (
+                <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
+                  <HeartIcon />
+                  <SidebarLabel>My Favorites</SidebarLabel>
+                </SidebarItem>
+              ) : (
+                <SidebarItem href="/login">
+                  <HeartIcon />
+                  <SidebarLabel className="text-zinc-400">My Favorites</SidebarLabel>
+                </SidebarItem>
+              )}
+              {user ? (
+                <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
+                  <ClipboardDocumentListIcon />
+                  <SidebarLabel>Moje prijave</SidebarLabel>
+                </SidebarItem>
+              ) : (
+                <SidebarItem href="/login">
+                  <ClipboardDocumentListIcon />
+                  <SidebarLabel className="text-zinc-400">Moje prijave</SidebarLabel>
+                </SidebarItem>
+              )}
               <SidebarItem className="hidden" href="/orders" current={pathname.startsWith('/orders')}>
                 <TicketIcon />
                 <SidebarLabel>Orders</SidebarLabel>
@@ -216,22 +237,29 @@ export function ApplicationLayout({
           </SidebarBody>
 
           <SidebarFooter className="max-lg:hidden">
-            <Dropdown>
-              <DropdownButton as={SidebarItem}>
-                <span className="flex min-w-0 items-center gap-3">
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
-                      {user?.name ?? user?.email ?? 'User'}
-                    </span>
-                    <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
-                      {user?.email ?? ''}
+            {user ? (
+              <Dropdown>
+                <DropdownButton as={SidebarItem}>
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm/5 font-medium text-zinc-950 dark:text-white">
+                        {user.name ?? user.email}
+                      </span>
+                      <span className="block truncate text-xs/5 font-normal text-zinc-500 dark:text-zinc-400">
+                        {user.email}
+                      </span>
                     </span>
                   </span>
-                </span>
-                <ChevronUpIcon />
-              </DropdownButton>
-              <AccountDropdownMenu anchor="top start" />
-            </Dropdown>
+                  <ChevronUpIcon />
+                </DropdownButton>
+                <AccountDropdownMenu anchor="top start" />
+              </Dropdown>
+            ) : (
+              <SidebarItem href="/login">
+                <ArrowRightStartOnRectangleIcon />
+                <SidebarLabel>Prijavi se</SidebarLabel>
+              </SidebarItem>
+            )}
           </SidebarFooter>
         </Sidebar>
       }

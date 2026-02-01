@@ -128,12 +128,29 @@ export default function AdminNewRegistrationPage() {
     }
   }, [authLoading, user, accessToken, raceId, router])
 
+  // Calculate max date for 16 years old
+  const today = new Date()
+  const maxDate = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate())
+    .toISOString()
+    .split('T')[0]
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
 
     if (!firstName.trim() || !lastName.trim() || !email.trim() || !dateOfBirth) {
       setError('Molimo popunite sva obavezna polja')
+      return
+    }
+
+    // Validate minimum age of 16
+    const birthDate = new Date(dateOfBirth)
+    const age = today.getFullYear() - birthDate.getFullYear()
+    const monthDiff = today.getMonth() - birthDate.getMonth()
+    const actualAge =
+      monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate()) ? age - 1 : age
+    if (actualAge < 16) {
+      setError('Učesnik mora imati najmanje 16 godina')
       return
     }
 
@@ -267,8 +284,9 @@ export default function AdminNewRegistrationPage() {
                 onChange={(e) => setDateOfBirth(e.target.value)}
                 required
                 disabled={submitting}
-                max={new Date().toISOString().split('T')[0]}
+                max={maxDate}
               />
+              <Description>Učesnik mora imati najmanje 16 godina</Description>
             </Field>
 
             <Field>

@@ -6,11 +6,12 @@ import { gql } from '@/app/lib/api'
 import { useEffect, useState } from 'react'
 
 const CHECK_REGISTRATION_QUERY = `
-  query CheckRegistration($raceId: ID!) {
+  query CheckRegistration {
     races(raceEventId: null, limit: 1000) {
       id
       isRegistered
       registrationCount
+      registrationEnabled
     }
   }
 `
@@ -23,29 +24,25 @@ type Props = {
 export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
   const { user, accessToken, isLoading } = useAuth()
   const [isRegistered, setIsRegistered] = useState(false)
-  const [registrationCount, setRegistrationCount] = useState(0)
+  const [registrationEnabled, setRegistrationEnabled] = useState(false)
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
     async function checkRegistration() {
-      if (!accessToken) {
-        setChecking(false)
-        return
-      }
-
       try {
         const data = await gql<{
           races: Array<{
             id: string
             isRegistered: boolean
             registrationCount: number
+            registrationEnabled: boolean
           }>
         }>(CHECK_REGISTRATION_QUERY, {}, { accessToken })
 
         const race = data.races.find((r) => r.id === raceId)
         if (race) {
           setIsRegistered(race.isRegistered)
-          setRegistrationCount(race.registrationCount)
+          setRegistrationEnabled(race.registrationEnabled)
         }
       } catch (err) {
         console.error('Failed to check registration:', err)
@@ -56,6 +53,11 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
 
     checkRegistration()
   }, [raceId, accessToken])
+
+  // Don't show button if registration is not enabled
+  if (!checking && !registrationEnabled) {
+    return null
+  }
 
   if (isLoading || checking) {
     return (
@@ -69,6 +71,15 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
     return (
       <Button color="green" disabled className={size === 'sm' ? 'text-xs' : ''}>
         Prijavljen
+      </Button>
+    )
+  }
+
+  // If user not logged in, redirect to login
+  if (!user) {
+    return (
+      <Button href={`/login?redirect=/races/${raceId}/register`} className={size === 'sm' ? 'text-xs' : ''}>
+        Prijavi se
       </Button>
     )
   }
