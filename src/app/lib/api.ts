@@ -483,3 +483,221 @@ export async function deleteRegistration(
   )
   return data.deleteRegistration
 }
+
+// -----------------------------
+// Checkpoint & Timing Types & Queries
+// -----------------------------
+
+export type Checkpoint = {
+  id: string
+  name: string
+  raceId: string
+  distance?: number | null
+  orderIndex: number
+  createdAt?: string
+  updatedAt?: string
+}
+
+export type CheckpointWithRace = Checkpoint & {
+  race: {
+    id: string
+    raceName?: string | null
+    length: number
+    startDateTime: string
+    raceEvent: {
+      id: string
+      eventName: string
+      slug: string
+    }
+  }
+}
+
+export type RegistrationBasic = {
+  id: string
+  firstName: string
+  lastName: string
+  bibNumber?: string | null
+  gender: Gender
+}
+
+export type CheckpointBasic = {
+  id: string
+  name: string
+  orderIndex: number
+}
+
+export type Timing = {
+  id: string
+  registrationId: string
+  checkpointId: string
+  raceId: string
+  timestamp: string
+  registration: RegistrationBasic
+  checkpoint: CheckpointBasic
+}
+
+export type CheckpointTime = {
+  checkpointId: string
+  checkpointName: string
+  orderIndex: number
+  timestamp: string
+}
+
+export type RaceResult = {
+  registration: RegistrationBasic
+  checkpointTimes: CheckpointTime[]
+  startTime?: string | null
+  finishTime?: string | null
+  totalTime?: number | null // milliseconds
+}
+
+// GraphQL Queries & Mutations for Checkpoint/Timing
+
+const MY_ASSIGNED_CHECKPOINT_QUERY = `
+  query MyAssignedCheckpoint {
+    myAssignedCheckpoint {
+      id
+      name
+      raceId
+      distance
+      orderIndex
+      race {
+        id
+        raceName
+        length
+        startDateTime
+        raceEvent {
+          id
+          eventName
+          slug
+        }
+      }
+    }
+  }
+`
+
+const RECENT_TIMINGS_QUERY = `
+  query RecentTimings($checkpointId: ID!, $limit: Int) {
+    recentTimings(checkpointId: $checkpointId, limit: $limit) {
+      id
+      registrationId
+      checkpointId
+      raceId
+      timestamp
+      registration {
+        id
+        firstName
+        lastName
+        bibNumber
+        gender
+      }
+      checkpoint {
+        id
+        name
+        orderIndex
+      }
+    }
+  }
+`
+
+const RACE_RESULTS_QUERY = `
+  query RaceResults($raceId: ID!, $gender: Gender) {
+    raceResults(raceId: $raceId, gender: $gender) {
+      registration {
+        id
+        firstName
+        lastName
+        bibNumber
+        gender
+      }
+      checkpointTimes {
+        checkpointId
+        checkpointName
+        orderIndex
+        timestamp
+      }
+      startTime
+      finishTime
+      totalTime
+    }
+  }
+`
+
+const CHECKPOINTS_QUERY = `
+  query Checkpoints($raceId: ID!) {
+    checkpoints(raceId: $raceId) {
+      id
+      name
+      raceId
+      distance
+      orderIndex
+    }
+  }
+`
+
+const RECORD_TIME_MUTATION = `
+  mutation RecordTime($input: RecordTimeInput!) {
+    recordTime(input: $input) {
+      id
+      registrationId
+      checkpointId
+      raceId
+      timestamp
+      registration {
+        id
+        firstName
+        lastName
+        bibNumber
+        gender
+      }
+      checkpoint {
+        id
+        name
+        orderIndex
+      }
+    }
+  }
+`
+
+// API Functions for Checkpoint/Timing
+
+export async function fetchMyAssignedCheckpoint(accessToken?: string | null): Promise<CheckpointWithRace | null> {
+  const data = await gql<{ myAssignedCheckpoint: CheckpointWithRace | null }>(
+    MY_ASSIGNED_CHECKPOINT_QUERY,
+    {},
+    { accessToken }
+  )
+  return data.myAssignedCheckpoint
+}
+
+export async function fetchRecentTimings(
+  checkpointId: string,
+  limit = 10,
+  accessToken?: string | null
+): Promise<Timing[]> {
+  const data = await gql<{ recentTimings: Timing[] }>(
+    RECENT_TIMINGS_QUERY,
+    { checkpointId, limit },
+    { accessToken }
+  )
+  return data.recentTimings
+}
+
+export async function fetchRaceResults(
+  raceId: string,
+  gender?: Gender,
+  accessToken?: string | null
+): Promise<RaceResult[]> {
+  const data = await gql<{ raceResults: RaceResult[] }>(RACE_RESULTS_QUERY, { raceId, gender }, { accessToken })
+  return data.raceResults
+}
+
+export async function fetchCheckpoints(raceId: string, accessToken?: string | null): Promise<Checkpoint[]> {
+  const data = await gql<{ checkpoints: Checkpoint[] }>(CHECKPOINTS_QUERY, { raceId }, { accessToken })
+  return data.checkpoints
+}
+
+export async function recordTime(bibNumber: string, accessToken?: string | null): Promise<Timing> {
+  const data = await gql<{ recordTime: Timing }>(RECORD_TIME_MUTATION, { input: { bibNumber } }, { accessToken })
+  return data.recordTime
+}

@@ -2,6 +2,7 @@ import { fetchRaceEventBySlug } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { FavoriteButton } from '@/components/favorite-button'
 import { RegisterRaceButton } from '@/components/register-race-button'
+import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { CalendarIcon, ChevronLeftIcon, ClockIcon, MapPinIcon } from '@heroicons/react/16/solid'
@@ -172,6 +173,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           ))}
         </div>
       )}
+
+      {/* Results for each race */}
+      {sortedRaces.map((race) => (
+        <RaceResults key={race.id} raceId={race.id} raceName={race.raceName} />
+      ))}
     </>
   )
 }
