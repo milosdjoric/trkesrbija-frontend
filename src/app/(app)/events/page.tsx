@@ -1,4 +1,5 @@
 import { gql } from '@/app/lib/api'
+import { AdminRaceLinks } from '@/components/admin-race-links'
 import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
@@ -487,13 +488,15 @@ export default async function Events({
                                     const badgeColor = !matches ? 'zinc' : isTrail ? 'emerald' : 'sky'
 
                                     return (
-                                      <Badge
-                                        key={r.id}
-                                        color={badgeColor}
-                                        className={matches ? '' : 'line-through opacity-50'}
-                                      >
-                                        {name}{parts && ` · ${parts}`}
-                                      </Badge>
+                                      <span key={r.id} className="inline-flex items-center gap-1">
+                                        <Badge
+                                          color={badgeColor}
+                                          className={matches ? '' : 'line-through opacity-50'}
+                                        >
+                                          {name}{parts && ` · ${parts}`}
+                                        </Badge>
+                                        <AdminRaceLinks raceId={r.id} />
+                                      </span>
                                     )
                                   })
                                 ) : (

@@ -43,25 +43,21 @@ import { EmailVerificationBanner } from '@/components/email-verification-banner'
 
 function AccountDropdownMenu({ anchor }: { anchor: 'top start' | 'bottom end' }) {
   const { user, logout } = useAuth()
-  console.log('user', user)
   const isLoggedIn = !!user
 
   return (
     <DropdownMenu className="min-w-64" anchor={anchor}>
       {isLoggedIn ? (
         <>
-          <DropdownItem href="#" className="hidden">
-            <UserCircleIcon />
-            <DropdownLabel>Moj nalog</DropdownLabel>
+          <DropdownItem href="/settings">
+            <Cog8ToothIcon />
+            <DropdownLabel>Podešavanja</DropdownLabel>
           </DropdownItem>
-          <DropdownItem href="#" className="hidden">
-            <ShieldCheckIcon />
-            <DropdownLabel>Politika privatnosti</DropdownLabel>
-          </DropdownItem>
-          <DropdownItem href="https://tally.so/r/Y547W6" className="">
+          <DropdownItem href="https://tally.so/r/Y547W6">
             <LightBulbIcon />
             <DropdownLabel>Pošalji povratne informacije</DropdownLabel>
           </DropdownItem>
+          <DropdownDivider />
           <DropdownItem
             href="#"
             onClick={(e) => {
@@ -134,19 +130,10 @@ export function ApplicationLayout({
       sidebar={
         <Sidebar>
           <SidebarHeader>
-            <Dropdown>
-              <DropdownButton as={SidebarItem}>
-                <Avatar src="/teams/catalyst.svg" />
-                <SidebarLabel>Trke Srbija</SidebarLabel>
-                <ChevronDownIcon />
-              </DropdownButton>
-              <DropdownMenu className="min-w-80 lg:min-w-64" anchor="bottom start">
-                <DropdownItem href="/settings">
-                  <Cog8ToothIcon />
-                  <DropdownLabel>Podešavanja</DropdownLabel>
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <SidebarItem href="/" current={pathname === '/'}>
+              <Avatar src="/teams/catalyst.svg" />
+              <SidebarLabel>Trke Srbija</SidebarLabel>
+            </SidebarItem>
           </SidebarHeader>
 
           <SidebarBody>

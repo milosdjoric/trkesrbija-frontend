@@ -1,4 +1,5 @@
 import { fetchRaceEventBySlug } from '@/app/lib/api'
+import { AdminRaceLinks } from '@/components/admin-race-links'
 import { Badge } from '@/components/badge'
 import { FavoriteButton } from '@/components/favorite-button'
 import { RegisterRaceButton } from '@/components/register-race-button'
@@ -150,6 +151,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 </Badge>
                 <RegisterRaceButton raceId={race.id} size="sm" />
                 <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
+                <AdminRaceLinks raceId={race.id} />
               </span>
             )
           })}
