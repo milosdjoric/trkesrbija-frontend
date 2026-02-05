@@ -137,51 +137,55 @@ export function ApplicationLayout({
           </SidebarHeader>
 
           <SidebarBody>
+            {/* Opšte - svi vide */}
             <SidebarSection>
-              <SidebarItem href="/" current={pathname === '/'} className="hidden">
-                <HomeIcon />
-                <SidebarLabel>Početna</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/events" current={pathname.startsWith('/events')} className="hidden">
+              <SidebarHeading>Opšte</SidebarHeading>
+              <SidebarItem href="/events" current={pathname.startsWith('/events') && !pathname.startsWith('/events/')}>
                 <Square2StackIcon />
                 <SidebarLabel>Svi događaji</SidebarLabel>
               </SidebarItem>
+            </SidebarSection>
+
+            {/* Moje - prijavljeni korisnici */}
+            <SidebarSection>
+              <SidebarHeading>Moje</SidebarHeading>
               {user ? (
-                <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
-                  <HeartIcon />
-                  <SidebarLabel>Moji favoriti</SidebarLabel>
-                </SidebarItem>
+                <>
+                  <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
+                    <HeartIcon />
+                    <SidebarLabel>Favoriti</SidebarLabel>
+                  </SidebarItem>
+                  <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
+                    <ClipboardDocumentListIcon />
+                    <SidebarLabel>Prijave na trke</SidebarLabel>
+                  </SidebarItem>
+                </>
               ) : (
-                <SidebarItem href="/login">
-                  <HeartIcon />
-                  <SidebarLabel className="text-zinc-400">Moji favoriti</SidebarLabel>
-                </SidebarItem>
+                <>
+                  <SidebarItem href="/login">
+                    <HeartIcon />
+                    <SidebarLabel className="text-zinc-400">Favoriti</SidebarLabel>
+                  </SidebarItem>
+                  <SidebarItem href="/login">
+                    <ClipboardDocumentListIcon />
+                    <SidebarLabel className="text-zinc-400">Prijave na trke</SidebarLabel>
+                  </SidebarItem>
+                </>
               )}
-              {user ? (
-                <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
-                  <ClipboardDocumentListIcon />
-                  <SidebarLabel>Moje prijave</SidebarLabel>
-                </SidebarItem>
-              ) : (
-                <SidebarItem href="/login">
-                  <ClipboardDocumentListIcon />
-                  <SidebarLabel className="text-zinc-400">Moje prijave</SidebarLabel>
-                </SidebarItem>
-              )}
-              <SidebarItem className="hidden" href="/orders" current={pathname.startsWith('/orders')}>
-                <TicketIcon />
-                <SidebarLabel>Narudžbine</SidebarLabel>
-              </SidebarItem>
-              {/* Judge section - shown if user has assigned checkpoint */}
-              {user && (
+            </SidebarSection>
+
+            {/* Sudija - korisnici sa dodeljenim checkpoint-om */}
+            {user && (
+              <SidebarSection>
+                <SidebarHeading>Sudija</SidebarHeading>
                 <SidebarItem href="/judge" current={pathname.startsWith('/judge')}>
                   <ClockIcon />
                   <SidebarLabel>Sudijska tabla</SidebarLabel>
                 </SidebarItem>
-              )}
-            </SidebarSection>
+              </SidebarSection>
+            )}
 
-            {/* Admin section */}
+            {/* Admin - samo admin */}
             {user?.role === 'ADMIN' && (
               <SidebarSection>
                 <SidebarHeading>Admin</SidebarHeading>
