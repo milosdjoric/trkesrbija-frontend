@@ -183,8 +183,8 @@ export default function JudgePage() {
         <Button
           type="submit"
           disabled={!bibNumber.trim() || submitting}
-          outline
-          className="!h-16 w-full !rounded-2xl !border-2 !border-emerald-500 !text-lg !font-semibold !text-emerald-600 hover:!bg-emerald-50 dark:!border-emerald-400 dark:!text-emerald-400 dark:hover:!bg-emerald-950/30"
+          color="emerald"
+          className="!h-16 w-full !rounded-2xl !text-lg !font-semibold"
         >
           {submitting ? 'Čuvam...' : 'Zabeleži vreme'}
         </Button>
