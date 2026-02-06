@@ -1,12 +1,12 @@
 import { fetchRaceEventBySlug } from '@/app/lib/api'
-import { AdminRaceLinks } from '@/components/admin-race-links'
 import { Badge } from '@/components/badge'
 import { FavoriteButton } from '@/components/favorite-button'
 import { RegisterRaceButton } from '@/components/register-race-button'
+import { RaceCard } from '@/components/race-card'
 import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
-import { CalendarIcon, ChevronLeftIcon, ClockIcon, MapPinIcon } from '@heroicons/react/16/solid'
+import { CalendarIcon, ChevronLeftIcon, MapPinIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -142,17 +142,18 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             const length = `${race.length}km`
             const elevation = race.elevation != null ? `${race.elevation}m` : ''
             const details = [time, length, elevation].filter(Boolean).join(' / ')
-            const isTrail = event.type === 'TRAIL'
 
             return (
-              <span key={race.id} className="inline-flex items-center gap-1.5">
-                <Badge color={isTrail ? 'emerald' : 'sky'}>
-                  {race.raceName ?? 'Trka'}{details && ` · ${details}`}
-                </Badge>
+              <RaceCard
+                key={race.id}
+                raceId={race.id}
+                name={race.raceName ?? 'Trka'}
+                details={details}
+                color={event.type === 'TRAIL' ? 'emerald' : 'sky'}
+              >
                 <RegisterRaceButton raceId={race.id} size="sm" />
                 <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
-                <AdminRaceLinks raceId={race.id} />
-              </span>
+              </RaceCard>
             )
           })}
         </div>

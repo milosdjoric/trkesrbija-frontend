@@ -1,10 +1,9 @@
 import { gql } from '@/app/lib/api'
-import { AdminRaceLinks } from '@/components/admin-race-links'
-import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
 import { Heading } from '@/components/heading'
 import { Link } from '@/components/link'
+import { RaceCard } from '@/components/race-card'
 import { EllipsisVerticalIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { FiltersBar } from './filters-bar'
@@ -484,19 +483,15 @@ export default async function Events({
                                     const parts = [time, length, elevation].filter(Boolean).join(' / ')
                                     const isTrail = event.eventType === 'TRAIL'
 
-                                    // Boja: siva ako ne ispunjava filter, zelena za trail, plava za asfalt
-                                    const badgeColor = !matches ? 'zinc' : isTrail ? 'emerald' : 'sky'
-
                                     return (
-                                      <span key={r.id} className="inline-flex items-center gap-1">
-                                        <Badge
-                                          color={badgeColor}
-                                          className={matches ? '' : 'line-through opacity-50'}
-                                        >
-                                          {name}{parts && ` · ${parts}`}
-                                        </Badge>
-                                        <AdminRaceLinks raceId={r.id} />
-                                      </span>
+                                      <RaceCard
+                                        key={r.id}
+                                        raceId={r.id}
+                                        name={name}
+                                        details={parts}
+                                        color={isTrail ? 'emerald' : 'sky'}
+                                        dimmed={!matches}
+                                      />
                                     )
                                   })
                                 ) : (
