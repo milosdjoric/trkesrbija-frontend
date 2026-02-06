@@ -10,7 +10,14 @@ import type { Metadata } from 'next'
 import { FiltersBar } from './filters-bar'
 
 export const metadata: Metadata = {
-  title: 'Događaji',
+  title: 'Svi događaji',
+  description:
+    'Pregledajte sve trail i asfaltne trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
+  openGraph: {
+    title: 'Svi događaji - Trke Srbija',
+    description:
+      'Pregledajte sve trail i asfaltne trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
+  },
 }
 
 export default async function Events({

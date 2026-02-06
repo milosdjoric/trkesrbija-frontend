@@ -15,8 +15,30 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const event = await fetchRaceEventBySlug(slug)
 
+  if (!event) {
+    return { title: 'Događaj nije pronađen' }
+  }
+
+  const eventType = event.type === 'TRAIL' ? 'Trail' : 'Asfaltna'
+  const description =
+    event.description ??
+    `${event.eventName} - ${eventType} trka u Srbiji. Prijavite se i učestvujte!`
+
   return {
-    title: event?.eventName ?? 'Događaj',
+    title: event.eventName,
+    description,
+    openGraph: {
+      title: event.eventName,
+      description,
+      type: 'website',
+      ...(event.mainImage && { images: [{ url: event.mainImage }] }),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: event.eventName,
+      description,
+      ...(event.mainImage && { images: [event.mainImage] }),
+    },
   }
 }
 
