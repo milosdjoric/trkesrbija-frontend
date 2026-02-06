@@ -1,12 +1,13 @@
 import { fetchRaceEventBySlug } from '@/app/lib/api'
+import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { FavoriteButton } from '@/components/favorite-button'
 import { RegisterRaceButton } from '@/components/register-race-button'
 import { RaceCard } from '@/components/race-card'
 import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
-import { Link } from '@/components/link'
-import { CalendarIcon, ChevronLeftIcon, MapPinIcon } from '@heroicons/react/16/solid'
+import { IconText } from '@/components/icon-text'
+import { CalendarIcon, MapPinIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -66,12 +67,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   return (
     <>
-      <div className="max-lg:hidden">
-        <Link href="/events" className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400">
-          <ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
-          Događaji
-        </Link>
-      </div>
+      <BackLink href="/events">Događaji</BackLink>
 
       <div className="mt-4 flex flex-wrap items-start justify-between gap-6">
         <div className="flex flex-wrap items-start gap-6">
@@ -95,12 +91,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               <p className="max-w-2xl text-sm/6 text-zinc-600 dark:text-zinc-400">{event.description}</p>
             )}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
-              <span className="inline-flex items-center gap-1.5">
-                <CalendarIcon className="size-4" />
-                {eventDate}
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <MapPinIcon className="size-4" />
+              <IconText icon={<CalendarIcon className="size-4" />}>{eventDate}</IconText>
+              <IconText icon={<MapPinIcon className="size-4" />}>
                 {eventLocation.startsWith('http') ? (
                   <a
                     href={eventLocation}
@@ -113,7 +105,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 ) : (
                   eventLocation
                 )}
-              </span>
+              </IconText>
             </div>
             {event.tags && event.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-1">

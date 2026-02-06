@@ -1,11 +1,13 @@
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Heading, Subheading } from '@/components/heading'
+import { IconText } from '@/components/icon-text'
 import { Link } from '@/components/link'
+import { QuickLinkCard } from '@/components/quick-link-card'
 import { Text } from '@/components/text'
+import { formatDate, formatTime, formatMonth, formatDay } from '@/lib/formatters'
 import {
   CalendarIcon,
-  MapPinIcon,
   ArrowRightIcon,
   TrophyIcon,
   UserGroupIcon,
@@ -73,25 +75,6 @@ const STATS_QUERY = `
     }
   }
 `
-
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString('sr-Latn-RS', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-  })
-}
-
-function formatTime(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleTimeString('sr-Latn-RS', {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
 
 function daysUntil(iso: string): number {
   const d = new Date(iso)
@@ -200,10 +183,10 @@ export default async function HomePage() {
                   {/* Datum */}
                   <div className="flex w-16 shrink-0 flex-col items-center rounded-lg bg-zinc-100 py-2 text-center dark:bg-zinc-800">
                     <span className="text-xs font-medium uppercase text-zinc-500 dark:text-zinc-400">
-                      {new Date(race.startDateTime).toLocaleDateString('sr-Latn-RS', { month: 'short' })}
+                      {formatMonth(race.startDateTime)}
                     </span>
                     <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                      {new Date(race.startDateTime).getDate()}
+                      {formatDay(race.startDateTime)}
                     </span>
                   </div>
 
@@ -218,10 +201,9 @@ export default async function HomePage() {
                       </Badge>
                     </div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-                      <span className="inline-flex items-center gap-1">
-                        <CalendarIcon className="size-3.5" />
-                        {formatDate(race.startDateTime)} · {formatTime(race.startDateTime)}
-                      </span>
+                      <IconText icon={<CalendarIcon className="size-3.5" />}>
+                        {formatDate(race.startDateTime, 'short')} · {formatTime(race.startDateTime)}
+                      </IconText>
                       <span>{details}</span>
                     </div>
                   </div>
@@ -249,48 +231,24 @@ export default async function HomePage() {
       <div className="mt-10">
         <Subheading>Brzi pristup</Subheading>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
-          <Link
+          <QuickLinkCard
             href="/events"
-            className="rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
-          >
-            <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-                <CalendarIcon className="size-5 text-zinc-600 dark:text-zinc-400" />
-              </div>
-              <div>
-                <div className="font-medium text-zinc-900 dark:text-zinc-100">Svi događaji</div>
-                <div className="text-sm text-zinc-500">Pregledaj kalendar trka</div>
-              </div>
-            </div>
-          </Link>
-          <Link
+            icon={<CalendarIcon className="size-5 text-zinc-600 dark:text-zinc-400" />}
+            title="Svi događaji"
+            description="Pregledaj kalendar trka"
+          />
+          <QuickLinkCard
             href="/favorites"
-            className="rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
-          >
-            <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-                <TrophyIcon className="size-5 text-zinc-600 dark:text-zinc-400" />
-              </div>
-              <div>
-                <div className="font-medium text-zinc-900 dark:text-zinc-100">Omiljene trke</div>
-                <div className="text-sm text-zinc-500">Tvoje sačuvane trke</div>
-              </div>
-            </div>
-          </Link>
-          <Link
+            icon={<TrophyIcon className="size-5 text-zinc-600 dark:text-zinc-400" />}
+            title="Omiljene trke"
+            description="Tvoje sačuvane trke"
+          />
+          <QuickLinkCard
             href="/my-registrations"
-            className="rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
-          >
-            <div className="flex items-center gap-3">
-              <div className="rounded-lg bg-zinc-100 p-2 dark:bg-zinc-800">
-                <UserGroupIcon className="size-5 text-zinc-600 dark:text-zinc-400" />
-              </div>
-              <div>
-                <div className="font-medium text-zinc-900 dark:text-zinc-100">Moje prijave</div>
-                <div className="text-sm text-zinc-500">Tvoje registracije</div>
-              </div>
-            </div>
-          </Link>
+            icon={<UserGroupIcon className="size-5 text-zinc-600 dark:text-zinc-400" />}
+            title="Moje prijave"
+            description="Tvoje registracije"
+          />
         </div>
       </div>
     </>
