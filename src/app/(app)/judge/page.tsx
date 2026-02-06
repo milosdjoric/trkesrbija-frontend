@@ -28,6 +28,7 @@ export default function JudgePage() {
   const [recentTimings, setRecentTimings] = useState<Timing[]>([])
   const [loading, setLoading] = useState(true)
   const [bibNumber, setBibNumber] = useState('')
+  const [inputFocused, setInputFocused] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [lastResult, setLastResult] = useState<{ success: boolean; message: string; timing?: Timing } | null>(null)
 
@@ -147,7 +148,7 @@ export default function JudgePage() {
           </div>
           <div className="min-w-0 flex-1">
             <div className="truncate text-lg font-bold text-white">
-              CP{checkpoint.orderIndex} - {checkpoint.name}
+              {checkpoint.name}
             </div>
             <div className="truncate text-sm text-emerald-100">
               {checkpoint.race.raceName ?? checkpoint.race.raceEvent.eventName}
@@ -169,8 +170,10 @@ export default function JudgePage() {
             pattern="[0-9]*"
             value={bibNumber}
             onChange={(e) => setBibNumber(e.target.value)}
-            placeholder="___"
-            className="w-full rounded-2xl border-2 border-emerald-200 bg-white px-6 py-8 text-center font-mono text-6xl font-bold tracking-[0.2em] text-zinc-900 placeholder:text-zinc-200 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-emerald-800 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-700 dark:focus:border-emerald-400"
+            onFocus={() => setInputFocused(true)}
+            onBlur={() => setInputFocused(false)}
+            placeholder={inputFocused ? '' : '000'}
+            className="w-full rounded-2xl border-2 border-emerald-200 bg-white px-6 py-8 text-center font-mono text-6xl font-bold tracking-[0.2em] text-zinc-900 placeholder:text-zinc-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-emerald-800 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-600 dark:focus:border-emerald-400"
             autoFocus
             autoComplete="off"
             disabled={submitting}
@@ -180,10 +183,10 @@ export default function JudgePage() {
         <Button
           type="submit"
           disabled={!bibNumber.trim() || submitting}
-          className="h-16 w-full rounded-2xl text-lg font-bold uppercase tracking-wide shadow-lg"
+          className="!h-16 w-full !rounded-2xl !text-lg !font-bold uppercase tracking-wide shadow-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2"
           color="emerald"
         >
-          <ClockIcon className="size-6" />
+          <ClockIcon className="!size-5" />
           {submitting ? 'Čuvam...' : 'Zabeleži vreme'}
         </Button>
       </form>
