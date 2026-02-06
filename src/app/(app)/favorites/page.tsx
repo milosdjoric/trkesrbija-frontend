@@ -2,10 +2,16 @@
 
 import { useAuth } from '@/app/auth/auth-context'
 import { Badge } from '@/components/badge'
+import { EmptyState } from '@/components/empty-state'
 import { FavoriteButton } from '@/components/favorite-button'
 import { Heading } from '@/components/heading'
+import { IconText } from '@/components/icon-text'
 import { Link } from '@/components/link'
+import { LoadingState } from '@/components/loading-state'
+import { Text } from '@/components/text'
+import { formatDate, formatTime } from '@/lib/formatters'
 import { CalendarIcon, ClockIcon, MapPinIcon } from '@heroicons/react/16/solid'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 type FavoriteRace = {
@@ -24,40 +30,19 @@ type FavoriteRace = {
   }
 }
 
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
-
-function formatTime(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
-
 export default function FavoritesPage() {
-  const { accessToken, isLoading: authLoading } = useAuth()
+  const { user, accessToken, isLoading: authLoading } = useAuth()
+  const router = useRouter()
   const [favorites, setFavorites] = useState<FavoriteRace[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     // Wait for auth to finish loading
     if (authLoading) return
 
-    // If no token, show login prompt
-    if (!accessToken) {
-      setError('Prijavite se da vidite svoje favorite')
-      setLoading(false)
+    // If not logged in, redirect to login
+    if (!user) {
+      router.push('/login?redirect=/favorites')
       return
     }
 
@@ -99,69 +84,46 @@ export default function FavoritesPage() {
         const json = await res.json()
 
         if (json.errors?.length) {
-          const firstError = json.errors[0]
-          if (firstError.extensions?.code === 'UNAUTHENTICATED') {
-            setError('Prijavite se da vidite svoje favorite')
-          } else {
-            setError(firstError.message)
-          }
+          console.error('Failed to load favorites:', json.errors)
           return
         }
 
         setFavorites(json.data?.myFavorites ?? [])
       } catch (err) {
-        setError('Učitavanje favorita nije uspelo')
-        console.error(err)
+        console.error('Failed to load favorites:', err)
       } finally {
         setLoading(false)
       }
     }
 
     fetchFavorites()
-  }, [accessToken, authLoading])
+  }, [accessToken, authLoading, user, router])
 
   function handleRemove(raceId: string) {
     setFavorites((prev) => prev.filter((f) => f.raceId !== raceId))
   }
 
   if (loading || authLoading) {
-    return (
-      <>
-        <Heading>Moji favoriti</Heading>
-        <div className="mt-6 text-sm text-zinc-500">Učitavanje...</div>
-      </>
-    )
+    return <LoadingState />
   }
 
-  if (error) {
-    return (
-      <>
-        <Heading>Moji favoriti</Heading>
-        <div className="mt-6 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
-          <div className="font-medium">{error}</div>
-          {error.includes('Prijavite se') && (
-            <div className="mt-2">
-              <Link href="/login" className="text-blue-600 underline hover:text-blue-700">
-                Idi na prijavu
-              </Link>
-            </div>
-          )}
-        </div>
-      </>
-    )
+  if (!user) {
+    return null
   }
 
   return (
     <>
       <Heading>Moji favoriti</Heading>
+      <Text className="mt-2 text-zinc-600 dark:text-zinc-400">Vaše omiljene trke na jednom mestu</Text>
 
       {favorites.length === 0 ? (
-        <div className="mt-6 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
-          <div className="font-medium">Još nemate favorite</div>
-          <div className="mt-1 text-zinc-500">
-            Pretražite <Link href="/events" className="underline">događaje</Link> i kliknite na srce da dodate trke u favorite.
-          </div>
-        </div>
+        <EmptyState
+          icon="❤️"
+          title="Nemate nijednu omiljenu trku"
+          description="Pretražite događaje i kliknite na srce da dodate trke u favorite!"
+          action={{ label: 'Pregledaj događaje', href: '/events' }}
+          className="mt-8"
+        />
       ) : (
         <div className="mt-6 flex flex-col gap-3">
           {favorites.map((fav) => {
@@ -175,16 +137,22 @@ export default function FavoritesPage() {
                   <div className="font-medium text-zinc-900 dark:text-zinc-100">
                     {race.raceName ?? 'Neimenovana trka'}
                   </div>
-                  <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-                    <CalendarIcon className="size-4 shrink-0" />
-                    <span>{formatDate(race.startDateTime)}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-                    <ClockIcon className="size-4 shrink-0" />
-                    <span>{formatTime(race.startDateTime)}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-sm text-zinc-500 dark:text-zinc-400">
-                    <MapPinIcon className="size-4 shrink-0" />
+                  <IconText
+                    icon={<CalendarIcon className="size-4" />}
+                    className="text-sm text-zinc-500 dark:text-zinc-400"
+                  >
+                    {formatDate(race.startDateTime, 'short')}
+                  </IconText>
+                  <IconText
+                    icon={<ClockIcon className="size-4" />}
+                    className="text-sm text-zinc-500 dark:text-zinc-400"
+                  >
+                    {formatTime(race.startDateTime)}
+                  </IconText>
+                  <IconText
+                    icon={<MapPinIcon className="size-4" />}
+                    className="text-sm text-zinc-500 dark:text-zinc-400"
+                  >
                     {race.startLocation.startsWith('http') ? (
                       <a
                         href={race.startLocation}
@@ -195,9 +163,9 @@ export default function FavoritesPage() {
                         Prikaži lokaciju
                       </a>
                     ) : (
-                      <span>{race.startLocation}</span>
+                      race.startLocation
                     )}
-                  </div>
+                  </IconText>
                   {race.competition && (
                     <Badge color="blue">{race.competition.name}</Badge>
                   )}
