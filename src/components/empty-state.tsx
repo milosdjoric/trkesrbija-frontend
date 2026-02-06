@@ -24,7 +24,7 @@ export function EmptyState({ icon, title, description, action, className = '' }:
       <Subheading className={icon ? 'mt-4' : ''}>{title}</Subheading>
       {description && <Text className="mt-2 text-zinc-500">{description}</Text>}
       {action && (
-        <Button href={action.href} onClick={action.onClick} className="mt-4">
+        <Button href={action.href} onClick={action.onClick} className="mt-4" outline>
           {action.label}
         </Button>
       )}
