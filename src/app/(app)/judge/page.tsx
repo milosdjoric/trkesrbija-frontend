@@ -10,9 +10,7 @@ import {
 } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
-import { Field, Label } from '@/components/fieldset'
-import { Heading, Subheading } from '@/components/heading'
-import { Input } from '@/components/input'
+import { Heading } from '@/components/heading'
 import { Text } from '@/components/text'
 import { CheckCircleIcon, ClockIcon, ExclamationTriangleIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
@@ -104,7 +102,7 @@ export default function JudgePage() {
       const timing = await recordTime(bibNumber.trim(), accessToken)
       setLastResult({
         success: true,
-        message: `Vreme zabeleženo za #${timing.registration.bibNumber} - ${timing.registration.firstName} ${timing.registration.lastName}`,
+        message: `#${timing.registration.bibNumber} - ${timing.registration.firstName} ${timing.registration.lastName}`,
         timing,
       })
       setBibNumber('')
@@ -117,7 +115,7 @@ export default function JudgePage() {
     } catch (err: any) {
       setLastResult({
         success: false,
-        message: err?.message ?? 'Greška pri zapisivanju vremena',
+        message: err?.message ?? 'Greska pri zapisivanju vremena',
       })
     } finally {
       setSubmitting(false)
@@ -136,8 +134,8 @@ export default function JudgePage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-zinc-500">Učitavanje...</div>
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="animate-pulse text-xl text-zinc-500">Ucitavanje...</div>
       </div>
     )
   }
@@ -148,129 +146,132 @@ export default function JudgePage() {
 
   if (!checkpoint) {
     return (
-      <div className="py-12 text-center">
-        <ExclamationTriangleIcon className="mx-auto size-12 text-amber-500" />
+      <div className="flex min-h-[50vh] flex-col items-center justify-center px-4 text-center">
+        <ExclamationTriangleIcon className="size-16 text-amber-500" />
         <Heading className="mt-4">Nema dodeljenog checkpoint-a</Heading>
-        <Text className="mt-2">
-          Niste dodeljeni nijednom checkpoint-u. Kontaktirajte administratora.
+        <Text className="mt-2 max-w-sm">
+          Niste dodeljeni nijednom checkpoint-u. Kontaktirajte administratora da vas dodeli.
         </Text>
       </div>
     )
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
-      {/* Header */}
-      <div className="mb-6 rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800">
-        <div className="flex items-center gap-2">
-          <Badge color="emerald" className="text-lg">
-            {checkpoint.orderIndex}
-          </Badge>
-          <Heading>{checkpoint.name}</Heading>
+    <div className="mx-auto max-w-lg px-4 pb-8">
+      {/* Checkpoint Header - compact */}
+      <div className="mb-4 flex items-center gap-3 rounded-xl bg-emerald-50 p-4 dark:bg-emerald-900/20">
+        <Badge color="emerald" className="px-3 py-1 text-xl font-bold">
+          {checkpoint.orderIndex}
+        </Badge>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-lg font-bold text-emerald-900 dark:text-emerald-100">
+            {checkpoint.name}
+          </div>
+          <div className="truncate text-sm text-emerald-700 dark:text-emerald-300">
+            {checkpoint.race.raceName ?? checkpoint.race.raceEvent.eventName}
+          </div>
         </div>
-        <Text className="mt-1">
-          {checkpoint.race.raceName ?? checkpoint.race.raceEvent.eventName} •{' '}
-          {formatDate(checkpoint.race.startDateTime)} • {checkpoint.race.length} km
-        </Text>
-        {checkpoint.distance && (
-          <Text className="text-sm text-zinc-500">Distanca od starta: {checkpoint.distance} km</Text>
-        )}
       </div>
 
-      {/* Time Recording Form */}
-      <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
-        <Subheading>Zabeleži vreme</Subheading>
-        <form onSubmit={handleSubmit} className="mt-4">
-          <Field>
-            <Label>Startni broj</Label>
-            <div className="flex gap-2">
-              <Input
-                ref={inputRef}
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={bibNumber}
-                onChange={(e) => setBibNumber(e.target.value)}
-                placeholder="Unesite startni broj..."
-                className="flex-1 text-2xl font-mono"
-                autoFocus
-                disabled={submitting}
-              />
-              <Button type="submit" disabled={!bibNumber.trim() || submitting} className="px-8">
-                <ClockIcon className="size-5" />
-                {submitting ? 'Čuvam...' : 'Zabeleži'}
-              </Button>
-            </div>
-          </Field>
-        </form>
+      {/* Main Input Area - LARGE for mobile */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="mb-2 block text-sm font-medium text-zinc-600 dark:text-zinc-400">
+            Startni broj
+          </label>
+          <input
+            ref={inputRef}
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={bibNumber}
+            onChange={(e) => setBibNumber(e.target.value)}
+            placeholder="000"
+            className="w-full rounded-2xl border-2 border-zinc-300 bg-white px-6 py-6 text-center font-mono text-5xl font-bold tracking-wider text-zinc-900 placeholder:text-zinc-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-600 dark:focus:border-emerald-400"
+            autoFocus
+            autoComplete="off"
+            disabled={submitting}
+          />
+        </div>
 
-        {/* Result feedback */}
-        {lastResult && (
-          <div
-            className={`mt-4 rounded-lg p-4 ${
-              lastResult.success
-                ? 'bg-green-50 text-green-800 dark:bg-green-900/30 dark:text-green-300'
-                : 'bg-red-50 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-            }`}
-          >
-            <div className="flex items-center gap-2">
-              {lastResult.success ? (
-                <CheckCircleIcon className="size-5" />
-              ) : (
-                <ExclamationTriangleIcon className="size-5" />
-              )}
-              <span className="font-medium">{lastResult.message}</span>
-            </div>
-            {lastResult.timing && (
-              <div className="mt-1 text-sm opacity-75">
-                Vreme: {formatTime(lastResult.timing.timestamp)}
-              </div>
+        <Button
+          type="submit"
+          disabled={!bibNumber.trim() || submitting}
+          className="h-16 w-full rounded-2xl text-xl font-bold"
+          color="emerald"
+        >
+          <ClockIcon className="size-7" />
+          {submitting ? 'Cuvam...' : 'ZABELEZI VREME'}
+        </Button>
+      </form>
+
+      {/* Result feedback - prominent */}
+      {lastResult && (
+        <div
+          className={`mt-4 rounded-2xl p-5 ${
+            lastResult.success
+              ? 'bg-green-100 text-green-900 dark:bg-green-900/40 dark:text-green-100'
+              : 'bg-red-100 text-red-900 dark:bg-red-900/40 dark:text-red-100'
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            {lastResult.success ? (
+              <CheckCircleIcon className="size-8 shrink-0" />
+            ) : (
+              <ExclamationTriangleIcon className="size-8 shrink-0" />
             )}
+            <div className="min-w-0 flex-1">
+              <div className="text-lg font-bold">{lastResult.success ? 'Uspesno!' : 'Greska'}</div>
+              <div className="truncate text-sm">{lastResult.message}</div>
+              {lastResult.timing && (
+                <div className="mt-1 font-mono text-2xl font-bold">
+                  {formatTime(lastResult.timing.timestamp)}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Recent Timings - scrollable list */}
+      <div className="mt-8">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+            Poslednja vremena
+          </h2>
+          <span className="text-xs text-zinc-400">{recentTimings.length} unosa</span>
+        </div>
+
+        {recentTimings.length === 0 ? (
+          <div className="rounded-xl border-2 border-dashed border-zinc-200 p-8 text-center text-zinc-400 dark:border-zinc-700">
+            Nema zabelezenih vremena
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {recentTimings.map((timing, index) => (
+              <div
+                key={timing.id}
+                className={`flex items-center justify-between rounded-xl px-4 py-3 ${
+                  index === 0
+                    ? 'bg-emerald-50 dark:bg-emerald-900/20'
+                    : 'bg-zinc-50 dark:bg-zinc-800/50'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-12 font-mono text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {timing.registration.bibNumber}
+                  </span>
+                  <span className="text-sm text-zinc-600 dark:text-zinc-400">
+                    {timing.registration.firstName} {timing.registration.lastName}
+                  </span>
+                </div>
+                <span className="font-mono text-lg font-semibold text-zinc-700 dark:text-zinc-300">
+                  {formatTime(timing.timestamp)}
+                </span>
+              </div>
+            ))}
           </div>
         )}
-      </div>
-
-      {/* Recent Timings */}
-      <div className="mt-6">
-        <Subheading>Poslednja zabeležena vremena</Subheading>
-        <div className="mt-3 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
-          {recentTimings.length === 0 ? (
-            <div className="p-4 text-center text-zinc-500">
-              Još nema zabeleženih vremena na ovom checkpoint-u.
-            </div>
-          ) : (
-            <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-              <thead className="bg-zinc-50 dark:bg-zinc-800">
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                    #
-                  </th>
-                  <th className="px-4 py-2 text-left text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                    Učesnik
-                  </th>
-                  <th className="px-4 py-2 text-right text-xs font-medium text-zinc-500 dark:text-zinc-400">
-                    Vreme
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
-                {recentTimings.map((timing) => (
-                  <tr key={timing.id}>
-                    <td className="px-4 py-2 font-mono text-sm font-bold">
-                      {timing.registration.bibNumber}
-                    </td>
-                    <td className="px-4 py-2 text-sm">
-                      {timing.registration.firstName} {timing.registration.lastName}
-                    </td>
-                    <td className="px-4 py-2 text-right font-mono text-sm">
-                      {formatTime(timing.timestamp)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
       </div>
     </div>
   )

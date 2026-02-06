@@ -4,8 +4,10 @@ import { useAuth } from '@/app/auth/auth-context'
 import { cancelMyRegistration, fetchMyRaceRegistrations, type RaceRegistration } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import { useConfirm } from '@/components/confirm-dialog'
 import { Heading, Subheading } from '@/components/heading'
 import { Text } from '@/components/text'
+import { useToast } from '@/components/toast'
 import { CalendarIcon, MapPinIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -39,6 +41,8 @@ function getStatusBadge(status: RaceRegistration['status']) {
 export default function MyRegistrationsPage() {
   const { user, accessToken, isLoading: authLoading } = useAuth()
   const router = useRouter()
+  const { toast } = useToast()
+  const { confirm } = useConfirm()
 
   const [registrations, setRegistrations] = useState<RaceRegistration[]>([])
   const [loading, setLoading] = useState(true)
@@ -68,16 +72,22 @@ export default function MyRegistrationsPage() {
   }, [authLoading, user, accessToken, router, loadRegistrations])
 
   async function handleCancel(registrationId: string) {
-    if (!confirm('Da li ste sigurni da želite da otkažete ovu prijavu?')) {
-      return
-    }
+    const confirmed = await confirm({
+      title: 'Otkaži prijavu',
+      message: 'Da li ste sigurni da želite da otkažete ovu prijavu?',
+      confirmText: 'Otkaži prijavu',
+      cancelText: 'Nazad',
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     setCancellingId(registrationId)
     try {
       await cancelMyRegistration(registrationId, accessToken)
       await loadRegistrations()
+      toast('Prijava uspešno otkazana', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Otkazivanje nije uspelo')
+      toast(err?.message ?? 'Otkazivanje nije uspelo', 'error')
     } finally {
       setCancellingId(null)
     }

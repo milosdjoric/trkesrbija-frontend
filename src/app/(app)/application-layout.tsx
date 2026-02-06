@@ -140,7 +140,7 @@ export function ApplicationLayout({
             {/* Opšte - svi vide */}
             <SidebarSection>
               <SidebarHeading>Opšte</SidebarHeading>
-              <SidebarItem href="/events" current={pathname.startsWith('/events') && !pathname.startsWith('/events/')}>
+              <SidebarItem href="/events" current={pathname === '/events' || pathname.startsWith('/events/')}>
                 <Square2StackIcon />
                 <SidebarLabel>Svi događaji</SidebarLabel>
               </SidebarItem>
@@ -174,8 +174,8 @@ export function ApplicationLayout({
               )}
             </SidebarSection>
 
-            {/* Sudija - korisnici sa dodeljenim checkpoint-om */}
-            {user && (
+            {/* Sudija - samo korisnici sa dodeljenim checkpoint-om */}
+            {user?.assignedCheckpointId && (
               <SidebarSection>
                 <SidebarHeading>Sudija</SidebarHeading>
                 <SidebarItem href="/judge" current={pathname.startsWith('/judge')}>

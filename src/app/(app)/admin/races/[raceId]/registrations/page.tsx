@@ -12,11 +12,13 @@ import {
 } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import { useConfirm } from '@/components/confirm-dialog'
 import { Field, Label } from '@/components/fieldset'
 import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Text } from '@/components/text'
+import { useToast } from '@/components/toast'
 import {
   ChevronLeftIcon,
   MagnifyingGlassIcon,
@@ -95,6 +97,8 @@ export default function AdminRegistrationsPage() {
   const params = useParams()
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
+  const { toast } = useToast()
+  const { confirm } = useConfirm()
 
   const raceId = params.raceId as string
 
@@ -168,8 +172,9 @@ export default function AdminRegistrationsPage() {
     try {
       await updateRegistrationStatus(registrationId, newStatus, accessToken)
       await loadData()
+      toast('Status uspešno promenjen', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Promena statusa nije uspela')
+      toast(err?.message ?? 'Promena statusa nije uspela', 'error')
     }
   }
 
@@ -181,21 +186,28 @@ export default function AdminRegistrationsPage() {
       setEditingBib(null)
       setNewBibNumber('')
       await loadData()
+      toast('Startni broj uspešno dodeljen', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Dodeljivanje startnog broja nije uspelo')
+      toast(err?.message ?? 'Dodeljivanje startnog broja nije uspelo', 'error')
     }
   }
 
   async function handleDelete(registrationId: string) {
-    if (!confirm('Da li ste sigurni da želite da obrišete ovu prijavu? Ova akcija se ne može poništiti.')) {
-      return
-    }
+    const confirmed = await confirm({
+      title: 'Obriši prijavu',
+      message: 'Da li ste sigurni da želite da obrišete ovu prijavu? Ova akcija se ne može poništiti.',
+      confirmText: 'Obriši',
+      cancelText: 'Otkaži',
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     try {
       await deleteRegistration(registrationId, accessToken)
       await loadData()
+      toast('Prijava uspešno obrisana', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Brisanje nije uspelo')
+      toast(err?.message ?? 'Brisanje nije uspelo', 'error')
     }
   }
 

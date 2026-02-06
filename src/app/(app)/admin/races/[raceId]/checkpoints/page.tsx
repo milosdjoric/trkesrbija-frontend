@@ -16,12 +16,14 @@ import {
 } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import { useConfirm } from '@/components/confirm-dialog'
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from '@/components/dialog'
 import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Text } from '@/components/text'
+import { useToast } from '@/components/toast'
 import {
   ChevronLeftIcon,
   PencilIcon,
@@ -76,6 +78,8 @@ export default function AdminCheckpointsPage() {
   const params = useParams()
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
+  const { toast } = useToast()
+  const { confirm } = useConfirm()
 
   const raceId = params.raceId as string
 
@@ -165,8 +169,9 @@ export default function AdminCheckpointsPage() {
       setShowCreateDialog(false)
       resetForm()
       await loadData()
+      toast('Checkpoint uspešno kreiran', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Kreiranje checkpoint-a nije uspelo')
+      toast(err?.message ?? 'Kreiranje checkpoint-a nije uspelo', 'error')
     }
   }
 
@@ -187,20 +192,29 @@ export default function AdminCheckpointsPage() {
       setEditingCheckpoint(null)
       resetForm()
       await loadData()
+      toast('Checkpoint uspešno ažuriran', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Ažuriranje checkpoint-a nije uspelo')
+      toast(err?.message ?? 'Ažuriranje checkpoint-a nije uspelo', 'error')
     }
   }
 
   // Delete checkpoint
   async function handleDelete(checkpointId: string) {
-    if (!confirm('Da li ste sigurni da želite da obrišete ovaj checkpoint?')) return
+    const confirmed = await confirm({
+      title: 'Obriši checkpoint',
+      message: 'Da li ste sigurni da želite da obrišete ovaj checkpoint?',
+      confirmText: 'Obriši',
+      cancelText: 'Otkaži',
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     try {
       await deleteCheckpoint(checkpointId, accessToken)
       await loadData()
+      toast('Checkpoint uspešno obrisan', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Brisanje checkpoint-a nije uspelo')
+      toast(err?.message ?? 'Brisanje checkpoint-a nije uspelo', 'error')
     }
   }
 
@@ -213,20 +227,29 @@ export default function AdminCheckpointsPage() {
       setAssigningCheckpoint(null)
       setSelectedUserId('')
       await loadData()
+      toast('Sudija uspešno dodeljen', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Dodela sudije nije uspela')
+      toast(err?.message ?? 'Dodela sudije nije uspela', 'error')
     }
   }
 
   // Unassign judge
   async function handleUnassignJudge(userId: string) {
-    if (!confirm('Da li ste sigurni da želite da uklonite ovog sudiju?')) return
+    const confirmed = await confirm({
+      title: 'Ukloni sudiju',
+      message: 'Da li ste sigurni da želite da uklonite ovog sudiju?',
+      confirmText: 'Ukloni',
+      cancelText: 'Otkaži',
+      variant: 'danger',
+    })
+    if (!confirmed) return
 
     try {
       await unassignJudge(userId, accessToken)
       await loadData()
+      toast('Sudija uspešno uklonjen', 'success')
     } catch (err: any) {
-      alert(err?.message ?? 'Uklanjanje sudije nije uspelo')
+      toast(err?.message ?? 'Uklanjanje sudije nije uspelo', 'error')
     }
   }
 

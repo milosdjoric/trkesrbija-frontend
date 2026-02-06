@@ -7,6 +7,7 @@ export type User = {
   name?: string
   role?: string
   emailVerified?: boolean
+  assignedCheckpointId?: string | null
   isParticipant?: boolean
 }
 
@@ -25,6 +26,7 @@ const LOGIN_MUTATION = `
         name
         role
         emailVerified
+        assignedCheckpointId
         isParticipant
       }
     }
@@ -41,6 +43,7 @@ const REGISTER_MUTATION = `
         name
         role
         emailVerified
+        assignedCheckpointId
         isParticipant
       }
     }
@@ -57,6 +60,7 @@ const REFRESH_MUTATION = `
         name
         role
         emailVerified
+        assignedCheckpointId
         isParticipant
       }
     }

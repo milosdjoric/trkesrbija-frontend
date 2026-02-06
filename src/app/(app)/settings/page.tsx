@@ -1,109 +1,110 @@
-import { Button } from '@/components/button'
-import { Checkbox, CheckboxField } from '@/components/checkbox'
-import { Divider } from '@/components/divider'
-import { Label } from '@/components/fieldset'
-import { Heading, Subheading } from '@/components/heading'
-import { Input } from '@/components/input'
-import { Select } from '@/components/select'
-import { Text } from '@/components/text'
-import { Textarea } from '@/components/textarea'
-import type { Metadata } from 'next'
-import { Address } from './address'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Settings',
-}
+import { useAuth } from '@/app/auth/auth-context'
+import { Badge } from '@/components/badge'
+import { Divider } from '@/components/divider'
+import { Heading, Subheading } from '@/components/heading'
+import { Text } from '@/components/text'
+import { CheckCircleIcon, ExclamationTriangleIcon, UserCircleIcon } from '@heroicons/react/16/solid'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function Settings() {
+  const { user, isLoading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login')
+    }
+  }, [isLoading, user, router])
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-pulse text-zinc-500">Ucitavanje...</div>
+      </div>
+    )
+  }
+
+  if (!user) {
+    return null
+  }
+
   return (
-    <form method="post" className="mx-auto max-w-4xl">
-      <Heading>Settings</Heading>
-      <Divider className="my-10 mt-6" />
+    <div className="mx-auto max-w-2xl">
+      <Heading>Podesavanja</Heading>
+      <Text className="mt-2">Pregledajte informacije o svom nalogu.</Text>
 
-      <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center dark:border-zinc-700 dark:bg-zinc-900">
-        <Subheading>Settings page</Subheading>
+      <Divider className="my-6" />
+
+      {/* Profile info */}
+      <section className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+        <div className="flex items-center gap-4">
+          <div className="flex size-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
+            <UserCircleIcon className="size-10 text-zinc-400" />
+          </div>
+          <div>
+            <div className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+              {user.name || 'Korisnik'}
+            </div>
+            <div className="text-sm text-zinc-500">{user.email}</div>
+          </div>
+        </div>
+
+        <Divider className="my-6" soft />
+
+        <div className="space-y-4">
+          {/* Email status */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email verifikacija</div>
+              <div className="text-xs text-zinc-500">{user.email}</div>
+            </div>
+            {user.emailVerified ? (
+              <Badge color="green" className="flex items-center gap-1">
+                <CheckCircleIcon className="size-3" />
+                Verifikovan
+              </Badge>
+            ) : (
+              <Badge color="amber" className="flex items-center gap-1">
+                <ExclamationTriangleIcon className="size-3" />
+                Nije verifikovan
+              </Badge>
+            )}
+          </div>
+
+          {/* Role */}
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Uloga</div>
+              <div className="text-xs text-zinc-500">Vasa uloga u sistemu</div>
+            </div>
+            <Badge color={user.role === 'ADMIN' ? 'purple' : 'zinc'}>
+              {user.role === 'ADMIN' ? 'Administrator' : 'Korisnik'}
+            </Badge>
+          </div>
+
+          {/* Judge status */}
+          {user.assignedCheckpointId && (
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Sudija</div>
+                <div className="text-xs text-zinc-500">Imate dodeljen checkpoint</div>
+              </div>
+              <Badge color="blue">Aktivan sudija</Badge>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Info section */}
+      <section className="mt-6 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
+        <Subheading>Izmena profila</Subheading>
         <Text className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          This page is under development. Settings and profile options will be added here soon.
+          Opcije za izmenu imena, lozinke i drugih podesavanja ce biti dostupne uskoro.
         </Text>
-      </div>
-
-      <div className="hidden">
-        <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Subheading>Organization Name</Subheading>
-            <Text>This will be displayed on your public profile.</Text>
-          </div>
-          <div>
-            <Input aria-label="Organization Name" name="name" defaultValue="Catalyst" />
-          </div>
-        </section>
-
-        <Divider className="my-10" soft />
-
-        <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Subheading>Organization Bio</Subheading>
-            <Text>This will be displayed on your public profile. Maximum 240 characters.</Text>
-          </div>
-          <div>
-            <Textarea aria-label="Organization Bio" name="bio" />
-          </div>
-        </section>
-
-        <Divider className="my-10" soft />
-
-        <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Subheading>Organization Email</Subheading>
-            <Text>This is how customers can contact you for support.</Text>
-          </div>
-          <div className="space-y-4">
-            <Input type="email" aria-label="Organization Email" name="email" defaultValue="info@example.com" />
-            <CheckboxField>
-              <Checkbox name="email_is_public" defaultChecked />
-              <Label>Show email on public profile</Label>
-            </CheckboxField>
-          </div>
-        </section>
-
-        <Divider className="my-10" soft />
-
-        <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Subheading>Address</Subheading>
-            <Text>This is where your organization is registered.</Text>
-          </div>
-          <Address />
-        </section>
-
-        <Divider className="my-10" soft />
-
-        <section className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
-          <div className="space-y-1">
-            <Subheading>Currency</Subheading>
-            <Text>The currency that your organization will be collecting.</Text>
-          </div>
-          <div>
-            <Select aria-label="Currency" name="currency" defaultValue="cad">
-              <option value="cad">CAD - Canadian Dollar</option>
-              <option value="usd">USD - United States Dollar</option>
-            </Select>
-          </div>
-        </section>
-
-        <Divider className="my-10" soft />
-      </div>
-
-      <Divider className="my-10" soft />
-
-      <div className="flex justify-end gap-4">
-        <Button type="reset" plain disabled>
-          Reset
-        </Button>
-        <Button type="submit" disabled>
-          Save changes
-        </Button>
-      </div>
-    </form>
+      </section>
+    </div>
   )
 }
