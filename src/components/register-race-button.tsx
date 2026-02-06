@@ -1,9 +1,15 @@
 'use client'
 
 import { useAuth } from '@/app/auth/auth-context'
-import { Button } from '@/components/button'
 import { gql } from '@/app/lib/api'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
+
+const linkStyles =
+  'inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200'
+
+const disabledStyles =
+  'inline-flex items-center gap-1 rounded border border-zinc-200 px-2 py-0.5 text-xs text-zinc-400 dark:border-zinc-700 dark:text-zinc-500'
 
 const CHECK_REGISTRATION_QUERY = `
   query CheckRegistration {
@@ -60,33 +66,25 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
   }
 
   if (isLoading || checking) {
-    return (
-      <Button outline disabled className={size === 'sm' ? 'text-xs' : ''}>
-        ...
-      </Button>
-    )
+    return <span className={disabledStyles}>...</span>
   }
 
   if (isRegistered) {
-    return (
-      <Button outline disabled className={size === 'sm' ? 'text-xs' : ''}>
-        ✓ Prijavljen
-      </Button>
-    )
+    return <span className={disabledStyles}>✓ Prijavljen</span>
   }
 
   // If user not logged in, redirect to login
   if (!user) {
     return (
-      <Button outline href={`/login?redirect=/races/${raceId}/register`} className={size === 'sm' ? 'text-xs' : ''}>
+      <Link href={`/login?redirect=/races/${raceId}/register`} className={linkStyles}>
         Prijavi se
-      </Button>
+      </Link>
     )
   }
 
   return (
-    <Button outline href={`/races/${raceId}/register`} className={size === 'sm' ? 'text-xs' : ''}>
+    <Link href={`/races/${raceId}/register`} className={linkStyles}>
       Prijavi se
-    </Button>
+    </Link>
   )
 }
