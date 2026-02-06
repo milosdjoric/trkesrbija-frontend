@@ -1,4 +1,5 @@
 import { gql } from '@/app/lib/api'
+import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
 import { Heading } from '@/components/heading'
