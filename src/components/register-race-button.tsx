@@ -69,8 +69,8 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
 
   if (isRegistered) {
     return (
-      <Button color="green" disabled className={size === 'sm' ? 'text-xs' : ''}>
-        Prijavljen
+      <Button outline disabled className={size === 'sm' ? 'text-xs' : ''}>
+        ✓ Prijavljen
       </Button>
     )
   }
@@ -78,14 +78,14 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
   // If user not logged in, redirect to login
   if (!user) {
     return (
-      <Button href={`/login?redirect=/races/${raceId}/register`} className={size === 'sm' ? 'text-xs' : ''}>
+      <Button outline href={`/login?redirect=/races/${raceId}/register`} className={size === 'sm' ? 'text-xs' : ''}>
         Prijavi se
       </Button>
     )
   }
 
   return (
-    <Button href={`/races/${raceId}/register`} className={size === 'sm' ? 'text-xs' : ''}>
+    <Button outline href={`/races/${raceId}/register`} className={size === 'sm' ? 'text-xs' : ''}>
       Prijavi se
     </Button>
   )
