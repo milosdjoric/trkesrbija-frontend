@@ -138,26 +138,28 @@ export default function JudgePage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg px-4 pb-8">
-      {/* Checkpoint Header - compact */}
-      <div className="mb-4 flex items-center gap-3 rounded-xl bg-emerald-50 p-4 dark:bg-emerald-900/20">
-        <Badge color="emerald" className="px-3 py-1 text-xl font-bold">
-          {checkpoint.orderIndex}
-        </Badge>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-lg font-bold text-emerald-900 dark:text-emerald-100">
-            {checkpoint.name}
+    <div className="mx-auto max-w-lg pb-8">
+      {/* Checkpoint Header */}
+      <div className="mb-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 p-4 shadow-lg dark:from-emerald-600 dark:to-emerald-700">
+        <div className="flex items-center gap-4">
+          <div className="flex size-12 items-center justify-center rounded-xl bg-white/20 text-2xl font-bold text-white">
+            {checkpoint.orderIndex}
           </div>
-          <div className="truncate text-sm text-emerald-700 dark:text-emerald-300">
-            {checkpoint.race.raceName ?? checkpoint.race.raceEvent.eventName}
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-lg font-bold text-white">
+              CP{checkpoint.orderIndex} - {checkpoint.name}
+            </div>
+            <div className="truncate text-sm text-emerald-100">
+              {checkpoint.race.raceName ?? checkpoint.race.raceEvent.eventName}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Input Area - LARGE for mobile */}
-      <form onSubmit={handleSubmit} className="space-y-4">
+      {/* Main Input Area */}
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-2 block text-sm font-medium text-zinc-600 dark:text-zinc-400">
+          <label className="mb-3 block text-base font-medium text-zinc-700 dark:text-zinc-300">
             Startni broj
           </label>
           <input
@@ -167,8 +169,8 @@ export default function JudgePage() {
             pattern="[0-9]*"
             value={bibNumber}
             onChange={(e) => setBibNumber(e.target.value)}
-            placeholder="000"
-            className="w-full rounded-2xl border-2 border-zinc-300 bg-white px-6 py-6 text-center font-mono text-5xl font-bold tracking-wider text-zinc-900 placeholder:text-zinc-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-zinc-600 dark:bg-zinc-800 dark:text-white dark:placeholder:text-zinc-600 dark:focus:border-emerald-400"
+            placeholder="___"
+            className="w-full rounded-2xl border-2 border-emerald-200 bg-white px-6 py-8 text-center font-mono text-6xl font-bold tracking-[0.2em] text-zinc-900 placeholder:text-zinc-200 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-emerald-800 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-700 dark:focus:border-emerald-400"
             autoFocus
             autoComplete="off"
             disabled={submitting}
@@ -178,34 +180,38 @@ export default function JudgePage() {
         <Button
           type="submit"
           disabled={!bibNumber.trim() || submitting}
-          className="h-16 w-full rounded-2xl text-xl font-bold"
+          className="h-16 w-full rounded-2xl text-lg font-bold uppercase tracking-wide shadow-lg"
           color="emerald"
         >
-          <ClockIcon className="size-7" />
-          {submitting ? 'Cuvam...' : 'ZABELEZI VREME'}
+          <ClockIcon className="size-6" />
+          {submitting ? 'Čuvam...' : 'Zabeleži vreme'}
         </Button>
       </form>
 
-      {/* Result feedback - prominent */}
+      {/* Result feedback */}
       {lastResult && (
         <div
-          className={`mt-4 rounded-2xl p-5 ${
+          className={`mt-5 rounded-2xl p-5 shadow-md ${
             lastResult.success
-              ? 'bg-green-100 text-green-900 dark:bg-green-900/40 dark:text-green-100'
-              : 'bg-red-100 text-red-900 dark:bg-red-900/40 dark:text-red-100'
+              ? 'bg-gradient-to-r from-green-50 to-emerald-50 text-green-900 dark:from-green-900/30 dark:to-emerald-900/30 dark:text-green-100'
+              : 'bg-gradient-to-r from-red-50 to-rose-50 text-red-900 dark:from-red-900/30 dark:to-rose-900/30 dark:text-red-100'
           }`}
         >
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {lastResult.success ? (
-              <CheckCircleIcon className="size-8 shrink-0" />
+              <div className="flex size-12 items-center justify-center rounded-full bg-green-500 text-white">
+                <CheckCircleIcon className="size-7" />
+              </div>
             ) : (
-              <ExclamationTriangleIcon className="size-8 shrink-0" />
+              <div className="flex size-12 items-center justify-center rounded-full bg-red-500 text-white">
+                <ExclamationTriangleIcon className="size-7" />
+              </div>
             )}
             <div className="min-w-0 flex-1">
-              <div className="text-lg font-bold">{lastResult.success ? 'Uspesno!' : 'Greska'}</div>
-              <div className="truncate text-sm">{lastResult.message}</div>
+              <div className="text-lg font-bold">{lastResult.success ? 'Uspešno!' : 'Greška'}</div>
+              <div className="truncate text-sm opacity-80">{lastResult.message}</div>
               {lastResult.timing && (
-                <div className="mt-1 font-mono text-2xl font-bold">
+                <div className="mt-1 font-mono text-3xl font-bold tracking-tight">
                   {formatTime(lastResult.timing.timestamp, true)}
                 </div>
               )}
@@ -214,39 +220,40 @@ export default function JudgePage() {
         </div>
       )}
 
-      {/* Recent Timings - scrollable list */}
-      <div className="mt-8">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-zinc-600 dark:text-zinc-400">
+      {/* Recent Timings */}
+      <div className="mt-10">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-base font-semibold text-zinc-700 dark:text-zinc-300">
             Poslednja vremena
           </h2>
-          <span className="text-xs text-zinc-400">{recentTimings.length} unosa</span>
+          <Badge color="zinc">{recentTimings.length} unosa</Badge>
         </div>
 
         {recentTimings.length === 0 ? (
-          <div className="rounded-xl border-2 border-dashed border-zinc-200 p-8 text-center text-zinc-400 dark:border-zinc-700">
-            Nema zabelezenih vremena
+          <div className="rounded-2xl border-2 border-dashed border-zinc-200 p-10 text-center dark:border-zinc-700">
+            <ClockIcon className="mx-auto size-10 text-zinc-300 dark:text-zinc-600" />
+            <p className="mt-2 text-sm text-zinc-400">Nema zabeleženih vremena</p>
           </div>
         ) : (
           <div className="space-y-2">
             {recentTimings.map((timing, index) => (
               <div
                 key={timing.id}
-                className={`flex items-center justify-between rounded-xl px-4 py-3 ${
+                className={`flex items-center justify-between rounded-xl px-4 py-3 transition-colors ${
                   index === 0
-                    ? 'bg-emerald-50 dark:bg-emerald-900/20'
-                    : 'bg-zinc-50 dark:bg-zinc-800/50'
+                    ? 'border-2 border-emerald-200 bg-emerald-50 dark:border-emerald-800 dark:bg-emerald-900/20'
+                    : 'bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-800/50 dark:hover:bg-zinc-800'
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <span className="w-12 font-mono text-xl font-bold text-zinc-900 dark:text-zinc-100">
+                <div className="flex items-center gap-4">
+                  <span className="w-14 rounded-lg bg-white px-2 py-1 text-center font-mono text-xl font-bold text-zinc-900 shadow-sm dark:bg-zinc-900 dark:text-zinc-100">
                     {timing.registration.bibNumber}
                   </span>
                   <span className="text-sm text-zinc-600 dark:text-zinc-400">
                     {timing.registration.firstName} {timing.registration.lastName}
                   </span>
                 </div>
-                <span className="font-mono text-lg font-semibold text-zinc-700 dark:text-zinc-300">
+                <span className="font-mono text-base font-semibold tabular-nums text-zinc-700 dark:text-zinc-300">
                   {formatTime(timing.timestamp, true)}
                 </span>
               </div>
