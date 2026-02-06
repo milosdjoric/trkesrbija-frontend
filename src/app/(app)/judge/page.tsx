@@ -184,7 +184,7 @@ export default function JudgePage() {
           type="submit"
           disabled={!bibNumber.trim() || submitting}
           color="emerald"
-          className="!h-16 w-full !rounded-2xl !text-lg !font-semibold"
+          className="items-center !h-16 w-full !rounded-2xl !text-lg !font-semibold"
         >
           {submitting ? 'Čuvam...' : 'Zabeleži vreme'}
         </Button>
