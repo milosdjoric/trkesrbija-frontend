@@ -77,7 +77,7 @@ const STATS_QUERY = `
 function formatDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString('sr-RS', {
+  return d.toLocaleDateString('sr-Latn-RS', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
@@ -87,7 +87,7 @@ function formatDate(iso: string) {
 function formatTime(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleTimeString('sr-RS', {
+  return d.toLocaleTimeString('sr-Latn-RS', {
     hour: '2-digit',
     minute: '2-digit',
   })
@@ -200,7 +200,7 @@ export default async function HomePage() {
                   {/* Datum */}
                   <div className="flex w-16 shrink-0 flex-col items-center rounded-lg bg-zinc-100 py-2 text-center dark:bg-zinc-800">
                     <span className="text-xs font-medium uppercase text-zinc-500 dark:text-zinc-400">
-                      {new Date(race.startDateTime).toLocaleDateString('sr-RS', { month: 'short' })}
+                      {new Date(race.startDateTime).toLocaleDateString('sr-Latn-RS', { month: 'short' })}
                     </span>
                     <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
                       {new Date(race.startDateTime).getDate()}

@@ -18,7 +18,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 function formatTime(iso: string) {
   const d = new Date(iso)
-  return d.toLocaleTimeString('sr-RS', {
+  return d.toLocaleTimeString('sr-Latn-RS', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',
@@ -27,7 +27,7 @@ function formatTime(iso: string) {
 
 function formatDate(iso: string) {
   const d = new Date(iso)
-  return d.toLocaleDateString('sr-RS', {
+  return d.toLocaleDateString('sr-Latn-RS', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',

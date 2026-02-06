@@ -61,7 +61,7 @@ const RACE_WITH_EVENT_QUERY = `
 function formatDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString('sr-RS', {
+  return d.toLocaleDateString('sr-Latn-RS', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -71,7 +71,7 @@ function formatDate(iso: string) {
 function formatBirthDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return '-'
-  return d.toLocaleDateString('sr-RS')
+  return d.toLocaleDateString('sr-Latn-RS')
 }
 
 function getStatusBadge(status: RegistrationStatus) {

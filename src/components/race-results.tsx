@@ -26,7 +26,7 @@ function formatDuration(ms: number): string {
 
 function formatTime(iso: string): string {
   const d = new Date(iso)
-  return d.toLocaleTimeString('sr-RS', {
+  return d.toLocaleTimeString('sr-Latn-RS', {
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit',

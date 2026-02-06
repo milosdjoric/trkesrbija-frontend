@@ -16,7 +16,7 @@ import { useCallback, useEffect, useState } from 'react'
 function formatDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString('sr-RS', {
+  return d.toLocaleDateString('sr-Latn-RS', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
