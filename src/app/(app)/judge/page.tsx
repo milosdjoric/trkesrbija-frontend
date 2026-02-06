@@ -183,10 +183,9 @@ export default function JudgePage() {
         <Button
           type="submit"
           disabled={!bibNumber.trim() || submitting}
-          className="!h-16 w-full !rounded-2xl !text-lg !font-bold uppercase tracking-wide shadow-lg [&>span]:flex [&>span]:items-center [&>span]:gap-2"
-          color="emerald"
+          outline
+          className="!h-16 w-full !rounded-2xl !border-2 !border-emerald-500 !text-lg !font-semibold !text-emerald-600 hover:!bg-emerald-50 dark:!border-emerald-400 dark:!text-emerald-400 dark:hover:!bg-emerald-950/30"
         >
-          <ClockIcon className="!size-5" />
           {submitting ? 'Čuvam...' : 'Zabeleži vreme'}
         </Button>
       </form>
