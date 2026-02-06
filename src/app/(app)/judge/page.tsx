@@ -10,29 +10,14 @@ import {
 } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import { EmptyState } from '@/components/empty-state'
 import { Heading } from '@/components/heading'
+import { LoadingState } from '@/components/loading-state'
 import { Text } from '@/components/text'
+import { formatTime } from '@/lib/formatters'
 import { CheckCircleIcon, ClockIcon, ExclamationTriangleIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
-
-function formatTime(iso: string) {
-  const d = new Date(iso)
-  return d.toLocaleTimeString('sr-Latn-RS', {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  })
-}
-
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  return d.toLocaleDateString('sr-Latn-RS', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
 
 export default function JudgePage() {
   const router = useRouter()
@@ -133,11 +118,7 @@ export default function JudgePage() {
   }, [lastResult])
 
   if (authLoading || loading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center">
-        <div className="animate-pulse text-xl text-zinc-500">Ucitavanje...</div>
-      </div>
-    )
+    return <LoadingState className="min-h-[50vh]" />
   }
 
   if (!user) {
@@ -225,7 +206,7 @@ export default function JudgePage() {
               <div className="truncate text-sm">{lastResult.message}</div>
               {lastResult.timing && (
                 <div className="mt-1 font-mono text-2xl font-bold">
-                  {formatTime(lastResult.timing.timestamp)}
+                  {formatTime(lastResult.timing.timestamp, true)}
                 </div>
               )}
             </div>
@@ -266,7 +247,7 @@ export default function JudgePage() {
                   </span>
                 </div>
                 <span className="font-mono text-lg font-semibold text-zinc-700 dark:text-zinc-300">
-                  {formatTime(timing.timestamp)}
+                  {formatTime(timing.timestamp, true)}
                 </span>
               </div>
             ))}

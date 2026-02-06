@@ -10,15 +10,18 @@ import {
   type RaceRegistration,
   type RegistrationStatus,
 } from '@/app/lib/api'
-import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { useConfirm } from '@/components/confirm-dialog'
 import { Field, Label } from '@/components/fieldset'
-import { Heading, Subheading } from '@/components/heading'
+import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
+import { LoadingState } from '@/components/loading-state'
 import { Select } from '@/components/select'
+import { StatsGrid } from '@/components/stats-grid'
 import { Text } from '@/components/text'
 import { useToast } from '@/components/toast'
+import { formatDate, formatDateSimple } from '@/lib/formatters'
+import { getGenderLabel, getStatusBadge } from '@/lib/badges'
 import {
   ChevronLeftIcon,
   MagnifyingGlassIcon,
@@ -57,41 +60,6 @@ const RACE_WITH_EVENT_QUERY = `
     }
   }
 `
-
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString('sr-Latn-RS', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
-
-function formatBirthDate(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return '-'
-  return d.toLocaleDateString('sr-Latn-RS')
-}
-
-function getStatusBadge(status: RegistrationStatus) {
-  switch (status) {
-    case 'PENDING':
-      return <Badge color="yellow">Na čekanju</Badge>
-    case 'CONFIRMED':
-      return <Badge color="blue">Potvrđeno</Badge>
-    case 'PAID':
-      return <Badge color="green">Plaćeno</Badge>
-    case 'CANCELLED':
-      return <Badge color="red">Otkazano</Badge>
-    default:
-      return <Badge>{status}</Badge>
-  }
-}
-
-function getGenderLabel(gender: 'MALE' | 'FEMALE') {
-  return gender === 'MALE' ? 'M' : 'Ž'
-}
 
 export default function AdminRegistrationsPage() {
   const params = useParams()
@@ -218,7 +186,7 @@ export default function AdminRegistrationsPage() {
       r.lastName,
       r.email,
       r.phone || '',
-      formatBirthDate(r.dateOfBirth),
+      formatDateSimple(r.dateOfBirth),
       getGenderLabel(r.gender),
       r.status,
       r.bibNumber || '',
@@ -234,11 +202,7 @@ export default function AdminRegistrationsPage() {
   }
 
   if (authLoading || loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-zinc-500">Učitavanje...</div>
-      </div>
-    )
+    return <LoadingState />
   }
 
   if (!user || user.role !== 'ADMIN') {
@@ -252,6 +216,13 @@ export default function AdminRegistrationsPage() {
       </div>
     )
   }
+
+  const stats = [
+    { label: 'Ukupno prijava', value: registrations.length },
+    { label: 'Na čekanju', value: registrations.filter((r) => r.status === 'PENDING').length, color: 'text-yellow-600' },
+    { label: 'Potvrđeno', value: registrations.filter((r) => r.status === 'CONFIRMED').length, color: 'text-blue-600' },
+    { label: 'Plaćeno', value: registrations.filter((r) => r.status === 'PAID').length, color: 'text-green-600' },
+  ]
 
   return (
     <>
@@ -313,30 +284,7 @@ export default function AdminRegistrationsPage() {
       </div>
 
       {/* Stats */}
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-          <div className="text-2xl font-semibold">{registrations.length}</div>
-          <div className="text-sm text-zinc-500">Ukupno prijava</div>
-        </div>
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-          <div className="text-2xl font-semibold text-yellow-600">
-            {registrations.filter((r) => r.status === 'PENDING').length}
-          </div>
-          <div className="text-sm text-zinc-500">Na čekanju</div>
-        </div>
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-          <div className="text-2xl font-semibold text-blue-600">
-            {registrations.filter((r) => r.status === 'CONFIRMED').length}
-          </div>
-          <div className="text-sm text-zinc-500">Potvrđeno</div>
-        </div>
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-          <div className="text-2xl font-semibold text-green-600">
-            {registrations.filter((r) => r.status === 'PAID').length}
-          </div>
-          <div className="text-sm text-zinc-500">Plaćeno</div>
-        </div>
-      </div>
+      <StatsGrid stats={stats} className="mt-6" />
 
       {/* Registrations Table */}
       <div className="mt-6 overflow-x-auto">

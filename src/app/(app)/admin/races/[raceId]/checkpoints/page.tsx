@@ -18,12 +18,15 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { useConfirm } from '@/components/confirm-dialog'
 import { Dialog, DialogActions, DialogBody, DialogDescription, DialogTitle } from '@/components/dialog'
+import { EmptyState } from '@/components/empty-state'
 import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
+import { LoadingState } from '@/components/loading-state'
 import { Select } from '@/components/select'
 import { Text } from '@/components/text'
 import { useToast } from '@/components/toast'
+import { formatDate } from '@/lib/formatters'
 import {
   ChevronLeftIcon,
   PencilIcon,
@@ -63,16 +66,6 @@ const RACE_WITH_EVENT_QUERY = `
     }
   }
 `
-
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString('sr-Latn-RS', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
-}
 
 export default function AdminCheckpointsPage() {
   const params = useParams()
@@ -279,11 +272,7 @@ export default function AdminCheckpointsPage() {
   const availableUsers = users.filter((u) => !assignedUserIds.has(u.id))
 
   if (authLoading || loading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-zinc-500">Učitavanje...</div>
-      </div>
-    )
+    return <LoadingState />
   }
 
   if (!user || user.role !== 'ADMIN') {
@@ -332,13 +321,11 @@ export default function AdminCheckpointsPage() {
       {/* Checkpoints List */}
       <div className="mt-6 space-y-4">
         {checkpoints.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-600">
-            <Text>Nema definisanih checkpoint-a za ovu trku.</Text>
-            <Button className="mt-4" onClick={openCreateDialog}>
-              <PlusIcon className="size-4" />
-              Dodaj prvi checkpoint
-            </Button>
-          </div>
+          <EmptyState
+            title="Nema definisanih checkpoint-a"
+            description="Dodajte checkpoint-e za merenje vremena na trci."
+            action={{ label: 'Dodaj prvi checkpoint', onClick: openCreateDialog }}
+          />
         ) : (
           checkpoints.map((checkpoint) => (
             <div
