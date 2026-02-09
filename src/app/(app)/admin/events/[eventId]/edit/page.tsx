@@ -10,7 +10,7 @@ import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type RaceData = {
   id: string
@@ -82,6 +82,7 @@ export default function EditEventPage() {
   const [event, setEvent] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const loadedRef = useRef(false)
 
   // Form state
   const [eventName, setEventName] = useState('')
@@ -120,7 +121,8 @@ export default function EditEventPage() {
       return
     }
 
-    if (accessToken) {
+    if (accessToken && !loadedRef.current) {
+      loadedRef.current = true
       loadEvent()
     }
   }, [authLoading, user, accessToken, loadEvent, router])

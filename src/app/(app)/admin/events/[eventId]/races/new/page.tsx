@@ -9,7 +9,7 @@ import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type EventData = {
   id: string
@@ -47,6 +47,7 @@ export default function NewRacePage() {
   const [event, setEvent] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const loadedRef = useRef(false)
 
   // Form state
   const [raceName, setRaceName] = useState('')
@@ -56,42 +57,37 @@ export default function NewRacePage() {
   const [startLocation, setStartLocation] = useState('')
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
 
-  const loadEvent = useCallback(async () => {
-    if (!accessToken) return
-
-    try {
-      const data = await gql<{ raceEvent: EventData | null }>(
-        EVENT_BY_ID_QUERY,
-        { id: eventId },
-        { accessToken }
-      )
-      if (data.raceEvent) {
-        setEvent(data.raceEvent)
-      }
-    } catch (err) {
-      console.error('Failed to load event:', err)
-      toast('Greška pri učitavanju događaja', 'error')
-    } finally {
-      setLoading(false)
-    }
-  }, [accessToken, eventId, toast])
-
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'ADMIN')) {
       router.push('/')
       return
     }
 
-    if (accessToken) {
-      loadEvent()
+    if (accessToken && !loadedRef.current) {
+      loadedRef.current = true
 
       // Set default date/time to 1 month from now at 9:00
       const defaultDate = new Date()
       defaultDate.setMonth(defaultDate.getMonth() + 1)
       defaultDate.setHours(9, 0, 0, 0)
       setStartDateTime(defaultDate.toISOString().slice(0, 16))
+
+      // Load event data
+      gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken })
+        .then((data) => {
+          if (data.raceEvent) {
+            setEvent(data.raceEvent)
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to load event:', err)
+          toast('Greška pri učitavanju događaja', 'error')
+        })
+        .finally(() => {
+          setLoading(false)
+        })
     }
-  }, [authLoading, user, accessToken, loadEvent, router])
+  }, [authLoading, user, accessToken, eventId, router, toast])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
