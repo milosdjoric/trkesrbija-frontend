@@ -256,7 +256,7 @@ export default function AdminRegistrationsPage() {
       </div>
 
       {/* Filters */}
-      <div className="mt-6 flex flex-wrap gap-4">
+      <div className="mt-6 flex flex-col flex-wrap gap-4 md:flex-row">
         <Field className="flex-1">
           <Label className="sr-only">Pretraga</Label>
           <div className="relative">
@@ -270,9 +270,12 @@ export default function AdminRegistrationsPage() {
           </div>
         </Field>
 
-        <Field className="m-0">
-          <Label className="sr-only">Status</Label>
-          <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as RegistrationStatus | '')}>
+        <Field>
+          <Select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as RegistrationStatus | '')}
+            className="m-0"
+          >
             <option value="">Svi statusi</option>
             <option value="PENDING">Na čekanju</option>
             <option value="CONFIRMED">Potvrđeno</option>
