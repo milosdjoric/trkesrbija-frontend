@@ -260,18 +260,17 @@ export default function AdminRegistrationsPage() {
         <Field className="flex-1">
           <Label className="sr-only">Pretraga</Label>
           <div className="relative">
-            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
             <Input
               type="text"
               placeholder="Pretraži po imenu, emailu..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className=""
             />
           </div>
         </Field>
 
-        <Field>
+        <Field className="m-0">
           <Label className="sr-only">Status</Label>
           <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as RegistrationStatus | '')}>
             <option value="">Svi statusi</option>

@@ -175,10 +175,9 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Filters */}
-      <div className="mt-6 flex flex-wrap gap-4">
+      <div className="mt-6 flex flex-wrap gap-4 items-center">
         {/* Search */}
         <div className="relative flex-1 sm:max-w-xs">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             placeholder="Pretraži po email ili imenu..."
