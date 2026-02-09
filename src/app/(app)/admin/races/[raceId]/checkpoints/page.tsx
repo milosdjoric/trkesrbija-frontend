@@ -57,7 +57,7 @@ type RaceInfo = {
 }
 
 const RACE_QUERY = `
-  query Race($raceId: ID!) {
+  query Races {
     races(limit: 1000) {
       id
       raceName
@@ -111,7 +111,7 @@ export default function AdminCheckpointsPage() {
           startDateTime: string
           raceEvent: { id: string; eventName: string; slug: string }
         }>
-      }>(RACE_QUERY, { raceId }, { accessToken })
+      }>(RACE_QUERY, {}, { accessToken })
 
       const foundRace = raceData.races.find((r) => r.id === raceId)
       if (foundRace) {
