@@ -189,9 +189,9 @@ export function ApplicationLayout({
             {user?.role === 'ADMIN' && (
               <SidebarSection>
                 <SidebarHeading>Admin</SidebarHeading>
-                <SidebarItem href="/events" current={pathname === '/events'}>
+                <SidebarItem href="/admin" current={pathname === '/admin'}>
                   <WrenchScrewdriverIcon />
-                  <SidebarLabel>Upravljanje događajima</SidebarLabel>
+                  <SidebarLabel>Admin Panel</SidebarLabel>
                 </SidebarItem>
               </SidebarSection>
             )}

@@ -284,7 +284,7 @@ export default function AdminRegistrationsPage() {
       </div>
 
       {/* Stats */}
-      <StatsGrid stats={stats} className="mt-6" />
+      <StatsGrid items={stats} className="mt-6" />
 
       {/* Registrations Table */}
       <div className="mt-6 overflow-x-auto">
