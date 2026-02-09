@@ -32,31 +32,9 @@ type EventData = {
   races: RaceData[]
 }
 
-const EVENT_QUERY = `
-  query RaceEvent($slug: String!) {
-    raceEvent(slug: $slug) {
-      id
-      eventName
-      slug
-      type
-      description
-      mainImage
-      races {
-        id
-        raceName
-        length
-        elevation
-        startDateTime
-        startLocation
-        registrationEnabled
-      }
-    }
-  }
-`
-
 const EVENT_BY_ID_QUERY = `
-  query RaceEvents {
-    raceEvents(limit: 1000) {
+  query RaceEventById($id: ID!) {
+    raceEvent(id: $id) {
       id
       eventName
       slug
@@ -116,19 +94,17 @@ export default function EditEventPage() {
     if (!accessToken) return
 
     try {
-      // Find event by ID
       const data = await gql<{
-        raceEvents: EventData[]
-      }>(EVENT_BY_ID_QUERY, {}, { accessToken })
+        raceEvent: EventData | null
+      }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken })
 
-      const foundEvent = data.raceEvents.find((e) => e.id === eventId)
-      if (foundEvent) {
-        setEvent(foundEvent)
-        setEventName(foundEvent.eventName)
-        setEventType(foundEvent.type)
-        setDescription(foundEvent.description || '')
-        setMainImage(foundEvent.mainImage || '')
-        setSlug(foundEvent.slug)
+      if (data.raceEvent) {
+        setEvent(data.raceEvent)
+        setEventName(data.raceEvent.eventName)
+        setEventType(data.raceEvent.type)
+        setDescription(data.raceEvent.description || '')
+        setMainImage(data.raceEvent.mainImage || '')
+        setSlug(data.raceEvent.slug)
       }
     } catch (err) {
       console.error('Failed to load event:', err)

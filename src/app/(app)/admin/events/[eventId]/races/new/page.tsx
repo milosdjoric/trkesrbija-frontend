@@ -17,9 +17,9 @@ type EventData = {
   slug: string
 }
 
-const EVENTS_QUERY = `
-  query RaceEvents {
-    raceEvents(limit: 1000) {
+const EVENT_BY_ID_QUERY = `
+  query RaceEventById($id: ID!) {
+    raceEvent(id: $id) {
       id
       eventName
       slug
@@ -60,10 +60,13 @@ export default function NewRacePage() {
     if (!accessToken) return
 
     try {
-      const data = await gql<{ raceEvents: EventData[] }>(EVENTS_QUERY, {}, { accessToken })
-      const foundEvent = data.raceEvents.find((e) => e.id === eventId)
-      if (foundEvent) {
-        setEvent(foundEvent)
+      const data = await gql<{ raceEvent: EventData | null }>(
+        EVENT_BY_ID_QUERY,
+        { id: eventId },
+        { accessToken }
+      )
+      if (data.raceEvent) {
+        setEvent(data.raceEvent)
       }
     } catch (err) {
       console.error('Failed to load event:', err)
