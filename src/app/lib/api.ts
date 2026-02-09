@@ -712,36 +712,92 @@ export type JudgeUser = {
   name?: string | null
 }
 
+// Checkpoint - fizička lokacija u okviru eventa
+export type EventCheckpoint = {
+  id: string
+  name: string
+  raceEventId: string
+  assignedJudges: JudgeUser[]
+  createdAt: string
+  updatedAt: string
+}
+
+// RaceCheckpoint - veza između trke i checkpointa sa redosledom
+export type RaceCheckpoint = {
+  id: string
+  raceId: string
+  checkpointId: string
+  orderIndex: number
+  distance: number | null
+  checkpoint: EventCheckpoint
+  createdAt: string
+  updatedAt: string
+}
+
+// Legacy type - kombinuje checkpoint sa redosledom (za kompatibilnost)
 export type CheckpointWithJudges = Checkpoint & {
   assignedJudges: JudgeUser[]
 }
 
 export type CreateCheckpointInput = {
-  raceId: string
+  raceEventId: string
   name: string
-  distance?: number | null
-  orderIndex: number
 }
 
 export type UpdateCheckpointInput = {
   name?: string
-  distance?: number | null
-  orderIndex?: number
 }
 
-const CHECKPOINTS_WITH_JUDGES_QUERY = `
-  query Checkpoints($raceId: ID!) {
-    checkpoints(raceId: $raceId) {
+export type RaceCheckpointOrderInput = {
+  checkpointId: string
+  orderIndex: number
+  distance?: number | null
+}
+
+export type SetRaceCheckpointsInput = {
+  raceId: string
+  checkpoints: RaceCheckpointOrderInput[]
+}
+
+// Query za checkpoint-e eventa (fizičke lokacije)
+const EVENT_CHECKPOINTS_QUERY = `
+  query EventCheckpoints($raceEventId: ID!) {
+    eventCheckpoints(raceEventId: $raceEventId) {
       id
       name
-      raceId
-      distance
-      orderIndex
+      raceEventId
       assignedJudges {
         id
         email
         name
       }
+      createdAt
+      updatedAt
+    }
+  }
+`
+
+// Query za checkpoint-e trke sa redosledom
+const RACE_CHECKPOINTS_QUERY = `
+  query RaceCheckpoints($raceId: ID!) {
+    raceCheckpoints(raceId: $raceId) {
+      id
+      raceId
+      checkpointId
+      orderIndex
+      distance
+      checkpoint {
+        id
+        name
+        raceEventId
+        assignedJudges {
+          id
+          email
+          name
+        }
+      }
+      createdAt
+      updatedAt
     }
   }
 `
@@ -762,14 +818,14 @@ const CREATE_CHECKPOINT_MUTATION = `
     createCheckpoint(input: $input) {
       id
       name
-      raceId
-      distance
-      orderIndex
+      raceEventId
       assignedJudges {
         id
         email
         name
       }
+      createdAt
+      updatedAt
     }
   }
 `
@@ -779,14 +835,14 @@ const UPDATE_CHECKPOINT_MUTATION = `
     updateCheckpoint(checkpointId: $checkpointId, input: $input) {
       id
       name
-      raceId
-      distance
-      orderIndex
+      raceEventId
       assignedJudges {
         id
         email
         name
       }
+      createdAt
+      updatedAt
     }
   }
 `
@@ -794,6 +850,28 @@ const UPDATE_CHECKPOINT_MUTATION = `
 const DELETE_CHECKPOINT_MUTATION = `
   mutation DeleteCheckpoint($checkpointId: ID!) {
     deleteCheckpoint(checkpointId: $checkpointId)
+  }
+`
+
+const SET_RACE_CHECKPOINTS_MUTATION = `
+  mutation SetRaceCheckpoints($input: SetRaceCheckpointsInput!) {
+    setRaceCheckpoints(input: $input) {
+      id
+      raceId
+      checkpointId
+      orderIndex
+      distance
+      checkpoint {
+        id
+        name
+        raceEventId
+        assignedJudges {
+          id
+          email
+          name
+        }
+      }
+    }
   }
 `
 
@@ -824,16 +902,30 @@ export type User = {
   role: 'STANDARD' | 'ADMIN'
 }
 
-export async function fetchCheckpointsWithJudges(
+// Fetch event checkpoints (fizičke lokacije)
+export async function fetchEventCheckpoints(
+  raceEventId: string,
+  accessToken?: string | null
+): Promise<EventCheckpoint[]> {
+  const data = await gql<{ eventCheckpoints: EventCheckpoint[] }>(
+    EVENT_CHECKPOINTS_QUERY,
+    { raceEventId },
+    { accessToken }
+  )
+  return data.eventCheckpoints
+}
+
+// Fetch race checkpoints (sa redosledom za konkretnu trku)
+export async function fetchRaceCheckpoints(
   raceId: string,
   accessToken?: string | null
-): Promise<CheckpointWithJudges[]> {
-  const data = await gql<{ checkpoints: CheckpointWithJudges[] }>(
-    CHECKPOINTS_WITH_JUDGES_QUERY,
+): Promise<RaceCheckpoint[]> {
+  const data = await gql<{ raceCheckpoints: RaceCheckpoint[] }>(
+    RACE_CHECKPOINTS_QUERY,
     { raceId },
     { accessToken }
   )
-  return data.checkpoints
+  return data.raceCheckpoints
 }
 
 export async function fetchUsers(
@@ -848,8 +940,8 @@ export async function fetchUsers(
 export async function createCheckpoint(
   input: CreateCheckpointInput,
   accessToken?: string | null
-): Promise<CheckpointWithJudges> {
-  const data = await gql<{ createCheckpoint: CheckpointWithJudges }>(
+): Promise<EventCheckpoint> {
+  const data = await gql<{ createCheckpoint: EventCheckpoint }>(
     CREATE_CHECKPOINT_MUTATION,
     { input },
     { accessToken }
@@ -861,8 +953,8 @@ export async function updateCheckpoint(
   checkpointId: string,
   input: UpdateCheckpointInput,
   accessToken?: string | null
-): Promise<CheckpointWithJudges> {
-  const data = await gql<{ updateCheckpoint: CheckpointWithJudges }>(
+): Promise<EventCheckpoint> {
+  const data = await gql<{ updateCheckpoint: EventCheckpoint }>(
     UPDATE_CHECKPOINT_MUTATION,
     { checkpointId, input },
     { accessToken }
@@ -873,6 +965,18 @@ export async function updateCheckpoint(
 export async function deleteCheckpoint(checkpointId: string, accessToken?: string | null): Promise<boolean> {
   const data = await gql<{ deleteCheckpoint: boolean }>(DELETE_CHECKPOINT_MUTATION, { checkpointId }, { accessToken })
   return data.deleteCheckpoint
+}
+
+export async function setRaceCheckpoints(
+  input: SetRaceCheckpointsInput,
+  accessToken?: string | null
+): Promise<RaceCheckpoint[]> {
+  const data = await gql<{ setRaceCheckpoints: RaceCheckpoint[] }>(
+    SET_RACE_CHECKPOINTS_MUTATION,
+    { input },
+    { accessToken }
+  )
+  return data.setRaceCheckpoints
 }
 
 export async function assignJudge(
