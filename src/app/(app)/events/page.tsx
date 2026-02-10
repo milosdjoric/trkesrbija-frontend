@@ -231,7 +231,7 @@ export default async function Events({
 
     const sharedTime =
       sameStartDateTime.allSame && sameStartDateTime.value
-        ? sameStartDateTime.value.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+        ? sameStartDateTime.value.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit', hour12: false })
         : ''
     const sharedLocation = sameLocation.allSame && sameLocation.value ? sameLocation.value : 'TBD'
 

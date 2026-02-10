@@ -38,7 +38,7 @@ export function formatDateSimple(iso: string | Date): string {
 }
 
 /**
- * Format time (HH:MM or HH:MM:SS with seconds)
+ * Format time (HH:MM or HH:MM:SS with seconds) - always 24h format
  */
 export function formatTime(iso: string | Date, withSeconds = false): string {
   const d = typeof iso === 'string' ? new Date(iso) : iso
@@ -46,6 +46,7 @@ export function formatTime(iso: string | Date, withSeconds = false): string {
   return d.toLocaleTimeString(LOCALE, {
     hour: '2-digit',
     minute: '2-digit',
+    hour12: false,
     ...(withSeconds && { second: '2-digit' }),
   })
 }
