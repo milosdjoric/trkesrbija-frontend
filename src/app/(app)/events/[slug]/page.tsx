@@ -85,7 +85,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   const earliestRace = sortedRaces[0]
   const eventDate = earliestRace ? formatDate(earliestRace.startDateTime) : 'TBD'
-  const eventLocation = earliestRace?.startLocation ?? 'TBD'
+
+  // Check if all races have the same location
+  const raceLocations = sortedRaces.map((r) => r.startLocation ?? '').filter(Boolean)
+  const uniqueLocations = new Set(raceLocations)
+  const allSameLocation = uniqueLocations.size <= 1
+  const eventLocation = allSameLocation && raceLocations.length > 0 ? raceLocations[0] : null
 
   return (
     <>
@@ -114,20 +119,22 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             )}
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
               <IconText icon={<CalendarIcon className="size-4" />}>{eventDate}</IconText>
-              <IconText icon={<MapPinIcon className="size-4" />}>
-                {eventLocation.startsWith('http') ? (
-                  <a
-                    href={eventLocation}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
-                  >
-                    Prikaži lokaciju
-                  </a>
-                ) : (
-                  eventLocation
-                )}
-              </IconText>
+              {eventLocation && (
+                <IconText icon={<MapPinIcon className="size-4" />}>
+                  {eventLocation.startsWith('http') ? (
+                    <a
+                      href={eventLocation}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    >
+                      Prikaži lokaciju
+                    </a>
+                  ) : (
+                    eventLocation
+                  )}
+                </IconText>
+              )}
             </div>
             {event.tags && event.tags.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-1">
