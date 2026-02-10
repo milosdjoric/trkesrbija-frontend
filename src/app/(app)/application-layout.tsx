@@ -153,7 +153,7 @@ export function ApplicationLayout({
                 <>
                   <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
                     <HeartIcon />
-                    <SidebarLabel>Favoriti</SidebarLabel>
+                    <SidebarLabel>Omiljene trke</SidebarLabel>
                   </SidebarItem>
                   <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
                     <ClipboardDocumentListIcon />
@@ -164,13 +164,14 @@ export function ApplicationLayout({
                 <>
                   <SidebarItem href="/login">
                     <HeartIcon />
-                    <SidebarLabel className="text-zinc-400">Favoriti</SidebarLabel>
+                    <SidebarLabel className="text-zinc-400">Omiljene trke</SidebarLabel>
+                    <span className="text-xs text-zinc-500">· prijava</span>
                   </SidebarItem>
                   <SidebarItem href="/login">
                     <ClipboardDocumentListIcon />
                     <SidebarLabel className="text-zinc-400">Prijave na trke</SidebarLabel>
+                    <span className="text-xs text-zinc-500">· prijava</span>
                   </SidebarItem>
-                  <p className="px-2 text-xs text-zinc-500 dark:text-zinc-500">Potrebna prijava</p>
                 </>
               )}
             </SidebarSection>

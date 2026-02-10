@@ -113,7 +113,7 @@ export default function FavoritesPage() {
 
   return (
     <>
-      <Heading>Moji favoriti</Heading>
+      <Heading>Omiljene trke</Heading>
       <Text className="mt-2 text-zinc-600 dark:text-zinc-400">Vaše omiljene trke na jednom mestu</Text>
 
       {favorites.length === 0 ? (
