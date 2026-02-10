@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar } from '@/components/avatar'
+import { RunnerIcon } from '@/components/auth-logo'
 import {
   Dropdown,
   DropdownButton,
@@ -129,7 +129,9 @@ export function ApplicationLayout({
         <Sidebar>
           <SidebarHeader>
             <SidebarItem href="/" current={pathname === '/'}>
-              <Avatar src="/teams/catalyst.svg" />
+              <span className="flex size-6 items-center justify-center rounded bg-zinc-900 dark:bg-white">
+                <RunnerIcon className="size-4 text-white dark:text-zinc-900" />
+              </span>
               <SidebarLabel>Trke Srbija</SidebarLabel>
             </SidebarItem>
           </SidebarHeader>
