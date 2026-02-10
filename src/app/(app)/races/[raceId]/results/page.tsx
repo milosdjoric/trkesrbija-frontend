@@ -49,11 +49,10 @@ const RACE_WITH_EVENT_QUERY = `
 function formatDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString('sr-Latn-RS', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })
+  const day = d.getDate()
+  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short' }).replace('.', '')
+  const year = d.getFullYear()
+  return `${day}. ${month} ${year}.`
 }
 
 function formatTime(iso: string) {

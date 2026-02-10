@@ -45,12 +45,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 function formatDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  return d.toLocaleDateString(undefined, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  })
+  const day = d.getDate()
+  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long' })
+  const year = d.getFullYear()
+  const weekday = d.toLocaleDateString('sr-Latn-RS', { weekday: 'long' })
+  return `${weekday}, ${day}. ${month} ${year}.`
 }
 
 function formatTime(iso: string) {

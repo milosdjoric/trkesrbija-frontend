@@ -6,7 +6,10 @@
 const LOCALE = 'sr-Latn-RS'
 
 /**
- * Format date - various formats
+ * Format date - standard format: "14. feb 2026."
+ * short: "14. feb 2026."
+ * long: "14. februar 2026."
+ * full: "pet, 14. februar 2026."
  */
 export function formatDate(
   iso: string | Date,
@@ -15,17 +18,18 @@ export function formatDate(
   const d = typeof iso === 'string' ? new Date(iso) : iso
   if (Number.isNaN(d.getTime())) return 'TBD'
 
-  const options: Intl.DateTimeFormatOptions = {
-    day: 'numeric',
-    month: format === 'short' ? 'short' : 'long',
-    year: 'numeric',
-  }
+  const day = d.getDate()
+  const year = d.getFullYear()
+  const monthShort = d.toLocaleDateString(LOCALE, { month: 'short' }).replace('.', '')
+  const monthLong = d.toLocaleDateString(LOCALE, { month: 'long' })
+  const weekday = d.toLocaleDateString(LOCALE, { weekday: 'short' }).replace('.', '')
 
   if (format === 'full') {
-    options.weekday = 'short'
+    return `${weekday}, ${day}. ${monthLong} ${year}.`
+  } else if (format === 'long') {
+    return `${day}. ${monthLong} ${year}.`
   }
-
-  return d.toLocaleDateString(LOCALE, options)
+  return `${day}. ${monthShort} ${year}.`
 }
 
 /**

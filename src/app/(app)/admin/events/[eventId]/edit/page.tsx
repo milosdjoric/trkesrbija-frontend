@@ -340,13 +340,14 @@ export default function EditEventPage() {
                       {race.length} km
                       {race.elevation && ` • ${race.elevation}m D+`}
                       {' • '}
-                      {new Date(race.startDateTime).toLocaleDateString('sr-Latn-RS', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
+                      {(() => {
+                        const d = new Date(race.startDateTime)
+                        const day = d.getDate()
+                        const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short' }).replace('.', '')
+                        const year = d.getFullYear()
+                        const time = d.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit', hour12: false })
+                        return `${day}. ${month} ${year}. ${time}`
+                      })()}
                     </div>
                     <div className="mt-1">
                       {race.registrationEnabled ? (

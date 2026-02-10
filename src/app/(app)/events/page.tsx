@@ -2,6 +2,7 @@ import { gql } from '@/app/lib/api'
 import { Divider } from '@/components/divider'
 import { EventCard } from '@/components/event-card'
 import { Heading } from '@/components/heading'
+import { formatDate as formatDateUtil } from '@/lib/formatters'
 import type { Metadata } from 'next'
 import { FiltersBar } from './filters-bar'
 
@@ -226,7 +227,7 @@ export default async function Events({
 
     const sharedDate =
       sharedDateBase && hasSharedDate
-        ? sharedDateBase.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+        ? formatDateUtil(sharedDateBase, 'short')
         : 'TBD'
 
     const sharedTime =
@@ -384,7 +385,9 @@ export default async function Events({
         const monthLabelFor = (ts: number) => {
           if (!Number.isFinite(ts)) return 'TBD'
           const d = new Date(ts)
-          return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
+          const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long' })
+          const year = d.getFullYear()
+          return `${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`
         }
 
         for (const ev of events) {

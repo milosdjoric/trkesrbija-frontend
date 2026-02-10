@@ -5,6 +5,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { QuickLinkCard } from '@/components/quick-link-card'
 import { Text } from '@/components/text'
+import { formatDate as formatDateUtil } from '@/lib/formatters'
 import {
   CalendarIcon,
   ArrowRightIcon,
@@ -155,7 +156,7 @@ export default async function HomePage() {
 
       const sharedDate =
         sharedDateBase && hasSharedDate
-          ? sharedDateBase.toLocaleDateString('sr-Latn-RS', { year: 'numeric', month: 'short', day: 'numeric' })
+          ? formatDateUtil(sharedDateBase, 'short')
           : 'TBD'
 
       const sharedTime =
