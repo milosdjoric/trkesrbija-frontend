@@ -126,7 +126,9 @@ export default function FavoritesPage() {
         />
       ) : (
         <div className="mt-6 flex flex-col gap-3">
-          {favorites.map((fav) => {
+          {[...favorites]
+            .sort((a, b) => new Date(a.race.startDateTime).getTime() - new Date(b.race.startDateTime).getTime())
+            .map((fav) => {
             const race = fav.race
             return (
               <div
