@@ -1,4 +1,5 @@
 import { gql } from '@/app/lib/api'
+import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { EventCard } from '@/components/event-card'
 import { Heading, Subheading } from '@/components/heading'
@@ -11,7 +12,7 @@ import {
   ArrowRightIcon,
   TrophyIcon,
   UserGroupIcon,
-  FlagIcon,
+  MagnifyingGlassIcon,
 } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 
@@ -192,53 +193,58 @@ export default async function HomePage() {
   const nextWeekEvents = processedEvents.filter((ev) => getEventCategory(ev) === 'next-week')
   const laterEvents = processedEvents.filter((ev) => getEventCategory(ev) === 'later').slice(0, 5)
 
-  // Stats
-  const totalEvents = allEvents.length
-  const totalRaces = allEvents.reduce((sum, ev) => sum + (ev.races?.length ?? 0), 0)
-  const trailEvents = allEvents.filter((ev) => ev.type === 'TRAIL').length
-  const roadEvents = allEvents.filter((ev) => ev.type === 'ROAD').length
+  // Stats za kategorije
+  const trailCount = allEvents.filter((ev) => ev.type === 'TRAIL').length
+  const roadCount = allEvents.filter((ev) => ev.type === 'ROAD').length
 
   return (
     <>
-      {/* Hero sekcija */}
-      <div className="mb-10">
+      {/* Hero sekcija sa pretragom */}
+      <div className="mb-8">
         <Heading>Dobrodošli na Trke Srbija</Heading>
         <Text className="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-400">
-          Pronađite i prijavite se za trail i ulične trke širom Srbije. Pratite rezultate i
-          otkrijte nove izazove.
+          Pronađite i prijavite se za trail i ulične trke širom Srbije.
         </Text>
+
+        {/* Search bar */}
+        <form action="/events" className="mt-6 max-w-xl">
+          <div className="relative">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-zinc-400" />
+            <input
+              type="text"
+              name="q"
+              placeholder="Pretraži događaje ili trke..."
+              className="w-full rounded-lg border border-zinc-300 bg-white py-3 pl-10 pr-4 text-sm placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
+            />
+          </div>
+        </form>
       </div>
 
-      {/* Statistika */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
-          <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
-            <CalendarIcon className="size-4" />
-            <span className="text-xs font-medium uppercase tracking-wide">Događaji</span>
+      {/* Kategorije */}
+      <div className="mb-10 grid gap-4 sm:grid-cols-2">
+        <Link
+          href="/events?eventType=TRAIL"
+          className="group relative overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
+        >
+          <div className="aspect-[16/9] bg-gradient-to-br from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-900" />
+          <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
+            <Badge color="emerald" className="w-fit">Trail trke</Badge>
+            <h3 className="mt-2 text-2xl font-bold text-white">Trail</h3>
+            <p className="text-sm text-emerald-100">Planinske i brdske staze • {trailCount} događaja</p>
           </div>
-          <div className="mt-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">{totalEvents}</div>
-        </div>
-        <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50">
-          <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400">
-            <FlagIcon className="size-4" />
-            <span className="text-xs font-medium uppercase tracking-wide">Trke</span>
+        </Link>
+
+        <Link
+          href="/events?eventType=ROAD"
+          className="group relative overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
+        >
+          <div className="aspect-[16/9] bg-gradient-to-br from-sky-500 to-sky-700 dark:from-sky-600 dark:to-sky-900" />
+          <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
+            <Badge color="sky" className="w-fit">Ulične trke</Badge>
+            <h3 className="mt-2 text-2xl font-bold text-white">Ulična</h3>
+            <p className="text-sm text-sky-100">Gradske i ulične staze • {roadCount} događaja</p>
           </div>
-          <div className="mt-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">{totalRaces}</div>
-        </div>
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-800 dark:bg-emerald-900/20">
-          <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
-            <TrophyIcon className="size-4" />
-            <span className="text-xs font-medium uppercase tracking-wide">Trail</span>
-          </div>
-          <div className="mt-2 text-2xl font-bold text-emerald-700 dark:text-emerald-300">{trailEvents}</div>
-        </div>
-        <div className="rounded-lg border border-sky-200 bg-sky-50 p-4 dark:border-sky-800 dark:bg-sky-900/20">
-          <div className="flex items-center gap-2 text-sky-600 dark:text-sky-400">
-            <UserGroupIcon className="size-4" />
-            <span className="text-xs font-medium uppercase tracking-wide">Ulična</span>
-          </div>
-          <div className="mt-2 text-2xl font-bold text-sky-700 dark:text-sky-300">{roadEvents}</div>
-        </div>
+        </Link>
       </div>
 
       {/* Nadolazeći događaji */}
