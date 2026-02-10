@@ -422,7 +422,7 @@ export default async function Events({
                         hasSharedLocation={event.hasSharedLocation}
                         races={event.races}
                         showDimmed={true}
-                        raceMatchesFilter={(r) => !anyFilterActive || Boolean((r as any)._matchesFilters)}
+                        filtersActive={anyFilterActive}
                       />
                     </li>
                   ))}

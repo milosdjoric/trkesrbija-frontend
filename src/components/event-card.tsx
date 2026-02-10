@@ -1,6 +1,3 @@
-'use client'
-
-import { Badge } from '@/components/badge'
 import { Link } from '@/components/link'
 import { RaceCard } from '@/components/race-card'
 
@@ -11,6 +8,8 @@ type Race = {
   elevation: number | null
   startDateTime: string
   startLocation?: string
+  /** Pre-computed: does this race match current filters? */
+  _matchesFilters?: boolean
 }
 
 type EventCardProps = {
@@ -36,8 +35,8 @@ type EventCardProps = {
   races: Race[]
   /** Show dimmed races that don't match filters */
   showDimmed?: boolean
-  /** Function to check if race matches filter (for dimming) */
-  raceMatchesFilter?: (race: Race) => boolean
+  /** Are filters currently active? (affects dimming logic) */
+  filtersActive?: boolean
 }
 
 function formatTime(d: Date) {
@@ -59,7 +58,7 @@ export function EventCard({
   hasSharedLocation = false,
   races,
   showDimmed = true,
-  raceMatchesFilter,
+  filtersActive = false,
 }: EventCardProps) {
   const isTrail = type === 'TRAIL'
 
@@ -107,7 +106,8 @@ export function EventCard({
             {races.length > 0 ? (
               races.map((r) => {
                 const raceName = r.raceName ?? 'Trka'
-                const matches = raceMatchesFilter ? raceMatchesFilter(r) : true
+                // If filters are active, use pre-computed _matchesFilters; otherwise all match
+                const matches = !filtersActive || r._matchesFilters !== false
                 const dt = r.startDateTime ? new Date(r.startDateTime) : null
                 const raceTime =
                   dt && !Number.isNaN(dt.getTime())
