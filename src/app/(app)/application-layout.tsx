@@ -146,9 +146,9 @@ export function ApplicationLayout({
               </SidebarItem>
             </SidebarSection>
 
-            {/* Moje - prijavljeni korisnici */}
+            {/* Moji linkovi - prijavljeni korisnici */}
             <SidebarSection>
-              <SidebarHeading>Moje</SidebarHeading>
+              <SidebarHeading>Moji linkovi</SidebarHeading>
               {user ? (
                 <>
                   <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
@@ -170,6 +170,7 @@ export function ApplicationLayout({
                     <ClipboardDocumentListIcon />
                     <SidebarLabel className="text-zinc-400">Prijave na trke</SidebarLabel>
                   </SidebarItem>
+                  <p className="px-2 text-xs text-zinc-500 dark:text-zinc-500">Potrebna prijava</p>
                 </>
               )}
             </SidebarSection>
