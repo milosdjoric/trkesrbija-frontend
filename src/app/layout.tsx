@@ -9,11 +9,11 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trkesrbija.rs'
 export const metadata: Metadata = {
   title: {
     template: '%s - Trke Srbija',
-    default: 'Trke Srbija - Trail i asfaltne trke u Srbiji',
+    default: 'Trke Srbija - Trail i ulične trke u Srbiji',
   },
   description:
-    'Pronađite i prijavite se za trail i asfaltne trke širom Srbije. Pratite rezultate, otkrijte nove izazove i pridružite se trkačkoj zajednici.',
-  keywords: ['trke', 'trail', 'running', 'srbija', 'trcanje', 'maraton', 'ultramaraton', 'asfalt'],
+    'Pronađite i prijavite se za trail i ulične trke širom Srbije. Pratite rezultate, otkrijte nove izazove i pridružite se trkačkoj zajednici.',
+  keywords: ['trke', 'trail', 'running', 'srbija', 'trcanje', 'maraton', 'ultramaraton', 'ulicna'],
   authors: [{ name: 'Trke Srbija' }],
   creator: 'Trke Srbija',
   metadataBase: new URL(siteUrl),
@@ -22,15 +22,15 @@ export const metadata: Metadata = {
     locale: 'sr_RS',
     url: siteUrl,
     siteName: 'Trke Srbija',
-    title: 'Trke Srbija - Trail i asfaltne trke u Srbiji',
+    title: 'Trke Srbija - Trail i ulične trke u Srbiji',
     description:
-      'Pronađite i prijavite se za trail i asfaltne trke širom Srbije. Pratite rezultate i pridružite se trkačkoj zajednici.',
+      'Pronađite i prijavite se za trail i ulične trke širom Srbije. Pratite rezultate i pridružite se trkačkoj zajednici.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Trke Srbija - Trail i asfaltne trke u Srbiji',
+    title: 'Trke Srbija - Trail i ulične trke u Srbiji',
     description:
-      'Pronađite i prijavite se za trail i asfaltne trke širom Srbije. Pratite rezultate i pridružite se trkačkoj zajednici.',
+      'Pronađite i prijavite se za trail i ulične trke širom Srbije. Pratite rezultate i pridružite se trkačkoj zajednici.',
   },
   robots: {
     index: true,

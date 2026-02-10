@@ -35,7 +35,7 @@ export function getGenderLabel(gender: Gender): string {
 export function getEventTypeBadge(type: EventType) {
   return (
     <Badge color={type === 'TRAIL' ? 'emerald' : 'sky'}>
-      {type === 'TRAIL' ? 'Trail' : 'Asfalt'}
+      {type === 'TRAIL' ? 'Trail' : 'Ulična'}
     </Badge>
   )
 }

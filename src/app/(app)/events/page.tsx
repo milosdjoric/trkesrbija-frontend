@@ -12,11 +12,11 @@ import { FiltersBar } from './filters-bar'
 export const metadata: Metadata = {
   title: 'Svi događaji',
   description:
-    'Pregledajte sve trail i asfaltne trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
+    'Pregledajte sve trail i ulične trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
   openGraph: {
     title: 'Svi događaji - Trke Srbija',
     description:
-      'Pregledajte sve trail i asfaltne trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
+      'Pregledajte sve trail i ulične trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
   },
 }
 

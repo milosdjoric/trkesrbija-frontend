@@ -187,7 +187,7 @@ export default function AdminEventsPage() {
       <div className="mt-4 flex gap-2 text-sm">
         <Badge color="zinc">{events.length} ukupno</Badge>
         <Badge color="emerald">{trailCount} trail</Badge>
-        <Badge color="sky">{roadCount} asfalt</Badge>
+        <Badge color="sky">{roadCount} ulična</Badge>
       </div>
 
       {/* Filters */}
@@ -251,7 +251,7 @@ export default function AdminEventsPage() {
                         {event.eventName}
                       </h3>
                       <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'}>
-                        {event.type === 'TRAIL' ? 'Trail' : 'Asfalt'}
+                        {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
                       </Badge>
                     </div>
                     <p className="mt-1 text-sm text-zinc-500">

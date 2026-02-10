@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: 'Događaj nije pronađen' }
   }
 
-  const eventType = event.type === 'TRAIL' ? 'Trail' : 'Asfaltna'
+  const eventType = event.type === 'TRAIL' ? 'Trail' : 'Ulična'
   const description =
     event.description ??
     `${event.eventName} - ${eventType} trka u Srbiji. Prijavite se i učestvujte!`
@@ -111,7 +111,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Heading>{event.eventName}</Heading>
               <Badge color={event.type === 'TRAIL' ? 'amber' : 'sky'}>
-                {event.type === 'TRAIL' ? 'Trail' : 'Asfalt'}
+                {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
               </Badge>
             </div>
             {event.description && (

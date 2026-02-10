@@ -108,7 +108,7 @@ export default async function HomePage() {
       <div className="mb-10">
         <Heading>Dobrodošli na Trke Srbija</Heading>
         <Text className="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-400">
-          Pronađite i prijavite se za trail i asfaltne trke širom Srbije. Pratite rezultate i
+          Pronađite i prijavite se za trail i ulične trke širom Srbije. Pratite rezultate i
           otkrijte nove izazove.
         </Text>
       </div>
@@ -139,7 +139,7 @@ export default async function HomePage() {
         <div className="rounded-lg border border-sky-200 bg-sky-50 p-4 dark:border-sky-800 dark:bg-sky-900/20">
           <div className="flex items-center gap-2 text-sky-600 dark:text-sky-400">
             <UserGroupIcon className="size-4" />
-            <span className="text-xs font-medium uppercase tracking-wide">Asfalt</span>
+            <span className="text-xs font-medium uppercase tracking-wide">Ulična</span>
           </div>
           <div className="mt-2 text-2xl font-bold text-sky-700 dark:text-sky-300">{roadEvents}</div>
         </div>
@@ -197,7 +197,7 @@ export default async function HomePage() {
                         {race.raceEvent.eventName}
                       </span>
                       <Badge color={isTrail ? 'emerald' : 'sky'}>
-                        {race.raceName ?? (isTrail ? 'Trail' : 'Asfalt')}
+                        {race.raceName ?? (isTrail ? 'Trail' : 'Ulična')}
                       </Badge>
                     </div>
                     <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">

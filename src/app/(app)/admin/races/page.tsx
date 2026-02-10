@@ -265,7 +265,7 @@ export default function AdminRacesPage() {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <Badge color={race.raceEvent.type === 'TRAIL' ? 'emerald' : 'sky'} className="shrink-0">
-                        {race.raceEvent.type === 'TRAIL' ? 'Trail' : 'Asfalt'}
+                        {race.raceEvent.type === 'TRAIL' ? 'Trail' : 'Ulična'}
                       </Badge>
                       <div>
                         <div className="font-medium text-zinc-900 dark:text-zinc-100">
