@@ -31,11 +31,9 @@ import {
   Cog8ToothIcon,
   HeartIcon,
   LightBulbIcon,
-  ShieldCheckIcon,
-  UserCircleIcon,
   WrenchScrewdriverIcon,
 } from '@heroicons/react/16/solid'
-import { HomeIcon, QuestionMarkCircleIcon, SparklesIcon, Square2StackIcon, TicketIcon } from '@heroicons/react/20/solid'
+import { QuestionMarkCircleIcon, SparklesIcon, Square2StackIcon } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
 
 import { useAuth } from '@/app/auth/auth-context'
@@ -165,12 +163,12 @@ export function ApplicationLayout({
                   <SidebarItem href="/login">
                     <HeartIcon />
                     <SidebarLabel className="text-zinc-400">Omiljene trke</SidebarLabel>
-                    <span className="text-xs text-zinc-500">· prijava</span>
+                    <span className="text-xs text-zinc-500">(potrebna prijava)</span>
                   </SidebarItem>
                   <SidebarItem href="/login">
                     <ClipboardDocumentListIcon />
                     <SidebarLabel className="text-zinc-400">Prijave na trke</SidebarLabel>
-                    <span className="text-xs text-zinc-500">· prijava</span>
+                    <span className="text-xs text-zinc-500">(potrebna prijava)</span>
                   </SidebarItem>
                 </>
               )}
