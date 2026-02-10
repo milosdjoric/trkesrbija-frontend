@@ -83,6 +83,94 @@ function daysUntil(iso: string): number {
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
+function getWeekCategory(iso: string): 'this-week' | 'next-week' | 'later' {
+  const d = new Date(iso)
+  const now = new Date()
+
+  // Get start of this week (Monday)
+  const startOfThisWeek = new Date(now)
+  const dayOfWeek = now.getDay()
+  const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1 // Monday = 0
+  startOfThisWeek.setDate(now.getDate() - diff)
+  startOfThisWeek.setHours(0, 0, 0, 0)
+
+  // Get end of this week (Sunday 23:59:59)
+  const endOfThisWeek = new Date(startOfThisWeek)
+  endOfThisWeek.setDate(startOfThisWeek.getDate() + 6)
+  endOfThisWeek.setHours(23, 59, 59, 999)
+
+  // Get end of next week
+  const endOfNextWeek = new Date(endOfThisWeek)
+  endOfNextWeek.setDate(endOfThisWeek.getDate() + 7)
+
+  if (d <= endOfThisWeek) {
+    return 'this-week'
+  } else if (d <= endOfNextWeek) {
+    return 'next-week'
+  } else {
+    return 'later'
+  }
+}
+
+function RaceCard({ race }: { race: BackendRace }) {
+  const days = daysUntil(race.startDateTime)
+  const isTrail = race.raceEvent.type === 'TRAIL'
+  const details = [`${race.length}km`, race.elevation != null ? `${race.elevation}m` : '']
+    .filter(Boolean)
+    .join(' / ')
+
+  // Badge color based on days
+  const getBadgeColor = (d: number) => {
+    if (d <= 0) return 'red'
+    if (d === 1) return 'amber'
+    if (d <= 7) return 'lime'
+    if (d <= 14) return 'cyan'
+    return 'zinc'
+  }
+
+  const getBadgeText = (d: number) => {
+    if (d <= 0) return 'Danas'
+    if (d === 1) return 'Sutra'
+    return `${d} dana`
+  }
+
+  return (
+    <Link
+      href={`/events/${race.raceEvent.slug}`}
+      className="flex items-center gap-4 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
+    >
+      {/* Datum */}
+      <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-zinc-100 py-2 text-center dark:bg-zinc-800">
+        <span className="text-xs font-medium uppercase text-zinc-500 dark:text-zinc-400">
+          {formatMonth(race.startDateTime)}
+        </span>
+        <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+          {formatDay(race.startDateTime)}
+        </span>
+      </div>
+
+      {/* Info */}
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="font-medium text-zinc-900 dark:text-zinc-100">{race.raceEvent.eventName}</span>
+          <Badge color={isTrail ? 'emerald' : 'sky'}>{race.raceName ?? (isTrail ? 'Trail' : 'Ulična')}</Badge>
+        </div>
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
+          <IconText icon={<CalendarIcon className="size-3.5" />}>
+            {formatDate(race.startDateTime, 'short')} · {formatTime(race.startDateTime)}
+          </IconText>
+          <span>{details}</span>
+        </div>
+      </div>
+
+      {/* Countdown Badge */}
+      <div className="hidden shrink-0 sm:block">
+        <Badge color={getBadgeColor(days)}>{getBadgeText(days)}</Badge>
+      </div>
+    </Link>
+  )
+}
+
 export default async function HomePage() {
   // Fetch upcoming races
   const racesData = await gql<{ races: BackendRace[] }>(UPCOMING_RACES_QUERY, { limit: 50 })
@@ -163,66 +251,54 @@ export default async function HomePage() {
             Nema nadolazećih trka
           </div>
         ) : (
-          <div className="mt-4 space-y-3">
-            {upcomingRaces.map((race) => {
-              const days = daysUntil(race.startDateTime)
-              const isTrail = race.raceEvent.type === 'TRAIL'
-              const details = [
-                `${race.length}km`,
-                race.elevation != null ? `${race.elevation}m` : '',
-              ]
-                .filter(Boolean)
-                .join(' / ')
-
+          <div className="mt-4 space-y-6">
+            {/* Ove nedelje */}
+            {(() => {
+              const thisWeekRaces = upcomingRaces.filter((r) => getWeekCategory(r.startDateTime) === 'this-week')
+              if (thisWeekRaces.length === 0) return null
               return (
-                <Link
-                  key={race.id}
-                  href={`/events/${race.raceEvent.slug}`}
-                  className="flex items-center gap-4 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
-                >
-                  {/* Datum */}
-                  <div className="flex w-16 shrink-0 flex-col items-center rounded-lg bg-zinc-100 py-2 text-center dark:bg-zinc-800">
-                    <span className="text-xs font-medium uppercase text-zinc-500 dark:text-zinc-400">
-                      {formatMonth(race.startDateTime)}
-                    </span>
-                    <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-                      {formatDay(race.startDateTime)}
-                    </span>
+                <div>
+                  <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Ove nedelje</h3>
+                  <div className="space-y-2">
+                    {thisWeekRaces.map((race) => (
+                      <RaceCard key={race.id} race={race} />
+                    ))}
                   </div>
-
-                  {/* Info */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                        {race.raceEvent.eventName}
-                      </span>
-                      <Badge color={isTrail ? 'emerald' : 'sky'}>
-                        {race.raceName ?? (isTrail ? 'Trail' : 'Ulična')}
-                      </Badge>
-                    </div>
-                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-                      <IconText icon={<CalendarIcon className="size-3.5" />}>
-                        {formatDate(race.startDateTime, 'short')} · {formatTime(race.startDateTime)}
-                      </IconText>
-                      <span>{details}</span>
-                    </div>
-                  </div>
-
-                  {/* Countdown */}
-                  <div className="hidden shrink-0 text-right sm:block">
-                    {days <= 0 ? (
-                      <Badge color="red">Danas</Badge>
-                    ) : days === 1 ? (
-                      <Badge color="amber">Sutra</Badge>
-                    ) : days <= 7 ? (
-                      <Badge color="lime">{days} dana</Badge>
-                    ) : (
-                      <span className="text-sm text-zinc-500">{days} dana</span>
-                    )}
-                  </div>
-                </Link>
+                </div>
               )
-            })}
+            })()}
+
+            {/* Sledeće nedelje */}
+            {(() => {
+              const nextWeekRaces = upcomingRaces.filter((r) => getWeekCategory(r.startDateTime) === 'next-week')
+              if (nextWeekRaces.length === 0) return null
+              return (
+                <div>
+                  <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Sledeće nedelje</h3>
+                  <div className="space-y-2">
+                    {nextWeekRaces.map((race) => (
+                      <RaceCard key={race.id} race={race} />
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* Kasnije */}
+            {(() => {
+              const laterRaces = upcomingRaces.filter((r) => getWeekCategory(r.startDateTime) === 'later')
+              if (laterRaces.length === 0) return null
+              return (
+                <div>
+                  <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Kasnije</h3>
+                  <div className="space-y-2">
+                    {laterRaces.map((race) => (
+                      <RaceCard key={race.id} race={race} />
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
           </div>
         )}
       </div>
