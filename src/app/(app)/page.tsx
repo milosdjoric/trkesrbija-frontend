@@ -1,11 +1,9 @@
 import { gql } from '@/app/lib/api'
-import { Badge } from '@/components/badge'
 import { Heading, Subheading } from '@/components/heading'
-import { IconText } from '@/components/icon-text'
 import { Link } from '@/components/link'
 import { QuickLinkCard } from '@/components/quick-link-card'
+import { RaceListCard } from '@/components/race-list-card'
 import { Text } from '@/components/text'
-import { formatDate, formatTime, formatMonth, formatDay } from '@/lib/formatters'
 import {
   CalendarIcon,
   ArrowRightIcon,
@@ -76,13 +74,6 @@ const STATS_QUERY = `
   }
 `
 
-function daysUntil(iso: string): number {
-  const d = new Date(iso)
-  const now = new Date()
-  const diff = d.getTime() - now.getTime()
-  return Math.ceil(diff / (1000 * 60 * 60 * 24))
-}
-
 function getWeekCategory(iso: string): 'this-week' | 'next-week' | 'later' {
   const d = new Date(iso)
   const now = new Date()
@@ -110,65 +101,6 @@ function getWeekCategory(iso: string): 'this-week' | 'next-week' | 'later' {
   } else {
     return 'later'
   }
-}
-
-function RaceCard({ race }: { race: BackendRace }) {
-  const days = daysUntil(race.startDateTime)
-  const isTrail = race.raceEvent.type === 'TRAIL'
-  const details = [`${race.length}km`, race.elevation != null ? `${race.elevation}m` : '']
-    .filter(Boolean)
-    .join(' / ')
-
-  // Badge color based on days
-  const getBadgeColor = (d: number) => {
-    if (d <= 0) return 'red'
-    if (d === 1) return 'amber'
-    if (d <= 7) return 'lime'
-    if (d <= 14) return 'cyan'
-    return 'zinc'
-  }
-
-  const getBadgeText = (d: number) => {
-    if (d <= 0) return 'Danas'
-    if (d === 1) return 'Sutra'
-    return `${d} dana`
-  }
-
-  return (
-    <Link
-      href={`/events/${race.raceEvent.slug}`}
-      className="flex items-center gap-4 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
-    >
-      {/* Datum */}
-      <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-zinc-100 py-2 text-center dark:bg-zinc-800">
-        <span className="text-xs font-medium uppercase text-zinc-500 dark:text-zinc-400">
-          {formatMonth(race.startDateTime)}
-        </span>
-        <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-          {formatDay(race.startDateTime)}
-        </span>
-      </div>
-
-      {/* Info */}
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="font-medium text-zinc-900 dark:text-zinc-100">{race.raceEvent.eventName}</span>
-          <Badge color={isTrail ? 'emerald' : 'sky'}>{race.raceName ?? (isTrail ? 'Trail' : 'Ulična')}</Badge>
-        </div>
-        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-          <IconText icon={<CalendarIcon className="size-3.5" />}>
-            {formatDate(race.startDateTime, 'short')} · {formatTime(race.startDateTime)}
-          </IconText>
-          <span>{details}</span>
-        </div>
-      </div>
-
-      {/* Countdown Badge */}
-      <div className="hidden shrink-0 sm:block">
-        <Badge color={getBadgeColor(days)}>{getBadgeText(days)}</Badge>
-      </div>
-    </Link>
-  )
 }
 
 export default async function HomePage() {
@@ -261,7 +193,17 @@ export default async function HomePage() {
                   <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Ove nedelje</h3>
                   <div className="space-y-2">
                     {thisWeekRaces.map((race) => (
-                      <RaceCard key={race.id} race={race} />
+                      <RaceListCard
+                        key={race.id}
+                        raceId={race.id}
+                        raceName={race.raceName}
+                        eventName={race.raceEvent.eventName}
+                        eventSlug={race.raceEvent.slug}
+                        type={race.raceEvent.type}
+                        length={race.length}
+                        elevation={race.elevation}
+                        startDateTime={race.startDateTime}
+                      />
                     ))}
                   </div>
                 </div>
@@ -277,7 +219,17 @@ export default async function HomePage() {
                   <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Sledeće nedelje</h3>
                   <div className="space-y-2">
                     {nextWeekRaces.map((race) => (
-                      <RaceCard key={race.id} race={race} />
+                      <RaceListCard
+                        key={race.id}
+                        raceId={race.id}
+                        raceName={race.raceName}
+                        eventName={race.raceEvent.eventName}
+                        eventSlug={race.raceEvent.slug}
+                        type={race.raceEvent.type}
+                        length={race.length}
+                        elevation={race.elevation}
+                        startDateTime={race.startDateTime}
+                      />
                     ))}
                   </div>
                 </div>
@@ -293,7 +245,17 @@ export default async function HomePage() {
                   <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Kasnije</h3>
                   <div className="space-y-2">
                     {laterRaces.map((race) => (
-                      <RaceCard key={race.id} race={race} />
+                      <RaceListCard
+                        key={race.id}
+                        raceId={race.id}
+                        raceName={race.raceName}
+                        eventName={race.raceEvent.eventName}
+                        eventSlug={race.raceEvent.slug}
+                        type={race.raceEvent.type}
+                        length={race.length}
+                        elevation={race.elevation}
+                        startDateTime={race.startDateTime}
+                      />
                     ))}
                   </div>
                 </div>

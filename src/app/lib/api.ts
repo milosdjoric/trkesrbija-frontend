@@ -291,12 +291,14 @@ const MY_RACE_REGISTRATIONS_QUERY = `
         id
         raceName
         length
+        elevation
         startDateTime
         startLocation
         raceEvent {
           id
           eventName
           slug
+          type
         }
       }
     }

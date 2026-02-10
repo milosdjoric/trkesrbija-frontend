@@ -2,17 +2,17 @@
 
 import { useAuth } from '@/app/auth/auth-context'
 import { cancelMyRegistration, fetchMyRaceRegistrations, type RaceRegistration } from '@/app/lib/api'
+import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { useConfirm } from '@/components/confirm-dialog'
 import { EmptyState } from '@/components/empty-state'
 import { Heading, Subheading } from '@/components/heading'
 import { LoadingState } from '@/components/loading-state'
+import { RaceListCard } from '@/components/race-list-card'
 import { Text } from '@/components/text'
 import { useToast } from '@/components/toast'
 import { formatDate } from '@/lib/formatters'
 import { getStatusBadge } from '@/lib/badges'
-import { CalendarIcon, MapPinIcon } from '@heroicons/react/16/solid'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -100,66 +100,36 @@ export default function MyRegistrationsPage() {
           {activeRegistrations.length > 0 && (
             <div className="mt-6">
               <Subheading>Aktivne prijave ({activeRegistrations.length})</Subheading>
-              <div className="mt-4 space-y-4">
+              <div className="mt-4 space-y-2">
                 {activeRegistrations.map((reg) => (
-                  <div
+                  <RaceListCard
                     key={reg.id}
-                    className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700"
+                    raceId={reg.race?.id ?? reg.raceId}
+                    raceName={reg.race?.raceName ?? null}
+                    eventName={reg.race?.raceEvent?.eventName ?? 'Nepoznata trka'}
+                    eventSlug={reg.race?.raceEvent?.slug ?? ''}
+                    type={(reg.race?.raceEvent?.type as 'TRAIL' | 'ROAD') ?? 'ROAD'}
+                    length={reg.race?.length ?? 0}
+                    elevation={reg.race?.elevation}
+                    startDateTime={reg.race?.startDateTime ?? reg.createdAt}
                   >
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="flex-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Link
-                            href={`/events/${reg.race?.raceEvent?.slug}`}
-                            className="font-semibold text-zinc-900 hover:text-blue-600 dark:text-zinc-100 dark:hover:text-blue-400"
-                          >
-                            {reg.race?.raceName ?? reg.race?.raceEvent?.eventName ?? 'Nepoznata trka'}
-                          </Link>
-                          {getStatusBadge(reg.status)}
-                        </div>
-
-                        {reg.race && (
-                          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
-                            <span className="inline-flex items-center gap-1.5">
-                              <CalendarIcon className="size-4" />
-                              {formatDate(reg.race.startDateTime, 'long')}
-                            </span>
-                            <span className="inline-flex items-center gap-1.5">
-                              <MapPinIcon className="size-4" />
-                              {reg.race.length} km
-                            </span>
-                          </div>
-                        )}
-
-                        <div className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-                          <span>
-                            {reg.firstName} {reg.lastName}
-                          </span>
-                          {reg.bibNumber && (
-                            <span className="ml-2 font-mono text-zinc-900 dark:text-zinc-100">
-                              #{reg.bibNumber}
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="mt-1 text-xs text-zinc-400">
-                          Prijavljeno: {formatDate(reg.createdAt, 'long')}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 sm:shrink-0">
-                        {reg.status !== 'CANCELLED' && (
-                          <Button
-                            outline
-                            onClick={() => handleCancel(reg.id)}
-                            disabled={cancellingId === reg.id}
-                          >
-                            {cancellingId === reg.id ? 'Otkazivanje...' : 'Otkaži'}
-                          </Button>
-                        )}
-                      </div>
+                    <div className="flex items-center gap-2">
+                      {getStatusBadge(reg.status)}
+                      {reg.bibNumber && (
+                        <Badge color="zinc">#{reg.bibNumber}</Badge>
+                      )}
+                      {reg.status !== 'CANCELLED' && (
+                        <Button
+                          outline
+                          onClick={() => handleCancel(reg.id)}
+                          disabled={cancellingId === reg.id}
+                          className="text-xs"
+                        >
+                          {cancellingId === reg.id ? '...' : 'Otkaži'}
+                        </Button>
+                      )}
                     </div>
-                  </div>
+                  </RaceListCard>
                 ))}
               </div>
             </div>
@@ -168,22 +138,22 @@ export default function MyRegistrationsPage() {
           {cancelledRegistrations.length > 0 && (
             <div className="mt-8">
               <Subheading className="text-zinc-500">Otkazane prijave ({cancelledRegistrations.length})</Subheading>
-              <div className="mt-4 space-y-4">
+              <div className="mt-4 space-y-2 opacity-60">
                 {cancelledRegistrations.map((reg) => (
-                  <div
+                  <RaceListCard
                     key={reg.id}
-                    className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 opacity-60 dark:border-zinc-700 dark:bg-zinc-800/50"
+                    raceId={reg.race?.id ?? reg.raceId}
+                    raceName={reg.race?.raceName ?? null}
+                    eventName={reg.race?.raceEvent?.eventName ?? 'Nepoznata trka'}
+                    eventSlug={reg.race?.raceEvent?.slug ?? ''}
+                    type={(reg.race?.raceEvent?.type as 'TRAIL' | 'ROAD') ?? 'ROAD'}
+                    length={reg.race?.length ?? 0}
+                    elevation={reg.race?.elevation}
+                    startDateTime={reg.race?.startDateTime ?? reg.createdAt}
+                    showCountdown={false}
                   >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-zinc-600 dark:text-zinc-400">
-                        {reg.race?.raceName ?? reg.race?.raceEvent?.eventName ?? 'Nepoznata trka'}
-                      </span>
-                      {getStatusBadge(reg.status)}
-                    </div>
-                    <div className="mt-1 text-sm text-zinc-500">
-                      {formatDate(reg.race?.startDateTime ?? reg.createdAt, 'long')}
-                    </div>
-                  </div>
+                    {getStatusBadge(reg.status)}
+                  </RaceListCard>
                 ))}
               </div>
             </div>
