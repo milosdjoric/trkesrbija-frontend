@@ -623,14 +623,19 @@ const RACE_RESULTS_QUERY = `
   }
 `
 
-const CHECKPOINTS_QUERY = `
-  query Checkpoints($raceId: ID!) {
-    checkpoints(raceId: $raceId) {
+// Legacy query - uses raceCheckpoints and maps to old Checkpoint format
+const CHECKPOINTS_FOR_RACE_QUERY = `
+  query RaceCheckpointsForResults($raceId: ID!) {
+    raceCheckpoints(raceId: $raceId) {
       id
-      name
       raceId
-      distance
+      checkpointId
       orderIndex
+      distance
+      checkpoint {
+        id
+        name
+      }
     }
   }
 `
@@ -693,8 +698,28 @@ export async function fetchRaceResults(
 }
 
 export async function fetchCheckpoints(raceId: string, accessToken?: string | null): Promise<Checkpoint[]> {
-  const data = await gql<{ checkpoints: Checkpoint[] }>(CHECKPOINTS_QUERY, { raceId }, { accessToken })
-  return data.checkpoints
+  // Use raceCheckpoints query and map to legacy Checkpoint format
+  const data = await gql<{
+    raceCheckpoints: Array<{
+      id: string
+      raceId: string
+      checkpointId: string
+      orderIndex: number
+      distance: number | null
+      checkpoint: { id: string; name: string }
+    }>
+  }>(CHECKPOINTS_FOR_RACE_QUERY, { raceId }, { accessToken })
+
+  // Map raceCheckpoints to legacy Checkpoint format
+  return data.raceCheckpoints.map((rc) => ({
+    id: rc.checkpoint.id,
+    name: rc.checkpoint.name,
+    raceId: rc.raceId,
+    distance: rc.distance,
+    orderIndex: rc.orderIndex,
+    createdAt: '',
+    updatedAt: '',
+  }))
 }
 
 export async function recordTime(bibNumber: string, accessToken?: string | null): Promise<Timing> {

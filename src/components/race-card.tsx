@@ -2,7 +2,7 @@
 
 import { useAuth } from '@/app/auth/auth-context'
 import { Badge } from '@/components/badge'
-import { ClipboardDocumentListIcon, FlagIcon } from '@heroicons/react/16/solid'
+import { ClipboardDocumentListIcon, FlagIcon, MapPinIcon } from '@heroicons/react/16/solid'
 import NextLink from 'next/link'
 
 type RaceCardProps = {
@@ -11,6 +11,8 @@ type RaceCardProps = {
   name: string
   /** Details string (e.g., "12km / 520m") - already formatted */
   details?: string
+  /** Start location URL or text */
+  startLocation?: string | null
   /** Badge color variant */
   color?: 'emerald' | 'sky' | 'zinc'
   /** If true, show dimmed (for filtered out races) */
@@ -25,6 +27,7 @@ export function RaceCard({
   raceId,
   name,
   details,
+  startLocation,
   color = 'sky',
   dimmed = false,
   showAdminLinks = true,
@@ -34,6 +37,7 @@ export function RaceCard({
   const isAdmin = user?.role === 'ADMIN'
 
   const badgeColor = dimmed ? 'zinc' : color
+  const hasLocation = startLocation && startLocation.trim() !== ''
 
   return (
     <span className="inline-flex flex-wrap items-center gap-1">
@@ -43,6 +47,29 @@ export function RaceCard({
       </Badge>
 
       {children}
+
+      {hasLocation && (
+        startLocation.startsWith('http') ? (
+          <a
+            href={startLocation}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200"
+            title="Prikaži lokaciju"
+          >
+            <MapPinIcon className="size-3" />
+            Lokacija
+          </a>
+        ) : (
+          <span
+            className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-500 dark:border-zinc-600 dark:text-zinc-400"
+            title={startLocation}
+          >
+            <MapPinIcon className="size-3" />
+            {startLocation.length > 20 ? `${startLocation.substring(0, 20)}...` : startLocation}
+          </span>
+        )
+      )}
 
       {showAdminLinks && isAdmin && (
         <>

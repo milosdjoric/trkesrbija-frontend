@@ -163,6 +163,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 raceId={race.id}
                 name={race.raceName ?? 'Trka'}
                 details={details}
+                startLocation={race.startLocation}
                 color={event.type === 'TRAIL' ? 'emerald' : 'sky'}
               >
                 <RegisterRaceButton raceId={race.id} size="sm" />
