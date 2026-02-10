@@ -1,11 +1,7 @@
 import { gql } from '@/app/lib/api'
-import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
-import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/dropdown'
+import { EventCard } from '@/components/event-card'
 import { Heading } from '@/components/heading'
-import { Link } from '@/components/link'
-import { RaceCard } from '@/components/race-card'
-import { EllipsisVerticalIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { FiltersBar } from './filters-bar'
 
@@ -338,29 +334,6 @@ export default async function Events({
     }
   })
 
-  // Helper for formatting month headings
-  function formatMonthHeading(ts: number) {
-    if (!Number.isFinite(ts)) return null
-    const d = new Date(ts)
-    return d.toLocaleDateString(undefined, { year: 'numeric', month: 'long' })
-  }
-
-  // Helpers for formatting race date/time inside badges
-  function formatDate(d: Date) {
-    return d.toLocaleDateString(undefined, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    })
-  }
-
-  function formatTime(d: Date) {
-    return d.toLocaleTimeString(undefined, {
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  }
-
   return (
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
@@ -437,94 +410,20 @@ export default async function Events({
                   {g.items.map((event: any, index: number) => (
                     <li key={event.id}>
                       <Divider soft={index > 0} />
-
-                      {/* postojeći sadržaj event kartice ostaje NEPROMENJEN */}
-                      <div className="flex items-center justify-between">
-                        <div key={event.id} className="flex w-full gap-6 py-6 md:w-fit">
-                          <div className="w-full space-y-1.5 md:w-fit">
-                            <div className="text-lg font-semibold md:text-base/6">
-                              <Link href={event.url}>{event.name}</Link>
-                            </div>
-                            <div className="flex flex-col flex-wrap gap-2 md:flex-row">
-                              <div className="flex flex-wrap items-center gap-1 text-sm/6 text-zinc-500">
-                                {event.hasSharedStart ? (
-                                  <>
-                                    {event.date} u {event.time}
-                                  </>
-                                ) : event.hasSharedDate ? (
-                                  <>{event.date}</>
-                                ) : (
-                                  <>Različiti datumi</>
-                                )}{' '}
-                                <span aria-hidden="true">/</span>{' '}
-                                {event.hasSharedLocation ? (
-                                  typeof event.location === 'string' && event.location.startsWith('http') ? (
-                                    <a
-                                      href={event.location}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="underline underline-offset-2 hover:text-zinc-700"
-                                    >
-                                      Startna lokacija
-                                    </a>
-                                  ) : (
-                                    <>{event.location}</>
-                                  )
-                                ) : (
-                                  <>Različite lokacije</>
-                                )}
-                              </div>
-                              <div className="flex flex-wrap items-center gap-1">
-                                {event.races?.length ? (
-                                  event.races.map((r: any) => {
-                                    const name = r.raceName ?? 'Trka'
-                                    const matches = !anyFilterActive || Boolean(r._matchesFilters)
-                                    const dt = r.startDateTime ? new Date(r.startDateTime) : null
-                                    const time =
-                                      dt && !Number.isNaN(dt.getTime())
-                                        ? event.hasSharedStart
-                                          ? ''
-                                          : formatTime(dt)
-                                        : ''
-                                    const length = typeof r.length === 'number' ? `${r.length}km` : ''
-                                    const elevation = r.elevation != null ? `${r.elevation}m` : ''
-                                    const parts = [time, length, elevation].filter(Boolean).join(' / ')
-                                    const isTrail = event.eventType === 'TRAIL'
-
-                                    return (
-                                      <RaceCard
-                                        key={r.id}
-                                        raceId={r.id}
-                                        name={name}
-                                        details={parts}
-                                        color={isTrail ? 'emerald' : 'sky'}
-                                        dimmed={!matches}
-                                      />
-                                    )
-                                  })
-                                ) : (
-                                  <span className="text-xs text-zinc-400">Još nema trka</span>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex hidden items-center gap-4">
-                          <Badge className="max-sm:hidden" color={event.status === 'On Sale' ? 'lime' : 'zinc'}>
-                            {event.status}
-                          </Badge>
-                          <Dropdown>
-                            <DropdownButton plain aria-label="More options">
-                              <EllipsisVerticalIcon />
-                            </DropdownButton>
-                            <DropdownMenu anchor="bottom end">
-                              <DropdownItem href={event.url}>Prikaži</DropdownItem>
-                              <DropdownItem>Izmeni</DropdownItem>
-                              <DropdownItem>Obriši</DropdownItem>
-                            </DropdownMenu>
-                          </Dropdown>
-                        </div>
-                      </div>
+                      <EventCard
+                        name={event.name}
+                        url={event.url}
+                        type={event.eventType}
+                        date={event.date}
+                        time={event.time}
+                        location={event.location}
+                        hasSharedStart={event.hasSharedStart}
+                        hasSharedDate={event.hasSharedDate}
+                        hasSharedLocation={event.hasSharedLocation}
+                        races={event.races}
+                        showDimmed={true}
+                        raceMatchesFilter={(r) => !anyFilterActive || Boolean((r as any)._matchesFilters)}
+                      />
                     </li>
                   ))}
                 </ul>

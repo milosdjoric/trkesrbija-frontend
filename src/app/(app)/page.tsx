@@ -1,8 +1,9 @@
 import { gql } from '@/app/lib/api'
+import { Divider } from '@/components/divider'
+import { EventCard } from '@/components/event-card'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { QuickLinkCard } from '@/components/quick-link-card'
-import { RaceListCard } from '@/components/race-list-card'
 import { Text } from '@/components/text'
 import {
   CalendarIcon,
@@ -26,12 +27,6 @@ type BackendRace = {
   elevation: number | null
   startLocation: string
   startDateTime: string
-  raceEvent: {
-    id: string
-    eventName: string
-    slug: string
-    type: 'TRAIL' | 'ROAD'
-  }
 }
 
 type BackendRaceEvent = {
@@ -39,44 +34,36 @@ type BackendRaceEvent = {
   eventName: string
   slug: string
   type: 'TRAIL' | 'ROAD'
-  races: { id: string }[]
+  races: BackendRace[]
 }
 
-const UPCOMING_RACES_QUERY = `
-  query UpcomingRaces($limit: Int!) {
-    races(limit: $limit, orderBy: START_DATE_ASC) {
-      id
-      raceName
-      length
-      elevation
-      startLocation
-      startDateTime
-      raceEvent {
-        id
-        eventName
-        slug
-        type
-      }
-    }
-  }
-`
-
-const STATS_QUERY = `
-  query Stats {
-    raceEvents(limit: 1000) {
+const UPCOMING_EVENTS_QUERY = `
+  query UpcomingEvents($limit: Int!) {
+    raceEvents(limit: $limit, orderBy: CREATED_AT_DESC) {
       id
       eventName
+      slug
       type
       races {
         id
+        raceName
+        length
+        elevation
+        startLocation
+        startDateTime
       }
     }
   }
 `
 
-function getWeekCategory(iso: string): 'this-week' | 'next-week' | 'later' {
+function getWeekCategory(iso: string): 'this-week' | 'next-week' | 'later' | 'past' {
   const d = new Date(iso)
   const now = new Date()
+
+  // Check if in the past
+  if (d < now) {
+    return 'past'
+  }
 
   // Get start of this week (Monday)
   const startOfThisWeek = new Date(now)
@@ -103,20 +90,108 @@ function getWeekCategory(iso: string): 'this-week' | 'next-week' | 'later' {
   }
 }
 
+function allSameString(values: Array<string | null | undefined>) {
+  const normalized = values.map((v) => (typeof v === 'string' ? v.trim() : '')).filter(Boolean)
+  if (!normalized.length) return { allSame: false as const, value: null as string | null }
+  const first = normalized[0]
+  const allSame = normalized.every((v) => v === first)
+  return { allSame, value: allSame ? first : null }
+}
+
+function allSameDateTime(values: Array<string | null | undefined>) {
+  const normalized = values.map((v) => (typeof v === 'string' ? v : null)).filter(Boolean) as string[]
+
+  if (!normalized.length) return { allSame: false as const, value: null as Date | null }
+
+  const first = new Date(normalized[0])
+  if (Number.isNaN(first.getTime())) return { allSame: false as const, value: null as Date | null }
+
+  const allSame = normalized.every((v) => {
+    const d = new Date(v)
+    return !Number.isNaN(d.getTime()) && d.getTime() === first.getTime()
+  })
+
+  return { allSame, value: allSame ? first : null }
+}
+
 export default async function HomePage() {
-  // Fetch upcoming races
-  const racesData = await gql<{ races: BackendRace[] }>(UPCOMING_RACES_QUERY, { limit: 50 })
-
-  // Filter only future races
-  const now = new Date()
-  const upcomingRaces = (racesData.races ?? [])
-    .filter((r) => new Date(r.startDateTime) > now)
-    .slice(0, 6)
-
-  // Fetch stats
-  const eventsData = await gql<{ raceEvents: BackendRaceEvent[] }>(STATS_QUERY)
+  // Fetch upcoming events with races
+  const eventsData = await gql<{ raceEvents: BackendRaceEvent[] }>(UPCOMING_EVENTS_QUERY, { limit: 100 })
   const allEvents = eventsData.raceEvents ?? []
 
+  // Process events with computed fields
+  const now = new Date()
+  const processedEvents = allEvents
+    .map((ev) => {
+      const races = ev.races ?? []
+
+      // Get earliest race date for this event
+      const earliestTs = races
+        .map((r) => new Date(r.startDateTime).getTime())
+        .filter((t) => Number.isFinite(t))
+        .reduce((min, t) => Math.min(min, t), Number.POSITIVE_INFINITY)
+
+      // Compute shared fields
+      const sameLocation = allSameString(races.map((r) => r.startLocation))
+      const sameStartDateTime = allSameDateTime(races.map((r) => r.startDateTime))
+
+      const dateKeys = races
+        .map((r) => (typeof r.startDateTime === 'string' ? r.startDateTime : null))
+        .filter(Boolean)
+        .map((iso) => {
+          const d = new Date(iso as string)
+          return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10)
+        })
+        .filter(Boolean)
+
+      const hasSharedDate = dateKeys.length > 0 && dateKeys.every((k) => k === dateKeys[0])
+
+      const sharedDateBase = (() => {
+        const firstIso = races.find((r) => typeof r.startDateTime === 'string' && r.startDateTime)?.startDateTime
+        if (!firstIso) return null
+        const d = new Date(firstIso)
+        return Number.isNaN(d.getTime()) ? null : d
+      })()
+
+      const sharedDate =
+        sharedDateBase && hasSharedDate
+          ? sharedDateBase.toLocaleDateString('sr-Latn-RS', { year: 'numeric', month: 'short', day: 'numeric' })
+          : 'TBD'
+
+      const sharedTime =
+        sameStartDateTime.allSame && sameStartDateTime.value
+          ? sameStartDateTime.value.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit' })
+          : ''
+
+      const sharedLocation = sameLocation.allSame && sameLocation.value ? sameLocation.value : 'TBD'
+
+      return {
+        ...ev,
+        _earliestTs: earliestTs,
+        date: sharedDate,
+        time: sharedTime,
+        location: sharedLocation,
+        hasSharedStart: sameStartDateTime.allSame,
+        hasSharedDate: hasSharedDate,
+        hasSharedLocation: sameLocation.allSame,
+      }
+    })
+    // Filter only future events
+    .filter((ev) => ev._earliestTs > now.getTime())
+    // Sort by earliest race date
+    .sort((a, b) => a._earliestTs - b._earliestTs)
+
+  // Group events by week category
+  const getEventCategory = (ev: typeof processedEvents[0]) => {
+    if (!Number.isFinite(ev._earliestTs)) return 'later'
+    return getWeekCategory(new Date(ev._earliestTs).toISOString())
+  }
+
+  const thisWeekEvents = processedEvents.filter((ev) => getEventCategory(ev) === 'this-week')
+  const nextWeekEvents = processedEvents.filter((ev) => getEventCategory(ev) === 'next-week')
+  const laterEvents = processedEvents.filter((ev) => getEventCategory(ev) === 'later').slice(0, 5)
+
+  // Stats
   const totalEvents = allEvents.length
   const totalRaces = allEvents.reduce((sum, ev) => sum + (ev.races?.length ?? 0), 0)
   const trailEvents = allEvents.filter((ev) => ev.type === 'TRAIL').length
@@ -165,102 +240,102 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* Nadolazeće trke */}
+      {/* Nadolazeći događaji */}
       <div className="mt-10">
         <div className="flex items-center justify-between">
-          <Subheading>Nadolazeće trke</Subheading>
+          <Subheading>Nadolazeći događaji</Subheading>
           <Link
             href="/events"
             className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
           >
-            Sve trke
+            Svi događaji
             <ArrowRightIcon className="size-3" />
           </Link>
         </div>
 
-        {upcomingRaces.length === 0 ? (
+        {processedEvents.length === 0 ? (
           <div className="mt-4 rounded-lg border border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
-            Nema nadolazećih trka
+            Nema nadolazećih događaja
           </div>
         ) : (
           <div className="mt-4 space-y-6">
             {/* Ove nedelje */}
-            {(() => {
-              const thisWeekRaces = upcomingRaces.filter((r) => getWeekCategory(r.startDateTime) === 'this-week')
-              if (thisWeekRaces.length === 0) return null
-              return (
-                <div>
-                  <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Ove nedelje</h3>
-                  <div className="space-y-2">
-                    {thisWeekRaces.map((race) => (
-                      <RaceListCard
-                        key={race.id}
-                        raceId={race.id}
-                        raceName={race.raceName}
-                        eventName={race.raceEvent.eventName}
-                        eventSlug={race.raceEvent.slug}
-                        type={race.raceEvent.type}
-                        length={race.length}
-                        elevation={race.elevation}
-                        startDateTime={race.startDateTime}
+            {thisWeekEvents.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">Ove nedelje</h3>
+                <ul>
+                  {thisWeekEvents.map((event, index) => (
+                    <li key={event.id}>
+                      {index > 0 && <Divider soft />}
+                      <EventCard
+                        name={event.eventName}
+                        url={`/events/${event.slug}`}
+                        type={event.type}
+                        date={event.date}
+                        time={event.time}
+                        location={event.location}
+                        hasSharedStart={event.hasSharedStart}
+                        hasSharedDate={event.hasSharedDate}
+                        hasSharedLocation={event.hasSharedLocation}
+                        races={event.races}
                       />
-                    ))}
-                  </div>
-                </div>
-              )
-            })()}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Sledeće nedelje */}
-            {(() => {
-              const nextWeekRaces = upcomingRaces.filter((r) => getWeekCategory(r.startDateTime) === 'next-week')
-              if (nextWeekRaces.length === 0) return null
-              return (
-                <div>
-                  <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Sledeće nedelje</h3>
-                  <div className="space-y-2">
-                    {nextWeekRaces.map((race) => (
-                      <RaceListCard
-                        key={race.id}
-                        raceId={race.id}
-                        raceName={race.raceName}
-                        eventName={race.raceEvent.eventName}
-                        eventSlug={race.raceEvent.slug}
-                        type={race.raceEvent.type}
-                        length={race.length}
-                        elevation={race.elevation}
-                        startDateTime={race.startDateTime}
+            {nextWeekEvents.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">Sledeće nedelje</h3>
+                <ul>
+                  {nextWeekEvents.map((event, index) => (
+                    <li key={event.id}>
+                      {index > 0 && <Divider soft />}
+                      <EventCard
+                        name={event.eventName}
+                        url={`/events/${event.slug}`}
+                        type={event.type}
+                        date={event.date}
+                        time={event.time}
+                        location={event.location}
+                        hasSharedStart={event.hasSharedStart}
+                        hasSharedDate={event.hasSharedDate}
+                        hasSharedLocation={event.hasSharedLocation}
+                        races={event.races}
                       />
-                    ))}
-                  </div>
-                </div>
-              )
-            })()}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* Kasnije */}
-            {(() => {
-              const laterRaces = upcomingRaces.filter((r) => getWeekCategory(r.startDateTime) === 'later')
-              if (laterRaces.length === 0) return null
-              return (
-                <div>
-                  <h3 className="mb-3 text-sm font-medium text-zinc-500 dark:text-zinc-400">Kasnije</h3>
-                  <div className="space-y-2">
-                    {laterRaces.map((race) => (
-                      <RaceListCard
-                        key={race.id}
-                        raceId={race.id}
-                        raceName={race.raceName}
-                        eventName={race.raceEvent.eventName}
-                        eventSlug={race.raceEvent.slug}
-                        type={race.raceEvent.type}
-                        length={race.length}
-                        elevation={race.elevation}
-                        startDateTime={race.startDateTime}
+            {laterEvents.length > 0 && (
+              <div>
+                <h3 className="mb-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">Kasnije</h3>
+                <ul>
+                  {laterEvents.map((event, index) => (
+                    <li key={event.id}>
+                      {index > 0 && <Divider soft />}
+                      <EventCard
+                        name={event.eventName}
+                        url={`/events/${event.slug}`}
+                        type={event.type}
+                        date={event.date}
+                        time={event.time}
+                        location={event.location}
+                        hasSharedStart={event.hasSharedStart}
+                        hasSharedDate={event.hasSharedDate}
+                        hasSharedLocation={event.hasSharedLocation}
+                        races={event.races}
                       />
-                    ))}
-                  </div>
-                </div>
-              )
-            })()}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
       </div>
