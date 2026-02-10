@@ -2,7 +2,6 @@
 
 import { ApiError } from '@/app/lib/api'
 import * as authApi from '@/app/lib/auth'
-import { useRouter } from 'next/navigation'
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 
 export type AuthUser = authApi.User
@@ -23,8 +22,6 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter()
-
   if (process.env.NODE_ENV !== 'production') {
     // eslint-disable-next-line no-console
     console.log('[auth] AuthProvider mounted')
@@ -118,12 +115,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setAccessToken(null)
       setUser(null)
       setIsLoading(false)
-
-      // After logout, send the user to the login page.
-      // Using replace prevents going back to protected pages via browser back button.
-      router.replace('/login')
+      // No redirect - users can browse events without being logged in
     }
-  }, [router])
+  }, [])
 
   // On first load, try to restore session via refresh cookie.
   useEffect(() => {
