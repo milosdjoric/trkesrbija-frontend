@@ -207,7 +207,7 @@ export default async function HomePage() {
         </Text>
 
         {/* Search bar */}
-        <form action="/events" className="mt-6 max-w-xl">
+        <form action="/events" className="mt-6 max-full">
           <div className="relative">
             <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-zinc-400" />
             <input
