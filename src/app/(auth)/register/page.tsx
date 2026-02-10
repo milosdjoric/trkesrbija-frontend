@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/app/auth/auth-context'
-import { Logo } from '@/app/logo'
+import { AuthLogo } from '@/components/auth-logo'
 import { Button } from '@/components/button'
 import { Checkbox, CheckboxField } from '@/components/checkbox'
 import { Field, Label } from '@/components/fieldset'
@@ -54,7 +54,7 @@ export default function Register() {
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
-      <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+      <AuthLogo />
       <Heading>Kreiraj svoj nalog</Heading>
 
       {error && <Text className="!dark:text-red-500 !text-red-600 capitalize">{error}</Text>}

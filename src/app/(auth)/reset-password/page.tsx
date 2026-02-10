@@ -1,6 +1,6 @@
 'use client'
 
-import { Logo } from '@/app/logo'
+import { AuthLogo } from '@/components/auth-logo'
 import { Button } from '@/components/button'
 import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
@@ -80,7 +80,7 @@ function ResetPasswordForm() {
   if (!token) {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8">
-        <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+        <AuthLogo />
         <Heading>Neispravan link za resetovanje</Heading>
         <Text>
           Ovaj link za resetovanje lozinke je neispravan ili je istekao. Molimo zatražite novi.
@@ -95,7 +95,7 @@ function ResetPasswordForm() {
   if (success) {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8">
-        <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+        <AuthLogo />
         <Heading>Lozinka uspešno resetovana</Heading>
         <Text>
           Vaša lozinka je uspešno resetovana. Sada se možete prijaviti sa novom lozinkom.
@@ -109,7 +109,7 @@ function ResetPasswordForm() {
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
-      <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+      <AuthLogo />
       <div>
         <Heading>Postavi novu lozinku</Heading>
         <Text className="mt-2">Unesi svoju novu lozinku ispod.</Text>
@@ -176,7 +176,7 @@ export default function ResetPassword() {
     <Suspense
       fallback={
         <div className="grid w-full max-w-sm grid-cols-1 gap-8">
-          <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+          <AuthLogo />
           <Heading>Učitavanje…</Heading>
         </div>
       }

@@ -1,6 +1,6 @@
 'use client'
 
-import { Logo } from '@/app/logo'
+import { AuthLogo } from '@/components/auth-logo'
 import { Button } from '@/components/button'
 import { Heading } from '@/components/heading'
 import { Strong, Text, TextLink } from '@/components/text'
@@ -63,7 +63,7 @@ function VerifyEmailContent() {
   if (status === 'loading') {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
-        <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+        <AuthLogo className="mx-auto" />
         <Heading>Verifikacija emaila…</Heading>
         <div className="flex justify-center">
           <div className="size-8 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900 dark:border-zinc-700 dark:border-t-white" />
@@ -75,7 +75,7 @@ function VerifyEmailContent() {
   if (status === 'invalid') {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
-        <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+        <AuthLogo className="mx-auto" />
         <XCircleIcon className="mx-auto size-16 text-red-500" />
         <Heading>Neispravan link za verifikaciju</Heading>
         <Text>
@@ -92,7 +92,7 @@ function VerifyEmailContent() {
   if (status === 'error') {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
-        <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+        <AuthLogo className="mx-auto" />
         <XCircleIcon className="mx-auto size-16 text-red-500" />
         <Heading>Verifikacija nije uspela</Heading>
         <Text className="text-red-600 dark:text-red-400">{errorMessage}</Text>
@@ -115,7 +115,7 @@ function VerifyEmailContent() {
   // Success state
   return (
     <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
-      <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+      <AuthLogo className="mx-auto" />
       <CheckCircleIcon className="mx-auto size-16 text-green-500" />
       <Heading>Email verifikovan!</Heading>
       <Text>Vaš email je uspešno verifikovan. Sada možete pristupiti svim funkcijama vašeg naloga.</Text>
@@ -131,7 +131,7 @@ export default function VerifyEmail() {
     <Suspense
       fallback={
         <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
-          <Logo className="mx-auto h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+          <AuthLogo className="mx-auto" />
           <Heading>Učitavanje…</Heading>
         </div>
       }

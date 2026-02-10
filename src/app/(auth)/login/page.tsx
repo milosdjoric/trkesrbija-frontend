@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/app/auth/auth-context'
-import { Logo } from '@/app/logo'
+import { AuthLogo } from '@/components/auth-logo'
 import { Button } from '@/components/button'
 import { Checkbox, CheckboxField } from '@/components/checkbox'
 import { Field, Label } from '@/components/fieldset'
@@ -40,7 +40,7 @@ export default function Login() {
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
-      <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+      <AuthLogo />
       <Heading>Prijavi se na svoj nalog</Heading>
 
       {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}

@@ -1,6 +1,6 @@
 'use client'
 
-import { Logo } from '@/app/logo'
+import { AuthLogo } from '@/components/auth-logo'
 import { Button } from '@/components/button'
 import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
@@ -55,7 +55,7 @@ export default function ResendVerification() {
   if (submitted) {
     return (
       <div className="grid w-full max-w-sm grid-cols-1 gap-8">
-        <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+        <AuthLogo />
         <Heading>Proveri svoju email poštu</Heading>
         <Text>
           Ako postoji nalog za <Strong>{email}</Strong> koji još nije verifikovan, poslali smo novi verifikacioni
@@ -82,7 +82,7 @@ export default function ResendVerification() {
 
   return (
     <form onSubmit={handleSubmit} className="grid w-full max-w-sm grid-cols-1 gap-8">
-      <Logo className="h-6 text-zinc-950 dark:text-white forced-colors:text-[CanvasText]" />
+      <AuthLogo />
       <div>
         <Heading>Pošalji ponovo verifikacioni email</Heading>
         <Text className="mt-2">Unesi svoju email adresu i poslaćemo ti novi verifikacioni link.</Text>
