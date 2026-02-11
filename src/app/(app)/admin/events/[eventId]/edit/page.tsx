@@ -4,10 +4,13 @@ import { useAuth } from '@/app/auth/auth-context'
 import { gql } from '@/app/lib/api'
 import { Button } from '@/components/button'
 import { useConfirm } from '@/components/confirm-dialog'
+import { GalleryUpload } from '@/components/gallery-upload'
 import { Heading, Subheading } from '@/components/heading'
 import { ImageUpload } from '@/components/image-upload'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
+import { SocialMediaInput } from '@/components/social-media-input'
+import { TagsInput } from '@/components/tags-input'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
@@ -23,6 +26,14 @@ type RaceData = {
   registrationEnabled: boolean
 }
 
+type OrganizerData = {
+  id: string
+  name: string
+  contactPhone: string | null
+  contactEmail: string | null
+  organizerSite: string | null
+}
+
 type EventData = {
   id: string
   eventName: string
@@ -30,6 +41,11 @@ type EventData = {
   type: 'TRAIL' | 'ROAD'
   description: string | null
   mainImage: string | null
+  gallery: string[]
+  registrationSite: string | null
+  socialMedia: string[]
+  tags: string[]
+  organizer: OrganizerData | null
   races: RaceData[]
 }
 
@@ -42,6 +58,17 @@ const EVENT_BY_ID_QUERY = `
       type
       description
       mainImage
+      gallery
+      registrationSite
+      socialMedia
+      tags
+      organizer {
+        id
+        name
+        contactPhone
+        contactEmail
+        organizerSite
+      }
       races {
         id
         raceName
@@ -51,6 +78,15 @@ const EVENT_BY_ID_QUERY = `
         startLocation
         registrationEnabled
       }
+    }
+  }
+`
+
+const ORGANIZERS_QUERY = `
+  query Organizers {
+    organizers {
+      id
+      name
     }
   }
 `
@@ -81,6 +117,7 @@ export default function EditEventPage() {
   const eventId = params.eventId as string
 
   const [event, setEvent] = useState<EventData | null>(null)
+  const [organizers, setOrganizers] = useState<{ id: string; name: string }[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const loadedRef = useRef(false)
@@ -90,24 +127,38 @@ export default function EditEventPage() {
   const [eventType, setEventType] = useState<'TRAIL' | 'ROAD'>('TRAIL')
   const [description, setDescription] = useState('')
   const [mainImage, setMainImage] = useState('')
+  const [gallery, setGallery] = useState<string[]>([])
+  const [registrationSite, setRegistrationSite] = useState('')
+  const [socialMedia, setSocialMedia] = useState<string[]>([])
+  const [tags, setTags] = useState<string[]>([])
+  const [organizerId, setOrganizerId] = useState('')
   const [slug, setSlug] = useState('')
 
   const loadEvent = useCallback(async () => {
     if (!accessToken) return
 
     try {
-      const data = await gql<{
-        raceEvent: EventData | null
-      }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken })
+      const [eventData, organizersData] = await Promise.all([
+        gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken }),
+        gql<{ organizers: { id: string; name: string }[] }>(ORGANIZERS_QUERY, {}, { accessToken }),
+      ])
 
-      if (data.raceEvent) {
-        setEvent(data.raceEvent)
-        setEventName(data.raceEvent.eventName)
-        setEventType(data.raceEvent.type)
-        setDescription(data.raceEvent.description || '')
-        setMainImage(data.raceEvent.mainImage || '')
-        setSlug(data.raceEvent.slug)
+      if (eventData.raceEvent) {
+        const e = eventData.raceEvent
+        setEvent(e)
+        setEventName(e.eventName)
+        setEventType(e.type)
+        setDescription(e.description || '')
+        setMainImage(e.mainImage || '')
+        setGallery(e.gallery || [])
+        setRegistrationSite(e.registrationSite || '')
+        setSocialMedia(e.socialMedia || [])
+        setTags(e.tags || [])
+        setOrganizerId(e.organizer?.id || '')
+        setSlug(e.slug)
       }
+
+      setOrganizers(organizersData.organizers || [])
     } catch (err) {
       console.error('Failed to load event:', err)
       toast('Greška pri učitavanju događaja', 'error')
@@ -153,6 +204,11 @@ export default function EditEventPage() {
             type: eventType,
             description: description.trim() || null,
             mainImage: mainImage.trim() || null,
+            gallery,
+            registrationSite: registrationSite.trim() || null,
+            socialMedia,
+            tags,
+            organizerId: organizerId || null,
           },
         },
         { accessToken }
@@ -219,7 +275,7 @@ export default function EditEventPage() {
       <Heading>Izmeni događaj</Heading>
 
       <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
-        {/* Event details */}
+        {/* Basic info */}
         <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
           <Subheading>Osnovne informacije</Subheading>
 
@@ -270,14 +326,23 @@ export default function EditEventPage() {
               </select>
             </div>
 
-            {/* Main image */}
-            <div className="sm:col-span-2">
-              <ImageUpload
-                value={mainImage || null}
-                onChange={(url) => setMainImage(url || '')}
-                endpoint="eventImage"
-                label="Glavna slika"
-              />
+            {/* Organizer */}
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Organizator
+              </label>
+              <select
+                value={organizerId}
+                onChange={(e) => setOrganizerId(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              >
+                <option value="">-- Bez organizatora --</option>
+                {organizers.map((org) => (
+                  <option key={org.id} value={org.id}>
+                    {org.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Description */}
@@ -288,11 +353,61 @@ export default function EditEventPage() {
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                rows={3}
-                placeholder="Kratki opis događaja..."
+                rows={4}
+                placeholder="Detaljni opis događaja..."
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
               />
             </div>
+
+            {/* Tags */}
+            <div className="sm:col-span-2">
+              <TagsInput value={tags} onChange={setTags} />
+            </div>
+          </div>
+        </div>
+
+        {/* Media */}
+        <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+          <Subheading>Slike</Subheading>
+
+          <div className="mt-4 space-y-6">
+            {/* Main image */}
+            <ImageUpload
+              value={mainImage || null}
+              onChange={(url) => setMainImage(url || '')}
+              endpoint="eventImage"
+              label="Glavna slika"
+            />
+
+            {/* Gallery */}
+            <GalleryUpload value={gallery} onChange={setGallery} />
+          </div>
+        </div>
+
+        {/* Links */}
+        <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+          <Subheading>Linkovi i društvene mreže</Subheading>
+
+          <div className="mt-4 space-y-4">
+            {/* Registration site */}
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Sajt za prijave
+              </label>
+              <input
+                type="url"
+                value={registrationSite}
+                onChange={(e) => setRegistrationSite(e.target.value)}
+                placeholder="https://prijave.example.com"
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+              <p className="mt-1 text-xs text-zinc-500">
+                Eksterni link ako se prijave ne vode preko ovog sistema
+              </p>
+            </div>
+
+            {/* Social media */}
+            <SocialMediaInput value={socialMedia} onChange={setSocialMedia} />
           </div>
         </div>
 

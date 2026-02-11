@@ -8,9 +8,41 @@ import { RegisterRaceButton } from '@/components/register-race-button'
 import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
-import { CalendarIcon, ClockIcon, MapPinIcon } from '@heroicons/react/16/solid'
+import { CalendarIcon, ClockIcon, MapPinIcon, GlobeAltIcon, LinkIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+
+// Social media icon helper
+function getSocialMediaIcon(url: string) {
+  const lower = url.toLowerCase()
+  if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'facebook'
+  if (lower.includes('instagram.com')) return 'instagram'
+  if (lower.includes('strava.com')) return 'strava'
+  if (lower.includes('twitter.com') || lower.includes('x.com')) return 'twitter'
+  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'youtube'
+  if (lower.includes('tiktok.com')) return 'tiktok'
+  return 'link'
+}
+
+function getSocialMediaName(url: string) {
+  const type = getSocialMediaIcon(url)
+  switch (type) {
+    case 'facebook':
+      return 'Facebook'
+    case 'instagram':
+      return 'Instagram'
+    case 'strava':
+      return 'Strava'
+    case 'twitter':
+      return 'X / Twitter'
+    case 'youtube':
+      return 'YouTube'
+    case 'tiktok':
+      return 'TikTok'
+    default:
+      return 'Link'
+  }
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
@@ -161,7 +193,34 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             {/* Organizator box */}
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Organizator</div>
-              <div className="mt-2 text-zinc-950 dark:text-white">Informacije uskoro</div>
+              {event.organizer ? (
+                <div className="mt-2">
+                  <div className="flex items-center gap-3">
+                    {event.organizer.logo && (
+                      <img
+                        src={event.organizer.logo}
+                        alt={event.organizer.name}
+                        className="size-10 rounded-lg object-cover"
+                      />
+                    )}
+                    <div>
+                      <div className="font-medium text-zinc-950 dark:text-white">{event.organizer.name}</div>
+                      {event.organizer.website && (
+                        <a
+                          href={event.organizer.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                        >
+                          Sajt organizatora
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-2 text-zinc-500 dark:text-zinc-400">Nije navedeno</div>
+              )}
             </div>
 
             {/* Lokacija box */}
@@ -187,6 +246,59 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               </div>
             </div>
           </div>
+
+          {/* Social Media & Registration */}
+          {(event.socialMedia?.length > 0 || event.registrationSite) && (
+            <div className="flex flex-wrap items-center gap-3">
+              {event.registrationSite && (
+                <a
+                  href={event.registrationSite}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
+                >
+                  <GlobeAltIcon className="size-4" />
+                  Sajt za prijave
+                </a>
+              )}
+              {event.socialMedia?.map((url) => (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                >
+                  <LinkIcon className="size-4" />
+                  {getSocialMediaName(url)}
+                </a>
+              ))}
+            </div>
+          )}
+
+          {/* Gallery */}
+          {event.gallery && event.gallery.length > 0 && (
+            <div>
+              <Subheading>Galerija</Subheading>
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                {event.gallery.map((url, index) => (
+                  <a
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group relative aspect-square overflow-hidden rounded-lg"
+                  >
+                    <img
+                      src={url}
+                      alt={`${event.eventName} - slika ${index + 1}`}
+                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                    />
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Races Table */}
           <div>

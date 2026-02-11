@@ -82,6 +82,14 @@ export async function gql<TData>(
 
 export type RaceEventType = 'TRAIL' | 'ROAD'
 
+export type Organizer = {
+  id: string
+  name: string
+  logo?: string | null
+  website?: string | null
+  description?: string | null
+}
+
 export type RaceEvent = {
   id: string
   eventName: string
@@ -89,7 +97,11 @@ export type RaceEvent = {
   type: RaceEventType
   description?: string | null
   mainImage?: string | null
+  gallery: string[]
   tags: string[]
+  socialMedia: string[]
+  registrationSite?: string | null
+  organizer?: Organizer | null
   createdAt?: string
   updatedAt?: string
 }
@@ -119,7 +131,17 @@ const RACE_EVENTS_QUERY = `
       type
       description
       mainImage
+      gallery
       tags
+      socialMedia
+      registrationSite
+      organizer {
+        id
+        name
+        logo
+        website
+        description
+      }
       createdAt
       updatedAt
     }
@@ -187,7 +209,17 @@ const RACE_EVENT_BY_SLUG_QUERY = `
       type
       description
       mainImage
+      gallery
       tags
+      socialMedia
+      registrationSite
+      organizer {
+        id
+        name
+        logo
+        website
+        description
+      }
       createdAt
       updatedAt
       races {
