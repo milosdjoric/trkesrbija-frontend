@@ -11,11 +11,13 @@
   "dependencies": {
     "@headlessui/react": "^2.2.6",
     "@heroicons/react": "^2.2.0",
+    "@uploadthing/react": "^7.3.3",
     "clsx": "^2.1.1",
     "motion": "^12.23.11",
     "next": "^15",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "uploadthing": "^7.7.4"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.15",

@@ -5,6 +5,7 @@ import { gql } from '@/app/lib/api'
 import { Button } from '@/components/button'
 import { useConfirm } from '@/components/confirm-dialog'
 import { Heading, Subheading } from '@/components/heading'
+import { ImageUpload } from '@/components/image-upload'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
@@ -270,16 +271,12 @@ export default function EditEventPage() {
             </div>
 
             {/* Main image */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Slika (URL)
-              </label>
-              <input
-                type="url"
-                value={mainImage}
-                onChange={(e) => setMainImage(e.target.value)}
-                placeholder="https://..."
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+            <div className="sm:col-span-2">
+              <ImageUpload
+                value={mainImage || null}
+                onChange={(url) => setMainImage(url || '')}
+                endpoint="eventImage"
+                label="Glavna slika"
               />
             </div>
 

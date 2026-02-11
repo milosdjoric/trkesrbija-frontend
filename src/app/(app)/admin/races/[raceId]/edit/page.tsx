@@ -3,6 +3,7 @@
 import { useAuth } from '@/app/auth/auth-context'
 import { gql } from '@/app/lib/api'
 import { Button } from '@/components/button'
+import { GpxUpload } from '@/components/gpx-upload'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
@@ -16,6 +17,7 @@ type RaceData = {
   raceName: string | null
   length: number
   elevation: number | null
+  gpsFile: string | null
   startDateTime: string
   startLocation: string | null
   registrationEnabled: boolean
@@ -33,6 +35,7 @@ const RACE_BY_ID_QUERY = `
       raceName
       length
       elevation
+      gpsFile
       startDateTime
       startLocation
       registrationEnabled
@@ -76,6 +79,7 @@ export default function EditRacePage() {
   const [raceName, setRaceName] = useState('')
   const [length, setLength] = useState('')
   const [elevation, setElevation] = useState('')
+  const [gpsFile, setGpsFile] = useState('')
   const [startDateTime, setStartDateTime] = useState('')
   const [startLocation, setStartLocation] = useState('')
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
@@ -91,6 +95,7 @@ export default function EditRacePage() {
         setRaceName(data.race.raceName || '')
         setLength(data.race.length.toString())
         setElevation(data.race.elevation?.toString() || '')
+        setGpsFile(data.race.gpsFile || '')
         // Convert ISO to datetime-local format
         const dt = new Date(data.race.startDateTime)
         setStartDateTime(dt.toISOString().slice(0, 16))
@@ -145,6 +150,7 @@ export default function EditRacePage() {
             raceName: raceName.trim(),
             length: parseFloat(length),
             elevation: elevation ? parseFloat(elevation) : null,
+            gpsFile: gpsFile.trim() || null,
             startDateTime: new Date(startDateTime).toISOString(),
             startLocation: startLocation.trim() || null,
             registrationEnabled,
@@ -273,6 +279,15 @@ export default function EditRacePage() {
                 onChange={(e) => setStartLocation(e.target.value)}
                 placeholder="Adresa ili Google Maps link"
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+            </div>
+
+            {/* GPX file */}
+            <div className="sm:col-span-2">
+              <GpxUpload
+                value={gpsFile || null}
+                onChange={(url) => setGpsFile(url || '')}
+                label="GPX staza"
               />
             </div>
 
