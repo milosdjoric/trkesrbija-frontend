@@ -363,6 +363,9 @@ export default function EditEventPage() {
                   </div>
 
                   <div className="flex gap-2">
+                    <Button href={`/admin/races/${race.id}/edit`} color="blue">
+                      Izmeni
+                    </Button>
                     <Button href={`/admin/races/${race.id}/registrations`} outline>
                       Prijave
                     </Button>

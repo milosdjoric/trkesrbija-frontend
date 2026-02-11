@@ -309,6 +309,12 @@ export default function AdminRacesPage() {
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-2">
                       <Link
+                        href={`/admin/races/${race.id}/edit`}
+                        className="rounded border border-blue-300 bg-blue-50 px-2 py-1 text-xs text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
+                      >
+                        Izmeni
+                      </Link>
+                      <Link
                         href={`/admin/races/${race.id}/registrations`}
                         className="rounded border border-zinc-300 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-600 dark:hover:bg-zinc-800"
                       >
