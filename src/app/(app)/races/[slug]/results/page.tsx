@@ -9,8 +9,7 @@ import {
   type RaceResult,
 } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
-import { Button } from '@/components/button'
-import { Heading, Subheading } from '@/components/heading'
+import { Heading } from '@/components/heading'
 import { Select } from '@/components/select'
 import { Text } from '@/components/text'
 import { ChevronLeftIcon, TrophyIcon } from '@heroicons/react/16/solid'
@@ -20,6 +19,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 type RaceInfo = {
   id: string
+  slug: string
   raceName: string | null
   length: number
   startDateTime: string
@@ -30,17 +30,18 @@ type RaceInfo = {
   }
 }
 
-const RACE_WITH_EVENT_QUERY = `
-  query RaceEvents {
-    raceEvents(limit: 100) {
+const RACE_BY_SLUG_QUERY = `
+  query RaceBySlug($slug: String!) {
+    race(slug: $slug) {
       id
-      eventName
       slug
-      races {
+      raceName
+      length
+      startDateTime
+      raceEvent {
         id
-        raceName
-        length
-        startDateTime
+        eventName
+        slug
       }
     }
   }
@@ -94,7 +95,7 @@ function getMedalColor(position: number): 'yellow' | 'zinc' | 'amber' | null {
 
 export default function RaceResultsPage() {
   const params = useParams()
-  const raceId = params.raceId as string
+  const slug = params.slug as string
 
   const [race, setRace] = useState<RaceInfo | null>(null)
   const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([])
@@ -104,45 +105,28 @@ export default function RaceResultsPage() {
 
   const loadData = useCallback(async () => {
     try {
-      // Load race info
+      // Load race info by slug
       const raceData = await gql<{
-        raceEvents: Array<{
-          id: string
-          eventName: string
-          slug: string
-          races: Array<{
-            id: string
-            raceName: string | null
-            length: number
-            startDateTime: string
-          }>
-        }>
-      }>(RACE_WITH_EVENT_QUERY)
+        race: RaceInfo | null
+      }>(RACE_BY_SLUG_QUERY, { slug })
 
-      for (const event of raceData.raceEvents) {
-        const foundRace = event.races.find((r) => r.id === raceId)
-        if (foundRace) {
-          setRace({
-            ...foundRace,
-            raceEvent: { id: event.id, eventName: event.eventName, slug: event.slug },
-          })
-          break
-        }
+      if (raceData.race) {
+        setRace(raceData.race)
+
+        // Load checkpoints using race ID
+        const cps = await fetchCheckpoints(raceData.race.id)
+        setCheckpoints(cps.sort((a, b) => a.orderIndex - b.orderIndex))
+
+        // Load results using race ID
+        const raceResults = await fetchRaceResults(raceData.race.id, genderFilter || undefined)
+        setResults(raceResults)
       }
-
-      // Load checkpoints
-      const cps = await fetchCheckpoints(raceId)
-      setCheckpoints(cps.sort((a, b) => a.orderIndex - b.orderIndex))
-
-      // Load results
-      const raceResults = await fetchRaceResults(raceId, genderFilter || undefined)
-      setResults(raceResults)
     } catch (err) {
       console.error('Failed to load data:', err)
     } finally {
       setLoading(false)
     }
-  }, [raceId, genderFilter])
+  }, [slug, genderFilter])
 
   useEffect(() => {
     loadData()

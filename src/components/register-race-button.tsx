@@ -15,6 +15,7 @@ const CHECK_REGISTRATION_QUERY = `
   query CheckRegistration {
     races(raceEventId: null, limit: 1000) {
       id
+      slug
       isRegistered
       registrationCount
       registrationEnabled
@@ -24,13 +25,15 @@ const CHECK_REGISTRATION_QUERY = `
 
 type Props = {
   raceId: string
+  raceSlug?: string
   size?: 'sm' | 'md'
 }
 
-export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
+export function RegisterRaceButton({ raceId, raceSlug, size = 'sm' }: Props) {
   const { user, accessToken, isLoading } = useAuth()
   const [isRegistered, setIsRegistered] = useState(false)
   const [registrationEnabled, setRegistrationEnabled] = useState(false)
+  const [slug, setSlug] = useState(raceSlug ?? '')
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
@@ -39,6 +42,7 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
         const data = await gql<{
           races: Array<{
             id: string
+            slug: string
             isRegistered: boolean
             registrationCount: number
             registrationEnabled: boolean
@@ -49,6 +53,9 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
         if (race) {
           setIsRegistered(race.isRegistered)
           setRegistrationEnabled(race.registrationEnabled)
+          if (!raceSlug) {
+            setSlug(race.slug)
+          }
         }
       } catch (err) {
         console.error('Failed to check registration:', err)
@@ -58,7 +65,7 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
     }
 
     checkRegistration()
-  }, [raceId, accessToken])
+  }, [raceId, raceSlug, accessToken])
 
   // Don't show button if registration is not enabled
   if (!checking && !registrationEnabled) {
@@ -76,14 +83,14 @@ export function RegisterRaceButton({ raceId, size = 'sm' }: Props) {
   // If user not logged in, redirect to login
   if (!user) {
     return (
-      <Link href={`/login?redirect=/races/${raceId}/register`} className={linkStyles}>
+      <Link href={`/login?redirect=/races/${slug}/register`} className={linkStyles}>
         Prijavi se
       </Link>
     )
   }
 
   return (
-    <Link href={`/races/${raceId}/register`} className={linkStyles}>
+    <Link href={`/races/${slug}/register`} className={linkStyles}>
       Prijavi se
     </Link>
   )

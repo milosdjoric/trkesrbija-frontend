@@ -7,7 +7,7 @@ import { Field, Label, Description } from '@/components/fieldset'
 import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Radio, RadioField, RadioGroup } from '@/components/radio'
-import { Text, TextLink } from '@/components/text'
+import { Text } from '@/components/text'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
@@ -15,11 +15,13 @@ import { useEffect, useState } from 'react'
 
 type RaceInfo = {
   id: string
+  slug: string
   raceName: string | null
   length: number
   elevation: number | null
   startDateTime: string
   startLocation: string
+  registrationEnabled: boolean
   raceEvent: {
     id: string
     eventName: string
@@ -27,32 +29,21 @@ type RaceInfo = {
   }
 }
 
-const RACE_QUERY = `
-  query Race($raceId: ID!) {
-    races(raceEventId: null, limit: 1000) {
+const RACE_BY_SLUG_QUERY = `
+  query RaceBySlug($slug: String!) {
+    race(slug: $slug) {
       id
+      slug
       raceName
       length
       elevation
       startDateTime
       startLocation
-    }
-  }
-`
-
-const RACE_WITH_EVENT_QUERY = `
-  query RaceEvents {
-    raceEvents(limit: 100) {
-      id
-      eventName
-      slug
-      races {
+      registrationEnabled
+      raceEvent {
         id
-        raceName
-        length
-        elevation
-        startDateTime
-        startLocation
+        eventName
+        slug
       }
     }
   }
@@ -73,7 +64,7 @@ export default function RaceRegistrationPage() {
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
 
-  const raceId = params.raceId as string
+  const slug = params.slug as string
 
   const [race, setRace] = useState<RaceInfo | null>(null)
   const [loading, setLoading] = useState(true)
@@ -93,35 +84,11 @@ export default function RaceRegistrationPage() {
     async function loadRace() {
       try {
         const data = await gql<{
-          raceEvents: Array<{
-            id: string
-            eventName: string
-            slug: string
-            races: Array<{
-              id: string
-              raceName: string | null
-              length: number
-              elevation: number | null
-              startDateTime: string
-              startLocation: string
-            }>
-          }>
-        }>(RACE_WITH_EVENT_QUERY)
+          race: RaceInfo | null
+        }>(RACE_BY_SLUG_QUERY, { slug })
 
-        // Find the race
-        for (const event of data.raceEvents) {
-          const foundRace = event.races.find((r) => r.id === raceId)
-          if (foundRace) {
-            setRace({
-              ...foundRace,
-              raceEvent: {
-                id: event.id,
-                eventName: event.eventName,
-                slug: event.slug,
-              },
-            })
-            break
-          }
+        if (data.race) {
+          setRace(data.race)
         }
       } catch (err) {
         console.error('Failed to load race:', err)
@@ -131,7 +98,7 @@ export default function RaceRegistrationPage() {
     }
 
     loadRace()
-  }, [raceId])
+  }, [slug])
 
   // Prefill name from user
   useEffect(() => {
@@ -149,9 +116,9 @@ export default function RaceRegistrationPage() {
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push(`/login?redirect=/races/${raceId}/register`)
+      router.push(`/login?redirect=/races/${slug}/register`)
     }
-  }, [authLoading, user, router, raceId])
+  }, [authLoading, user, router, slug])
 
   // Calculate max date for 16 years old
   const today = new Date()
@@ -162,6 +129,8 @@ export default function RaceRegistrationPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setError(null)
+
+    if (!race) return
 
     if (!firstName.trim() || !lastName.trim() || !dateOfBirth) {
       setError('Molimo popunite sva obavezna polja')
@@ -183,7 +152,7 @@ export default function RaceRegistrationPage() {
 
     try {
       const input: SelfRegistrationInput = {
-        raceId,
+        raceId: race.id,
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         phone: phone.trim() || null,
@@ -219,6 +188,21 @@ export default function RaceRegistrationPage() {
         <Text className="mt-2">Ova trka ne postoji ili je uklonjena.</Text>
         <Link href="/events" className="mt-4 inline-block text-sm text-blue-600 hover:underline">
           Nazad na događaje
+        </Link>
+      </div>
+    )
+  }
+
+  if (!race.registrationEnabled) {
+    return (
+      <div className="py-12 text-center">
+        <Heading>Prijave zatvorene</Heading>
+        <Text className="mt-2">Prijave za ovu trku trenutno nisu otvorene.</Text>
+        <Link
+          href={`/events/${race.raceEvent.slug}`}
+          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+        >
+          Nazad na događaj
         </Link>
       </div>
     )

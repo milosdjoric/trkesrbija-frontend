@@ -236,7 +236,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                         <TableCell>{formatTime(race.startDateTime)}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
-                            <RegisterRaceButton raceId={race.id} size="sm" />
+                            <RegisterRaceButton raceId={race.id} raceSlug={race.slug} size="sm" />
                             <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
                           </div>
                         </TableCell>

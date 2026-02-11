@@ -96,6 +96,7 @@ export type RaceEvent = {
 
 export type Race = {
   id: string
+  slug: string
   raceName?: string | null
   length: number
   elevation?: number | null
@@ -129,6 +130,7 @@ const RACES_QUERY = `
   query Races($raceEventId: ID, $limit: Int = 200, $skip: Int = 0) {
     races(raceEventId: $raceEventId, limit: $limit, skip: $skip) {
       id
+      slug
       raceName
       length
       elevation
@@ -190,6 +192,7 @@ const RACE_EVENT_BY_SLUG_QUERY = `
       updatedAt
       races {
         id
+        slug
         raceName
         length
         elevation
@@ -289,6 +292,7 @@ const MY_RACE_REGISTRATIONS_QUERY = `
       createdAt
       race {
         id
+        slug
         raceName
         length
         elevation
