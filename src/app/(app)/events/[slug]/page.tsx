@@ -1,13 +1,12 @@
 import { fetchRaceEventBySlug } from '@/app/lib/api'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
+import { Divider } from '@/components/divider'
 import { FavoriteButton } from '@/components/favorite-button'
 import { RegisterRaceButton } from '@/components/register-race-button'
-import { RaceCard } from '@/components/race-card'
 import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
-import { IconText } from '@/components/icon-text'
-import { CalendarIcon, MapPinIcon } from '@heroicons/react/16/solid'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -42,16 +41,6 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 }
 
-function formatDate(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return 'TBD'
-  const day = d.getDate()
-  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long' })
-  const year = d.getFullYear()
-  const weekday = d.toLocaleDateString('sr-Latn-RS', { weekday: 'long' })
-  return `${weekday}, ${day}. ${month} ${year}.`
-}
-
 function formatTime(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
@@ -60,12 +49,6 @@ function formatTime(iso: string) {
     minute: '2-digit',
     hour12: false,
   })
-}
-
-function formatDateTime(iso: string) {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return 'TBD'
-  return `${formatDate(iso)} u ${formatTime(iso)}`
 }
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -84,7 +67,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   })
 
   const earliestRace = sortedRaces[0]
-  const eventDate = earliestRace ? formatDate(earliestRace.startDateTime) : 'TBD'
+
+  // Parse date components for sidebar display
+  const eventDateObj = earliestRace ? new Date(earliestRace.startDateTime) : null
+  const eventDay = eventDateObj?.getDate() ?? '?'
+  const eventMonth = eventDateObj?.toLocaleDateString('sr-Latn-RS', { month: 'long' }) ?? ''
+  const eventYear = eventDateObj?.getFullYear() ?? ''
+  const eventWeekday = eventDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long' }) ?? ''
 
   // Check if all races have the same location
   const raceLocations = sortedRaces.map((r) => r.startLocation ?? '').filter(Boolean)
@@ -96,92 +85,173 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     <>
       <BackLink href="/events">Događaji</BackLink>
 
-      <div className="mt-4 flex flex-wrap items-start justify-between gap-6">
-        <div className="flex flex-wrap items-start gap-6">
-          {event.mainImage && (
-            <div className="w-40 shrink-0">
-              <img
-                className="aspect-3/2 rounded-lg object-cover shadow-sm"
-                src={event.mainImage}
-                alt={event.eventName}
-              />
-            </div>
-          )}
-          <div className="space-y-2">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <Heading>{event.eventName}</Heading>
-              <Badge color={event.type === 'TRAIL' ? 'amber' : 'sky'}>
-                {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
-              </Badge>
-            </div>
+      {/* Two-column layout */}
+      <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-[1fr_320px]">
+        {/* LEFT COLUMN - Main Content */}
+        <div className="space-y-8">
+          {/* Header */}
+          <div>
+            <Heading>{event.eventName}</Heading>
             {event.description && (
-              <p className="max-w-2xl text-sm/6 text-zinc-600 dark:text-zinc-400">{event.description}</p>
+              <p className="mt-2 max-w-2xl text-sm/6 text-zinc-600 dark:text-zinc-400">
+                {event.description}
+              </p>
             )}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm/6 text-zinc-500 dark:text-zinc-400">
-              <IconText icon={<CalendarIcon className="size-4" />}>{eventDate}</IconText>
-              {eventLocation && (
-                <IconText icon={<MapPinIcon className="size-4" />}>
-                  {eventLocation.startsWith('http') ? (
+          </div>
+
+          {/* Metadata Boxes */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            {/* Organizator box */}
+            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Organizator</div>
+              <div className="mt-2 text-zinc-950 dark:text-white">Informacije uskoro</div>
+            </div>
+
+            {/* Lokacija box */}
+            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Lokacija</div>
+              <div className="mt-2 text-zinc-950 dark:text-white">
+                {eventLocation ? (
+                  eventLocation.startsWith('http') ? (
                     <a
                       href={eventLocation}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
                     >
-                      Prikaži lokaciju
+                      Prikaži na mapi
                     </a>
                   ) : (
                     eventLocation
-                  )}
-                </IconText>
-              )}
+                  )
+                ) : (
+                  'Različite lokacije'
+                )}
+              </div>
             </div>
+          </div>
+
+          {/* Races Table */}
+          <div>
+            <Subheading>Trke ({races.length})</Subheading>
+
+            {races.length === 0 ? (
+              <div className="mt-4 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
+                <div className="font-medium">Još nema trka</div>
+                <div className="mt-1 text-zinc-500">Ovaj događaj još nema konfiguriranih trka.</div>
+              </div>
+            ) : (
+              <div className="mt-4 overflow-x-auto">
+                <Table striped>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Trka</TableHeader>
+                      <TableHeader>Distanca</TableHeader>
+                      <TableHeader>Visinska</TableHeader>
+                      <TableHeader>Start</TableHeader>
+                      <TableHeader className="text-right">Akcije</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sortedRaces.map((race) => (
+                      <TableRow key={race.id}>
+                        <TableCell>
+                          <div className="font-medium">{race.raceName ?? 'Trka'}</div>
+                          {!allSameLocation && race.startLocation && (
+                            <div className="text-sm text-zinc-500">
+                              {race.startLocation.startsWith('http') ? (
+                                <a
+                                  href={race.startLocation}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                                >
+                                  Lokacija
+                                </a>
+                              ) : (
+                                race.startLocation
+                              )}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell>{race.length} km</TableCell>
+                        <TableCell>{race.elevation != null ? `${race.elevation} m` : '–'}</TableCell>
+                        <TableCell>{formatTime(race.startDateTime)}</TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <RegisterRaceButton raceId={race.id} size="sm" />
+                            <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT SIDEBAR */}
+        <div className="lg:sticky lg:top-8 lg:self-start">
+          <div className="space-y-6">
+            {/* Summary Card */}
+            <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/50">
+              {/* Date Display */}
+              <div className="text-center">
+                <div className="text-4xl font-bold tabular-nums text-zinc-950 dark:text-white">
+                  {eventDay}
+                </div>
+                <div className="mt-1 text-lg font-medium capitalize text-zinc-600 dark:text-zinc-400">
+                  {eventMonth}
+                </div>
+                <div className="text-sm capitalize text-zinc-500">{eventWeekday}, {eventYear}</div>
+              </div>
+
+              <Divider soft className="my-4" />
+
+              {/* Event Type */}
+              <div className="flex justify-center">
+                <Badge color={event.type === 'TRAIL' ? 'amber' : 'sky'}>
+                  {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
+                </Badge>
+              </div>
+
+              {/* Race count */}
+              <div className="mt-4 text-center text-sm text-zinc-500">
+                {races.length} {races.length === 1 ? 'trka' : races.length < 5 ? 'trke' : 'trka'}
+              </div>
+            </div>
+
+            {/* Tags */}
             {event.tags && event.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {event.tags.map((tag) => (
-                  <Badge key={tag} color="zinc">
-                    {tag}
-                  </Badge>
-                ))}
+              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+                <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Kategorije</div>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {event.tags.map((tag) => (
+                    <Badge key={tag} color="zinc">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Event Image */}
+            {event.mainImage && (
+              <div className="overflow-hidden rounded-lg">
+                <img
+                  src={event.mainImage}
+                  alt={event.eventName}
+                  className="aspect-video w-full object-cover"
+                />
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <Subheading className="mt-10">Trke ({races.length})</Subheading>
-
-      {races.length === 0 ? (
-        <div className="mt-4 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
-          <div className="font-medium">Još nema trka</div>
-          <div className="mt-1 text-zinc-500">Ovaj događaj još nema konfiguriranih trka.</div>
-        </div>
-      ) : (
-        <div className="mt-4 flex flex-wrap items-center gap-1.5">
-          {sortedRaces.map((race) => {
-            const time = formatTime(race.startDateTime)
-            const length = `${race.length}km`
-            const elevation = race.elevation != null ? `${race.elevation}m` : ''
-            const details = [time, length, elevation].filter(Boolean).join(' / ')
-
-            return (
-              <RaceCard
-                key={race.id}
-                raceId={race.id}
-                name={race.raceName ?? 'Trka'}
-                details={details}
-                startLocation={race.startLocation}
-                color={event.type === 'TRAIL' ? 'emerald' : 'sky'}
-              >
-                <RegisterRaceButton raceId={race.id} size="sm" />
-                <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
-              </RaceCard>
-            )
-          })}
-        </div>
-      )}
-
-      {/* Results for each race */}
+      {/* Results for each race - Full Width */}
       {sortedRaces.map((race) => (
         <RaceResults key={race.id} raceId={race.id} raceName={race.raceName} />
       ))}
