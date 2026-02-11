@@ -195,28 +195,17 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Organizator</div>
               {event.organizer ? (
                 <div className="mt-2">
-                  <div className="flex items-center gap-3">
-                    {event.organizer.logo && (
-                      <img
-                        src={event.organizer.logo}
-                        alt={event.organizer.name}
-                        className="size-10 rounded-lg object-cover"
-                      />
-                    )}
-                    <div>
-                      <div className="font-medium text-zinc-950 dark:text-white">{event.organizer.name}</div>
-                      {event.organizer.website && (
-                        <a
-                          href={event.organizer.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
-                        >
-                          Sajt organizatora
-                        </a>
-                      )}
-                    </div>
-                  </div>
+                  <div className="font-medium text-zinc-950 dark:text-white">{event.organizer.name}</div>
+                  {event.organizer.organizerSite && (
+                    <a
+                      href={event.organizer.organizerSite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                    >
+                      Sajt organizatora
+                    </a>
+                  )}
                 </div>
               ) : (
                 <div className="mt-2 text-zinc-500 dark:text-zinc-400">Nije navedeno</div>

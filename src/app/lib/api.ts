@@ -85,9 +85,9 @@ export type RaceEventType = 'TRAIL' | 'ROAD'
 export type Organizer = {
   id: string
   name: string
-  logo?: string | null
-  website?: string | null
-  description?: string | null
+  contactPhone?: string | null
+  contactEmail?: string | null
+  organizerSite?: string | null
 }
 
 export type RaceEvent = {
@@ -138,9 +138,9 @@ const RACE_EVENTS_QUERY = `
       organizer {
         id
         name
-        logo
-        website
-        description
+        contactPhone
+        contactEmail
+        organizerSite
       }
       createdAt
       updatedAt
@@ -216,9 +216,9 @@ const RACE_EVENT_BY_SLUG_QUERY = `
       organizer {
         id
         name
-        logo
-        website
-        description
+        contactPhone
+        contactEmail
+        organizerSite
       }
       createdAt
       updatedAt
