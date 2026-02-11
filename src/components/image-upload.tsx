@@ -44,8 +44,11 @@ export function ImageUpload({ value, onChange, endpoint, label = 'Slika' }: Imag
           onUploadBegin={() => setIsUploading(true)}
           onClientUploadComplete={(res) => {
             setIsUploading(false)
-            if (res?.[0]?.ufsUrl) {
-              onChange(res[0].ufsUrl)
+            console.log('Upload complete, response:', res)
+            const url = res?.[0]?.ufsUrl || res?.[0]?.url
+            if (url) {
+              console.log('Setting image URL:', url)
+              onChange(url)
             }
           }}
           onUploadError={(error: Error) => {

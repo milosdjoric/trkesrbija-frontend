@@ -56,8 +56,11 @@ export function GpxUpload({ value, onChange, label = 'GPX fajl' }: GpxUploadProp
           onUploadBegin={() => setIsUploading(true)}
           onClientUploadComplete={(res) => {
             setIsUploading(false)
-            if (res?.[0]?.ufsUrl) {
-              onChange(res[0].ufsUrl)
+            console.log('GPX Upload complete, response:', res)
+            const url = res?.[0]?.ufsUrl || res?.[0]?.url
+            if (url) {
+              console.log('Setting GPX URL:', url)
+              onChange(url)
             }
           }}
           onUploadError={(error: Error) => {
