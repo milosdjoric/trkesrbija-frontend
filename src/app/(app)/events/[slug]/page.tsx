@@ -1,12 +1,14 @@
-import { fetchRaceEventBySlug } from '@/app/lib/api'
+import { fetchRaceEventBySlug, type RaceEventWithRaces, type Race } from '@/app/lib/api'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
+import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
 import { FavoriteButton } from '@/components/favorite-button'
 import { RegisterRaceButton } from '@/components/register-race-button'
 import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
+import { CalendarIcon, ClockIcon, MapPinIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -51,6 +53,34 @@ function formatTime(iso: string) {
   })
 }
 
+function formatGoogleDate(iso: string) {
+  const d = new Date(iso)
+  const pad = (n: number) => n.toString().padStart(2, '0')
+  const start = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`
+  // Trajanje 4 sata za trku
+  const end = new Date(d.getTime() + 4 * 60 * 60 * 1000)
+  const endStr = `${end.getFullYear()}${pad(end.getMonth() + 1)}${pad(end.getDate())}T${pad(end.getHours())}${pad(end.getMinutes())}00`
+  return `${start}/${endStr}`
+}
+
+function generateICS(event: RaceEventWithRaces, race: Race) {
+  const d = new Date(race.startDateTime)
+  const pad = (n: number) => n.toString().padStart(2, '0')
+  const dtstart = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`
+  const end = new Date(d.getTime() + 4 * 60 * 60 * 1000)
+  const dtend = `${end.getFullYear()}${pad(end.getMonth() + 1)}${pad(end.getDate())}T${pad(end.getHours())}${pad(end.getMinutes())}00`
+
+  return `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART:${dtstart}
+DTEND:${dtend}
+SUMMARY:${event.eventName}
+LOCATION:${race.startLocation ?? ''}
+END:VEVENT
+END:VCALENDAR`
+}
+
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const event = await fetchRaceEventBySlug(slug)
@@ -81,6 +111,28 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const allSameLocation = uniqueLocations.size <= 1
   const eventLocation = allSameLocation && raceLocations.length > 0 ? raceLocations[0] : null
 
+  // Check if all races are on the same day
+  const raceDates = sortedRaces.map((r) => {
+    const d = new Date(r.startDateTime)
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
+  })
+  const uniqueDates = new Set(raceDates)
+  const allSameDay = uniqueDates.size === 1 && sortedRaces.length > 0
+
+  // Vreme prve trke
+  const earliestRaceTime = earliestRace ? formatTime(earliestRace.startDateTime) : ''
+
+  // Calendar URLs
+  const googleCalendarUrl =
+    allSameDay && earliestRace
+      ? `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(event.eventName)}&dates=${formatGoogleDate(earliestRace.startDateTime)}&location=${encodeURIComponent(eventLocation ?? '')}`
+      : ''
+
+  const appleCalendarUrl =
+    allSameDay && earliestRace
+      ? `data:text/calendar;charset=utf8,${encodeURIComponent(generateICS(event, earliestRace))}`
+      : ''
+
   return (
     <>
       <BackLink href="/events">Događaji</BackLink>
@@ -91,7 +143,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <div className="space-y-8">
           {/* Header */}
           <div>
-            <Heading>{event.eventName}</Heading>
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <Heading>{event.eventName}</Heading>
+              <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'}>
+                {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
+              </Badge>
+            </div>
             {event.description && (
               <p className="mt-2 max-w-2xl text-sm/6 text-zinc-600 dark:text-zinc-400">
                 {event.description}
@@ -197,30 +254,68 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div className="space-y-6">
             {/* Summary Card */}
             <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-              {/* Date Display */}
-              <div className="text-center">
-                <div className="text-4xl font-bold tabular-nums text-zinc-950 dark:text-white">
-                  {eventDay}
-                </div>
-                <div className="mt-1 text-lg font-medium capitalize text-zinc-600 dark:text-zinc-400">
-                  {eventMonth}
-                </div>
-                <div className="text-sm capitalize text-zinc-500">{eventWeekday}, {eventYear}</div>
+              {/* Labela */}
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Datum</div>
+
+              {/* Datum - prominentno */}
+              <div className="mt-2 text-2xl font-bold text-zinc-950 dark:text-white">
+                {eventDay}. {eventMonth} {eventYear}.
               </div>
 
               <Divider soft className="my-4" />
 
-              {/* Event Type */}
-              <div className="flex justify-center">
-                <Badge color={event.type === 'TRAIL' ? 'amber' : 'sky'}>
-                  {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
-                </Badge>
+              {/* Info redovi sa ikonama */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                  <CalendarIcon className="size-5 text-zinc-400" />
+                  <span className="capitalize">{eventWeekday}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                  <ClockIcon className="size-5 text-zinc-400" />
+                  <span>
+                    {earliestRaceTime}
+                    {races.length > 1 ? ' (prva trka)' : ''}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                  <MapPinIcon className="size-5 text-zinc-400" />
+                  <span>
+                    {eventLocation ? (
+                      eventLocation.startsWith('http') ? (
+                        <a
+                          href={eventLocation}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                        >
+                          Prikaži na mapi
+                        </a>
+                      ) : (
+                        eventLocation
+                      )
+                    ) : (
+                      'Različite lokacije'
+                    )}
+                  </span>
+                </div>
               </div>
 
-              {/* Race count */}
-              <div className="mt-4 text-center text-sm text-zinc-500">
-                {races.length} {races.length === 1 ? 'trka' : races.length < 5 ? 'trke' : 'trka'}
-              </div>
+              {/* Kalendar dugmad - samo ako su sve trke istog dana */}
+              {allSameDay && (
+                <>
+                  <Divider soft className="my-4" />
+                  <div className="space-y-2">
+                    <Button outline href={googleCalendarUrl} target="_blank" className="w-full">
+                      <CalendarIcon data-slot="icon" />
+                      Dodaj u Google Calendar
+                    </Button>
+                    <Button outline href={appleCalendarUrl} className="w-full">
+                      <CalendarIcon data-slot="icon" />
+                      Dodaj u Apple Calendar
+                    </Button>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Tags */}
