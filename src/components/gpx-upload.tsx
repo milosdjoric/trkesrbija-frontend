@@ -53,7 +53,10 @@ export function GpxUpload({ value, onChange, label = 'GPX fajl' }: GpxUploadProp
       ) : (
         <UploadDropzone
           endpoint="gpxFile"
-          onUploadBegin={() => setIsUploading(true)}
+          onUploadBegin={() => {
+            console.log('GPX Upload starting...')
+            setIsUploading(true)
+          }}
           onClientUploadComplete={(res) => {
             setIsUploading(false)
             console.log('GPX Upload complete, response:', res)

@@ -28,10 +28,12 @@ export const ourFileRouter = {
     }),
 
   // GPX file uploader for race routes
+  // GPX files can have various MIME types depending on the OS/browser
   gpxFile: f({
     'application/gpx+xml': { maxFileSize: '8MB', maxFileCount: 1 },
+    'application/xml': { maxFileSize: '8MB', maxFileCount: 1 },
     'text/xml': { maxFileSize: '8MB', maxFileCount: 1 },
-    blob: { maxFileSize: '8MB', maxFileCount: 1 },
+    'application/octet-stream': { maxFileSize: '8MB', maxFileCount: 1 },
   })
     .middleware(async () => {
       return { uploadedBy: 'admin' }
