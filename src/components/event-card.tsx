@@ -3,6 +3,7 @@ import { RaceCard } from '@/components/race-card'
 
 type Race = {
   id: string
+  slug: string
   raceName: string | null
   length: number
   elevation: number | null
@@ -126,6 +127,7 @@ export function EventCard({
                   <RaceCard
                     key={r.id}
                     raceId={r.id}
+                    raceSlug={r.slug}
                     name={raceName}
                     details={parts}
                     color={isTrail ? 'emerald' : 'sky'}

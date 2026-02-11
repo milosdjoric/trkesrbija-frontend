@@ -7,6 +7,8 @@ import NextLink from 'next/link'
 
 type RaceCardProps = {
   raceId: string
+  /** Race slug for public URL */
+  raceSlug?: string
   /** Race name to display */
   name: string
   /** Details string (e.g., "12km / 520m") - already formatted */
@@ -25,6 +27,7 @@ type RaceCardProps = {
 
 export function RaceCard({
   raceId,
+  raceSlug,
   name,
   details,
   startLocation,
@@ -39,12 +42,22 @@ export function RaceCard({
   const badgeColor = dimmed ? 'zinc' : color
   const hasLocation = startLocation && startLocation.trim() !== ''
 
+  const badgeContent = (
+    <Badge color={badgeColor} className={dimmed ? 'line-through opacity-50' : ''}>
+      {name}
+      {details && ` · ${details}`}
+    </Badge>
+  )
+
   return (
     <span className="inline-flex flex-wrap items-center gap-1">
-      <Badge color={badgeColor} className={dimmed ? 'line-through opacity-50' : ''}>
-        {name}
-        {details && ` · ${details}`}
-      </Badge>
+      {raceSlug && !dimmed ? (
+        <NextLink href={`/races/${raceSlug}`} className="hover:opacity-80 transition-opacity">
+          {badgeContent}
+        </NextLink>
+      ) : (
+        badgeContent
+      )}
 
       {children}
 

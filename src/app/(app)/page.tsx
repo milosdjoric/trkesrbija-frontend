@@ -24,6 +24,7 @@ export const metadata: Metadata = {
 
 type BackendRace = {
   id: string
+  slug: string
   raceName: string | null
   length: number
   elevation: number | null
@@ -48,6 +49,7 @@ const UPCOMING_EVENTS_QUERY = `
       type
       races {
         id
+        slug
         raceName
         length
         elevation

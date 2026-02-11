@@ -25,6 +25,7 @@ export default async function Events({
   const sp = (await searchParams) ?? {}
   type BackendRace = {
     id: string
+    slug: string
     raceName: string | null
     length: number
     elevation: number | null
@@ -56,6 +57,7 @@ export default async function Events({
         mainImage
         races {
           id
+          slug
           raceName
           length
           elevation
