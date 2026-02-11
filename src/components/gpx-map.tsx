@@ -312,17 +312,21 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
   }, [gpxUrl])
 
   // Handle elevation profile hover
-  const handleProfileHover = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
+  const handleProfileHover = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (elevationData.length === 0) return
 
-    const svg = e.currentTarget
-    const rect = svg.getBoundingClientRect()
+    const container = e.currentTarget
+    const rect = container.getBoundingClientRect()
     const x = e.clientX - rect.left
     const width = rect.width
-    const padding = 40
 
-    // Calculate which point we're hovering over
-    const relativeX = (x - padding) / (width - padding * 2)
+    // Chart area is from 10% to 98% of width
+    const chartStart = width * 0.10
+    const chartEnd = width * 0.98
+    const chartWidth = chartEnd - chartStart
+
+    // Calculate relative position within chart area
+    const relativeX = (x - chartStart) / chartWidth
     if (relativeX < 0 || relativeX > 1) {
       setHoveredPoint(null)
       return
@@ -442,22 +446,43 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
               </span>
             )}
           </div>
-          <div className="relative h-[120px] w-full rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
+          <div
+            className="relative h-[120px] w-full rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50 cursor-crosshair"
+            onMouseMove={handleProfileHover}
+            onMouseLeave={handleProfileLeave}
+          >
             {/* Y-axis labels - positioned outside SVG */}
-            <div className="absolute left-2 top-2 text-[10px] text-zinc-400">{stats.maxElevation}m</div>
-            <div className="absolute left-2 bottom-6 text-[10px] text-zinc-400">{stats.minElevation}m</div>
+            <div className="absolute left-2 top-2 text-[10px] text-zinc-400 pointer-events-none">{stats.maxElevation}m</div>
+            <div className="absolute left-2 bottom-6 text-[10px] text-zinc-400 pointer-events-none">{stats.minElevation}m</div>
 
             {/* X-axis labels - positioned outside SVG */}
-            <div className="absolute left-10 bottom-1 text-[10px] text-zinc-400">0</div>
-            <div className="absolute right-2 bottom-1 text-[10px] text-zinc-400">{stats.distance.toFixed(1)}km</div>
+            <div className="absolute left-10 bottom-1 text-[10px] text-zinc-400 pointer-events-none">0</div>
+            <div className="absolute right-2 bottom-1 text-[10px] text-zinc-400 pointer-events-none">{stats.distance.toFixed(1)}km</div>
+
+            {/* Hover indicator - HTML elements for perfect circles */}
+            {hoveredPoint && (
+              <>
+                {/* Vertical line */}
+                <div
+                  className="absolute top-[5%] h-[70%] w-px border-l border-dashed border-blue-500 pointer-events-none"
+                  style={{ left: `${10 + ((hoveredPoint.distance / stats.distance) * 88)}%` }}
+                />
+                {/* Circle marker */}
+                <div
+                  className="absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500 border-2 border-white shadow-md pointer-events-none"
+                  style={{
+                    left: `${10 + ((hoveredPoint.distance / stats.distance) * 88)}%`,
+                    top: `${5 + (1 - (hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70}%`,
+                  }}
+                />
+              </>
+            )}
 
             {/* SVG for the chart only */}
             <svg
-              className="absolute inset-0 h-full w-full cursor-crosshair"
+              className="absolute inset-0 h-full w-full pointer-events-none"
               viewBox="0 0 100 100"
               preserveAspectRatio="none"
-              onMouseMove={handleProfileHover}
-              onMouseLeave={handleProfileLeave}
             >
               {/* Grid lines */}
               <defs>
@@ -469,18 +494,18 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
                   <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
                 </linearGradient>
               </defs>
-              <rect x="10" y="5" width="88" height="80" fill="url(#grid)" />
+              <rect x="10" y="5" width="88" height="70" fill="url(#grid)" />
 
               {/* Elevation area */}
               <path
                 d={`
-                  M 10 85
+                  M 10 75
                   ${elevationData.map((point) => {
                     const x = 10 + ((point.distance / stats.distance) * 88)
-                    const y = 85 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 75
+                    const y = 75 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70
                     return `L ${x} ${y}`
                   }).join(' ')}
-                  L 98 85
+                  L 98 75
                   Z
                 `}
                 fill="url(#elevationGradient)"
@@ -490,10 +515,10 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
               {/* Elevation line */}
               <path
                 d={`
-                  M ${10 + ((elevationData[0]?.distance || 0) / stats.distance) * 88} ${85 - ((elevationData[0]?.elevation || 0) - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1) * 75}
+                  M ${10 + ((elevationData[0]?.distance || 0) / stats.distance) * 88} ${75 - ((elevationData[0]?.elevation || 0) - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1) * 70}
                   ${elevationData.slice(1).map((point) => {
                     const x = 10 + ((point.distance / stats.distance) * 88)
-                    const y = 85 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 75
+                    const y = 75 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70
                     return `L ${x} ${y}`
                   }).join(' ')}
                 `}
@@ -502,31 +527,6 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
                 strokeWidth="1.5"
                 vectorEffect="non-scaling-stroke"
               />
-
-              {/* Hover indicator */}
-              {hoveredPoint && (
-                <>
-                  <line
-                    x1={10 + ((hoveredPoint.distance / stats.distance) * 88)}
-                    y1="5"
-                    x2={10 + ((hoveredPoint.distance / stats.distance) * 88)}
-                    y2="85"
-                    stroke="#3b82f6"
-                    strokeWidth="1"
-                    strokeDasharray="2"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                  <circle
-                    cx={10 + ((hoveredPoint.distance / stats.distance) * 88)}
-                    cy={85 - ((hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 75}
-                    r="3"
-                    fill="#3b82f6"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    vectorEffect="non-scaling-stroke"
-                  />
-                </>
-              )}
             </svg>
           </div>
         </div>
