@@ -442,91 +442,91 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
               </span>
             )}
           </div>
-          <div className="relative h-[100px] w-full rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
+          <div className="relative h-[120px] w-full rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
+            {/* Y-axis labels - positioned outside SVG */}
+            <div className="absolute left-2 top-2 text-[10px] text-zinc-400">{stats.maxElevation}m</div>
+            <div className="absolute left-2 bottom-6 text-[10px] text-zinc-400">{stats.minElevation}m</div>
+
+            {/* X-axis labels - positioned outside SVG */}
+            <div className="absolute left-10 bottom-1 text-[10px] text-zinc-400">0</div>
+            <div className="absolute right-2 bottom-1 text-[10px] text-zinc-400">{stats.distance.toFixed(1)}km</div>
+
+            {/* SVG for the chart only */}
             <svg
-              className="h-full w-full cursor-crosshair"
-              viewBox="0 0 400 100"
+              className="absolute inset-0 h-full w-full cursor-crosshair"
+              viewBox="0 0 100 100"
               preserveAspectRatio="none"
               onMouseMove={handleProfileHover}
               onMouseLeave={handleProfileLeave}
             >
               {/* Grid lines */}
               <defs>
-                <pattern id="grid" width="40" height="25" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 25" fill="none" stroke="currentColor" strokeWidth="0.5" className="text-zinc-200 dark:text-zinc-700" />
+                <pattern id="grid" width="10" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-zinc-300 dark:text-zinc-600" />
                 </pattern>
+                <linearGradient id="elevationGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+                </linearGradient>
               </defs>
-              <rect width="100%" height="100%" fill="url(#grid)" />
+              <rect x="10" y="5" width="88" height="80" fill="url(#grid)" />
 
               {/* Elevation area */}
               <path
                 d={`
-                  M 40 90
-                  ${elevationData.map((point, i) => {
-                    const x = 40 + ((point.distance / stats.distance) * 320)
-                    const y = 90 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70
+                  M 10 85
+                  ${elevationData.map((point) => {
+                    const x = 10 + ((point.distance / stats.distance) * 88)
+                    const y = 85 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 75
                     return `L ${x} ${y}`
                   }).join(' ')}
-                  L 360 90
+                  L 98 85
                   Z
                 `}
                 fill="url(#elevationGradient)"
                 opacity="0.3"
               />
 
-              {/* Gradient definition */}
-              <defs>
-                <linearGradient id="elevationGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-
               {/* Elevation line */}
               <path
                 d={`
-                  M ${40 + ((elevationData[0]?.distance || 0) / stats.distance) * 320} ${90 - ((elevationData[0]?.elevation || 0) - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1) * 70}
+                  M ${10 + ((elevationData[0]?.distance || 0) / stats.distance) * 88} ${85 - ((elevationData[0]?.elevation || 0) - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1) * 75}
                   ${elevationData.slice(1).map((point) => {
-                    const x = 40 + ((point.distance / stats.distance) * 320)
-                    const y = 90 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70
+                    const x = 10 + ((point.distance / stats.distance) * 88)
+                    const y = 85 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 75
                     return `L ${x} ${y}`
                   }).join(' ')}
                 `}
                 fill="none"
                 stroke="#10b981"
-                strokeWidth="2"
+                strokeWidth="1.5"
+                vectorEffect="non-scaling-stroke"
               />
 
               {/* Hover indicator */}
               {hoveredPoint && (
                 <>
                   <line
-                    x1={40 + ((hoveredPoint.distance / stats.distance) * 320)}
-                    y1="10"
-                    x2={40 + ((hoveredPoint.distance / stats.distance) * 320)}
-                    y2="90"
+                    x1={10 + ((hoveredPoint.distance / stats.distance) * 88)}
+                    y1="5"
+                    x2={10 + ((hoveredPoint.distance / stats.distance) * 88)}
+                    y2="85"
                     stroke="#3b82f6"
                     strokeWidth="1"
-                    strokeDasharray="4"
+                    strokeDasharray="2"
+                    vectorEffect="non-scaling-stroke"
                   />
                   <circle
-                    cx={40 + ((hoveredPoint.distance / stats.distance) * 320)}
-                    cy={90 - ((hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70}
-                    r="4"
+                    cx={10 + ((hoveredPoint.distance / stats.distance) * 88)}
+                    cy={85 - ((hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 75}
+                    r="3"
                     fill="#3b82f6"
                     stroke="white"
-                    strokeWidth="2"
+                    strokeWidth="1.5"
+                    vectorEffect="non-scaling-stroke"
                   />
                 </>
               )}
-
-              {/* Y axis labels */}
-              <text x="35" y="15" textAnchor="end" className="text-[8px] fill-zinc-400">{stats.maxElevation}m</text>
-              <text x="35" y="90" textAnchor="end" className="text-[8px] fill-zinc-400">{stats.minElevation}m</text>
-
-              {/* X axis labels */}
-              <text x="40" y="98" textAnchor="start" className="text-[8px] fill-zinc-400">0</text>
-              <text x="360" y="98" textAnchor="end" className="text-[8px] fill-zinc-400">{stats.distance.toFixed(1)}km</text>
             </svg>
           </div>
         </div>
