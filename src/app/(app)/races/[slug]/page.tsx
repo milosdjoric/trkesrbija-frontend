@@ -205,7 +205,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                 Distanca
               </div>
               <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
-                {race.length} km
+                {race.length > 0 ? `${race.length} km` : 'Nema info'}
               </div>
             </div>
 
@@ -215,7 +215,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                 Visinska
               </div>
               <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
-                {race.elevation != null ? `${race.elevation} m` : '–'}
+                {race.elevation != null && race.elevation > 0 ? `${race.elevation} m` : 'Nema info'}
               </div>
             </div>
 

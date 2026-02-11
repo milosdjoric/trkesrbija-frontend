@@ -231,8 +231,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                             </div>
                           )}
                         </TableCell>
-                        <TableCell>{race.length} km</TableCell>
-                        <TableCell>{race.elevation != null ? `${race.elevation} m` : '–'}</TableCell>
+                        <TableCell>{race.length > 0 ? `${race.length} km` : '–'}</TableCell>
+                        <TableCell>{race.elevation != null && race.elevation > 0 ? `${race.elevation} m` : '–'}</TableCell>
                         <TableCell>{formatTime(race.startDateTime)}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">

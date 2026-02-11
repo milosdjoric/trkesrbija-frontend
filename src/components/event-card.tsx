@@ -117,8 +117,8 @@ export function EventCard({
                       ? ''
                       : formatTime(dt)
                     : ''
-                const length = typeof r.length === 'number' ? `${r.length}km` : ''
-                const elevation = r.elevation != null ? `${r.elevation}m` : ''
+                const length = typeof r.length === 'number' && r.length > 0 ? `${r.length}km` : ''
+                const elevation = r.elevation != null && r.elevation > 0 ? `${r.elevation}m` : ''
                 const parts = [raceTime, length, elevation].filter(Boolean).join(' / ')
 
                 if (!showDimmed && !matches) return null
