@@ -4,6 +4,7 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
 import { FavoriteButtonServer } from '@/components/favorite-button-server'
+import { GpxMapWrapper } from '@/components/gpx-map-wrapper'
 import { Heading, Subheading } from '@/components/heading'
 import { RaceResults } from '@/components/race-results'
 import { Text } from '@/components/text'
@@ -13,6 +14,7 @@ import {
   MapPinIcon,
   ArrowTrendingUpIcon,
   MapIcon,
+  ArrowDownTrayIcon,
 } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -262,15 +264,23 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* GPX File */}
+          {/* GPX Map */}
           {race.gpsFile && (
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <Subheading>GPS staza</Subheading>
-              <div className="mt-2">
-                <Button href={race.gpsFile} target="_blank" outline>
-                  <MapIcon data-slot="icon" />
-                  Preuzmi GPX fajl
-                </Button>
+              <div className="flex items-center justify-between">
+                <Subheading>GPS staza</Subheading>
+                <a
+                  href={race.gpsFile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+                >
+                  <ArrowDownTrayIcon className="size-4" />
+                  Preuzmi GPX
+                </a>
+              </div>
+              <div className="mt-4">
+                <GpxMapWrapper gpxUrl={race.gpsFile} />
               </div>
             </div>
           )}
