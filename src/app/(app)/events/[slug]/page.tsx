@@ -211,7 +211,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                   </TableHead>
                   <TableBody>
                     {sortedRaces.map((race) => (
-                      <TableRow key={race.id}>
+                      <TableRow key={race.id} href={`/races/${race.slug}`}>
                         <TableCell>
                           <div className="font-medium">{race.raceName ?? 'Trka'}</div>
                           {!allSameLocation && race.startLocation && (
