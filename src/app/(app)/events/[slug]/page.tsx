@@ -247,13 +247,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <div
               className={`absolute inset-0 ${
                 event.type === 'TRAIL'
-                  ? 'bg-gradient-to-r from-emerald-600/90 to-emerald-800/80'
-                  : 'bg-gradient-to-r from-sky-600/90 to-sky-800/80'
+                  ? 'bg-gradient-to-r from-emerald-700/60 to-emerald-900/50'
+                  : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
               }`}
             />
             {/* Content */}
-            <div className="relative z-10 p-6 md:p-8">
-              <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'} className="mb-3">
+            <div className="relative z-10 px-6 py-12 md:px-8 md:py-16 lg:py-20">
+              <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'} className="mb-4">
                 {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
               </Badge>
               <h1 className="text-2xl font-bold text-white md:text-3xl lg:text-4xl">
