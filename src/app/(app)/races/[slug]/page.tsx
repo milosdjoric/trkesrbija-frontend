@@ -6,9 +6,8 @@ import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
 import { FavoriteButtonServer } from '@/components/favorite-button-server'
 import { GpxMapWrapper } from '@/components/gpx-map-wrapper'
-import { Heading, Subheading } from '@/components/heading'
+import { Subheading } from '@/components/heading'
 import { RaceResults } from '@/components/race-results'
-import { Text } from '@/components/text'
 import {
   CalendarIcon,
   ClockIcon,
@@ -16,6 +15,7 @@ import {
   ArrowTrendingUpIcon,
   MapIcon,
   ArrowDownTrayIcon,
+  UserGroupIcon,
 } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -172,6 +172,12 @@ function getCountdownColor(days: number) {
   return 'cyan'
 }
 
+// Google Maps navigation URL
+function getGoogleMapsUrl(location: string) {
+  if (location.startsWith('http')) return location
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
+}
+
 export default async function RacePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const race = await fetchRaceBySlug(slug)
@@ -194,95 +200,80 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-[1fr_320px]">
         {/* LEFT COLUMN - Main Content */}
         <div className="space-y-8">
-          {/* Header */}
+          {/* 1. Hero Section - Date + Name with background image */}
+          <div
+            className="relative overflow-hidden rounded-xl"
+            style={
+              race.raceEvent.mainImage
+                ? {
+                    backgroundImage: `url(${race.raceEvent.mainImage})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }
+                : undefined
+            }
+          >
+            {/* Color overlay based on event type */}
+            <div
+              className={`absolute inset-0 ${
+                isTrail
+                  ? 'bg-gradient-to-r from-emerald-700/60 to-emerald-900/50'
+                  : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
+              }`}
+            />
+            {/* Content */}
+            <div className="relative z-10 px-5 py-8 md:px-6 md:py-10">
+              <div className="text-sm font-medium text-white/80 mb-2">{formatDate(race.startDateTime)}</div>
+              <h1 className="text-xl font-bold text-white md:text-2xl">{title}</h1>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Badge color={getCountdownColor(days)}>{getCountdownText(days)}</Badge>
+                {race.competition && <Badge color="violet">{race.competition.name}</Badge>}
+              </div>
+            </div>
+          </div>
+
+          {/* 2. Race Info - similar style to event page */}
           <div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <Heading>{title}</Heading>
-              <Badge color={isTrail ? 'emerald' : 'sky'}>{isTrail ? 'Trail' : 'Ulična'}</Badge>
-              <Badge color={getCountdownColor(days)}>{getCountdownText(days)}</Badge>
-              {race.competition && (
-                <Badge color="violet">{race.competition.name}</Badge>
+            <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Informacije o trci</div>
+            <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
+              <div className="flex items-center gap-2">
+                <MapIcon className="size-4 text-zinc-400" />
+                <span>Distanca: {race.length > 0 ? `${race.length} km` : 'Nije definisano'}</span>
+              </div>
+              {race.elevation != null && race.elevation > 0 && (
+                <div className="flex items-center gap-2">
+                  <ArrowTrendingUpIcon className="size-4 text-zinc-400" />
+                  <span>Visinska razlika: {race.elevation} m</span>
+                </div>
               )}
+              <div className="flex items-center gap-2">
+                <ClockIcon className="size-4 text-zinc-400" />
+                <span>Start: {formatTime(race.startDateTime)}</span>
+              </div>
+              {race.endDateTime && (
+                <div className="flex items-center gap-2">
+                  <ClockIcon className="size-4 text-amber-500" />
+                  <span className="text-amber-600 dark:text-amber-400">Cut-off: {formatTime(race.endDateTime)}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <UserGroupIcon className="size-4 text-zinc-400" />
+                <span>Prijavljenih: {race.registrationCount}</span>
+              </div>
             </div>
-            <Text className="mt-2">
-              Deo događaja{' '}
-              <a
-                href={`/events/${race.raceEvent.slug}`}
-                className="font-medium text-zinc-900 underline underline-offset-2 hover:text-zinc-700 dark:text-zinc-100 dark:hover:text-zinc-300"
-              >
-                {race.raceEvent.eventName}
-              </a>
-            </Text>
           </div>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <MapIcon className="size-4" />
-                Distanca
-              </div>
-              <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
-                {race.length > 0 ? `${race.length} km` : 'Nema info'}
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <ArrowTrendingUpIcon className="size-4" />
-                Vis. razlika
-              </div>
-              <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
-                {race.elevation != null && race.elevation > 0 ? `${race.elevation} m` : 'Nema info'}
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <ClockIcon className="size-4" />
-                Start
-              </div>
-              <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
-                {formatTime(race.startDateTime)}
-              </div>
-            </div>
-
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
-                <CalendarIcon className="size-4" />
-                Prijavljenih
-              </div>
-              <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
-                {race.registrationCount}
-              </div>
-            </div>
-
-            {/* Cut-off time - only shown if endDateTime exists */}
-            {race.endDateTime && (
-              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-900/20">
-                <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400">
-                  <ClockIcon className="size-4" />
-                  Cut-off
-                </div>
-                <div className="mt-1 text-2xl font-bold text-amber-700 dark:text-amber-300">
-                  {formatTime(race.endDateTime)}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Location */}
+          {/* 3. Location */}
           {race.startLocation && (
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <Subheading>Lokacija starta</Subheading>
-              <div className="mt-2 flex items-center gap-2 text-zinc-700 dark:text-zinc-300">
-                <MapPinIcon className="size-5 text-zinc-400" />
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Lokacija starta</div>
+              <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
                 {race.startLocation.startsWith('http') ? (
                   <a
                     href={race.startLocation}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="underline underline-offset-2 hover:text-zinc-900 dark:hover:text-white"
+                    className="hover:underline"
                   >
                     Prikaži na mapi
                   </a>
@@ -293,10 +284,23 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* GPX Map */}
+          {/* 4. Event link */}
+          <div>
+            <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Događaj</div>
+            <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
+              <a
+                href={`/events/${race.raceEvent.slug}`}
+                className="hover:underline"
+              >
+                {race.raceEvent.eventName}
+              </a>
+            </div>
+          </div>
+
+          {/* 5. GPX Map */}
           {race.gpsFile && (
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-4">
                 <Subheading>GPS staza</Subheading>
                 <a
                   href={race.gpsFile}
@@ -308,7 +312,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   Preuzmi GPX
                 </a>
               </div>
-              <div className="mt-4">
+              <div className="rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden">
                 <GpxMapWrapper gpxUrl={race.gpsFile} />
               </div>
             </div>
@@ -317,35 +321,58 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
 
         {/* RIGHT SIDEBAR */}
         <div className="lg:sticky lg:top-8 lg:self-start">
-          <div className="space-y-6">
-            {/* Action Card */}
+          <div className="space-y-4">
+            {/* Summary Card */}
             <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-              {/* Date */}
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Datum</div>
-              <div className="mt-2 text-2xl font-bold text-zinc-950 dark:text-white">
-                {formatDate(race.startDateTime)}
-              </div>
-
-              <Divider soft className="my-4" />
-
-              {/* Info rows */}
+              {/* Info rows with icons */}
               <div className="space-y-3">
+                {/* Date */}
                 <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <CalendarIcon className="size-5 text-zinc-400" />
+                  <CalendarIcon className="size-5 shrink-0 text-zinc-400" />
+                  <span className="font-medium text-zinc-950 dark:text-white">{formatDate(race.startDateTime)}</span>
+                </div>
+
+                {/* Weekday */}
+                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                  <CalendarIcon className="size-5 shrink-0 text-zinc-400" />
                   <span className="capitalize">{formatWeekday(race.startDateTime)}</span>
                 </div>
+
+                {/* Time */}
                 <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <ClockIcon className="size-5 text-zinc-400" />
+                  <ClockIcon className="size-5 shrink-0 text-zinc-400" />
                   <span>Start u {formatTime(race.startDateTime)}</span>
                 </div>
+
+                {/* Location */}
+                {race.startLocation && (
+                  <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                    <MapPinIcon className="size-5 shrink-0 text-zinc-400" />
+                    <span>
+                      {race.startLocation.startsWith('http') ? 'Lokacija na mapi' : race.startLocation}
+                    </span>
+                  </div>
+                )}
               </div>
 
               <Divider soft className="my-4" />
 
-              {/* Actions */}
+              {/* Action Buttons */}
               <div className="space-y-2">
+                {/* Admin edit button */}
+                <AdminEditButton href={`/admin/races/${race.id}/edit`} label="Izmeni trku" />
+
+                {/* Navigate to start - only if location exists */}
+                {race.startLocation && (
+                  <Button href={getGoogleMapsUrl(race.startLocation)} target="_blank" outline className="w-full">
+                    <MapPinIcon data-slot="icon" />
+                    Vodi me do starta
+                  </Button>
+                )}
+
+                {/* Registration or Results button */}
                 {!isPast && race.registrationEnabled && (
-                  <Button href={`/races/${race.slug}/register`} className="w-full">
+                  <Button href={`/races/${race.slug}/register`} color="emerald" className="w-full">
                     Prijavi se
                   </Button>
                 )}
@@ -355,25 +382,24 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   </Button>
                 )}
                 {isPast && (
-                  <Button href={`/races/${race.slug}/results`} className="w-full">
+                  <Button href={`/races/${race.slug}/results`} outline className="w-full">
                     Pogledaj rezultate
                   </Button>
                 )}
+
+                {/* Favorite button */}
                 <FavoriteButtonServer raceId={race.id} />
-                <AdminEditButton href={`/admin/races/${race.id}/edit`} label="Izmeni trku" />
               </div>
             </div>
 
-            {/* Event Image */}
-            {race.raceEvent.mainImage && (
-              <div className="overflow-hidden rounded-lg">
-                <img
-                  src={race.raceEvent.mainImage}
-                  alt={race.raceEvent.eventName}
-                  className="aspect-video w-full object-cover"
-                />
+            {/* Tags - type badge */}
+            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Tip trke</div>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                <Badge color={isTrail ? 'emerald' : 'sky'}>{isTrail ? 'Trail' : 'Ulična'}</Badge>
+                {race.competition && <Badge color="violet">{race.competition.name}</Badge>}
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
