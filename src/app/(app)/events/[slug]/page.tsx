@@ -10,7 +10,14 @@ import { RegisterRaceButton } from '@/components/register-race-button'
 import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
-import { CalendarIcon, ClockIcon, MapPinIcon, GlobeAltIcon, LinkIcon } from '@heroicons/react/16/solid'
+import {
+  CalendarIcon,
+  ClockIcon,
+  MapPinIcon,
+  GlobeAltIcon,
+  LinkIcon,
+  ArrowTopRightOnSquareIcon,
+} from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -134,16 +141,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   // Parse date components for sidebar display
   const eventDateObj = earliestRace ? new Date(earliestRace.startDateTime) : null
-  const eventDay = eventDateObj?.getDate() ?? '?'
-  const eventMonth = eventDateObj?.toLocaleDateString('sr-Latn-RS', { month: 'long' }) ?? ''
-  const eventYear = eventDateObj?.getFullYear() ?? ''
-  const eventWeekday = eventDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long' }) ?? ''
-
-  // Check if all races have the same location
-  const raceLocations = sortedRaces.map((r) => r.startLocation ?? '').filter(Boolean)
-  const uniqueLocations = new Set(raceLocations)
-  const allSameLocation = uniqueLocations.size <= 1
-  const eventLocation = allSameLocation && raceLocations.length > 0 ? raceLocations[0] : null
+  const latestRace = sortedRaces[sortedRaces.length - 1]
+  const latestDateObj = latestRace ? new Date(latestRace.startDateTime) : null
 
   // Check if all races are on the same day
   const raceDates = sortedRaces.map((r) => {
@@ -153,8 +152,51 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const uniqueDates = new Set(raceDates)
   const allSameDay = uniqueDates.size === 1 && sortedRaces.length > 0
 
+  // Date display logic
+  const formatDateDisplay = (date: Date) => {
+    const day = date.getDate()
+    const month = date.toLocaleDateString('sr-Latn-RS', { month: 'long' })
+    const year = date.getFullYear()
+    return `${day}. ${month} ${year}.`
+  }
+
+  const formatShortDate = (date: Date) => {
+    const day = date.getDate()
+    const month = date.toLocaleDateString('sr-Latn-RS', { month: 'short' })
+    return `${day}. ${month}`
+  }
+
+  const eventDateDisplay = eventDateObj
+    ? allSameDay
+      ? formatDateDisplay(eventDateObj)
+      : latestDateObj
+        ? `${formatShortDate(eventDateObj)} - ${formatShortDate(latestDateObj)}`
+        : formatDateDisplay(eventDateObj)
+    : 'Datum nije definisan'
+
+  // Weekday display
+  const eventWeekday = eventDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long' }) ?? ''
+  const latestWeekday = latestDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long' }) ?? ''
+  const weekdayDisplay = allSameDay
+    ? eventWeekday
+    : eventWeekday && latestWeekday
+      ? `${eventWeekday} - ${latestWeekday}`
+      : eventWeekday
+
+  // Check if all races have the same location
+  const raceLocations = sortedRaces.map((r) => r.startLocation ?? '').filter(Boolean)
+  const uniqueLocations = new Set(raceLocations)
+  const allSameLocation = uniqueLocations.size <= 1
+  const eventLocation = allSameLocation && raceLocations.length > 0 ? raceLocations[0] : null
+
   // Vreme prve trke
   const earliestRaceTime = earliestRace ? formatTime(earliestRace.startDateTime) : ''
+
+  // Google Maps navigation URL
+  const getGoogleMapsUrl = (location: string) => {
+    if (location.startsWith('http')) return location
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
+  }
 
   // Calendar URLs
   const googleCalendarUrl =
@@ -175,7 +217,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-[1fr_320px]">
         {/* LEFT COLUMN - Main Content */}
         <div className="space-y-8">
-          {/* Header */}
+          {/* 1. Header - Name + Badge */}
           <div>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <Heading>{event.eventName}</Heading>
@@ -183,14 +225,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
               </Badge>
             </div>
-            {event.description && (
-              <p className="mt-2 max-w-2xl text-sm/6 text-zinc-600 dark:text-zinc-400">
-                {event.description}
-              </p>
-            )}
           </div>
 
-          {/* Main Image with gradient overlay */}
+          {/* 2. Main Image with gradient overlay */}
           {event.mainImage && (
             <div className="relative overflow-hidden rounded-xl">
               <img
@@ -203,84 +240,70 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
           )}
 
-          {/* Metadata Boxes */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {/* Organizator box */}
+          {/* 3. Organizer Info */}
+          {event.organizer && (
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Organizator</div>
-              {event.organizer ? (
-                <div className="mt-2">
-                  <div className="font-medium text-zinc-950 dark:text-white">{event.organizer.name}</div>
+              <div className="mt-2">
+                <div className="font-medium text-zinc-950 dark:text-white">{event.organizer.name}</div>
+                <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
+                  {event.organizer.contactPhone && (
+                    <a href={`tel:${event.organizer.contactPhone}`} className="hover:underline">
+                      {event.organizer.contactPhone}
+                    </a>
+                  )}
+                  {event.organizer.contactEmail && (
+                    <a href={`mailto:${event.organizer.contactEmail}`} className="hover:underline">
+                      {event.organizer.contactEmail}
+                    </a>
+                  )}
                   {event.organizer.organizerSite && (
                     <a
                       href={event.organizer.organizerSite}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-zinc-500 underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                      className="hover:underline"
                     >
                       Sajt organizatora
                     </a>
                   )}
                 </div>
-              ) : (
-                <div className="mt-2 text-zinc-500 dark:text-zinc-400">Nije navedeno</div>
-              )}
-            </div>
-
-            {/* Lokacija box */}
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Lokacija</div>
-              <div className="mt-2 text-zinc-950 dark:text-white">
-                {eventLocation ? (
-                  eventLocation.startsWith('http') ? (
-                    <a
-                      href={eventLocation}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
-                    >
-                      Prikaži na mapi
-                    </a>
-                  ) : (
-                    eventLocation
-                  )
-                ) : (
-                  'Različite lokacije'
-                )}
               </div>
-            </div>
-          </div>
-
-          {/* Social Media & Registration */}
-          {(event.socialMedia?.length > 0 || event.registrationSite) && (
-            <div className="flex flex-wrap items-center gap-3">
-              {event.registrationSite && (
-                <a
-                  href={event.registrationSite}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-emerald-700"
-                >
-                  <GlobeAltIcon className="size-4" />
-                  Sajt za prijave
-                </a>
-              )}
-              {event.socialMedia?.map((url) => (
-                <a
-                  key={url}
-                  href={url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-                >
-                  <LinkIcon className="size-4" />
-                  {getSocialMediaName(url)}
-                </a>
-              ))}
             </div>
           )}
 
-          {/* Gallery Slider */}
+          {/* 4. Social Media Links - clearly labeled */}
+          {event.socialMedia && event.socialMedia.length > 0 && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
+              <div className="flex flex-wrap gap-2">
+                {event.socialMedia.map((url) => (
+                  <a
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                  >
+                    <LinkIcon className="size-4" />
+                    {getSocialMediaName(url)}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 5. Description */}
+          {event.description && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
+              <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
+                {event.description}
+              </p>
+            </div>
+          )}
+
+          {/* 6. Gallery Slider */}
           {event.gallery && event.gallery.length > 0 && (
             <div>
               <Subheading>Galerija</Subheading>
@@ -353,48 +376,42 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
         {/* RIGHT SIDEBAR */}
         <div className="lg:sticky lg:top-8 lg:self-start">
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Summary Card */}
             <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-              {/* Labela */}
+              {/* 1. Datum */}
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Datum</div>
-
-              {/* Datum - prominentno */}
-              <div className="mt-2 text-2xl font-bold text-zinc-950 dark:text-white">
-                {eventDay}. {eventMonth} {eventYear}.
+              <div className="mt-1 text-xl font-bold text-zinc-950 dark:text-white">
+                {eventDateDisplay}
               </div>
 
               <Divider soft className="my-4" />
 
               {/* Info redovi sa ikonama */}
               <div className="space-y-3">
+                {/* 2. Dan u nedelji */}
                 <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <CalendarIcon className="size-5 text-zinc-400" />
-                  <span className="capitalize">{eventWeekday}</span>
+                  <CalendarIcon className="size-5 shrink-0 text-zinc-400" />
+                  <span className="capitalize">{weekdayDisplay}</span>
                 </div>
+
+                {/* 3. Vreme (prva trka) */}
+                {earliestRaceTime && (
+                  <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                    <ClockIcon className="size-5 shrink-0 text-zinc-400" />
+                    <span>
+                      {earliestRaceTime}
+                      {races.length > 1 ? ' (prva trka)' : ''}
+                    </span>
+                  </div>
+                )}
+
+                {/* 4. Lokacija */}
                 <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <ClockIcon className="size-5 text-zinc-400" />
-                  <span>
-                    {earliestRaceTime}
-                    {races.length > 1 ? ' (prva trka)' : ''}
-                  </span>
-                </div>
-                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <MapPinIcon className="size-5 text-zinc-400" />
+                  <MapPinIcon className="size-5 shrink-0 text-zinc-400" />
                   <span>
                     {eventLocation ? (
-                      eventLocation.startsWith('http') ? (
-                        <a
-                          href={eventLocation}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
-                        >
-                          Prikaži na mapi
-                        </a>
-                      ) : (
-                        eventLocation
-                      )
+                      eventLocation.startsWith('http') ? 'Lokacija na mapi' : eventLocation
                     ) : (
                       'Različite lokacije'
                     )}
@@ -402,26 +419,53 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 </div>
               </div>
 
-              {/* Kalendar dugmad - samo ako su sve trke istog dana */}
-              {allSameDay && (
-                <>
-                  <Divider soft className="my-4" />
-                  <div className="space-y-2">
+              <Divider soft className="my-4" />
+
+              {/* Action Buttons */}
+              <div className="space-y-2">
+                {/* Admin edit button */}
+                <AdminEditButton href={`/admin/events/${event.id}/edit`} label="Izmeni događaj" />
+
+                {/* 5. Vodi me do starta - only if all same location */}
+                {allSameLocation && eventLocation && (
+                  <Button
+                    href={getGoogleMapsUrl(eventLocation)}
+                    target="_blank"
+                    outline
+                    className="w-full"
+                  >
+                    <MapPinIcon data-slot="icon" />
+                    Vodi me do starta
+                  </Button>
+                )}
+
+                {/* Calendar buttons - only if all same day */}
+                {allSameDay && (
+                  <>
                     <Button outline href={googleCalendarUrl} target="_blank" className="w-full">
                       <CalendarIcon data-slot="icon" />
-                      Dodaj u Google Calendar
+                      Google Calendar
                     </Button>
                     <Button outline href={appleCalendarUrl} className="w-full">
                       <CalendarIcon data-slot="icon" />
-                      Dodaj u Apple Calendar
+                      Apple Calendar
                     </Button>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
 
-              {/* Admin edit button */}
-              <Divider soft className="my-4" />
-              <AdminEditButton href={`/admin/events/${event.id}/edit`} label="Izmeni događaj" />
+                {/* External registration link */}
+                {event.registrationSite && (
+                  <Button
+                    href={event.registrationSite}
+                    target="_blank"
+                    color="emerald"
+                    className="w-full"
+                  >
+                    <ArrowTopRightOnSquareIcon data-slot="icon" />
+                    Prijavi se
+                  </Button>
+                )}
+              </div>
             </div>
 
             {/* Tags */}
