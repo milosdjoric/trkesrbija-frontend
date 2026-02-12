@@ -82,15 +82,6 @@ const EVENT_BY_ID_QUERY = `
   }
 `
 
-const ORGANIZERS_QUERY = `
-  query Organizers {
-    organizers {
-      id
-      name
-    }
-  }
-`
-
 const UPDATE_EVENT_MUTATION = `
   mutation UpdateRaceEvent($eventId: ID!, $input: UpdateRaceEventInput!) {
     updateRaceEvent(eventId: $eventId, input: $input) {
@@ -117,7 +108,6 @@ export default function EditEventPage() {
   const eventId = params.eventId as string
 
   const [event, setEvent] = useState<EventData | null>(null)
-  const [organizers, setOrganizers] = useState<{ id: string; name: string }[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const loadedRef = useRef(false)
@@ -131,17 +121,19 @@ export default function EditEventPage() {
   const [registrationSite, setRegistrationSite] = useState('')
   const [socialMedia, setSocialMedia] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
-  const [organizerId, setOrganizerId] = useState('')
   const [slug, setSlug] = useState('')
+
+  // Organizer inline fields
+  const [organizerName, setOrganizerName] = useState('')
+  const [organizerPhone, setOrganizerPhone] = useState('')
+  const [organizerEmail, setOrganizerEmail] = useState('')
+  const [organizerSite, setOrganizerSite] = useState('')
 
   const loadEvent = useCallback(async () => {
     if (!accessToken) return
 
     try {
-      const [eventData, organizersData] = await Promise.all([
-        gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken }),
-        gql<{ organizers: { id: string; name: string }[] }>(ORGANIZERS_QUERY, {}, { accessToken }),
-      ])
+      const eventData = await gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken })
 
       if (eventData.raceEvent) {
         const e = eventData.raceEvent
@@ -154,11 +146,13 @@ export default function EditEventPage() {
         setRegistrationSite(e.registrationSite || '')
         setSocialMedia(e.socialMedia || [])
         setTags(e.tags || [])
-        setOrganizerId(e.organizer?.id || '')
         setSlug(e.slug)
+        // Load organizer data
+        setOrganizerName(e.organizer?.name || '')
+        setOrganizerPhone(e.organizer?.contactPhone || '')
+        setOrganizerEmail(e.organizer?.contactEmail || '')
+        setOrganizerSite(e.organizer?.organizerSite || '')
       }
-
-      setOrganizers(organizersData.organizers || [])
     } catch (err) {
       console.error('Failed to load event:', err)
       toast('Greška pri učitavanju događaja', 'error')
@@ -194,23 +188,31 @@ export default function EditEventPage() {
 
     setSaving(true)
     try {
+      const input: Record<string, unknown> = {
+        eventName: eventName.trim(),
+        slug: slug.trim(),
+        type: eventType,
+        description: description.trim() || null,
+        mainImage: mainImage.trim() || null,
+        gallery,
+        registrationSite: registrationSite.trim() || null,
+        socialMedia,
+        tags,
+      }
+
+      // Add organizer if name is provided
+      if (organizerName.trim()) {
+        input.organizer = {
+          name: organizerName.trim(),
+          contactPhone: organizerPhone.trim() || null,
+          contactEmail: organizerEmail.trim() || null,
+          organizerSite: organizerSite.trim() || null,
+        }
+      }
+
       await gql(
         UPDATE_EVENT_MUTATION,
-        {
-          eventId,
-          input: {
-            eventName: eventName.trim(),
-            slug: slug.trim(),
-            type: eventType,
-            description: description.trim() || null,
-            mainImage: mainImage.trim() || null,
-            gallery,
-            registrationSite: registrationSite.trim() || null,
-            socialMedia,
-            tags,
-            organizerId: organizerId || null,
-          },
-        },
+        { eventId, input },
         { accessToken }
       )
 
@@ -312,7 +314,7 @@ export default function EditEventPage() {
             </div>
 
             {/* Type */}
-            <div>
+            <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Tip događaja *
               </label>
@@ -323,25 +325,6 @@ export default function EditEventPage() {
               >
                 <option value="TRAIL">Trail</option>
                 <option value="ROAD">Ulična</option>
-              </select>
-            </div>
-
-            {/* Organizer */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Organizator
-              </label>
-              <select
-                value={organizerId}
-                onChange={(e) => setOrganizerId(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-              >
-                <option value="">-- Bez organizatora --</option>
-                {organizers.map((org) => (
-                  <option key={org.id} value={org.id}>
-                    {org.name}
-                  </option>
-                ))}
               </select>
             </div>
 
@@ -381,6 +364,70 @@ export default function EditEventPage() {
 
             {/* Gallery */}
             <GalleryUpload value={gallery} onChange={setGallery} />
+          </div>
+        </div>
+
+        {/* Organizer */}
+        <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+          <Subheading>Organizator</Subheading>
+          <p className="mt-1 text-sm text-zinc-500">Unesite podatke o organizatoru događaja</p>
+
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            {/* Organizer name */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Naziv organizatora
+              </label>
+              <input
+                type="text"
+                value={organizerName}
+                onChange={(e) => setOrganizerName(e.target.value)}
+                placeholder="npr. Trkački klub Avala"
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+            </div>
+
+            {/* Organizer phone */}
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Telefon
+              </label>
+              <input
+                type="tel"
+                value={organizerPhone}
+                onChange={(e) => setOrganizerPhone(e.target.value)}
+                placeholder="+381 64 123 4567"
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+            </div>
+
+            {/* Organizer email */}
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Email
+              </label>
+              <input
+                type="email"
+                value={organizerEmail}
+                onChange={(e) => setOrganizerEmail(e.target.value)}
+                placeholder="info@organizator.rs"
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+            </div>
+
+            {/* Organizer website */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Sajt organizatora
+              </label>
+              <input
+                type="url"
+                value={organizerSite}
+                onChange={(e) => setOrganizerSite(e.target.value)}
+                placeholder="https://organizator.rs"
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+            </div>
           </div>
         </div>
 
