@@ -1,4 +1,5 @@
 import { gql } from '@/app/lib/api'
+import { AdminEditButton } from '@/components/admin-edit-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
@@ -331,6 +332,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   </Button>
                 )}
                 <FavoriteButtonServer raceId={race.id} />
+                <AdminEditButton href={`/admin/races/${race.id}/edit`} label="Izmeni trku" />
               </div>
             </div>
 

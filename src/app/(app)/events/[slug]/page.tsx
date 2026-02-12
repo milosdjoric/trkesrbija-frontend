@@ -1,4 +1,5 @@
 import { fetchRaceEventBySlug, type RaceEventWithRaces, type Race } from '@/app/lib/api'
+import { AdminEditButton } from '@/components/admin-edit-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
@@ -417,6 +418,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                   </div>
                 </>
               )}
+
+              {/* Admin edit button */}
+              <Divider soft className="my-4" />
+              <AdminEditButton href={`/admin/events/${event.id}/edit`} label="Izmeni događaj" />
             </div>
 
             {/* Tags */}
