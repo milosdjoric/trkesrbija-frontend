@@ -238,28 +238,29 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-[1fr_320px]">
         {/* LEFT COLUMN - Main Content */}
         <div className="space-y-8">
-          {/* 1. Header - Name + Badge */}
-          <div>
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <Heading>{event.eventName}</Heading>
-              <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'}>
+          {/* 1. Hero Section - Name + Badge with background image */}
+          <div
+            className="relative overflow-hidden rounded-xl"
+            style={event.mainImage ? { backgroundImage: `url(${event.mainImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
+          >
+            {/* Color overlay based on event type */}
+            <div
+              className={`absolute inset-0 ${
+                event.type === 'TRAIL'
+                  ? 'bg-gradient-to-r from-emerald-600/90 to-emerald-800/80'
+                  : 'bg-gradient-to-r from-sky-600/90 to-sky-800/80'
+              }`}
+            />
+            {/* Content */}
+            <div className="relative z-10 p-6 md:p-8">
+              <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'} className="mb-3">
                 {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
               </Badge>
+              <h1 className="text-2xl font-bold text-white md:text-3xl lg:text-4xl">
+                {event.eventName}
+              </h1>
             </div>
           </div>
-
-          {/* 2. Main Image with gradient overlay */}
-          {event.mainImage && (
-            <div className="relative overflow-hidden rounded-xl">
-              <img
-                src={event.mainImage}
-                alt={event.eventName}
-                className="aspect-[21/9] w-full object-cover"
-              />
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-            </div>
-          )}
 
           {/* 3. Organizer Info */}
           {event.organizer && (
