@@ -17,7 +17,7 @@ export function AdminEditButton({ href, label = 'Izmeni' }: AdminEditButtonProps
   }
 
   return (
-    <Button href={href} outline>
+    <Button href={href} outline className="w-full">
       <PencilSquareIcon />
       {label}
     </Button>
