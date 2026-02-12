@@ -124,19 +124,19 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         <div className="flex grow items-center gap-1">
           <Input
             name="elevMin"
-            placeholder="Elevacija od (m)"
+            placeholder="Vis. razlika od (m)"
             inputMode="decimal"
             value={elevMin}
             onChange={(e) => setElevMin(e.target.value)}
-            aria-label="Minimalna elevacija (m)"
+            aria-label="Minimalna visinska razlika (m)"
           />
           <Input
             name="elevMax"
-            placeholder="Elevacija do (m)"
+            placeholder="Vis. razlika do (m)"
             inputMode="decimal"
             value={elevMax}
             onChange={(e) => setElevMax(e.target.value)}
-            aria-label="Maksimalna elevacija (m)"
+            aria-label="Maksimalna visinska razlika (m)"
           />
         </div>
       </div>
@@ -177,8 +177,8 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             <option value="">Sortiraj po datumu</option>
             <option value="distance_asc">Dužina (najkraće prvo)</option>
             <option value="distance_desc">Dužina (najduže prvo)</option>
-            <option value="elevation_asc">Elevacija (najniže prvo)</option>
-            <option value="elevation_desc">Elevacija (najviše prvo)</option>
+            <option value="elevation_asc">Vis. razlika (najniže prvo)</option>
+            <option value="elevation_desc">Vis. razlika (najviše prvo)</option>
             <option value="name">Naziv (A-Ž)</option>
           </Select>
         </div>

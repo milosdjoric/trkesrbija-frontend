@@ -372,7 +372,7 @@ export default function NewEventPage() {
 
                     <div>
                       <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
-                        Elevacija (m)
+                        Visinska razlika (m)
                       </label>
                       <input
                         type="number"

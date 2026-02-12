@@ -305,7 +305,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     <TableRow>
                       <TableHeader>Trka</TableHeader>
                       <TableHeader>Distanca</TableHeader>
-                      <TableHeader>Visinska</TableHeader>
+                      <TableHeader>Vis. razlika</TableHeader>
                       <TableHeader>Start</TableHeader>
                       <TableHeader className="text-right">Akcije</TableHeader>
                     </TableRow>

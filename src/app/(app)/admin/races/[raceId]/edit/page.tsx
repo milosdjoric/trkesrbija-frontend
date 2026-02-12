@@ -256,7 +256,7 @@ export default function EditRacePage() {
             {/* Elevation */}
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Elevacija (m)
+                Visinska razlika (m)
               </label>
               <input
                 type="number"

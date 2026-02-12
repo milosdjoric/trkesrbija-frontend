@@ -214,7 +214,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
               <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
                 <ArrowTrendingUpIcon className="size-4" />
-                Visinska
+                Vis. razlika
               </div>
               <div className="mt-1 text-2xl font-bold text-zinc-900 dark:text-white">
                 {race.elevation != null && race.elevation > 0 ? `${race.elevation} m` : 'Nema info'}
