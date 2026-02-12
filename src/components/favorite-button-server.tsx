@@ -114,7 +114,7 @@ export function FavoriteButtonServer({ raceId }: FavoriteButtonServerProps) {
       ) : (
         <HeartIcon data-slot="icon" />
       )}
-      {isFavorite ? 'Ukloni iz favorita' : 'Dodaj u favorite'}
+      {isFavorite ? 'Ukloni iz omiljenih' : 'Dodaj u omiljene'}
     </Button>
   )
 }

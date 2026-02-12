@@ -87,7 +87,7 @@ export function FavoriteButton({
         isPending && 'opacity-50 cursor-not-allowed',
         className
       )}
-      aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+      aria-label={isFavorite ? 'Ukloni iz omiljenih' : 'Dodaj u omiljene'}
     >
       {isFavorite ? <HeartSolidIcon className={iconSize} /> : <HeartIcon className={iconSize} />}
     </button>

@@ -128,7 +128,7 @@ export default function FavoritesPage() {
         <EmptyState
           icon="❤️"
           title="Nemate nijednu omiljenu trku"
-          description="Pretražite događaje i kliknite na srce da dodate trke u favorite!"
+          description="Pretražite događaje i kliknite na srce da dodate trke u omiljene!"
           action={{ label: 'Pregledaj događaje', href: '/events' }}
           className="mt-8"
         />
