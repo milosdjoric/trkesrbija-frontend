@@ -7,7 +7,6 @@ import { Divider } from '@/components/divider'
 import { FavoriteButton } from '@/components/favorite-button'
 import { ImageSlider } from '@/components/image-slider'
 import { RegisterRaceButton } from '@/components/register-race-button'
-import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import {
@@ -238,7 +237,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-[1fr_320px]">
         {/* LEFT COLUMN - Main Content */}
         <div className="space-y-8">
-          {/* 1. Hero Section - Name + Badge with background image */}
+          {/* 1. Hero Section - Date + Name with background image */}
           <div
             className="relative overflow-hidden rounded-xl"
             style={event.mainImage ? { backgroundImage: `url(${event.mainImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}
@@ -252,17 +251,17 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               }`}
             />
             {/* Content */}
-            <div className="relative z-10 px-6 py-12 md:px-8 md:py-16 lg:py-20">
-              <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'} className="mb-4">
-                {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
-              </Badge>
-              <h1 className="text-2xl font-bold text-white md:text-3xl lg:text-4xl">
+            <div className="relative z-10 px-5 py-8 md:px-6 md:py-10">
+              <div className="text-sm font-medium text-white/80 mb-2">
+                {eventDateDisplay}
+              </div>
+              <h1 className="text-xl font-bold text-white md:text-2xl">
                 {event.eventName}
               </h1>
             </div>
           </div>
 
-          {/* 3. Organizer Info */}
+          {/* 2. Organizer Info */}
           {event.organizer && (
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Organizator</div>
@@ -294,47 +293,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
           )}
 
-          {/* 4. Social Media Links - clearly labeled with platform colors */}
-          {event.socialMedia && event.socialMedia.length > 0 && (
-            <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
-              <div className="flex flex-wrap gap-2">
-                {event.socialMedia.map((url) => (
-                  <a
-                    key={url}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
-                  >
-                    {getSocialMediaName(url)}
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* 5. Description */}
-          {event.description && (
-            <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
-              <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
-                {event.description}
-              </p>
-            </div>
-          )}
-
-          {/* 6. Gallery Slider */}
-          {event.gallery && event.gallery.length > 0 && (
-            <div>
-              <Subheading>Galerija</Subheading>
-              <div className="mt-4">
-                <ImageSlider images={event.gallery} alt={event.eventName} />
-              </div>
-            </div>
-          )}
-
-          {/* Races Table */}
+          {/* 3. Races Table */}
           <div>
             <Subheading>Trke ({races.length})</Subheading>
 
@@ -393,6 +352,46 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               </div>
             )}
           </div>
+
+          {/* 4. Social Media Links - clearly labeled with platform colors */}
+          {event.socialMedia && event.socialMedia.length > 0 && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
+              <div className="flex flex-wrap gap-2">
+                {event.socialMedia.map((url) => (
+                  <a
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
+                  >
+                    {getSocialMediaName(url)}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 5. Description */}
+          {event.description && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
+              <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
+                {event.description}
+              </p>
+            </div>
+          )}
+
+          {/* 6. Gallery Slider */}
+          {event.gallery && event.gallery.length > 0 && (
+            <div>
+              <Subheading>Galerija</Subheading>
+              <div className="mt-4">
+                <ImageSlider images={event.gallery} alt={event.eventName} />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* RIGHT SIDEBAR */}
@@ -503,11 +502,6 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
       </div>
-
-      {/* Results for each race - Full Width */}
-      {sortedRaces.map((race) => (
-        <RaceResults key={race.id} raceId={race.id} raceName={race.raceName} />
-      ))}
     </>
   )
 }
