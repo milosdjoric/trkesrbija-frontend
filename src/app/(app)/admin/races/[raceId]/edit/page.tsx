@@ -12,6 +12,11 @@ import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+type Competition = {
+  id: string
+  name: string
+}
+
 type RaceData = {
   id: string
   raceName: string | null
@@ -19,8 +24,11 @@ type RaceData = {
   elevation: number | null
   gpsFile: string | null
   startDateTime: string
+  endDateTime: string | null
   startLocation: string | null
   registrationEnabled: boolean
+  competitionId: string | null
+  competition: Competition | null
   raceEvent: {
     id: string
     eventName: string
@@ -37,13 +45,28 @@ const RACE_BY_ID_QUERY = `
       elevation
       gpsFile
       startDateTime
+      endDateTime
       startLocation
       registrationEnabled
+      competitionId
+      competition {
+        id
+        name
+      }
       raceEvent {
         id
         eventName
         slug
       }
+    }
+  }
+`
+
+const COMPETITIONS_QUERY = `
+  query Competitions {
+    competitions {
+      id
+      name
     }
   }
 `
@@ -56,8 +79,10 @@ const UPDATE_RACE_MUTATION = `
       length
       elevation
       startDateTime
+      endDateTime
       startLocation
       registrationEnabled
+      competitionId
     }
   }
 `
@@ -71,6 +96,7 @@ export default function EditRacePage() {
   const raceId = params.raceId as string
 
   const [race, setRace] = useState<RaceData | null>(null)
+  const [competitions, setCompetitions] = useState<Competition[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const loadedRef = useRef(false)
@@ -81,26 +107,41 @@ export default function EditRacePage() {
   const [elevation, setElevation] = useState('')
   const [gpsFile, setGpsFile] = useState('')
   const [startDateTime, setStartDateTime] = useState('')
+  const [endDateTime, setEndDateTime] = useState('')
   const [startLocation, setStartLocation] = useState('')
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
+  const [competitionId, setCompetitionId] = useState('')
 
   const loadRace = useCallback(async () => {
     if (!accessToken) return
 
     try {
-      const data = await gql<{ race: RaceData | null }>(RACE_BY_ID_QUERY, { id: raceId }, { accessToken })
+      // Load race and competitions in parallel
+      const [raceData, competitionsData] = await Promise.all([
+        gql<{ race: RaceData | null }>(RACE_BY_ID_QUERY, { id: raceId }, { accessToken }),
+        gql<{ competitions: Competition[] }>(COMPETITIONS_QUERY, {}, { accessToken }),
+      ])
 
-      if (data.race) {
-        setRace(data.race)
-        setRaceName(data.race.raceName || '')
-        setLength(data.race.length.toString())
-        setElevation(data.race.elevation?.toString() || '')
-        setGpsFile(data.race.gpsFile || '')
+      if (competitionsData.competitions) {
+        setCompetitions(competitionsData.competitions)
+      }
+
+      if (raceData.race) {
+        setRace(raceData.race)
+        setRaceName(raceData.race.raceName || '')
+        setLength(raceData.race.length.toString())
+        setElevation(raceData.race.elevation?.toString() || '')
+        setGpsFile(raceData.race.gpsFile || '')
         // Convert ISO to datetime-local format
-        const dt = new Date(data.race.startDateTime)
+        const dt = new Date(raceData.race.startDateTime)
         setStartDateTime(dt.toISOString().slice(0, 16))
-        setStartLocation(data.race.startLocation || '')
-        setRegistrationEnabled(data.race.registrationEnabled)
+        if (raceData.race.endDateTime) {
+          const endDt = new Date(raceData.race.endDateTime)
+          setEndDateTime(endDt.toISOString().slice(0, 16))
+        }
+        setStartLocation(raceData.race.startLocation || '')
+        setRegistrationEnabled(raceData.race.registrationEnabled)
+        setCompetitionId(raceData.race.competitionId || '')
       }
     } catch (err) {
       console.error('Failed to load race:', err)
@@ -152,8 +193,10 @@ export default function EditRacePage() {
             elevation: elevation ? parseFloat(elevation) : null,
             gpsFile: gpsFile.trim() || null,
             startDateTime: new Date(startDateTime).toISOString(),
+            endDateTime: endDateTime ? new Date(endDateTime).toISOString() : null,
             startLocation: startLocation.trim() || null,
             registrationEnabled,
+            competitionId: competitionId || null,
           },
         },
         { accessToken }
@@ -236,6 +279,20 @@ export default function EditRacePage() {
               />
             </div>
 
+            {/* End date/time (cut-off) */}
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Cut-off vreme
+              </label>
+              <input
+                type="datetime-local"
+                value={endDateTime}
+                onChange={(e) => setEndDateTime(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+              <p className="mt-1 text-xs text-zinc-500">Opciono - krajnje vreme za završetak trke</p>
+            </div>
+
             {/* Length */}
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -289,6 +346,28 @@ export default function EditRacePage() {
                 onChange={(url) => setGpsFile(url || '')}
                 label="GPX staza"
               />
+            </div>
+
+            {/* Competition */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Takmičenje / Serija
+              </label>
+              <select
+                value={competitionId}
+                onChange={(e) => setCompetitionId(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              >
+                <option value="">Bez takmičenja</option>
+                {competitions.map((comp) => (
+                  <option key={comp.id} value={comp.id}>
+                    {comp.name}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1 text-xs text-zinc-500">
+                Opciono - ako trka pripada nekoj seriji ili ligi
+              </p>
             </div>
 
             {/* Registration enabled */}

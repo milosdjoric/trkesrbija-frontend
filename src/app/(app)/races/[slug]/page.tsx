@@ -20,6 +20,11 @@ import {
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+type Competition = {
+  id: string
+  name: string
+}
+
 type RaceWithEvent = {
   id: string
   slug: string
@@ -32,6 +37,8 @@ type RaceWithEvent = {
   endDateTime: string | null
   registrationEnabled: boolean
   registrationCount: number
+  competitionId: string | null
+  competition: Competition | null
   raceEvent: {
     id: string
     eventName: string
@@ -56,6 +63,11 @@ const RACE_BY_SLUG_QUERY = `
       endDateTime
       registrationEnabled
       registrationCount
+      competitionId
+      competition {
+        id
+        name
+      }
       raceEvent {
         id
         eventName
@@ -188,6 +200,9 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
               <Heading>{title}</Heading>
               <Badge color={isTrail ? 'emerald' : 'sky'}>{isTrail ? 'Trail' : 'Ulična'}</Badge>
               <Badge color={getCountdownColor(days)}>{getCountdownText(days)}</Badge>
+              {race.competition && (
+                <Badge color="violet">{race.competition.name}</Badge>
+              )}
             </div>
             <Text className="mt-2">
               Deo događaja{' '}
@@ -241,6 +256,19 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                 {race.registrationCount}
               </div>
             </div>
+
+            {/* Cut-off time - only shown if endDateTime exists */}
+            {race.endDateTime && (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-700 dark:bg-amber-900/20">
+                <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400">
+                  <ClockIcon className="size-4" />
+                  Cut-off
+                </div>
+                <div className="mt-1 text-2xl font-bold text-amber-700 dark:text-amber-300">
+                  {formatTime(race.endDateTime)}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Location */}
