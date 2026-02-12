@@ -53,6 +53,27 @@ function getSocialMediaName(url: string) {
   }
 }
 
+// Social media colors
+function getSocialMediaStyles(url: string) {
+  const type = getSocialMediaIcon(url)
+  switch (type) {
+    case 'facebook':
+      return 'bg-[#1877F2] hover:bg-[#166FE5] text-white border-[#1877F2]'
+    case 'instagram':
+      return 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white border-transparent'
+    case 'strava':
+      return 'bg-[#FC4C02] hover:bg-[#E34402] text-white border-[#FC4C02]'
+    case 'twitter':
+      return 'bg-black hover:bg-zinc-800 text-white border-black dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:border-white'
+    case 'youtube':
+      return 'bg-[#FF0000] hover:bg-[#CC0000] text-white border-[#FF0000]'
+    case 'tiktok':
+      return 'bg-black hover:bg-zinc-800 text-white border-black'
+    default:
+      return 'bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-700'
+  }
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const event = await fetchRaceEventBySlug(slug)
@@ -272,7 +293,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
           )}
 
-          {/* 4. Social Media Links - clearly labeled */}
+          {/* 4. Social Media Links - clearly labeled with platform colors */}
           {event.socialMedia && event.socialMedia.length > 0 && (
             <div>
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
@@ -283,9 +304,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
                   >
-                    <LinkIcon className="size-4" />
                     {getSocialMediaName(url)}
                   </a>
                 ))}
@@ -379,16 +399,14 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           <div className="space-y-4">
             {/* Summary Card */}
             <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/50">
-              {/* 1. Datum */}
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Datum</div>
-              <div className="mt-1 text-xl font-bold text-zinc-950 dark:text-white">
-                {eventDateDisplay}
-              </div>
-
-              <Divider soft className="my-4" />
-
               {/* Info redovi sa ikonama */}
               <div className="space-y-3">
+                {/* 1. Datum */}
+                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
+                  <CalendarIcon className="size-5 shrink-0 text-zinc-400" />
+                  <span className="font-medium text-zinc-950 dark:text-white">{eventDateDisplay}</span>
+                </div>
+
                 {/* 2. Dan u nedelji */}
                 <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
                   <CalendarIcon className="size-5 shrink-0 text-zinc-400" />
