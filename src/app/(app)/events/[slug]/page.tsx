@@ -261,39 +261,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
           </div>
 
-          {/* 2. Organizer Info */}
-          {event.organizer && (
-            <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Organizator</div>
-              <div className="mt-2">
-                <div className="font-medium text-zinc-950 dark:text-white">{event.organizer.name}</div>
-                <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-600 dark:text-zinc-400">
-                  {event.organizer.contactPhone && (
-                    <a href={`tel:${event.organizer.contactPhone}`} className="hover:underline">
-                      {event.organizer.contactPhone}
-                    </a>
-                  )}
-                  {event.organizer.contactEmail && (
-                    <a href={`mailto:${event.organizer.contactEmail}`} className="hover:underline">
-                      {event.organizer.contactEmail}
-                    </a>
-                  )}
-                  {event.organizer.organizerSite && (
-                    <a
-                      href={event.organizer.organizerSite}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:underline"
-                    >
-                      Sajt organizatora
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* 3. Races Table */}
+          {/* 2. Races Table */}
           <div>
             <Subheading>Trke ({races.length})</Subheading>
 
@@ -353,7 +321,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             )}
           </div>
 
-          {/* 4. Social Media Links - clearly labeled with platform colors */}
+          {/* 3. Social Media Links - clearly labeled with platform colors */}
           {event.socialMedia && event.socialMedia.length > 0 && (
             <div>
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
@@ -369,6 +337,42 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     {getSocialMediaName(url)}
                   </a>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* 4. Organizer Info */}
+          {event.organizer && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
+              <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
+                <div>{event.organizer.name}</div>
+                {event.organizer.contactPhone && (
+                  <div>
+                    <a href={`tel:${event.organizer.contactPhone}`} className="hover:underline">
+                      {event.organizer.contactPhone}
+                    </a>
+                  </div>
+                )}
+                {event.organizer.contactEmail && (
+                  <div>
+                    <a href={`mailto:${event.organizer.contactEmail}`} className="hover:underline">
+                      {event.organizer.contactEmail}
+                    </a>
+                  </div>
+                )}
+                {event.organizer.organizerSite && (
+                  <div>
+                    <a
+                      href={event.organizer.organizerSite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {event.organizer.organizerSite}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           )}
