@@ -5,6 +5,7 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Divider } from '@/components/divider'
 import { FavoriteButton } from '@/components/favorite-button'
+import { ImageSlider } from '@/components/image-slider'
 import { RegisterRaceButton } from '@/components/register-race-button'
 import { RaceResults } from '@/components/race-results'
 import { Heading, Subheading } from '@/components/heading'
@@ -189,6 +190,19 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             )}
           </div>
 
+          {/* Main Image with gradient overlay */}
+          {event.mainImage && (
+            <div className="relative overflow-hidden rounded-xl">
+              <img
+                src={event.mainImage}
+                alt={event.eventName}
+                className="aspect-[21/9] w-full object-cover"
+              />
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            </div>
+          )}
+
           {/* Metadata Boxes */}
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             {/* Organizator box */}
@@ -266,26 +280,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
           )}
 
-          {/* Gallery */}
+          {/* Gallery Slider */}
           {event.gallery && event.gallery.length > 0 && (
             <div>
               <Subheading>Galerija</Subheading>
-              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                {event.gallery.map((url, index) => (
-                  <a
-                    key={url}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative aspect-square overflow-hidden rounded-lg"
-                  >
-                    <img
-                      src={url}
-                      alt={`${event.eventName} - slika ${index + 1}`}
-                      className="h-full w-full object-cover transition-transform group-hover:scale-105"
-                    />
-                  </a>
-                ))}
+              <div className="mt-4">
+                <ImageSlider images={event.gallery} alt={event.eventName} />
               </div>
             </div>
           )}
@@ -435,17 +435,6 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     </Badge>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Event Image */}
-            {event.mainImage && (
-              <div className="overflow-hidden rounded-lg">
-                <img
-                  src={event.mainImage}
-                  alt={event.eventName}
-                  className="aspect-video w-full object-cover"
-                />
               </div>
             )}
           </div>
