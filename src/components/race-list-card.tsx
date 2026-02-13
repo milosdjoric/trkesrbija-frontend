@@ -15,8 +15,8 @@ type RaceListCardProps = {
   eventName: string
   /** Event slug for URL */
   eventSlug: string
-  /** Race type: TRAIL or ROAD */
-  type: 'TRAIL' | 'ROAD'
+  /** Race type: TRAIL, ROAD or OCR */
+  type: 'TRAIL' | 'ROAD' | 'OCR'
   /** Race length in km */
   length: number
   /** Elevation in meters (optional) */
@@ -63,7 +63,8 @@ export function RaceListCard({
   children,
 }: RaceListCardProps) {
   const days = daysUntil(startDateTime)
-  const isTrail = type === 'TRAIL'
+  const badgeColor = type === 'TRAIL' ? 'emerald' : type === 'OCR' ? 'orange' : 'sky'
+  const typeLabel = type === 'TRAIL' ? 'Trail' : type === 'OCR' ? 'OCR' : 'Ulična'
   const details = [`${length}km`, elevation != null ? `${elevation}m` : ''].filter(Boolean).join(' / ')
 
   return (
@@ -83,7 +84,7 @@ export function RaceListCard({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-medium text-zinc-900 dark:text-zinc-100">{eventName}</span>
-          <Badge color={isTrail ? 'emerald' : 'sky'}>{raceName ?? (isTrail ? 'Trail' : 'Ulična')}</Badge>
+          <Badge color={badgeColor}>{raceName ?? typeLabel}</Badge>
         </div>
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
           <IconText icon={<CalendarIcon className="size-3.5" />}>

@@ -26,7 +26,7 @@ type FavoriteRace = {
       id: string
       eventName: string
       slug: string
-      type: 'TRAIL' | 'ROAD'
+      type: 'TRAIL' | 'ROAD' | 'OCR'
     }
     competition: { id: string; name: string } | null
   }

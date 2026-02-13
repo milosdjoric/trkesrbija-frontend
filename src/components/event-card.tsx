@@ -18,8 +18,8 @@ type EventCardProps = {
   name: string
   /** Event URL (e.g., /events/slug) */
   url: string
-  /** Event type: TRAIL or ROAD */
-  type: 'TRAIL' | 'ROAD'
+  /** Event type: TRAIL, ROAD or OCR */
+  type: 'TRAIL' | 'ROAD' | 'OCR'
   /** Shared date string (if all races on same date) */
   date?: string
   /** Shared time string (if all races at same time) */
@@ -130,7 +130,7 @@ export function EventCard({
                     raceSlug={r.slug}
                     name={raceName}
                     details={parts}
-                    color={isTrail ? 'emerald' : 'sky'}
+                    color={type === 'TRAIL' ? 'emerald' : type === 'OCR' ? 'orange' : 'sky'}
                     dimmed={!matches}
                     showAdminLinks={false}
                   />

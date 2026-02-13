@@ -166,6 +166,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             <option value="">Svi tipovi</option>
             <option value="TRAIL">Trail</option>
             <option value="ROAD">Ulična</option>
+            <option value="OCR">OCR</option>
           </Select>
         </div>
         <div className="grow">

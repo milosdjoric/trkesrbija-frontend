@@ -36,7 +36,7 @@ type BackendRaceEvent = {
   id: string
   eventName: string
   slug: string
-  type: 'TRAIL' | 'ROAD'
+  type: 'TRAIL' | 'ROAD' | 'OCR'
   races: BackendRace[]
 }
 
@@ -198,6 +198,7 @@ export default async function HomePage() {
   // Stats za kategorije
   const trailCount = allEvents.filter((ev) => ev.type === 'TRAIL').length
   const roadCount = allEvents.filter((ev) => ev.type === 'ROAD').length
+  const ocrCount = allEvents.filter((ev) => ev.type === 'OCR').length
 
   return (
     <>
@@ -223,7 +224,7 @@ export default async function HomePage() {
       </div>
 
       {/* Kategorije */}
-      <div className="mb-10 grid gap-4 sm:grid-cols-2">
+      <div className="mb-10 grid gap-4 sm:grid-cols-3">
         <Link
           href="/events?eventType=TRAIL"
           className="group relative overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
@@ -245,6 +246,18 @@ export default async function HomePage() {
             <Badge color="sky" className="w-fit">Ulične trke</Badge>
             <h3 className="mt-2 text-2xl font-bold text-white">Ulična</h3>
             <p className="text-sm text-sky-100">Gradske i ulične staze • {roadCount} događaja</p>
+          </div>
+        </Link>
+
+        <Link
+          href="/events?eventType=OCR"
+          className="group relative overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
+        >
+          <div className="aspect-[16/9] bg-gradient-to-br from-orange-500 to-orange-700 dark:from-orange-600 dark:to-orange-900" />
+          <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
+            <Badge color="orange" className="w-fit">OCR trke</Badge>
+            <h3 className="mt-2 text-2xl font-bold text-white">OCR</h3>
+            <p className="text-sm text-orange-100">Preponske trke • {ocrCount} događaja</p>
           </div>
         </Link>
       </div>

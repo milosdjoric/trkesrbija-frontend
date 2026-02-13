@@ -236,6 +236,7 @@ export default function AdminRacesPage() {
         >
           <option value="ALL">Svi tipovi</option>
           <option value="TRAIL">Trail</option>
+          <option value="OCR">OCR</option>
           <option value="ROAD">Asfalt</option>
         </select>
 

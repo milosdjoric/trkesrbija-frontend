@@ -108,7 +108,7 @@ export default function MyRegistrationsPage() {
                     raceName={reg.race?.raceName ?? null}
                     eventName={reg.race?.raceEvent?.eventName ?? 'Nepoznata trka'}
                     eventSlug={reg.race?.raceEvent?.slug ?? ''}
-                    type={(reg.race?.raceEvent?.type as 'TRAIL' | 'ROAD') ?? 'ROAD'}
+                    type={(reg.race?.raceEvent?.type as 'TRAIL' | 'ROAD' | 'OCR') ?? 'ROAD'}
                     length={reg.race?.length ?? 0}
                     elevation={reg.race?.elevation}
                     startDateTime={reg.race?.startDateTime ?? reg.createdAt}
@@ -146,7 +146,7 @@ export default function MyRegistrationsPage() {
                     raceName={reg.race?.raceName ?? null}
                     eventName={reg.race?.raceEvent?.eventName ?? 'Nepoznata trka'}
                     eventSlug={reg.race?.raceEvent?.slug ?? ''}
-                    type={(reg.race?.raceEvent?.type as 'TRAIL' | 'ROAD') ?? 'ROAD'}
+                    type={(reg.race?.raceEvent?.type as 'TRAIL' | 'ROAD' | 'OCR') ?? 'ROAD'}
                     length={reg.race?.length ?? 0}
                     elevation={reg.race?.elevation}
                     startDateTime={reg.race?.startDateTime ?? reg.createdAt}

@@ -16,7 +16,7 @@ type RaceCardProps = {
   /** Start location URL or text */
   startLocation?: string | null
   /** Badge color variant */
-  color?: 'emerald' | 'sky' | 'zinc'
+  color?: 'emerald' | 'sky' | 'orange' | 'zinc'
   /** If true, show dimmed (for filtered out races) */
   dimmed?: boolean
   /** Show admin links (registrations, checkpoints) */
