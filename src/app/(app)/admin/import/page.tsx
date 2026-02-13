@@ -28,6 +28,7 @@ type ParsedEvent = {
   description?: string
   registrationSite?: string
   tags?: string[]
+  socialMedia?: string[]
   valid: boolean
   errors: string[]
 }
@@ -42,6 +43,7 @@ type ParsedRace = {
   endDateTime?: string
   startLocation?: string
   registrationEnabled: boolean
+  competitionName?: string
   valid: boolean
   errors: string[]
 }
@@ -120,6 +122,7 @@ function parseEvents(rows: string[][]): ParsedEvent[] {
   const descIdx = header.findIndex(h => h.toLowerCase().includes('opis') || h.toLowerCase() === 'description')
   const regSiteIdx = header.findIndex(h => h.toLowerCase().includes('prijav') || h.toLowerCase().includes('registration'))
   const tagsIdx = header.findIndex(h => h.toLowerCase().includes('tag') || h.toLowerCase().includes('kategorij'))
+  const socialIdx = header.findIndex(h => h.toLowerCase().includes('social') || h.toLowerCase().includes('mrež') || h.toLowerCase().includes('mrez'))
 
   return dataRows.map(row => {
     const errors: string[] = []
@@ -136,6 +139,8 @@ function parseEvents(rows: string[][]): ParsedEvent[] {
     const registrationSite = row[regSiteIdx]?.trim() || undefined
     const tagsRaw = row[tagsIdx]?.trim() || ''
     const tags = tagsRaw ? tagsRaw.split(';').map(t => t.trim()).filter(Boolean) : undefined
+    const socialRaw = row[socialIdx]?.trim() || ''
+    const socialMedia = socialRaw ? socialRaw.split(';').map(s => s.trim()).filter(Boolean) : undefined
 
     return {
       eventName,
@@ -144,6 +149,7 @@ function parseEvents(rows: string[][]): ParsedEvent[] {
       description,
       registrationSite,
       tags,
+      socialMedia,
       valid: errors.length === 0,
       errors,
     }
@@ -163,6 +169,7 @@ function parseRaces(rows: string[][]): ParsedRace[] {
   const endIdx = header.findIndex(h => h.toLowerCase().includes('end') || h.toLowerCase().includes('cutoff') || h.toLowerCase().includes('cut-off'))
   const locationIdx = header.findIndex(h => h.toLowerCase().includes('lokacija') || h.toLowerCase() === 'location')
   const regIdx = header.findIndex(h => h.toLowerCase().includes('prijav') || h.toLowerCase().includes('registration'))
+  const competitionIdx = header.findIndex(h => h.toLowerCase().includes('takmičenj') || h.toLowerCase().includes('takmicenj') || h.toLowerCase() === 'competition' || h.toLowerCase() === 'serija')
 
   return dataRows.map(row => {
     const errors: string[] = []
@@ -190,6 +197,7 @@ function parseRaces(rows: string[][]): ParsedRace[] {
 
     const regRaw = row[regIdx]?.trim().toLowerCase() || ''
     const registrationEnabled = regRaw === 'da' || regRaw === 'yes' || regRaw === 'true' || regRaw === '1' || regRaw === 'otvoreno'
+    const competitionName = row[competitionIdx]?.trim() || undefined
 
     return {
       eventSlug,
@@ -201,6 +209,7 @@ function parseRaces(rows: string[][]): ParsedRace[] {
       endDateTime,
       startLocation,
       registrationEnabled,
+      competitionName,
       valid: errors.length === 0,
       errors,
     }
@@ -280,6 +289,7 @@ export default function ImportPage() {
           description: e.description || null,
           registrationSite: e.registrationSite || null,
           tags: e.tags || [],
+          socialMedia: e.socialMedia || [],
         }))
 
         const result = await gql<{ importEvents: typeof importResult }>(
@@ -303,6 +313,7 @@ export default function ImportPage() {
           endDateTime: r.endDateTime || null,
           startLocation: r.startLocation || null,
           registrationEnabled: r.registrationEnabled,
+          competitionName: r.competitionName || null,
         }))
 
         const result = await gql<{ importRaces: typeof importResult }>(
@@ -405,20 +416,20 @@ export default function ImportPage() {
           <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
             <code className="block rounded bg-zinc-200 p-2 text-xs dark:bg-zinc-700">
-              naziv,tip,opis,sajt_prijava,tagovi
+              naziv,tip,opis,sajt_prijava,tagovi,social_media
             </code>
             <p className="mt-2 text-xs">
-              <strong>tip:</strong> TRAIL ili ROAD | <strong>tagovi:</strong> razdvojeni sa ; (npr: maraton;trail;planinsko)
+              <strong>tip:</strong> TRAIL ili ROAD | <strong>tagovi:</strong> razdvojeni sa ; | <strong>social_media:</strong> URL-ovi razdvojeni sa ;
             </p>
           </div>
         ) : (
           <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
             <code className="block rounded bg-zinc-200 p-2 text-xs dark:bg-zinc-700">
-              event_slug,naziv,dužina,visinska_razlika,datum_start,lokacija,prijave
+              event_slug,naziv,dužina,visinska_razlika,datum_start,lokacija,prijave,takmicenje
             </code>
             <p className="mt-2 text-xs">
-              <strong>event_slug:</strong> slug postojećeg događaja | <strong>datum_start:</strong> YYYY-MM-DD HH:MM | <strong>prijave:</strong> da/ne
+              <strong>event_slug:</strong> slug postojećeg događaja | <strong>datum_start:</strong> YYYY-MM-DD HH:MM | <strong>prijave:</strong> da/ne | <strong>takmicenje:</strong> ime postojećeg takmičenja
             </p>
           </div>
         )}
