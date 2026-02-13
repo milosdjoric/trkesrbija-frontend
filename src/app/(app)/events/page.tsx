@@ -124,10 +124,15 @@ export default async function Events({
   const eventTypeRaw = getParam('eventType').trim()
   const sortByRaw = getParam('sortBy').trim()
 
+  const showPastRaw = getParam('showPast').trim()
+  const showPast = showPastRaw === 'true'
+
   const lenMin = lenMinRaw ? Number(lenMinRaw) : null
   const lenMax = lenMaxRaw ? Number(lenMaxRaw) : null
   const elevMin = elevMinRaw ? Number(elevMinRaw) : null
   const elevMax = elevMaxRaw ? Number(elevMaxRaw) : null
+
+  const now = new Date().getTime()
 
   const hasLenMin = lenMin != null && !Number.isNaN(lenMin)
   const hasLenMax = lenMax != null && !Number.isNaN(lenMax)
@@ -277,6 +282,9 @@ export default async function Events({
     // Filter by event type
     if (hasEventType && ev.eventType !== eventTypeRaw) return false
 
+    // Filter out past events unless showPast is true
+    if (!showPast && ev._eventStartTs < now) return false
+
     if (!anyFilterActive) return true
 
     // When filters are active, hide events that have zero matching races.
@@ -352,6 +360,7 @@ export default async function Events({
               competitionId: competitionIdRaw,
               eventType: eventTypeRaw,
               sortBy: sortByRaw,
+              showPast: showPastRaw,
             }}
             competitions={competitions}
           />

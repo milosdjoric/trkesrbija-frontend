@@ -71,6 +71,7 @@ export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [recentRaces, setRecentRaces] = useState<RecentRace[]>([])
+  const [showPast, setShowPast] = useState(false)
 
   const loadData = useCallback(async () => {
     if (!accessToken) return
@@ -95,11 +96,11 @@ export default function AdminDashboardPage() {
         totalUsers: data.users?.length ?? 0,
       })
 
-      // Sort races by date and take recent ones
+      // Sort races by date
       const sortedRaces = [...races].sort(
         (a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime()
       )
-      setRecentRaces(sortedRaces.slice(0, 10))
+      setRecentRaces(sortedRaces)
     } catch (err) {
       console.error('Failed to load dashboard:', err)
     } finally {
@@ -232,6 +233,19 @@ export default function AdminDashboardPage() {
           </Link>
         </div>
 
+        {/* Show past toggle */}
+        <div className="mt-4">
+          <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+            <input
+              type="checkbox"
+              checked={showPast}
+              onChange={(e) => setShowPast(e.target.checked)}
+              className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+            />
+            Prikaži istekle trke
+          </label>
+        </div>
+
         <div className="mt-4 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
           <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
             <thead className="bg-zinc-50 dark:bg-zinc-800">
@@ -254,14 +268,25 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-              {recentRaces.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-zinc-500">
-                    Nema trka
-                  </td>
-                </tr>
-              ) : (
-                recentRaces.map((race) => (
+              {(() => {
+                const now = new Date().getTime()
+                const filteredRaces = recentRaces.filter((race) => {
+                  const raceTs = new Date(race.startDateTime).getTime()
+                  const isPast = raceTs < now
+                  return showPast || !isPast
+                }).slice(0, 10)
+
+                if (filteredRaces.length === 0) {
+                  return (
+                    <tr>
+                      <td colSpan={5} className="px-4 py-8 text-center text-sm text-zinc-500">
+                        {showPast ? 'Nema trka' : 'Nema predstojećih trka'}
+                      </td>
+                    </tr>
+                  )
+                }
+
+                return filteredRaces.map((race) => (
                   <tr key={race.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
                     <td className="px-4 py-3">
                       <div className="font-medium text-zinc-900 dark:text-zinc-100">
@@ -300,7 +325,7 @@ export default function AdminDashboardPage() {
                     </td>
                   </tr>
                 ))
-              )}
+              })()}
             </tbody>
           </table>
         </div>

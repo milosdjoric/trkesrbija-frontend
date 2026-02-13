@@ -195,10 +195,11 @@ export default async function HomePage() {
   const nextWeekEvents = processedEvents.filter((ev) => getEventCategory(ev) === 'next-week')
   const laterEvents = processedEvents.filter((ev) => getEventCategory(ev) === 'later').slice(0, 5)
 
-  // Stats za kategorije
-  const trailCount = allEvents.filter((ev) => ev.type === 'TRAIL').length
-  const roadCount = allEvents.filter((ev) => ev.type === 'ROAD').length
-  const ocrCount = allEvents.filter((ev) => ev.type === 'OCR').length
+  // Stats za kategorije (samo nadolazeći događaji)
+  const futureEvents = processedEvents // Already filtered to future only
+  const trailCount = futureEvents.filter((ev) => ev.type === 'TRAIL').length
+  const roadCount = futureEvents.filter((ev) => ev.type === 'ROAD').length
+  const ocrCount = futureEvents.filter((ev) => ev.type === 'OCR').length
 
   return (
     <>

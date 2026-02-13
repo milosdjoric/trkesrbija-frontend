@@ -74,8 +74,9 @@ export default function AdminRacesPage() {
   const [loading, setLoading] = useState(true)
   const [races, setRaces] = useState<Race[]>([])
   const [search, setSearch] = useState('')
-  const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD'>('ALL')
+  const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD' | 'OCR'>('ALL')
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'OPEN' | 'CLOSED'>('ALL')
+  const [showPast, setShowPast] = useState(false)
   const [togglingId, setTogglingId] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
@@ -157,7 +158,13 @@ export default function AdminRacesPage() {
       (filterStatus === 'OPEN' && race.registrationEnabled) ||
       (filterStatus === 'CLOSED' && !race.registrationEnabled)
 
-    return matchesSearch && matchesType && matchesStatus
+    // Past filter
+    const now = new Date().getTime()
+    const raceTs = new Date(race.startDateTime).getTime()
+    const isPast = raceTs < now
+    const matchesPast = showPast || !isPast
+
+    return matchesSearch && matchesType && matchesStatus && matchesPast
   })
 
   function formatDate(iso: string) {
@@ -250,6 +257,19 @@ export default function AdminRacesPage() {
           <option value="OPEN">Otvorene prijave</option>
           <option value="CLOSED">Zatvorene prijave</option>
         </select>
+      </div>
+
+      {/* Show past toggle */}
+      <div className="mt-4">
+        <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <input
+            type="checkbox"
+            checked={showPast}
+            onChange={(e) => setShowPast(e.target.checked)}
+            className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          />
+          Prikaži istekle trke
+        </label>
       </div>
 
       {/* Races Table */}

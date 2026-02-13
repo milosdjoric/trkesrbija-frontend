@@ -74,7 +74,8 @@ export default function AdminEventsPage() {
   const [loading, setLoading] = useState(true)
   const [events, setEvents] = useState<RaceEvent[]>([])
   const [search, setSearch] = useState('')
-  const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD'>('ALL')
+  const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD' | 'OCR'>('ALL')
+  const [showPast, setShowPast] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
@@ -141,6 +142,7 @@ export default function AdminEventsPage() {
   }
 
   // Filter events
+  const now = new Date().getTime()
   const filteredEvents = events.filter((event) => {
     const searchLower = search.toLowerCase()
     const matchesSearch =
@@ -150,7 +152,14 @@ export default function AdminEventsPage() {
 
     const matchesType = filterType === 'ALL' || event.type === filterType
 
-    return matchesSearch && matchesType
+    // Check if event has any future races
+    const earliestRaceTs = event.races.length > 0
+      ? Math.min(...event.races.map(r => new Date(r.startDateTime).getTime()))
+      : Infinity
+    const isPast = earliestRaceTs < now
+    const matchesPast = showPast || !isPast
+
+    return matchesSearch && matchesType && matchesPast
   })
 
   function formatDate(iso: string) {
@@ -238,6 +247,19 @@ export default function AdminEventsPage() {
           <option value="OCR">OCR</option>
           <option value="ROAD">Asfalt</option>
         </select>
+      </div>
+
+      {/* Show past toggle */}
+      <div className="mt-4">
+        <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <input
+            type="checkbox"
+            checked={showPast}
+            onChange={(e) => setShowPast(e.target.checked)}
+            className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          />
+          Prikaži istekle događaje
+        </label>
       </div>
 
       {/* Events Table */}

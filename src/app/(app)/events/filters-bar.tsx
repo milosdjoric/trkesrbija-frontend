@@ -19,6 +19,7 @@ type Initial = {
   competitionId: string
   eventType: string
   sortBy: string
+  showPast: string
 }
 
 export function FiltersBar({ initial, competitions }: { initial: Initial; competitions: Competition[] }) {
@@ -33,6 +34,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   const [competitionId, setCompetitionId] = useState(initial.competitionId ?? '')
   const [eventType, setEventType] = useState(initial.eventType ?? '')
   const [sortBy, setSortBy] = useState(initial.sortBy ?? '')
+  const [showPast, setShowPast] = useState(initial.showPast === 'true')
 
   // Ako se user vrati nazad/forward ili ručno menja URL, uskladi state sa URL-om.
   // (Ovo rešava “ne filtrira ništa” situacije kad URL i UI odlutaju.)
@@ -50,6 +52,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     setCompetitionId(sp.get('competitionId') ?? '')
     setEventType(sp.get('eventType') ?? '')
     setSortBy(sp.get('sortBy') ?? '')
+    setShowPast(sp.get('showPast') === 'true')
   }, [sp])
 
   const dirty =
@@ -60,7 +63,8 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     (elevMax ?? '').trim() !== (initial.elevMax ?? '').trim() ||
     (competitionId ?? '').trim() !== (initial.competitionId ?? '').trim() ||
     (eventType ?? '').trim() !== (initial.eventType ?? '').trim() ||
-    (sortBy ?? '').trim() !== (initial.sortBy ?? '').trim()
+    (sortBy ?? '').trim() !== (initial.sortBy ?? '').trim() ||
+    showPast !== (initial.showPast === 'true')
 
   const clearVisible =
     Boolean((initial.q ?? '').trim()) ||
@@ -70,7 +74,8 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     Boolean((initial.elevMax ?? '').trim()) ||
     Boolean((initial.competitionId ?? '').trim()) ||
     Boolean((initial.eventType ?? '').trim()) ||
-    Boolean((initial.sortBy ?? '').trim())
+    Boolean((initial.sortBy ?? '').trim()) ||
+    initial.showPast === 'true'
 
   function buildQueryString() {
     const params = new URLSearchParams()
@@ -82,6 +87,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     if (competitionId.trim()) params.set('competitionId', competitionId.trim())
     if (eventType.trim()) params.set('eventType', eventType.trim())
     if (sortBy.trim()) params.set('sortBy', sortBy.trim())
+    if (showPast) params.set('showPast', 'true')
     const s = params.toString()
     return s ? `?${s}` : ''
   }
@@ -185,17 +191,28 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         </div>
       </div>
 
-      {/* Row 4: Buttons */}
-      <div className="flex items-center gap-2">
-        <Button id="applyBtn" type="submit">
-          {dirty ? 'Primeni izmene' : 'Primeni'}
-        </Button>
-        <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Izmene nisu primenjene</span>
-        {clearVisible ? (
-          <Link href="/events" className="text-sm">
-            Očisti
-          </Link>
-        ) : null}
+      {/* Row 4: Buttons and toggle */}
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Button id="applyBtn" type="submit">
+            {dirty ? 'Primeni izmene' : 'Primeni'}
+          </Button>
+          <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Izmene nisu primenjene</span>
+          {clearVisible ? (
+            <Link href="/events" className="text-sm">
+              Očisti
+            </Link>
+          ) : null}
+        </div>
+        <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+          <input
+            type="checkbox"
+            checked={showPast}
+            onChange={(e) => setShowPast(e.target.checked)}
+            className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          />
+          Prikaži istekle događaje
+        </label>
       </div>
     </form>
   )
