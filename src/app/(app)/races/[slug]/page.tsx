@@ -321,10 +321,6 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   <span>Visinska razlika: {race.elevation} m</span>
                 </div>
               )}
-              <div className="flex items-center gap-2">
-                <ClockIcon className="size-4 text-zinc-400" />
-                <span>Start: {formatTime(race.startDateTime)}</span>
-              </div>
               {race.endDateTime && (
                 <div className="flex items-center gap-2">
                   <ClockIcon className="size-4 text-amber-500" />
@@ -519,16 +515,6 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   <ClockIcon className="size-5 shrink-0 text-zinc-400" />
                   <span>Start u {formatTime(race.startDateTime)}</span>
                 </div>
-
-                {/* Location */}
-                {race.startLocation && (
-                  <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    <MapPinIcon className="size-5 shrink-0 text-zinc-400" />
-                    <span>
-                      {race.startLocation.startsWith('http') ? 'Lokacija na mapi' : race.startLocation}
-                    </span>
-                  </div>
-                )}
               </div>
 
               <Divider soft className="my-4" />
