@@ -3,14 +3,18 @@
 import { useAuth } from '@/app/auth/auth-context'
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
-import { Button } from '@/components/button'
-import { Heading } from '@/components/heading'
+import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
+import { StatsGrid, type StatItem } from '@/components/stats-grid'
 import { useToast } from '@/components/toast'
 import {
   ChevronLeftIcon,
   MagnifyingGlassIcon,
+  FlagIcon,
+  ClipboardDocumentListIcon,
+  CheckCircleIcon,
+  XCircleIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -167,6 +171,30 @@ export default function AdminRacesPage() {
 
   const openCount = races.filter((r) => r.registrationEnabled).length
   const closedCount = races.filter((r) => !r.registrationEnabled).length
+  const totalRegistrations = races.reduce((sum, r) => sum + r.registrationCount, 0)
+
+  const statItems: StatItem[] = [
+    {
+      label: 'Trke',
+      value: races.length,
+      icon: <FlagIcon className="size-5" />,
+    },
+    {
+      label: 'Otvorene prijave',
+      value: openCount,
+      icon: <CheckCircleIcon className="size-5" />,
+    },
+    {
+      label: 'Zatvorene prijave',
+      value: closedCount,
+      icon: <XCircleIcon className="size-5" />,
+    },
+    {
+      label: 'Ukupno prijava',
+      value: totalRegistrations,
+      icon: <ClipboardDocumentListIcon className="size-5" />,
+    },
+  ]
 
   return (
     <>
@@ -181,18 +209,15 @@ export default function AdminRacesPage() {
         </Link>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <Heading>Upravljanje trkama</Heading>
-        <div className="flex gap-2 text-sm">
-          <Badge color="green">{openCount} otvoreno</Badge>
-          <Badge color="zinc">{closedCount} zatvoreno</Badge>
-        </div>
-      </div>
+      <Heading>Upravljanje trkama</Heading>
 
-      {/* Filters */}
-      <div className="mt-6 flex flex-wrap gap-4">
+      {/* Stats */}
+      <StatsGrid items={statItems} className="mt-6" />
+
+      {/* Filters - Full Width */}
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {/* Search */}
-        <div className="relative flex-1 sm:max-w-xs">
+        <div className="relative">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
@@ -207,7 +232,7 @@ export default function AdminRacesPage() {
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value as any)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
         >
           <option value="ALL">Svi tipovi</option>
           <option value="TRAIL">Trail</option>
@@ -218,7 +243,7 @@ export default function AdminRacesPage() {
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value as any)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
         >
           <option value="ALL">Svi statusi</option>
           <option value="OPEN">Otvorene prijave</option>
@@ -226,115 +251,97 @@ export default function AdminRacesPage() {
         </select>
       </div>
 
-      {/* Races table */}
-      <div className="mt-6 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
-        <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-          <thead className="bg-zinc-50 dark:bg-zinc-800">
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Trka
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Datum
-              </th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Detalji
-              </th>
-              <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Prijave
-              </th>
-              <th className="px-4 py-3 text-center text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Registracija
-              </th>
-              <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Akcije
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-            {filteredRaces.length === 0 ? (
+      {/* Races Table */}
+      <div className="mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <Subheading>Sve trke ({filteredRaces.length})</Subheading>
+        </div>
+
+        <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+          <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+            <thead className="bg-zinc-50 dark:bg-zinc-800">
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-sm text-zinc-500">
-                  {search || filterType !== 'ALL' || filterStatus !== 'ALL'
-                    ? 'Nema trka koje odgovaraju filterima'
-                    : 'Nema trka'}
-                </td>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Trka
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Datum
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Prijave
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Akcije
+                </th>
               </tr>
-            ) : (
-              filteredRaces.map((race) => (
-                <tr key={race.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <Badge color={race.raceEvent.type === 'TRAIL' ? 'emerald' : 'sky'} className="shrink-0">
-                        {race.raceEvent.type === 'TRAIL' ? 'Trail' : 'Ulična'}
-                      </Badge>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
+              {filteredRaces.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-zinc-500">
+                    {search || filterType !== 'ALL' || filterStatus !== 'ALL'
+                      ? 'Nema trka koje odgovaraju filterima'
+                      : 'Nema trka'}
+                  </td>
+                </tr>
+              ) : (
+                filteredRaces.map((race) => (
+                  <tr key={race.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                    <td className="px-4 py-3">
                       <div>
-                        <Link href={`/races/${race.slug}`} className="font-medium text-zinc-900 hover:underline dark:text-zinc-100">
+                        <Link
+                          href={`/races/${race.slug}`}
+                          className="font-medium text-zinc-900 hover:text-blue-600 dark:text-zinc-100 dark:hover:text-blue-400"
+                        >
                           {race.raceName ?? 'Neimenovana'}
                         </Link>
                         <div className="text-sm text-zinc-500">{race.raceEvent.eventName}</div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    {formatDate(race.startDateTime)}
-                  </td>
-                  <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    {race.length}km
-                    {race.elevation != null && ` / ${race.elevation}m`}
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <span className="font-mono font-medium">{race.registrationCount}</span>
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <button
-                      onClick={() => handleToggleRegistration(race.id, race.registrationEnabled)}
-                      disabled={togglingId === race.id}
-                      className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm font-medium transition-colors ${
-                        race.registrationEnabled
-                          ? 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400'
-                          : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400'
-                      } ${togglingId === race.id ? 'opacity-50' : ''}`}
-                    >
-                      <span
-                        className={`size-2 rounded-full ${
-                          race.registrationEnabled ? 'bg-green-500' : 'bg-zinc-400'
-                        }`}
-                      />
-                      {togglingId === race.id
-                        ? '...'
-                        : race.registrationEnabled
-                          ? 'Otvoreno'
-                          : 'Zatvoreno'}
-                    </button>
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex justify-end gap-2">
-                      <Link
-                        href={`/admin/races/${race.id}/edit`}
-                        className="rounded border border-blue-300 bg-blue-50 px-2 py-1 text-xs text-blue-700 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-900/30 dark:text-blue-400 dark:hover:bg-blue-900/50"
+                    </td>
+                    <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      {formatDate(race.startDateTime)}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="font-medium">{race.registrationCount}</span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handleToggleRegistration(race.id, race.registrationEnabled)}
+                        disabled={togglingId === race.id}
+                        className="cursor-pointer"
                       >
-                        Izmeni
-                      </Link>
-                      <Link
-                        href={`/admin/races/${race.id}/registrations`}
-                        className="rounded border border-zinc-300 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-600 dark:hover:bg-zinc-800"
-                      >
-                        Prijave
-                      </Link>
-                      <Link
-                        href={`/admin/races/${race.id}/checkpoints`}
-                        className="rounded border border-zinc-300 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-600 dark:hover:bg-zinc-800"
-                      >
-                        CP
-                      </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+                        {race.registrationEnabled ? (
+                          <Badge color="green">Otvoreno</Badge>
+                        ) : (
+                          <Badge color="zinc">Zatvoreno</Badge>
+                        )}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/admin/races/${race.id}/registrations`}
+                          className="text-sm text-blue-600 hover:text-blue-700"
+                        >
+                          Prijave
+                        </Link>
+                        <Link
+                          href={`/admin/races/${race.id}/checkpoints`}
+                          className="text-sm text-blue-600 hover:text-blue-700"
+                        >
+                          CP
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   )

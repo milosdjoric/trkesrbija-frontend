@@ -4,9 +4,10 @@ import { useAuth } from '@/app/auth/auth-context'
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
-import { Heading } from '@/components/heading'
+import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
+import { StatsGrid, type StatItem } from '@/components/stats-grid'
 import { useConfirm } from '@/components/confirm-dialog'
 import { useToast } from '@/components/toast'
 import {
@@ -15,6 +16,9 @@ import {
   PlusIcon,
   TrashIcon,
   PencilIcon,
+  CalendarIcon,
+  FlagIcon,
+  MapIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -160,6 +164,30 @@ export default function AdminEventsPage() {
 
   const trailCount = events.filter((e) => e.type === 'TRAIL').length
   const roadCount = events.filter((e) => e.type === 'ROAD').length
+  const totalRaces = events.reduce((sum, e) => sum + e.races.length, 0)
+
+  const statItems: StatItem[] = [
+    {
+      label: 'Događaji',
+      value: events.length,
+      icon: <CalendarIcon className="size-5" />,
+    },
+    {
+      label: 'Trail',
+      value: trailCount,
+      icon: <MapIcon className="size-5" />,
+    },
+    {
+      label: 'Ulične',
+      value: roadCount,
+      icon: <FlagIcon className="size-5" />,
+    },
+    {
+      label: 'Trke ukupno',
+      value: totalRaces,
+      icon: <FlagIcon className="size-5" />,
+    },
+  ]
 
   return (
     <>
@@ -183,16 +211,12 @@ export default function AdminEventsPage() {
       </div>
 
       {/* Stats */}
-      <div className="mt-4 flex gap-2 text-sm">
-        <Badge color="zinc">{events.length} ukupno</Badge>
-        <Badge color="emerald">{trailCount} trail</Badge>
-        <Badge color="sky">{roadCount} ulična</Badge>
-      </div>
+      <StatsGrid items={statItems} className="mt-6" />
 
-      {/* Filters */}
-      <div className="mt-6 flex flex-wrap gap-4">
+      {/* Filters - Full Width */}
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {/* Search */}
-        <div className="relative flex-1 sm:max-w-xs">
+        <div className="relative">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
@@ -207,7 +231,7 @@ export default function AdminEventsPage() {
         <select
           value={filterType}
           onChange={(e) => setFilterType(e.target.value as any)}
-          className="rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
         >
           <option value="ALL">Svi tipovi</option>
           <option value="TRAIL">Trail</option>
@@ -215,111 +239,106 @@ export default function AdminEventsPage() {
         </select>
       </div>
 
-      {/* Events list */}
-      <div className="mt-6 space-y-4">
-        {filteredEvents.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-700">
-            <p className="text-zinc-500">
-              {search || filterType !== 'ALL'
-                ? 'Nema događaja koji odgovaraju filterima'
-                : 'Nema događaja'}
-            </p>
-            <Button href="/admin/events/new" className="mt-4" outline>
-              <PlusIcon className="size-4" />
-              Kreiraj prvi događaj
-            </Button>
-          </div>
-        ) : (
-          filteredEvents.map((event) => (
-            <div
-              key={event.id}
-              className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div className="flex gap-4">
-                  {event.mainImage && (
-                    <img
-                      src={event.mainImage}
-                      alt={event.eventName}
-                      className="size-16 rounded-lg object-cover"
-                    />
-                  )}
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-zinc-900 dark:text-zinc-100">
-                        {event.eventName}
-                      </h3>
+      {/* Events Table */}
+      <div className="mt-6">
+        <div className="flex items-center justify-between mb-4">
+          <Subheading>Svi događaji ({filteredEvents.length})</Subheading>
+        </div>
+
+        <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
+          <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+            <thead className="bg-zinc-50 dark:bg-zinc-800">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Događaj
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Tip
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Trke
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Kreirano
+                </th>
+                <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  Akcije
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
+              {filteredEvents.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-zinc-500">
+                    {search || filterType !== 'ALL'
+                      ? 'Nema događaja koji odgovaraju filterima'
+                      : 'Nema događaja'}
+                  </td>
+                </tr>
+              ) : (
+                filteredEvents.map((event) => (
+                  <tr key={event.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        {event.mainImage && (
+                          <img
+                            src={event.mainImage}
+                            alt={event.eventName}
+                            className="size-10 rounded-lg object-cover"
+                          />
+                        )}
+                        <div>
+                          <Link
+                            href={`/events/${event.slug}`}
+                            className="font-medium text-zinc-900 hover:text-blue-600 dark:text-zinc-100 dark:hover:text-blue-400"
+                          >
+                            {event.eventName}
+                          </Link>
+                          <div className="text-sm text-zinc-500">/{event.slug}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
                       <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'}>
                         {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
                       </Badge>
-                    </div>
-                    <p className="mt-1 text-sm text-zinc-500">
-                      Slug: {event.slug} • Kreirano: {formatDate(event.createdAt)}
-                    </p>
-                    {event.description && (
-                      <p className="mt-1 line-clamp-2 text-sm text-zinc-600 dark:text-zinc-400">
-                        {event.description}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Link
-                    href={`/events/${event.slug}`}
-                    className="rounded border border-zinc-300 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-600 dark:hover:bg-zinc-800"
-                  >
-                    Pogledaj
-                  </Link>
-                  <Link
-                    href={`/admin/events/${event.id}/edit`}
-                    className="rounded border border-zinc-300 px-2 py-1 text-xs hover:bg-zinc-50 dark:border-zinc-600 dark:hover:bg-zinc-800"
-                  >
-                    <PencilIcon className="size-3" />
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(event)}
-                    disabled={deletingId === event.id}
-                    className="rounded border border-red-300 px-2 py-1 text-xs text-red-600 hover:bg-red-50 disabled:opacity-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-900/20"
-                  >
-                    <TrashIcon className="size-3" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Races */}
-              <div className="mt-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-zinc-600 dark:text-zinc-400">
-                    Trke ({event.races.length})
-                  </span>
-                  <Link
-                    href={`/admin/events/${event.id}/races/new`}
-                    className="text-xs text-blue-600 hover:text-blue-700"
-                  >
-                    + Dodaj trku
-                  </Link>
-                </div>
-
-                {event.races.length === 0 ? (
-                  <p className="mt-2 text-sm text-zinc-400">Nema trka</p>
-                ) : (
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {event.races.map((race) => (
-                      <Link
-                        key={race.id}
-                        href={`/admin/races/${race.id}/registrations`}
-                        className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-sm hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700"
-                      >
-                        {race.raceName ?? 'Trka'} • {race.length}km
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))
-        )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className="font-medium">{event.races.length}</span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
+                      {formatDate(event.createdAt)}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/admin/events/${event.id}/edit`}
+                          className="text-sm text-blue-600 hover:text-blue-700"
+                        >
+                          Izmeni
+                        </Link>
+                        <Link
+                          href={`/admin/events/${event.id}/races/new`}
+                          className="text-sm text-blue-600 hover:text-blue-700"
+                        >
+                          + Trka
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(event)}
+                          disabled={deletingId === event.id || event.races.length > 0}
+                          className="text-sm text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          title={event.races.length > 0 ? 'Prvo obrišite sve trke' : 'Obriši događaj'}
+                        >
+                          Obriši
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   )
