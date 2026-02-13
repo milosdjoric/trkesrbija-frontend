@@ -25,6 +25,7 @@ import { notFound } from 'next/navigation'
 type Competition = {
   id: string
   name: string
+  description: string | null
 }
 
 type Organizer = {
@@ -92,6 +93,7 @@ const RACE_BY_SLUG_QUERY = `
       competition {
         id
         name
+        description
       }
       raceCheckpoints {
         id
@@ -357,7 +359,22 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 4. Checkpoints */}
+          {/* 4. Competition */}
+          {race.competition && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Takmičenje / Serija</div>
+              <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
+                <div className="flex items-center gap-2">
+                  <Badge color="violet">{race.competition.name}</Badge>
+                </div>
+                {race.competition.description && (
+                  <p className="text-zinc-500 dark:text-zinc-400 mt-1">{race.competition.description}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 5. Checkpoints */}
           {race.raceCheckpoints && race.raceCheckpoints.length > 0 && (
             <div>
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Checkpoint-ovi</div>
@@ -377,7 +394,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 5. Event Description */}
+          {/* 6. Event Description */}
           {race.raceEvent.description && (
             <div>
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
@@ -387,7 +404,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 6. Social Media */}
+          {/* 7. Social Media */}
           {race.raceEvent.socialMedia && race.raceEvent.socialMedia.length > 0 && (
             <div>
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
@@ -407,7 +424,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 7. Organizer */}
+          {/* 8. Organizer */}
           {race.raceEvent.organizer && (
             <div>
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
@@ -443,7 +460,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 8. Event link */}
+          {/* 9. Event link */}
           <div>
             <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Događaj</div>
             <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
@@ -456,7 +473,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           </div>
 
-          {/* 9. GPX Map */}
+          {/* 10. GPX Map */}
           {race.gpsFile && (
             <div>
               <div className="flex items-center justify-between mb-4">
