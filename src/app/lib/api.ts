@@ -80,7 +80,7 @@ export async function gql<TData>(
 // Keep these here for now; we can split into src/lib/* later.
 // -----------------------------
 
-export type RaceEventType = 'TRAIL' | 'ROAD'
+export type RaceEventType = 'TRAIL' | 'ROAD' | 'OCR'
 
 export type Organizer = {
   id: string

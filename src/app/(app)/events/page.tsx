@@ -42,7 +42,7 @@ export default async function Events({
     id: string
     eventName: string
     slug: string
-    type: 'TRAIL' | 'ROAD' | string
+    type: 'TRAIL' | 'ROAD' | 'OCR'
     mainImage: string | null
     races: BackendRace[]
   }

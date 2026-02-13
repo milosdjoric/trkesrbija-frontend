@@ -83,7 +83,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: 'Događaj nije pronađen' }
   }
 
-  const eventType = event.type === 'TRAIL' ? 'Trail' : 'Ulična'
+  const eventType = event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'
   const description =
     event.description ??
     `${event.eventName} - ${eventType} trka u Srbiji. Prijavite se i učestvujte!`
@@ -249,7 +249,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               className={`absolute inset-0 ${
                 event.type === 'TRAIL'
                   ? 'bg-gradient-to-r from-emerald-700/60 to-emerald-900/50'
-                  : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
+                  : event.type === 'OCR'
+                    ? 'bg-gradient-to-r from-orange-700/60 to-orange-900/50'
+                    : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
               }`}
             />
             {/* Content */}

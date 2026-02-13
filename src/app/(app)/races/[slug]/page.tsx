@@ -65,7 +65,7 @@ type RaceWithEvent = {
     id: string
     eventName: string
     slug: string
-    type: 'TRAIL' | 'ROAD'
+    type: 'TRAIL' | 'ROAD' | 'OCR'
     description: string | null
     mainImage: string | null
     registrationSite: string | null
@@ -262,6 +262,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
   }
 
   const isTrail = race.raceEvent.type === 'TRAIL'
+  const eventType = race.raceEvent.type
   const days = daysUntil(race.startDateTime)
   const isPast = days < 0
 
@@ -291,9 +292,11 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             {/* Color overlay based on event type */}
             <div
               className={`absolute inset-0 ${
-                isTrail
+                eventType === 'TRAIL'
                   ? 'bg-gradient-to-r from-emerald-700/60 to-emerald-900/50'
-                  : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
+                  : eventType === 'OCR'
+                    ? 'bg-gradient-to-r from-orange-700/60 to-orange-900/50'
+                    : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
               }`}
             />
             {/* Content */}
@@ -564,7 +567,9 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
               <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Tip trke</div>
               <div className="mt-3 flex flex-wrap gap-1.5">
-                <Badge color={isTrail ? 'emerald' : 'sky'}>{isTrail ? 'Trail' : 'Ulična'}</Badge>
+                <Badge color={eventType === 'TRAIL' ? 'emerald' : eventType === 'OCR' ? 'orange' : 'sky'}>
+                  {eventType === 'TRAIL' ? 'Trail' : eventType === 'OCR' ? 'OCR' : 'Ulična'}
+                </Badge>
                 {race.competition && <Badge color="violet">{race.competition.name}</Badge>}
               </div>
             </div>
