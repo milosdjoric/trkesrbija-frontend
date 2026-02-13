@@ -14,6 +14,7 @@ import {
   UserGroupIcon,
   CheckCircleIcon,
   ClockIcon,
+  ArrowUpTrayIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -197,10 +198,21 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
+          href="/admin/import"
+          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+        >
+          <ArrowUpTrayIcon className="size-8 text-amber-500" />
+          <div>
+            <div className="font-medium">Import</div>
+            <div className="text-sm text-zinc-500">CSV import podataka</div>
+          </div>
+        </Link>
+
+        <Link
           href="/events"
           className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
-          <CheckCircleIcon className="size-8 text-amber-500" />
+          <CheckCircleIcon className="size-8 text-green-500" />
           <div>
             <div className="font-medium">Javni sajt</div>
             <div className="text-sm text-zinc-500">Pogledaj kao korisnik</div>
