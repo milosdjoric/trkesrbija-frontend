@@ -16,6 +16,8 @@ import {
   MapIcon,
   ArrowDownTrayIcon,
   UserGroupIcon,
+  ArrowTopRightOnSquareIcon,
+  FlagIcon,
 } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -23,6 +25,24 @@ import { notFound } from 'next/navigation'
 type Competition = {
   id: string
   name: string
+}
+
+type Organizer = {
+  id: string
+  name: string
+  contactPhone: string | null
+  contactEmail: string | null
+  organizerSite: string | null
+}
+
+type RaceCheckpoint = {
+  id: string
+  orderIndex: number
+  distance: number | null
+  checkpoint: {
+    id: string
+    name: string
+  }
 }
 
 type RaceWithEvent = {
@@ -39,6 +59,7 @@ type RaceWithEvent = {
   registrationCount: number
   competitionId: string | null
   competition: Competition | null
+  raceCheckpoints: RaceCheckpoint[]
   raceEvent: {
     id: string
     eventName: string
@@ -46,6 +67,10 @@ type RaceWithEvent = {
     type: 'TRAIL' | 'ROAD'
     description: string | null
     mainImage: string | null
+    registrationSite: string | null
+    socialMedia: string[]
+    tags: string[]
+    organizer: Organizer | null
   }
 }
 
@@ -68,6 +93,15 @@ const RACE_BY_SLUG_QUERY = `
         id
         name
       }
+      raceCheckpoints {
+        id
+        orderIndex
+        distance
+        checkpoint {
+          id
+          name
+        }
+      }
       raceEvent {
         id
         eventName
@@ -75,6 +109,16 @@ const RACE_BY_SLUG_QUERY = `
         type
         description
         mainImage
+        registrationSite
+        socialMedia
+        tags
+        organizer {
+          id
+          name
+          contactPhone
+          contactEmail
+          organizerSite
+        }
       }
     }
   }
@@ -176,6 +220,35 @@ function getCountdownColor(days: number) {
 function getGoogleMapsUrl(location: string) {
   if (location.startsWith('http')) return location
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`
+}
+
+// Social media helpers
+function getSocialMediaName(url: string) {
+  const lower = url.toLowerCase()
+  if (lower.includes('facebook.com') || lower.includes('fb.com')) return 'Facebook'
+  if (lower.includes('instagram.com')) return 'Instagram'
+  if (lower.includes('strava.com')) return 'Strava'
+  if (lower.includes('twitter.com') || lower.includes('x.com')) return 'X / Twitter'
+  if (lower.includes('youtube.com') || lower.includes('youtu.be')) return 'YouTube'
+  if (lower.includes('tiktok.com')) return 'TikTok'
+  return 'Link'
+}
+
+function getSocialMediaStyles(url: string) {
+  const lower = url.toLowerCase()
+  if (lower.includes('facebook.com') || lower.includes('fb.com'))
+    return 'bg-[#1877F2] hover:bg-[#166FE5] text-white border-[#1877F2]'
+  if (lower.includes('instagram.com'))
+    return 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white border-transparent'
+  if (lower.includes('strava.com'))
+    return 'bg-[#FC4C02] hover:bg-[#E34402] text-white border-[#FC4C02]'
+  if (lower.includes('twitter.com') || lower.includes('x.com'))
+    return 'bg-black hover:bg-zinc-800 text-white border-black dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:border-white'
+  if (lower.includes('youtube.com') || lower.includes('youtu.be'))
+    return 'bg-[#FF0000] hover:bg-[#CC0000] text-white border-[#FF0000]'
+  if (lower.includes('tiktok.com'))
+    return 'bg-black hover:bg-zinc-800 text-white border-black'
+  return 'bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-700'
 }
 
 export default async function RacePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -284,7 +357,93 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 4. Event link */}
+          {/* 4. Checkpoints */}
+          {race.raceCheckpoints && race.raceCheckpoints.length > 0 && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Checkpoint-ovi</div>
+              <div className="space-y-1">
+                {[...race.raceCheckpoints]
+                  .sort((a, b) => a.orderIndex - b.orderIndex)
+                  .map((rc, idx) => (
+                    <div key={rc.id} className="flex items-center gap-2 text-sm text-zinc-700 dark:text-zinc-300">
+                      <FlagIcon className={`size-4 ${idx === 0 ? 'text-green-500' : idx === race.raceCheckpoints.length - 1 ? 'text-red-500' : 'text-zinc-400'}`} />
+                      <span className="font-medium">{rc.checkpoint.name}</span>
+                      {rc.distance != null && rc.distance > 0 && (
+                        <span className="text-zinc-500">({rc.distance} km)</span>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+
+          {/* 5. Event Description */}
+          {race.raceEvent.description && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
+              <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
+                {race.raceEvent.description}
+              </p>
+            </div>
+          )}
+
+          {/* 6. Social Media */}
+          {race.raceEvent.socialMedia && race.raceEvent.socialMedia.length > 0 && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
+              <div className="flex flex-wrap gap-2">
+                {race.raceEvent.socialMedia.map((url) => (
+                  <a
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
+                  >
+                    {getSocialMediaName(url)}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* 7. Organizer */}
+          {race.raceEvent.organizer && (
+            <div>
+              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
+              <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
+                <div>{race.raceEvent.organizer.name}</div>
+                {race.raceEvent.organizer.contactPhone && (
+                  <div>
+                    <a href={`tel:${race.raceEvent.organizer.contactPhone}`} className="hover:underline">
+                      {race.raceEvent.organizer.contactPhone}
+                    </a>
+                  </div>
+                )}
+                {race.raceEvent.organizer.contactEmail && (
+                  <div>
+                    <a href={`mailto:${race.raceEvent.organizer.contactEmail}`} className="hover:underline">
+                      {race.raceEvent.organizer.contactEmail}
+                    </a>
+                  </div>
+                )}
+                {race.raceEvent.organizer.organizerSite && (
+                  <div>
+                    <a
+                      href={race.raceEvent.organizer.organizerSite}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:underline"
+                    >
+                      {race.raceEvent.organizer.organizerSite}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 8. Event link */}
           <div>
             <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Događaj</div>
             <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
@@ -297,7 +456,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           </div>
 
-          {/* 5. GPX Map */}
+          {/* 9. GPX Map */}
           {race.gpsFile && (
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -376,7 +535,13 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                     Prijavi se
                   </Button>
                 )}
-                {!isPast && !race.registrationEnabled && (
+                {!isPast && !race.registrationEnabled && race.raceEvent.registrationSite && (
+                  <Button href={race.raceEvent.registrationSite} target="_blank" color="emerald" className="w-full">
+                    <ArrowTopRightOnSquareIcon data-slot="icon" />
+                    Prijavi se
+                  </Button>
+                )}
+                {!isPast && !race.registrationEnabled && !race.raceEvent.registrationSite && (
                   <Button disabled className="w-full">
                     Prijave zatvorene
                   </Button>
@@ -400,6 +565,20 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                 {race.competition && <Badge color="violet">{race.competition.name}</Badge>}
               </div>
             </div>
+
+            {/* Event tags */}
+            {race.raceEvent.tags && race.raceEvent.tags.length > 0 && (
+              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+                <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Kategorije</div>
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {race.raceEvent.tags.map((tag) => (
+                    <Badge key={tag} color="zinc">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
