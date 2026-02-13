@@ -27,7 +27,7 @@ type RaceEvent = {
   id: string
   eventName: string
   slug: string
-  type: 'TRAIL' | 'ROAD'
+  type: 'TRAIL' | 'ROAD' | 'OCR'
   description: string | null
   mainImage: string | null
   races: Array<{
@@ -299,8 +299,8 @@ export default function AdminEventsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'}>
-                        {event.type === 'TRAIL' ? 'Trail' : 'Ulična'}
+                      <Badge color={event.type === 'TRAIL' ? 'emerald' : event.type === 'OCR' ? 'orange' : 'sky'}>
+                        {event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'}
                       </Badge>
                     </td>
                     <td className="px-4 py-3">

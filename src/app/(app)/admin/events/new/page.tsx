@@ -59,7 +59,7 @@ export default function NewEventPage() {
 
   // Event fields
   const [eventName, setEventName] = useState('')
-  const [eventType, setEventType] = useState<'TRAIL' | 'ROAD'>('TRAIL')
+  const [eventType, setEventType] = useState<'TRAIL' | 'ROAD' | 'OCR'>('TRAIL')
   const [description, setDescription] = useState('')
   const [mainImage, setMainImage] = useState('')
   const [slug, setSlug] = useState('')
@@ -261,6 +261,7 @@ export default function NewEventPage() {
               >
                 <option value="TRAIL">Trail</option>
                 <option value="ROAD">Ulična</option>
+                <option value="OCR">OCR</option>
               </select>
             </div>
 

@@ -2,7 +2,7 @@ import { Badge } from '@/components/badge'
 
 export type RegistrationStatus = 'PENDING' | 'CONFIRMED' | 'PAID' | 'CANCELLED'
 export type Gender = 'MALE' | 'FEMALE'
-export type EventType = 'TRAIL' | 'ROAD'
+export type EventType = 'TRAIL' | 'ROAD' | 'OCR'
 
 /**
  * Get badge component for registration status
@@ -30,12 +30,44 @@ export function getGenderLabel(gender: Gender): string {
 }
 
 /**
+ * Get badge color for event type
+ */
+export function getEventTypeColor(type: EventType): 'emerald' | 'sky' | 'orange' {
+  switch (type) {
+    case 'TRAIL':
+      return 'emerald'
+    case 'ROAD':
+      return 'sky'
+    case 'OCR':
+      return 'orange'
+    default:
+      return 'emerald'
+  }
+}
+
+/**
+ * Get label for event type
+ */
+export function getEventTypeLabel(type: EventType): string {
+  switch (type) {
+    case 'TRAIL':
+      return 'Trail'
+    case 'ROAD':
+      return 'Ulična'
+    case 'OCR':
+      return 'OCR'
+    default:
+      return type
+  }
+}
+
+/**
  * Get badge component for event type
  */
 export function getEventTypeBadge(type: EventType) {
   return (
-    <Badge color={type === 'TRAIL' ? 'emerald' : 'sky'}>
-      {type === 'TRAIL' ? 'Trail' : 'Ulična'}
+    <Badge color={getEventTypeColor(type)}>
+      {getEventTypeLabel(type)}
     </Badge>
   )
 }

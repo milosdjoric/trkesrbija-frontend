@@ -51,7 +51,7 @@ type EventData = {
   id: string
   eventName: string
   slug: string
-  type: 'TRAIL' | 'ROAD'
+  type: 'TRAIL' | 'ROAD' | 'OCR'
   description: string | null
   mainImage: string | null
   gallery: string[]
@@ -127,7 +127,7 @@ export default function EditEventPage() {
 
   // Form state
   const [eventName, setEventName] = useState('')
-  const [eventType, setEventType] = useState<'TRAIL' | 'ROAD'>('TRAIL')
+  const [eventType, setEventType] = useState<'TRAIL' | 'ROAD' | 'OCR'>('TRAIL')
   const [description, setDescription] = useState('')
   const [mainImage, setMainImage] = useState('')
   const [gallery, setGallery] = useState<string[]>([])
@@ -338,6 +338,7 @@ export default function EditEventPage() {
               >
                 <option value="TRAIL">Trail</option>
                 <option value="ROAD">Ulična</option>
+                <option value="OCR">OCR</option>
               </select>
             </div>
 

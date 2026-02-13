@@ -24,7 +24,7 @@ type ImportType = 'events' | 'races' | 'combined'
 type ParsedEvent = {
   eventName: string
   slug: string
-  type: 'TRAIL' | 'ROAD'
+  type: 'TRAIL' | 'ROAD' | 'OCR'
   description?: string
   registrationSite?: string
   tags?: string[]
@@ -54,7 +54,7 @@ type ParsedCombinedRow = {
   // Event fields
   eventName?: string
   eventSlug?: string
-  eventType?: 'TRAIL' | 'ROAD'
+  eventType?: 'TRAIL' | 'ROAD' | 'OCR'
   description?: string
   registrationSite?: string
   tags?: string[]
@@ -159,7 +159,11 @@ function parseEvents(rows: string[][]): ParsedEvent[] {
     const slug = row[slugIdx]?.trim() || generateSlug(eventName)
 
     const typeRaw = row[typeIdx]?.trim().toUpperCase() || 'TRAIL'
-    const type: 'TRAIL' | 'ROAD' = typeRaw === 'ROAD' || typeRaw === 'ULIČNA' || typeRaw === 'ULICNA' ? 'ROAD' : 'TRAIL'
+    const type: 'TRAIL' | 'ROAD' | 'OCR' = typeRaw === 'ROAD' || typeRaw === 'ULIČNA' || typeRaw === 'ULICNA'
+      ? 'ROAD'
+      : typeRaw === 'OCR'
+        ? 'OCR'
+        : 'TRAIL'
 
     const description = row[descIdx]?.trim() || undefined
     const registrationSite = row[regSiteIdx]?.trim() || undefined
@@ -323,7 +327,11 @@ function parseCombined(rows: string[][]): ParsedCombinedRow[] {
       currentEventSlug = eventSlug // Remember for subsequent races
 
       const typeRaw = row[eventTypeIdx]?.trim().toUpperCase() || 'TRAIL'
-      const eventType: 'TRAIL' | 'ROAD' = typeRaw === 'ROAD' || typeRaw === 'ULIČNA' || typeRaw === 'ULICNA' ? 'ROAD' : 'TRAIL'
+      const eventType: 'TRAIL' | 'ROAD' | 'OCR' = typeRaw === 'ROAD' || typeRaw === 'ULIČNA' || typeRaw === 'ULICNA'
+        ? 'ROAD'
+        : typeRaw === 'OCR'
+          ? 'OCR'
+          : 'TRAIL'
 
       const description = row[descIdx]?.trim() || undefined
       const registrationSite = row[regSiteIdx]?.trim() || undefined
@@ -820,7 +828,7 @@ export default function ImportPage() {
                       <td className="px-4 py-3 text-sm text-zinc-500">
                         {row.rowType === 'event' ? (
                           <span>
-                            <Badge color={row.eventType === 'TRAIL' ? 'emerald' : 'sky'} className="mr-2">
+                            <Badge color={row.eventType === 'TRAIL' ? 'emerald' : row.eventType === 'OCR' ? 'orange' : 'sky'} className="mr-2">
                               {row.eventType}
                             </Badge>
                             {row.tags?.join(', ')}
@@ -845,7 +853,7 @@ export default function ImportPage() {
                       <td className="px-4 py-3 font-medium">{event.eventName}</td>
                       <td className="px-4 py-3 text-sm text-zinc-500">{event.slug}</td>
                       <td className="px-4 py-3">
-                        <Badge color={event.type === 'TRAIL' ? 'emerald' : 'sky'}>{event.type}</Badge>
+                        <Badge color={event.type === 'TRAIL' ? 'emerald' : event.type === 'OCR' ? 'orange' : 'sky'}>{event.type}</Badge>
                       </td>
                       <td className="px-4 py-3 text-sm">{event.tags?.join(', ') || '-'}</td>
                       <td className="px-4 py-3 text-sm text-red-600">{event.errors.join(', ') || '-'}</td>
