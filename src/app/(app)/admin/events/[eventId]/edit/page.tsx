@@ -16,6 +16,19 @@ import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+// Helper to generate slug from text
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[čćžšđ]/g, (c) => ({ č: 'c', ć: 'c', ž: 'z', š: 's', đ: 'd' })[c] || c)
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 type RaceData = {
   id: string
   raceName: string | null
@@ -181,16 +194,14 @@ export default function EditEventPage() {
       return
     }
 
-    if (!slug.trim()) {
-      toast('Unesite slug', 'error')
-      return
-    }
+    // Generate slug from event name if empty
+    const finalSlug = slug.trim() || generateSlug(eventName)
 
     setSaving(true)
     try {
       const input: Record<string, unknown> = {
         eventName: eventName.trim(),
-        slug: slug.trim(),
+        slug: finalSlug,
         type: eventType,
         description: description.trim() || null,
         mainImage: mainImage.trim() || null,
@@ -217,7 +228,7 @@ export default function EditEventPage() {
       )
 
       toast('Događaj sačuvan uspešno!', 'success')
-      router.push(`/events/${slug}`)
+      router.push(`/events/${finalSlug}`)
     } catch (err: any) {
       toast(err?.message ?? 'Greška pri čuvanju', 'error')
     } finally {
@@ -300,17 +311,19 @@ export default function EditEventPage() {
             {/* Slug */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Slug (URL) *
+                Slug (URL)
               </label>
               <input
                 type="text"
                 value={slug}
                 onChange={(e) => setSlug(e.target.value)}
-                placeholder="avala-trail-2024"
+                placeholder={generateSlug(eventName) || 'avala-trail-2024'}
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 font-mono text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-                required
               />
-              <p className="mt-1 text-xs text-zinc-500">URL: /events/{slug || 'slug'}</p>
+              <p className="mt-1 text-xs text-zinc-500">
+                URL: /events/{slug || generateSlug(eventName) || 'slug'}
+                {!slug && eventName && ' (automatski generisan)'}
+              </p>
             </div>
 
             {/* Type */}

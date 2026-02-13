@@ -12,6 +12,19 @@ import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+// Helper to generate slug from text
+function generateSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+    .replace(/[čćžšđ]/g, (c) => ({ č: 'c', ć: 'c', ž: 'z', š: 's', đ: 'd' })[c] || c)
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
 type Competition = {
   id: string
   name: string
@@ -176,11 +189,6 @@ export default function EditRacePage() {
       return
     }
 
-    if (!slug.trim()) {
-      toast('Unesite URL slug', 'error')
-      return
-    }
-
     if (!length || parseFloat(length) <= 0) {
       toast('Unesite validnu dužinu trke', 'error')
       return
@@ -191,6 +199,9 @@ export default function EditRacePage() {
       return
     }
 
+    // Generate slug from race name if empty
+    const finalSlug = slug.trim() || generateSlug(raceName)
+
     setSaving(true)
     try {
       const result = await gql<{ updateRace: { slug: string } }>(
@@ -199,7 +210,7 @@ export default function EditRacePage() {
           raceId,
           input: {
             raceName: raceName.trim(),
-            slug: slug.trim(),
+            slug: finalSlug,
             length: parseFloat(length),
             elevation: elevation ? parseFloat(elevation) : null,
             gpsFile: gpsFile.trim() || null,
@@ -279,7 +290,7 @@ export default function EditRacePage() {
             {/* Slug */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                URL slug *
+                URL slug
               </label>
               <div className="mt-1 flex items-center gap-2">
                 <span className="text-sm text-zinc-500">/races/</span>
@@ -287,13 +298,13 @@ export default function EditRacePage() {
                   type="text"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
-                  placeholder="naziv-trke-2025"
+                  placeholder={generateSlug(raceName) || 'naziv-trke-2025'}
                   className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-                  required
                 />
               </div>
               <p className="mt-1 text-xs text-zinc-500">
-                URL adresa trke. Koristi samo mala slova, brojeve i crte.
+                URL: /races/{slug || generateSlug(raceName) || 'slug'}
+                {!slug && raceName && ' (automatski generisan)'}
               </p>
             </div>
 
