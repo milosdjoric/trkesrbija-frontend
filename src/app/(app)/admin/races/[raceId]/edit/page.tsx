@@ -19,6 +19,7 @@ type Competition = {
 
 type RaceData = {
   id: string
+  slug: string
   raceName: string | null
   length: number
   elevation: number | null
@@ -40,6 +41,7 @@ const RACE_BY_ID_QUERY = `
   query RaceById($id: ID!) {
     race(id: $id) {
       id
+      slug
       raceName
       length
       elevation
@@ -203,7 +205,7 @@ export default function EditRacePage() {
       )
 
       toast('Trka sačuvana uspešno!', 'success')
-      router.push('/admin/races')
+      router.push(`/races/${race!.slug}`)
     } catch (err: any) {
       toast(err?.message ?? 'Greška pri čuvanju', 'error')
     } finally {

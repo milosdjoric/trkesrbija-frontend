@@ -217,7 +217,7 @@ export default function EditEventPage() {
       )
 
       toast('Događaj sačuvan uspešno!', 'success')
-      router.push('/admin/events')
+      router.push(`/events/${slug}`)
     } catch (err: any) {
       toast(err?.message ?? 'Greška pri čuvanju', 'error')
     } finally {
