@@ -321,7 +321,7 @@ export default function AdminEventsPage() {
                           href={`/admin/events/${event.id}/races/new`}
                           className="text-sm text-blue-600 hover:text-blue-700"
                         >
-                          + Trka
+                          Dodaj trku
                         </Link>
                         <button
                           onClick={() => handleDelete(event)}
