@@ -77,6 +77,7 @@ const UPDATE_RACE_MUTATION = `
   mutation UpdateRace($raceId: ID!, $input: UpdateRaceInput!) {
     updateRace(raceId: $raceId, input: $input) {
       id
+      slug
       raceName
       length
       elevation
@@ -105,6 +106,7 @@ export default function EditRacePage() {
 
   // Form state
   const [raceName, setRaceName] = useState('')
+  const [slug, setSlug] = useState('')
   const [length, setLength] = useState('')
   const [elevation, setElevation] = useState('')
   const [gpsFile, setGpsFile] = useState('')
@@ -131,6 +133,7 @@ export default function EditRacePage() {
       if (raceData.race) {
         setRace(raceData.race)
         setRaceName(raceData.race.raceName || '')
+        setSlug(raceData.race.slug || '')
         setLength(raceData.race.length.toString())
         setElevation(raceData.race.elevation?.toString() || '')
         setGpsFile(raceData.race.gpsFile || '')
@@ -173,6 +176,11 @@ export default function EditRacePage() {
       return
     }
 
+    if (!slug.trim()) {
+      toast('Unesite URL slug', 'error')
+      return
+    }
+
     if (!length || parseFloat(length) <= 0) {
       toast('Unesite validnu dužinu trke', 'error')
       return
@@ -185,12 +193,13 @@ export default function EditRacePage() {
 
     setSaving(true)
     try {
-      await gql(
+      const result = await gql<{ updateRace: { slug: string } }>(
         UPDATE_RACE_MUTATION,
         {
           raceId,
           input: {
             raceName: raceName.trim(),
+            slug: slug.trim(),
             length: parseFloat(length),
             elevation: elevation ? parseFloat(elevation) : null,
             gpsFile: gpsFile.trim() || null,
@@ -205,7 +214,7 @@ export default function EditRacePage() {
       )
 
       toast('Trka sačuvana uspešno!', 'success')
-      router.push(`/races/${race!.slug}`)
+      router.push(`/races/${result.updateRace.slug}`)
     } catch (err: any) {
       toast(err?.message ?? 'Greška pri čuvanju', 'error')
     } finally {
@@ -265,6 +274,27 @@ export default function EditRacePage() {
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
                 required
               />
+            </div>
+
+            {/* Slug */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                URL slug *
+              </label>
+              <div className="mt-1 flex items-center gap-2">
+                <span className="text-sm text-zinc-500">/races/</span>
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
+                  placeholder="naziv-trke-2025"
+                  className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+                  required
+                />
+              </div>
+              <p className="mt-1 text-xs text-zinc-500">
+                URL adresa trke. Koristi samo mala slova, brojeve i crte.
+              </p>
             </div>
 
             {/* Start date/time */}
