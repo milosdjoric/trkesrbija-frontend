@@ -16,7 +16,9 @@ import {
   GlobeAltIcon,
   LinkIcon,
   ArrowTopRightOnSquareIcon,
+  ArrowRightIcon,
 } from '@heroicons/react/16/solid'
+import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
@@ -284,9 +286,14 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                   </TableHead>
                   <TableBody>
                     {sortedRaces.map((race) => (
-                      <TableRow key={race.id} href={`/races/${race.slug}`}>
+                      <TableRow key={race.id}>
                         <TableCell>
-                          <div className="font-medium">{race.raceName ?? 'Trka'}</div>
+                          <Link
+                            href={`/races/${race.slug}`}
+                            className="font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400"
+                          >
+                            {race.raceName ?? 'Trka'}
+                          </Link>
                           {!allSameLocation && race.startLocation && (
                             <div className="text-sm text-zinc-500">
                               {race.startLocation.startsWith('http') ? (
@@ -311,6 +318,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                           <div className="flex items-center justify-end gap-2">
                             <RegisterRaceButton raceId={race.id} raceSlug={race.slug} size="sm" />
                             <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
+                            <Link
+                              href={`/races/${race.slug}`}
+                              className="inline-flex items-center justify-center rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+                              title="Detalji trke"
+                            >
+                              <ArrowRightIcon className="size-4" />
+                            </Link>
                           </div>
                         </TableCell>
                       </TableRow>
