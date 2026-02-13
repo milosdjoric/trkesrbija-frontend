@@ -535,13 +535,13 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                 {/* Registration or Results button */}
                 {!isPast && race.registrationEnabled && (
                   <Button href={`/races/${race.slug}/register`} color="emerald" className="w-full">
-                    Prijavi se
+                    Prijavi se za trku
                   </Button>
                 )}
                 {!isPast && !race.registrationEnabled && race.raceEvent.registrationSite && (
                   <Button href={race.raceEvent.registrationSite} target="_blank" color="emerald" className="w-full">
                     <ArrowTopRightOnSquareIcon data-slot="icon" />
-                    Prijavi se
+                    Prijavi se na sajtu organizatora
                   </Button>
                 )}
                 {!isPast && !race.registrationEnabled && !race.raceEvent.registrationSite && (

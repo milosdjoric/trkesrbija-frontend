@@ -498,7 +498,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     className="w-full"
                   >
                     <ArrowTopRightOnSquareIcon data-slot="icon" />
-                    Prijavi se
+                    Prijavi se na sajtu organizatora
                   </Button>
                 )}
               </div>
