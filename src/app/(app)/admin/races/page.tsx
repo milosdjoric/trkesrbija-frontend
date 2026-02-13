@@ -17,6 +17,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 type Race = {
   id: string
+  slug: string
   raceName: string | null
   length: number
   elevation: number | null
@@ -35,6 +36,7 @@ const RACES_QUERY = `
   query AdminRaces {
     races(limit: 1000) {
       id
+      slug
       raceName
       length
       elevation
@@ -267,9 +269,9 @@ export default function AdminRacesPage() {
                         {race.raceEvent.type === 'TRAIL' ? 'Trail' : 'Ulična'}
                       </Badge>
                       <div>
-                        <div className="font-medium text-zinc-900 dark:text-zinc-100">
+                        <Link href={`/races/${race.slug}`} className="font-medium text-zinc-900 hover:underline dark:text-zinc-100">
                           {race.raceName ?? 'Neimenovana'}
-                        </div>
+                        </Link>
                         <div className="text-sm text-zinc-500">{race.raceEvent.eventName}</div>
                       </div>
                     </div>
