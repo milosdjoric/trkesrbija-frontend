@@ -213,10 +213,15 @@ export default function AdminEventsPage() {
 
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Heading>Upravljanje događajima</Heading>
-        <Button href="/admin/events/new" color="blue">
-          <PlusIcon className="size-4" />
-          Novi događaj
-        </Button>
+        <div className="flex gap-2">
+          <Button href="/admin/events/mass-edit" outline>
+            Masovna izmena
+          </Button>
+          <Button href="/admin/events/new" color="blue">
+            <PlusIcon className="size-4" />
+            Novi događaj
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
