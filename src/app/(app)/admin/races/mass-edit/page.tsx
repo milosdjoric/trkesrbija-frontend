@@ -9,7 +9,7 @@ import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 type Competition = {
   id: string
@@ -90,9 +90,11 @@ export default function RacesMassEditPage() {
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [showPast, setShowPast] = useState(false)
+  const loadedRef = useRef(false)
 
   const loadData = useCallback(async () => {
-    if (!accessToken) return
+    if (!accessToken || loadedRef.current) return
+    loadedRef.current = true
     try {
       const [racesData, competitionsData] = await Promise.all([
         gql<{ races: RaceRow[] }>(RACES_QUERY, {}, { accessToken }),
@@ -102,11 +104,10 @@ export default function RacesMassEditPage() {
       setCompetitions(competitionsData.competitions ?? [])
     } catch (err) {
       console.error('Failed to load data:', err)
-      toast('Greska pri ucitavanju', 'error')
     } finally {
       setLoading(false)
     }
-  }, [accessToken, toast])
+  }, [accessToken])
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'ADMIN')) {
