@@ -1,9 +1,9 @@
-tip_reda,naziv_dogadjaja,tip,opis,sajt_prijava,tagovi,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje
-dogadjaj,Avala Trail 2025,TRAIL,Planinska trka na Avali,https://prijave.example.com,trail;planinsko;Beograd,,,,,,
-trka,,,,,,,Avala 18K,18,750,2025-05-15 09:00,Beli Potok,da,Trail Kup Srbije
-trka,,,,,,,Avala 30K,30,1200,2025-05-15 08:00,Beli Potok,da,Trail Kup Srbije
-trka,,,,,,,Avala 50K,50,2500,2025-05-15 07:00,Beli Potok,da,Trail Kup Srbije
-dogadjaj,Beogradski Maraton,ROAD,Tradicionalna ulicna trka,https://bgmaraton.rs,maraton;ulicno;Beograd,,,,,,
-trka,,,,,,,Maraton,42.195,0,2025-04-20 09:00,Usce,da,
-trka,,,,,,,Polumaraton,21.1,0,2025-04-20 10:00,Usce,da,
-trka,,,,,,,10K trka,10,0,2025-04-20 10:30,Usce,da,
+tip_reda,naziv_dogadjaja,tip_dogadjaja,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje
+dogadjaj,Avala Trail 2025,TRAIL,,,,,,,
+trka,,,Avala 18K,18,750,2025-05-15 09:00,Beli Potok,da,Trail Kup Srbije
+trka,,,Avala 30K,30,1200,2025-05-15 08:00,Beli Potok,da,Trail Kup Srbije
+trka,,,Avala 50K,50,2500,2025-05-15 07:00,Beli Potok,da,Trail Kup Srbije
+dogadjaj,Beogradski Maraton,ROAD,,,,,,,
+trka,,,Maraton,42.195,0,2025-04-20 09:00,Usce,da,
+trka,,,Polumaraton,21.1,0,2025-04-20 10:00,Usce,da,
+trka,,,10K trka,10,0,2025-04-20 10:30,Usce,da,

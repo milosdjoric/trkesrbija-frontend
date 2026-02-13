@@ -695,11 +695,11 @@ export default function ImportPage() {
           <div className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
             <p className="mb-2">Kolone (header u prvom redu):</p>
             <code className="block rounded bg-zinc-200 p-2 text-xs dark:bg-zinc-700">
-              tip_reda,naziv_dogadjaja,tip,opis,sajt_prijava,tagovi,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje
+              tip_reda,naziv_dogadjaja,tip_dogadjaja,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje
             </code>
             <div className="mt-3 space-y-1 text-xs">
               <p><strong>tip_reda:</strong> &quot;dogadjaj&quot; ili &quot;trka&quot;</p>
-              <p><strong>Za događaj:</strong> popuni naziv_dogadjaja, tip (TRAIL/ROAD), opis, tagovi...</p>
+              <p><strong>Za događaj:</strong> popuni naziv_dogadjaja, tip_dogadjaja (TRAIL/ROAD)</p>
               <p><strong>Za trku:</strong> popuni naziv_trke, duzina, datum_start, lokacija... (automatski se vezuje za prethodni događaj)</p>
             </div>
           </div>
