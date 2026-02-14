@@ -212,35 +212,35 @@ export default function RacesMassEditPage() {
         <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
           <thead className="bg-zinc-50 dark:bg-zinc-800">
             <tr>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Dogadjaj
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                Događaj
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Naziv
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Slug
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Duzina (km)
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                km
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Visinska (m)
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                D+
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Start
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Kraj
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Lokacija
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                Lok.
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Prijave
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                Reg
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Takmicenje
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                Takm.
               </th>
             </tr>
           </thead>
@@ -254,32 +254,32 @@ export default function RacesMassEditPage() {
             ) : (
               filteredRaces.map((race) => (
                 <tr key={race.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                  <td className="min-w-[150px] px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400">
+                  <td className="max-w-[100px] truncate px-1 py-1 text-xs text-zinc-600 dark:text-zinc-400">
                     {race.raceEvent.eventName}
                   </td>
-                  <td className="min-w-[180px] px-3 py-2">
+                  <td className="max-w-[120px] px-1 py-1">
                     <EditableCell
                       value={race.raceName}
                       type="text"
                       onSave={(v) => handleUpdateField(race.id, 'raceName', v)}
-                      placeholder="Koristi naziv dogadjaja"
+                      placeholder="-"
                     />
                   </td>
-                  <td className="min-w-[150px] px-3 py-2">
+                  <td className="max-w-[100px] px-1 py-1">
                     <EditableCell
                       value={race.slug}
                       type="text"
                       onSave={(v) => handleUpdateField(race.id, 'slug', v)}
                     />
                   </td>
-                  <td className="min-w-[80px] px-3 py-2">
+                  <td className="w-[50px] px-1 py-1">
                     <EditableCell
                       value={race.length}
                       type="number"
                       onSave={(v) => handleUpdateField(race.id, 'length', v)}
                     />
                   </td>
-                  <td className="min-w-[80px] px-3 py-2">
+                  <td className="w-[50px] px-1 py-1">
                     <EditableCell
                       value={race.elevation}
                       type="number"
@@ -287,22 +287,22 @@ export default function RacesMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="min-w-[180px] px-3 py-2">
+                  <td className="w-[130px] px-1 py-1">
                     <EditableCell
                       value={race.startDateTime}
                       type="datetime"
                       onSave={(v) => handleUpdateField(race.id, 'startDateTime', v)}
                     />
                   </td>
-                  <td className="min-w-[180px] px-3 py-2">
+                  <td className="w-[130px] px-1 py-1">
                     <EditableCell
                       value={race.endDateTime}
                       type="datetime"
                       onSave={(v) => handleUpdateField(race.id, 'endDateTime', v)}
-                      placeholder="Cut-off"
+                      placeholder="-"
                     />
                   </td>
-                  <td className="min-w-[150px] px-3 py-2">
+                  <td className="max-w-[100px] px-1 py-1">
                     <EditableCell
                       value={race.startLocation}
                       type="text"
@@ -310,20 +310,20 @@ export default function RacesMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="px-3 py-2">
+                  <td className="w-[40px] px-1 py-1">
                     <EditableCell
                       value={race.registrationEnabled}
                       type="boolean"
                       onSave={(v) => handleUpdateField(race.id, 'registrationEnabled', v)}
                     />
                   </td>
-                  <td className="min-w-[150px] px-3 py-2">
+                  <td className="max-w-[100px] px-1 py-1">
                     <EditableCell
                       value={race.competitionId}
                       type="select"
                       options={competitionOptions}
                       onSave={(v) => handleUpdateField(race.id, 'competitionId', v)}
-                      placeholder="Bez takmicenja"
+                      placeholder="-"
                     />
                   </td>
                 </tr>

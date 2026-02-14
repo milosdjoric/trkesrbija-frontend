@@ -127,7 +127,7 @@ export function EditableCell({
       <div
         onDoubleClick={() => !disabled && setIsEditing(true)}
         className={clsx(
-          'min-h-[28px] cursor-pointer rounded px-2 py-1 transition-colors',
+          'min-h-[20px] cursor-pointer rounded px-1 py-0.5 text-xs transition-colors',
           'hover:bg-zinc-100 dark:hover:bg-zinc-700',
           disabled && 'cursor-not-allowed opacity-50',
           saveStatus === 'success' && 'bg-green-100 dark:bg-green-900/30',
@@ -136,7 +136,7 @@ export function EditableCell({
         )}
         title={disabled ? undefined : 'Dupli klik za izmenu'}
       >
-        <span className={clsx(!value && value !== 0 && 'text-zinc-400')}>
+        <span className={clsx('truncate', !value && value !== 0 && 'text-zinc-400')}>
           {formatDisplayValue(value, type, options, placeholder)}
         </span>
       </div>
@@ -154,7 +154,7 @@ export function EditableCell({
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
           disabled={isSaving}
-          className="w-full rounded border-2 border-blue-500 bg-white px-2 py-1 text-sm focus:outline-none dark:bg-zinc-800"
+          className="w-full rounded border-2 border-blue-500 bg-white px-1 py-0.5 text-xs focus:outline-none dark:bg-zinc-800"
         >
           <option value="">-</option>
           {options?.map((opt) => (
@@ -174,7 +174,7 @@ export function EditableCell({
           disabled={isSaving}
           placeholder={placeholder}
           step={type === 'number' ? 'any' : undefined}
-          className="w-full rounded border-2 border-blue-500 bg-white px-2 py-1 text-sm focus:outline-none dark:bg-zinc-800"
+          className="w-full rounded border-2 border-blue-500 bg-white px-1 py-0.5 text-xs focus:outline-none dark:bg-zinc-800"
         />
       )}
       {isSaving && (

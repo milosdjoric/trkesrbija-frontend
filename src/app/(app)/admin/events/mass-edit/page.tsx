@@ -189,25 +189,25 @@ export default function EventsMassEditPage() {
         <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
           <thead className="bg-zinc-50 dark:bg-zinc-800">
             <tr>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Naziv
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Slug
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Tip
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Opis
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Glavna slika
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                Slika
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                Sajt za prijave
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                Prijave
               </th>
-              <th className="whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Tagovi
               </th>
             </tr>
@@ -222,21 +222,21 @@ export default function EventsMassEditPage() {
             ) : (
               filteredEvents.map((event) => (
                 <tr key={event.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                  <td className="min-w-[200px] px-3 py-2">
+                  <td className="max-w-[140px] px-1 py-1">
                     <EditableCell
                       value={event.eventName}
                       type="text"
                       onSave={(v) => handleUpdateField(event.id, 'eventName', v)}
                     />
                   </td>
-                  <td className="min-w-[150px] px-3 py-2">
+                  <td className="max-w-[100px] px-1 py-1">
                     <EditableCell
                       value={event.slug}
                       type="text"
                       onSave={(v) => handleUpdateField(event.id, 'slug', v)}
                     />
                   </td>
-                  <td className="min-w-[100px] px-3 py-2">
+                  <td className="w-[60px] px-1 py-1">
                     <EditableCell
                       value={event.type}
                       type="select"
@@ -244,31 +244,31 @@ export default function EventsMassEditPage() {
                       onSave={(v) => handleUpdateField(event.id, 'type', v)}
                     />
                   </td>
-                  <td className="min-w-[250px] max-w-[300px] px-3 py-2">
+                  <td className="max-w-[150px] px-1 py-1">
                     <EditableCell
                       value={event.description}
                       type="text"
                       onSave={(v) => handleUpdateField(event.id, 'description', v)}
-                      placeholder="Bez opisa"
+                      placeholder="-"
                     />
                   </td>
-                  <td className="min-w-[150px] max-w-[200px] px-3 py-2">
+                  <td className="max-w-[100px] px-1 py-1">
                     <EditableCell
                       value={event.mainImage}
                       type="text"
                       onSave={(v) => handleUpdateField(event.id, 'mainImage', v)}
-                      placeholder="URL slike"
+                      placeholder="-"
                     />
                   </td>
-                  <td className="min-w-[150px] max-w-[200px] px-3 py-2">
+                  <td className="max-w-[100px] px-1 py-1">
                     <EditableCell
                       value={event.registrationSite}
                       type="text"
                       onSave={(v) => handleUpdateField(event.id, 'registrationSite', v)}
-                      placeholder="URL"
+                      placeholder="-"
                     />
                   </td>
-                  <td className="min-w-[150px] px-3 py-2">
+                  <td className="max-w-[100px] px-1 py-1">
                     <EditableCell
                       value={event.tags.join(', ')}
                       type="text"
