@@ -222,21 +222,21 @@ export default function EventsMassEditPage() {
             ) : (
               filteredEvents.map((event) => (
                 <tr key={event.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                  <td className="max-w-[140px] px-1 py-1">
+                  <td className="w-[140px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.eventName}
                       type="text"
                       onSave={(v) => handleUpdateField(event.id, 'eventName', v)}
                     />
                   </td>
-                  <td className="max-w-[100px] px-1 py-1">
+                  <td className="w-[100px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.slug}
                       type="text"
                       onSave={(v) => handleUpdateField(event.id, 'slug', v)}
                     />
                   </td>
-                  <td className="w-[60px] px-1 py-1">
+                  <td className="w-[55px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.type}
                       type="select"
@@ -244,7 +244,7 @@ export default function EventsMassEditPage() {
                       onSave={(v) => handleUpdateField(event.id, 'type', v)}
                     />
                   </td>
-                  <td className="max-w-[150px] px-1 py-1">
+                  <td className="w-[150px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.description}
                       type="text"
@@ -252,7 +252,7 @@ export default function EventsMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="max-w-[100px] px-1 py-1">
+                  <td className="w-[100px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.mainImage}
                       type="text"
@@ -260,7 +260,7 @@ export default function EventsMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="max-w-[100px] px-1 py-1">
+                  <td className="w-[100px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.registrationSite}
                       type="text"
@@ -268,7 +268,7 @@ export default function EventsMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="max-w-[100px] px-1 py-1">
+                  <td className="w-[100px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.tags.join(', ')}
                       type="text"
@@ -282,7 +282,7 @@ export default function EventsMassEditPage() {
                             : []
                         return handleUpdateField(event.id, 'tags', tags)
                       }}
-                      placeholder="tag1, tag2"
+                      placeholder="-"
                     />
                   </td>
                 </tr>

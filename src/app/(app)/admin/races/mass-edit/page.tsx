@@ -254,10 +254,10 @@ export default function RacesMassEditPage() {
             ) : (
               filteredRaces.map((race) => (
                 <tr key={race.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                  <td className="max-w-[100px] truncate px-1 py-1 text-xs text-zinc-600 dark:text-zinc-400">
+                  <td className="w-[100px] overflow-hidden truncate px-1 py-1 text-xs text-zinc-600 dark:text-zinc-400">
                     {race.raceEvent.eventName}
                   </td>
-                  <td className="max-w-[120px] px-1 py-1">
+                  <td className="w-[120px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.raceName}
                       type="text"
@@ -265,21 +265,21 @@ export default function RacesMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="max-w-[100px] px-1 py-1">
+                  <td className="w-[100px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.slug}
                       type="text"
                       onSave={(v) => handleUpdateField(race.id, 'slug', v)}
                     />
                   </td>
-                  <td className="w-[50px] px-1 py-1">
+                  <td className="w-[45px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.length}
                       type="number"
                       onSave={(v) => handleUpdateField(race.id, 'length', v)}
                     />
                   </td>
-                  <td className="w-[50px] px-1 py-1">
+                  <td className="w-[45px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.elevation}
                       type="number"
@@ -287,14 +287,14 @@ export default function RacesMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="w-[130px] px-1 py-1">
+                  <td className="w-[120px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.startDateTime}
                       type="datetime"
                       onSave={(v) => handleUpdateField(race.id, 'startDateTime', v)}
                     />
                   </td>
-                  <td className="w-[130px] px-1 py-1">
+                  <td className="w-[120px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.endDateTime}
                       type="datetime"
@@ -302,7 +302,7 @@ export default function RacesMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="max-w-[100px] px-1 py-1">
+                  <td className="w-[100px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.startLocation}
                       type="text"
@@ -310,14 +310,14 @@ export default function RacesMassEditPage() {
                       placeholder="-"
                     />
                   </td>
-                  <td className="w-[40px] px-1 py-1">
+                  <td className="w-[35px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.registrationEnabled}
                       type="boolean"
                       onSave={(v) => handleUpdateField(race.id, 'registrationEnabled', v)}
                     />
                   </td>
-                  <td className="max-w-[100px] px-1 py-1">
+                  <td className="w-[80px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={race.competitionId}
                       type="select"

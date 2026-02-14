@@ -127,7 +127,7 @@ export function EditableCell({
       <div
         onDoubleClick={() => !disabled && setIsEditing(true)}
         className={clsx(
-          'min-h-[20px] cursor-pointer rounded px-1 py-0.5 text-xs transition-colors',
+          'min-h-[20px] cursor-pointer overflow-hidden truncate rounded px-1 py-0.5 text-xs transition-colors',
           'hover:bg-zinc-100 dark:hover:bg-zinc-700',
           disabled && 'cursor-not-allowed opacity-50',
           saveStatus === 'success' && 'bg-green-100 dark:bg-green-900/30',
@@ -136,7 +136,7 @@ export function EditableCell({
         )}
         title={disabled ? undefined : 'Dupli klik za izmenu'}
       >
-        <span className={clsx('truncate', !value && value !== 0 && 'text-zinc-400')}>
+        <span className={clsx(!value && value !== 0 && 'text-zinc-400')}>
           {formatDisplayValue(value, type, options, placeholder)}
         </span>
       </div>
