@@ -152,12 +152,13 @@ export function isSameDay(date1: Date, date2: Date): boolean {
 }
 
 /**
- * Convert string to Title Case, preserving acronyms (all-caps words).
+ * Convert string to Title Case, preserving short acronyms (2-5 chars all-caps).
  * Examples:
- * - "BBKT 2026" → "BBKT 2026" (acronym preserved)
+ * - "BBKT 2026" → "BBKT 2026" (short acronym preserved)
+ * - "KOSTOLAČKI POLUMARATON" → "Kostolački Polumaraton" (long words converted)
  * - "avala trail" → "Avala Trail"
- * - "trka ZA decu" → "Trka ZA Decu"
- * - "10K" → "10K" (preserved)
+ * - "trka OCR za decu" → "Trka OCR Za Decu" (OCR preserved)
+ * - "10K" → "10K" (preserved with number)
  */
 export function toTitleCase(str: string | null | undefined): string {
   if (!str) return ''
@@ -165,13 +166,19 @@ export function toTitleCase(str: string | null | undefined): string {
   return str
     .split(' ')
     .map((word) => {
-      // If word is all uppercase (acronym) or contains numbers, preserve it
-      if (word === word.toUpperCase() && word.length > 1) {
-        return word
-      }
-      // If word contains numbers (like "10k", "5km"), just capitalize first letter
+      // If word contains numbers (like "10K", "5km", "3."), preserve/handle specially
       if (/\d/.test(word)) {
-        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        // If it's just a number or number with punctuation, keep as is
+        if (/^[\d.,]+$/.test(word)) {
+          return word
+        }
+        // Otherwise capitalize first letter (e.g., "10k" → "10K", "3rd" → "3rd")
+        return word.toUpperCase()
+      }
+      // Only preserve SHORT all-caps words (2-5 chars) as acronyms (BBKT, OCR, USA, etc.)
+      // Longer words like "KOSTOLAČKI" should be converted to Title Case
+      if (word === word.toUpperCase() && word.length >= 2 && word.length <= 5) {
+        return word
       }
       // Standard title case: first letter uppercase, rest lowercase
       return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
