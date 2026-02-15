@@ -31,6 +31,7 @@ import {
   Cog8ToothIcon,
   HeartIcon,
   LightBulbIcon,
+  MapIcon,
   WrenchScrewdriverIcon,
 } from '@heroicons/react/16/solid'
 import { QuestionMarkCircleIcon, SparklesIcon, Square2StackIcon } from '@heroicons/react/20/solid'
@@ -175,6 +176,15 @@ export function ApplicationLayout({
                   </SidebarItem>
                 </>
               )}
+            </SidebarSection>
+
+            {/* Alati */}
+            <SidebarSection>
+              <SidebarHeading>Alati</SidebarHeading>
+              <SidebarItem href="/gpx-analyzer" current={pathname === '/gpx-analyzer'}>
+                <MapIcon />
+                <SidebarLabel>GPX Analyzer</SidebarLabel>
+              </SidebarItem>
             </SidebarSection>
 
             {/* Sudija - samo korisnici sa dodeljenim checkpoint-om */}
