@@ -263,8 +263,8 @@ export function parseGpx(gpxText: string): ParsedGpx {
     }
   }
 
-  // Računaj max nagib na segmentima od minimum 50m (da izbegnemo nerealne vrednosti)
-  const minSegmentForGrade = 50 // metara
+  // Računaj max nagib na segmentima od minimum 100m (da izbegnemo nerealne vrednosti)
+  const minSegmentForGrade = 100 // metara
   for (let i = 0; i < rawPoints.length; i++) {
     // Nađi tačku koja je bar 50m dalje
     let j = i + 1
