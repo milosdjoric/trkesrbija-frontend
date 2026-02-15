@@ -86,3 +86,67 @@ export function formatDay(iso: string | Date): number {
   const d = typeof iso === 'string' ? new Date(iso) : iso
   return d.getDate()
 }
+
+/**
+ * Serbian month names
+ */
+export const SERBIAN_MONTHS = [
+  'januar',
+  'februar',
+  'mart',
+  'april',
+  'maj',
+  'jun',
+  'jul',
+  'avgust',
+  'septembar',
+  'oktobar',
+  'novembar',
+  'decembar',
+]
+
+/**
+ * Serbian weekday names (short, starting Monday)
+ */
+export const SERBIAN_WEEKDAYS_SHORT = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned']
+
+/**
+ * Format month and year for calendar header: "Februar 2026"
+ */
+export function formatMonthYear(date: Date): string {
+  const month = SERBIAN_MONTHS[date.getMonth()]
+  return `${month.charAt(0).toUpperCase() + month.slice(1)} ${date.getFullYear()}`
+}
+
+/**
+ * Format full date with weekday: "Subota, 15. februar 2026."
+ */
+export function formatDateWithWeekday(date: Date): string {
+  return date.toLocaleDateString(LOCALE, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+/**
+ * Format date as YYYY-MM-DD key for grouping
+ */
+export function formatDateKey(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+/**
+ * Check if two dates are the same day
+ */
+export function isSameDay(date1: Date, date2: Date): boolean {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  )
+}

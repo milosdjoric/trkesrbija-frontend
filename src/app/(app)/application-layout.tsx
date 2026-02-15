@@ -23,6 +23,7 @@ import {
 import { SidebarLayout } from '@/components/sidebar-layout'
 import {
   ArrowRightStartOnRectangleIcon,
+  CalendarIcon,
   ChevronDownIcon,
   ChevronUpIcon,
   ClipboardDocumentListIcon,
@@ -139,6 +140,10 @@ export function ApplicationLayout({
               <SidebarItem href="/events" current={pathname === '/events' || pathname.startsWith('/events/')}>
                 <Square2StackIcon />
                 <SidebarLabel>Svi događaji</SidebarLabel>
+              </SidebarItem>
+              <SidebarItem href="/calendar" current={pathname === '/calendar'}>
+                <CalendarIcon />
+                <SidebarLabel>Kalendar</SidebarLabel>
               </SidebarItem>
             </SidebarSection>
 
