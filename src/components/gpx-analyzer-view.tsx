@@ -296,9 +296,9 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           {/* ITRA Points */}
           <div>
             <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.itraPoints}</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">
-              ITRA bodovi
-              <span className="ml-1 text-[10px] text-zinc-400 dark:text-zinc-500">(km + D+/100)</span>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">ITRA bodovi</div>
+            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+              Distanca (km) + visinski dobitak (m) / 100
             </div>
           </div>
 
@@ -320,18 +320,18 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               </span>
               <span className="text-sm text-zinc-600 dark:text-zinc-300">{stats.difficultyLabel}</span>
             </div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">
-              Težina
-              <span className="ml-1 text-[10px] text-zinc-400 dark:text-zinc-500">(ITRA standard)</span>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Težina</div>
+            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+              ITRA klasifikacija: XXS(&lt;25) do XXL(210+)
             </div>
           </div>
 
           {/* Effort Distance */}
           <div>
             <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">
-              Effort distanca
-              <span className="ml-1 text-[10px] text-zinc-400 dark:text-zinc-500">(km + D+/100 + D-/200)</span>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Effort distanca</div>
+            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+              Ekvivalent ravne distance (švajcarska formula)
             </div>
           </div>
 
@@ -350,18 +350,18 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           {/* Max Grade Up */}
           <div>
             <div className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">+{stats.maxGradeUp}%</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">
-              Max uspon
-              <span className="ml-1 text-[10px] text-zinc-400 dark:text-zinc-500">(min 100m)</span>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Max uspon</div>
+            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+              Najstrmiji segment od min 100m
             </div>
           </div>
 
           {/* Max Grade Down */}
           <div>
             <div className="text-lg font-semibold text-red-600 dark:text-red-400">-{stats.maxGradeDown}%</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">
-              Max pad
-              <span className="ml-1 text-[10px] text-zinc-400 dark:text-zinc-500">(min 100m)</span>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Max pad</div>
+            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+              Najstrmiji spust od min 100m
             </div>
           </div>
 
@@ -380,6 +380,9 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               )}
             </div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Kružna ruta</div>
+            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+              Start i cilj unutar 500m
+            </div>
           </div>
         </div>
       </div>
