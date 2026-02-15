@@ -355,11 +355,22 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
             />
           </svg>
 
-          {/* Hover tooltip */}
+          {/* Hover indicator dot and tooltip */}
           {hoveredPoint && (
-            <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs text-white dark:bg-white dark:text-zinc-900">
-              {hoveredPoint.distance.toFixed(1)} km | {Math.round(hoveredPoint.elevation)} m
-            </div>
+            <>
+              {/* Blue dot on the profile line */}
+              <div
+                className="pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-blue-500 shadow-md"
+                style={{
+                  left: `${(hoveredPoint.distance / stats.distance) * 100}%`,
+                  top: `${100 - ((hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 100}%`,
+                }}
+              />
+              {/* Tooltip */}
+              <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs text-white dark:bg-white dark:text-zinc-900">
+                {hoveredPoint.distance.toFixed(1)} km | {Math.round(hoveredPoint.elevation)} m
+              </div>
+            </>
           )}
 
           {/* Axis labels */}
