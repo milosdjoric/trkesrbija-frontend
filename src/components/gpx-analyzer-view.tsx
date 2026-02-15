@@ -291,14 +291,30 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
       {/* Advanced Stats */}
       <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-        <h3 className="mb-4 text-sm font-medium text-zinc-900 dark:text-white">Napredne statistike</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-sm font-medium text-zinc-900 dark:text-white">Napredne statistike</h3>
+          <a
+            href="https://itra.run/FAQ/ItraScore"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-[10px] text-blue-500 hover:text-blue-600 hover:underline dark:text-blue-400"
+          >
+            <svg className="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            ITRA dokumentacija
+          </a>
+        </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {/* ITRA Points */}
           <div>
-            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.itraPoints}</div>
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.itraPoints}</span>
+              <span className="text-xs text-zinc-400 dark:text-zinc-500">km-effort</span>
+            </div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">ITRA bodovi</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              Distanca (km) + visinski dobitak (m) / 100
+              Formula: km + D+ / 100
             </div>
           </div>
 
@@ -322,7 +338,13 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             </div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Težina</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              ITRA klasifikacija: XXS(&lt;25) do XXL(210+)
+              {stats.difficulty === 'XXS' && '0 ITRA poena (0-24 km-effort)'}
+              {stats.difficulty === 'XS' && '1 ITRA poen (25-44 km-effort)'}
+              {stats.difficulty === 'S' && '2 ITRA poena (45-74 km-effort)'}
+              {stats.difficulty === 'M' && '3 ITRA poena (75-114 km-effort)'}
+              {stats.difficulty === 'L' && '4 ITRA poena (115-154 km-effort)'}
+              {stats.difficulty === 'XL' && '5 ITRA poena (155-209 km-effort)'}
+              {stats.difficulty === 'XXL' && '6 ITRA poena (210+ km-effort)'}
             </div>
           </div>
 
@@ -331,7 +353,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Effort distanca</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              Ekvivalent ravne distance (švajcarska formula)
+              Formula: km + D+/100 + D-/200
             </div>
           </div>
 
@@ -352,7 +374,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             <div className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">+{stats.maxGradeUp}%</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Max uspon</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              Najstrmiji segment od min 100m
+              Najstrmiji segment (min 100m)
             </div>
           </div>
 
@@ -361,7 +383,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             <div className="text-lg font-semibold text-red-600 dark:text-red-400">-{stats.maxGradeDown}%</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Max pad</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              Najstrmiji spust od min 100m
+              Najstrmiji spust (min 100m)
             </div>
           </div>
 
@@ -384,6 +406,22 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               Start i cilj unutar 500m
             </div>
           </div>
+        </div>
+
+        {/* ITRA Info Note */}
+        <div className="mt-4 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+          <p className="text-[11px] leading-relaxed text-blue-700 dark:text-blue-300">
+            <strong>Napomena:</strong> Zvanični ITRA bodovi mogu biti umanjeni za trke sa više identičnih krugova ili
+            previše okrepnih stanica. Ova analiza koristi osnovnu km-effort formulu.{' '}
+            <a
+              href="https://itra.run/FAQ/ItraScore"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-blue-800 dark:hover:text-blue-200"
+            >
+              Više informacija →
+            </a>
+          </p>
         </div>
       </div>
 
