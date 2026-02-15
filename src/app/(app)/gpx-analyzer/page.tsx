@@ -155,7 +155,7 @@ export default function GpxAnalyzerPage() {
             </div>
 
             {/* Analysis view */}
-            <GpxAnalyzerViewWrapper stats={parsedGpx.stats} points={parsedGpx.points} />
+            <GpxAnalyzerViewWrapper stats={parsedGpx.stats} points={parsedGpx.points} topClimbs={parsedGpx.topClimbs} />
           </div>
         )}
 

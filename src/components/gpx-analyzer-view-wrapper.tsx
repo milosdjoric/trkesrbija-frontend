@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import type { GpxStats, TrackPoint } from '@/lib/gpx-parser'
+import type { ClimbSegment, GpxStats, TrackPoint } from '@/lib/gpx-parser'
 
 const GpxAnalyzerView = dynamic(() => import('./gpx-analyzer-view').then((mod) => mod.GpxAnalyzerView), {
   ssr: false,
@@ -27,8 +27,9 @@ const GpxAnalyzerView = dynamic(() => import('./gpx-analyzer-view').then((mod) =
 type Props = {
   stats: GpxStats
   points: TrackPoint[]
+  topClimbs: ClimbSegment[]
 }
 
-export function GpxAnalyzerViewWrapper({ stats, points }: Props) {
-  return <GpxAnalyzerView stats={stats} points={points} />
+export function GpxAnalyzerViewWrapper({ stats, points, topClimbs }: Props) {
+  return <GpxAnalyzerView stats={stats} points={points} topClimbs={topClimbs} />
 }

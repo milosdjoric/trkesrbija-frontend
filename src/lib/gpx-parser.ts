@@ -32,9 +32,18 @@ export type TrackPoint = {
   distance: number // km from start
 }
 
+export type ClimbSegment = {
+  startKm: number // km od starta
+  endKm: number // km od starta
+  length: number // dužina segmenta u km
+  elevationGain: number // m uspona
+  averageGrade: number // prosečni nagib %
+}
+
 export type ParsedGpx = {
   stats: GpxStats
   points: TrackPoint[]
+  topClimbs: ClimbSegment[] // top 10 uspona
 }
 
 /**
@@ -48,6 +57,86 @@ function getItraDifficulty(itraPoints: number): { difficulty: GpxStats['difficul
   if (itraPoints < 155) return { difficulty: 'L', label: 'Veoma teška' }
   if (itraPoints < 210) return { difficulty: 'XL', label: 'Ultra' }
   return { difficulty: 'XXL', label: 'Ekstremna' }
+}
+
+/**
+ * Detect climb segments from track points
+ * A climb is a continuous section where elevation is generally increasing
+ */
+function detectClimbs(
+  rawPoints: { lat: number; lng: number; elevation: number }[],
+  minElevationGain: number = 30 // minimum 30m gain to count as a climb
+): ClimbSegment[] {
+  if (rawPoints.length < 2) return []
+
+  const climbs: ClimbSegment[] = []
+  let inClimb = false
+  let climbStartIdx = 0
+  let climbStartDistance = 0
+  let currentDistance = 0
+  let climbElevationGain = 0
+  let climbStartElevation = 0
+
+  // Use smoothed elevation to avoid noise
+  const smoothWindow = Math.min(5, Math.floor(rawPoints.length / 20))
+
+  for (let i = 1; i < rawPoints.length; i++) {
+    const prev = rawPoints[i - 1]
+    const curr = rawPoints[i]
+    const segmentDistance = haversineDistance(prev.lat, prev.lng, curr.lat, curr.lng)
+    currentDistance += segmentDistance
+
+    const elevDiff = curr.elevation - prev.elevation
+
+    if (!inClimb && elevDiff > 0) {
+      // Start of potential climb
+      inClimb = true
+      climbStartIdx = i - 1
+      climbStartDistance = currentDistance - segmentDistance
+      climbStartElevation = prev.elevation
+      climbElevationGain = elevDiff
+    } else if (inClimb) {
+      if (elevDiff > 0) {
+        // Continuing climb
+        climbElevationGain += elevDiff
+      } else if (elevDiff < -10) {
+        // Significant drop - end of climb (allow small dips)
+        if (climbElevationGain >= minElevationGain) {
+          const climbLength = (currentDistance - segmentDistance - climbStartDistance) / 1000
+          if (climbLength > 0.1) {
+            // At least 100m long
+            climbs.push({
+              startKm: Math.round((climbStartDistance / 1000) * 100) / 100,
+              endKm: Math.round(((currentDistance - segmentDistance) / 1000) * 100) / 100,
+              length: Math.round(climbLength * 100) / 100,
+              elevationGain: Math.round(climbElevationGain),
+              averageGrade: Math.round((climbElevationGain / (climbLength * 1000)) * 1000) / 10,
+            })
+          }
+        }
+        inClimb = false
+        climbElevationGain = 0
+      }
+      // Small dips (< 10m) are ignored, climb continues
+    }
+  }
+
+  // Handle climb that ends at the last point
+  if (inClimb && climbElevationGain >= minElevationGain) {
+    const climbLength = (currentDistance - climbStartDistance) / 1000
+    if (climbLength > 0.1) {
+      climbs.push({
+        startKm: Math.round((climbStartDistance / 1000) * 100) / 100,
+        endKm: Math.round((currentDistance / 1000) * 100) / 100,
+        length: Math.round(climbLength * 100) / 100,
+        elevationGain: Math.round(climbElevationGain),
+        averageGrade: Math.round((climbElevationGain / (climbLength * 1000)) * 1000) / 10,
+      })
+    }
+  }
+
+  // Sort by elevation gain (biggest climbs first) and return top 10
+  return climbs.sort((a, b) => b.elevationGain - a.elevationGain).slice(0, 10)
 }
 
 /**
@@ -140,7 +229,7 @@ export function parseGpx(gpxText: string): ParsedGpx {
   let elevationLoss = 0
   const elevations: number[] = []
   const points: TrackPoint[] = []
-  const grades: number[] = [] // nagibi između tačaka
+  const cumulativeDistances: number[] = [0] // za računanje nagiba na većim segmentima
   let maxGradeUp = 0
   let maxGradeDown = 0
 
@@ -152,20 +241,13 @@ export function parseGpx(gpxText: string): ParsedGpx {
       const prev = rawPoints[i - 1]
       const segmentDistance = haversineDistance(prev.lat, prev.lng, point.lat, point.lng)
       totalDistance += segmentDistance
+      cumulativeDistances.push(totalDistance)
 
       const elevDiff = point.elevation - prev.elevation
       if (elevDiff > 0) {
         elevationGain += elevDiff
       } else {
         elevationLoss += Math.abs(elevDiff)
-      }
-
-      // Izračunaj nagib segmenta (%)
-      if (segmentDistance > 0) {
-        const grade = (elevDiff / segmentDistance) * 100
-        grades.push(grade)
-        if (grade > maxGradeUp) maxGradeUp = grade
-        if (grade < maxGradeDown) maxGradeDown = grade
       }
     }
 
@@ -181,11 +263,30 @@ export function parseGpx(gpxText: string): ParsedGpx {
     }
   }
 
+  // Računaj max nagib na segmentima od minimum 50m (da izbegnemo nerealne vrednosti)
+  const minSegmentForGrade = 50 // metara
+  for (let i = 0; i < rawPoints.length; i++) {
+    // Nađi tačku koja je bar 50m dalje
+    let j = i + 1
+    while (j < rawPoints.length && cumulativeDistances[j] - cumulativeDistances[i] < minSegmentForGrade) {
+      j++
+    }
+    if (j < rawPoints.length) {
+      const segmentDistance = cumulativeDistances[j] - cumulativeDistances[i]
+      const elevDiff = rawPoints[j].elevation - rawPoints[i].elevation
+      const grade = (elevDiff / segmentDistance) * 100
+
+      if (grade > maxGradeUp) maxGradeUp = grade
+      if (grade < maxGradeDown) maxGradeDown = grade
+    }
+  }
+
   const distanceKm = totalDistance / 1000
 
-  // Prosečni nagib (apsolutna vrednost svih nagiba)
-  const averageGrade = grades.length > 0
-    ? grades.reduce((sum, g) => sum + Math.abs(g), 0) / grades.length
+  // Prosečni nagib - ukupni uspon+pad podeljen sa distancom
+  const totalElevationChange = elevationGain + elevationLoss
+  const averageGrade = totalDistance > 0
+    ? (totalElevationChange / totalDistance) * 100
     : 0
 
   // ITRA bodovi: Distance (km) + (Elevation Gain (m) / 100)
@@ -237,7 +338,10 @@ export function parseGpx(gpxText: string): ParsedGpx {
     averageElevation: Math.round(averageElevation),
   }
 
-  return { stats, points }
+  // Detect top climbs
+  const topClimbs = detectClimbs(rawPoints)
+
+  return { stats, points, topClimbs }
 }
 
 /**
