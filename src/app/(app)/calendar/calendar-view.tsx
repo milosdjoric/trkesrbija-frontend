@@ -9,6 +9,7 @@ import {
   formatTime,
   isSameDay,
   SERBIAN_WEEKDAYS_SHORT,
+  toTitleCase,
 } from '@/lib/formatters'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
@@ -272,10 +273,10 @@ export function CalendarView({ racesByDate }: CalendarViewProps) {
                           </span>
                         </div>
                         <h3 className="mt-1 font-medium text-zinc-900 dark:text-white">
-                          {item.race.raceName || item.event.eventName}
+                          {toTitleCase(item.race.raceName) || toTitleCase(item.event.eventName)}
                         </h3>
                         <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
-                          {item.event.eventName}
+                          {toTitleCase(item.event.eventName)}
                         </p>
                       </div>
                       <div className="text-right text-sm text-zinc-500 dark:text-zinc-400">
