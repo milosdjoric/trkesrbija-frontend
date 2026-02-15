@@ -27,7 +27,7 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [activeLayer, setActiveLayer] = useState<'street' | 'topo' | 'satellite'>('street')
   const [hoveredPoint, setHoveredPoint] = useState<TrackPoint | null>(null)
-  const [hoverXPercent, setHoverXPercent] = useState<number>(0)
+  const [hoverX, setHoverX] = useState<number>(0) // pixel position from left
 
   const layersRef = useRef<{
     street?: L.TileLayer
@@ -192,8 +192,8 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
         return
       }
 
-      // Store exact cursor X position for dot placement
-      setHoverXPercent(relativeX * 100)
+      // Store exact cursor X position in pixels for dot placement
+      setHoverX(x)
 
       const index = Math.round(relativeX * (points.length - 1))
       const point = points[index]
@@ -363,14 +363,14 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
               <div
                 className="pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-blue-500 shadow-md"
                 style={{
-                  left: `${hoverXPercent}%`,
+                  left: hoverX,
                   top: `${100 - ((hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 100}%`,
                 }}
               />
               {/* Tooltip - follows cursor X position */}
               <div
                 className="pointer-events-none absolute top-0 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs text-white dark:bg-white dark:text-zinc-900"
-                style={{ left: `${hoverXPercent}%` }}
+                style={{ left: hoverX }}
               >
                 {hoveredPoint.distance.toFixed(1)} km | {Math.round(hoveredPoint.elevation)} m
               </div>
