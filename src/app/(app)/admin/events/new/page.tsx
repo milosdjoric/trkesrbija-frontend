@@ -7,6 +7,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
+import { toTitleCase } from '@/lib/formatters'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -206,7 +207,7 @@ export default function NewEventPage() {
               <input
                 type="text"
                 value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
+                onChange={(e) => setEventName(toTitleCase(e.target.value))}
                 placeholder="npr. Avala Trail"
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
                 required
@@ -339,7 +340,7 @@ export default function NewEventPage() {
                       <input
                         type="text"
                         value={race.raceName}
-                        onChange={(e) => updateRace(race.tempId, 'raceName', e.target.value)}
+                        onChange={(e) => updateRace(race.tempId, 'raceName', toTitleCase(e.target.value))}
                         placeholder="npr. Avala 18K"
                         className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800"
                       />

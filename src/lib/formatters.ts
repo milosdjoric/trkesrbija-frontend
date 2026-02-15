@@ -150,3 +150,31 @@ export function isSameDay(date1: Date, date2: Date): boolean {
     date1.getDate() === date2.getDate()
   )
 }
+
+/**
+ * Convert string to Title Case, preserving acronyms (all-caps words).
+ * Examples:
+ * - "BBKT 2026" → "BBKT 2026" (acronym preserved)
+ * - "avala trail" → "Avala Trail"
+ * - "trka ZA decu" → "Trka ZA Decu"
+ * - "10K" → "10K" (preserved)
+ */
+export function toTitleCase(str: string | null | undefined): string {
+  if (!str) return ''
+
+  return str
+    .split(' ')
+    .map((word) => {
+      // If word is all uppercase (acronym) or contains numbers, preserve it
+      if (word === word.toUpperCase() && word.length > 1) {
+        return word
+      }
+      // If word contains numbers (like "10k", "5km"), just capitalize first letter
+      if (/\d/.test(word)) {
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      }
+      // Standard title case: first letter uppercase, rest lowercase
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    })
+    .join(' ')
+}

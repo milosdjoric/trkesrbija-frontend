@@ -7,6 +7,7 @@ import { Heading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
+import { toTitleCase } from '@/lib/formatters'
 import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -186,6 +187,47 @@ export default function EventsMassEditPage() {
     }
   }
 
+  // Normalize all event names to Title Case
+  async function handleNormalizeNames() {
+    const eventsToNormalize = events.filter((e) => {
+      const normalized = toTitleCase(e.eventName)
+      return normalized !== e.eventName
+    })
+
+    if (eventsToNormalize.length === 0) {
+      toast('Svi nazivi su već normalizovani', 'success')
+      return
+    }
+
+    const confirmed = window.confirm(
+      `Da li želite da normalizujete ${eventsToNormalize.length} naziva događaja u Title Case format?`
+    )
+    if (!confirmed) return
+
+    setIsBulkUpdating(true)
+    let successCount = 0
+    let errorCount = 0
+
+    for (const event of eventsToNormalize) {
+      const normalizedName = toTitleCase(event.eventName)
+      try {
+        await gql(UPDATE_EVENT_MUTATION, { eventId: event.id, input: { eventName: normalizedName } }, { accessToken })
+        setEvents((prev) => prev.map((e) => (e.id === event.id ? { ...e, eventName: normalizedName } : e)))
+        successCount++
+      } catch (err) {
+        console.error(`Failed to normalize event ${event.id}:`, err)
+        errorCount++
+      }
+    }
+
+    setIsBulkUpdating(false)
+    if (errorCount === 0) {
+      toast(`Normalizovano ${successCount} naziva`, 'success')
+    } else {
+      toast(`Normalizovano ${successCount}, greške: ${errorCount}`, 'error')
+    }
+  }
+
   if (authLoading || loading) return <LoadingState />
   if (!user || user.role !== 'ADMIN') return null
 
@@ -220,10 +262,21 @@ export default function EventsMassEditPage() {
         </Link>
       </div>
 
-      <Heading>Masovna izmena dogadjaja</Heading>
-      <p className="mt-1 text-sm text-zinc-500">
-        Dupli klik na celiju za izmenu. Enter za cuvanje, Escape za otkaz.
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <Heading>Masovna izmena dogadjaja</Heading>
+          <p className="mt-1 text-sm text-zinc-500">
+            Dupli klik na celiju za izmenu. Enter za cuvanje, Escape za otkaz.
+          </p>
+        </div>
+        <button
+          onClick={handleNormalizeNames}
+          disabled={isBulkUpdating}
+          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 disabled:opacity-50"
+        >
+          {isBulkUpdating ? 'Normalizujem...' : 'Normalizuj nazive (Title Case)'}
+        </button>
+      </div>
 
       {/* Filters */}
       <div className="mt-6 flex flex-wrap gap-4">

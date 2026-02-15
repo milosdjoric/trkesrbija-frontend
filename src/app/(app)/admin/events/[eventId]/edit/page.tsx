@@ -12,6 +12,7 @@ import { LoadingState } from '@/components/loading-state'
 import { SocialMediaInput } from '@/components/social-media-input'
 import { TagsInput } from '@/components/tags-input'
 import { useToast } from '@/components/toast'
+import { toTitleCase } from '@/lib/formatters'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -301,7 +302,7 @@ export default function EditEventPage() {
               <input
                 type="text"
                 value={eventName}
-                onChange={(e) => setEventName(e.target.value)}
+                onChange={(e) => setEventName(toTitleCase(e.target.value))}
                 placeholder="npr. Avala Trail"
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
                 required

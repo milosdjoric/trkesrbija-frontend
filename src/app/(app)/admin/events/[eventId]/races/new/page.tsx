@@ -7,9 +7,10 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
+import { toTitleCase } from '@/lib/formatters'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 type EventData = {
   id: string
@@ -181,7 +182,7 @@ export default function NewRacePage() {
               <input
                 type="text"
                 value={raceName}
-                onChange={(e) => setRaceName(e.target.value)}
+                onChange={(e) => setRaceName(toTitleCase(e.target.value))}
                 placeholder="npr. Avala 18K"
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
                 required
