@@ -339,14 +339,20 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
             <defs>
               <linearGradient id="elevationGradient" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.05" />
+                <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
               </linearGradient>
             </defs>
             {/* Area fill */}
             <path d={generateAreaPath()} fill="url(#elevationGradient)" />
-            {/* Line */}
-            <path d={generateElevationPath()} fill="none" stroke="#10b981" strokeWidth="0.5" />
+            {/* Line - using vector-effect to prevent stroke scaling */}
+            <path
+              d={generateElevationPath()}
+              fill="none"
+              stroke="#10b981"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+            />
           </svg>
 
           {/* Hover tooltip */}
