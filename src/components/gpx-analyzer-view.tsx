@@ -27,7 +27,6 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [activeLayer, setActiveLayer] = useState<'street' | 'topo' | 'satellite'>('street')
   const [hoveredPoint, setHoveredPoint] = useState<TrackPoint | null>(null)
-  const [hoverX, setHoverX] = useState<number>(0) // pixel position from left
 
   const layersRef = useRef<{
     street?: L.TileLayer
@@ -185,15 +184,17 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
       const x = e.clientX - rect.left
       const width = rect.width
 
-      // SVG takes full width, so calculate relative position directly
-      const relativeX = x / width
+      // Chart area is from 10% to 98% of width (same as gpx-map.tsx)
+      const chartStart = width * 0.1
+      const chartEnd = width * 0.98
+      const chartWidth = chartEnd - chartStart
+
+      // Calculate relative position within chart area
+      const relativeX = (x - chartStart) / chartWidth
       if (relativeX < 0 || relativeX > 1) {
         setHoveredPoint(null)
         return
       }
-
-      // Store exact cursor X position in pixels for dot placement
-      setHoverX(x)
 
       const index = Math.round(relativeX * (points.length - 1))
       const point = points[index]
@@ -207,47 +208,6 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
   const handleProfileLeave = useCallback(() => {
     setHoveredPoint(null)
   }, [])
-
-  // Generate elevation profile SVG path
-  const generateElevationPath = () => {
-    if (points.length < 2) return ''
-
-    const minElev = stats.minElevation
-    const maxElev = stats.maxElevation
-    const elevRange = maxElev - minElev || 1
-    const maxDist = stats.distance
-
-    const svgWidth = 100
-    const svgHeight = 100
-
-    const pathPoints = points.map((p, i) => {
-      const x = (p.distance / maxDist) * svgWidth
-      const y = svgHeight - ((p.elevation - minElev) / elevRange) * svgHeight
-      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`
-    })
-
-    return pathPoints.join(' ')
-  }
-
-  const generateAreaPath = () => {
-    if (points.length < 2) return ''
-
-    const minElev = stats.minElevation
-    const maxElev = stats.maxElevation
-    const elevRange = maxElev - minElev || 1
-    const maxDist = stats.distance
-
-    const svgWidth = 100
-    const svgHeight = 100
-
-    const pathPoints = points.map((p) => {
-      const x = (p.distance / maxDist) * svgWidth
-      const y = svgHeight - ((p.elevation - minElev) / elevRange) * svgHeight
-      return `${x},${y}`
-    })
-
-    return `M 0,${svgHeight} L ${pathPoints.join(' L ')} L 100,${svgHeight} Z`
-  }
 
   return (
     <div className="space-y-6">
@@ -330,62 +290,96 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
 
       {/* Elevation Profile */}
       <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-        <h3 className="mb-3 text-sm font-medium text-zinc-900 dark:text-white">Visinski profil</h3>
+        <div className="mb-2 flex items-center justify-between">
+          <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Visinski profil</span>
+          {hoveredPoint && (
+            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+              {hoveredPoint.distance.toFixed(1)} km · {Math.round(hoveredPoint.elevation)} m
+            </span>
+          )}
+        </div>
         <div
-          className="relative h-32 cursor-crosshair"
+          className="relative h-[120px] w-full cursor-crosshair rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50"
           onMouseMove={handleProfileHover}
           onMouseLeave={handleProfileLeave}
         >
-          {/* SVG Chart */}
-          <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="h-full w-full">
-            <defs>
-              <linearGradient id="elevationGradient" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
-              </linearGradient>
-            </defs>
-            {/* Area fill */}
-            <path d={generateAreaPath()} fill="url(#elevationGradient)" />
-            {/* Line - using vector-effect to prevent stroke scaling */}
-            <path
-              d={generateElevationPath()}
-              fill="none"
-              stroke="#10b981"
-              strokeWidth="2"
-              vectorEffect="non-scaling-stroke"
-            />
-          </svg>
+          {/* Y-axis labels - positioned outside SVG */}
+          <div className="pointer-events-none absolute left-2 top-2 text-[10px] text-zinc-400">{stats.maxElevation}m</div>
+          <div className="pointer-events-none absolute bottom-6 left-2 text-[10px] text-zinc-400">{stats.minElevation}m</div>
 
-          {/* Hover indicator dot and tooltip */}
+          {/* X-axis labels - positioned outside SVG */}
+          <div className="pointer-events-none absolute bottom-1 left-10 text-[10px] text-zinc-400">0</div>
+          <div className="pointer-events-none absolute bottom-1 right-2 text-[10px] text-zinc-400">{stats.distance.toFixed(1)}km</div>
+
+          {/* Hover indicator - HTML elements for perfect positioning */}
           {hoveredPoint && (
             <>
-              {/* Blue dot - X follows cursor exactly, Y follows elevation profile */}
+              {/* Vertical line */}
+              <div
+                className="pointer-events-none absolute top-[5%] h-[70%] w-px border-l border-dashed border-blue-500"
+                style={{ left: `${10 + (hoveredPoint.distance / stats.distance) * 88}%` }}
+              />
+              {/* Circle marker */}
               <div
                 className="pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-blue-500 shadow-md"
                 style={{
-                  left: hoverX,
-                  top: `${100 - ((hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 100}%`,
+                  left: `${10 + (hoveredPoint.distance / stats.distance) * 88}%`,
+                  top: `${5 + (1 - (hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70}%`,
                 }}
               />
-              {/* Tooltip - follows cursor X position */}
-              <div
-                className="pointer-events-none absolute top-0 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs text-white dark:bg-white dark:text-zinc-900"
-                style={{ left: hoverX }}
-              >
-                {hoveredPoint.distance.toFixed(1)} km | {Math.round(hoveredPoint.elevation)} m
-              </div>
             </>
           )}
 
-          {/* Axis labels */}
-          <div className="absolute bottom-0 left-0 text-xs text-zinc-500 dark:text-zinc-400">0 km</div>
-          <div className="absolute bottom-0 right-0 text-xs text-zinc-500 dark:text-zinc-400">
-            {stats.distance.toFixed(1)} km
-          </div>
-          <div className="absolute left-0 top-0 text-xs text-zinc-500 dark:text-zinc-400">{stats.maxElevation} m</div>
-          <div className="absolute bottom-0 left-0 -translate-y-4 text-xs text-zinc-500 dark:text-zinc-400">
-            {stats.minElevation} m
-          </div>
+          {/* SVG for the chart only */}
+          <svg
+            className="pointer-events-none absolute inset-0 h-full w-full"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+          >
+            {/* Grid lines */}
+            <defs>
+              <pattern id="grid" width="10" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-zinc-300 dark:text-zinc-600" />
+              </pattern>
+              <linearGradient id="elevationGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#10b981" />
+                <stop offset="100%" stopColor="#10b981" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            <rect x="10" y="5" width="88" height="70" fill="url(#grid)" />
+
+            {/* Elevation area */}
+            <path
+              d={`
+                M 10 75
+                ${points.map((point) => {
+                  const x = 10 + (point.distance / stats.distance) * 88
+                  const y = 75 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70
+                  return `L ${x} ${y}`
+                }).join(' ')}
+                L 98 75
+                Z
+              `}
+              fill="url(#elevationGradient)"
+              opacity="0.3"
+            />
+
+            {/* Elevation line */}
+            <path
+              d={`
+                M ${10 + ((points[0]?.distance || 0) / stats.distance) * 88} ${75 - ((points[0]?.elevation || 0) - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1) * 70}
+                ${points.slice(1).map((point) => {
+                  const x = 10 + (point.distance / stats.distance) * 88
+                  const y = 75 - ((point.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 70
+                  return `L ${x} ${y}`
+                }).join(' ')}
+              `}
+              fill="none"
+              stroke="#10b981"
+              strokeWidth="1.5"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
         </div>
       </div>
     </div>
