@@ -27,6 +27,7 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [activeLayer, setActiveLayer] = useState<'street' | 'topo' | 'satellite'>('street')
   const [hoveredPoint, setHoveredPoint] = useState<TrackPoint | null>(null)
+  const [hoverXPercent, setHoverXPercent] = useState<number>(0)
 
   const layersRef = useRef<{
     street?: L.TileLayer
@@ -190,6 +191,9 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
         setHoveredPoint(null)
         return
       }
+
+      // Store exact cursor X position for dot placement
+      setHoverXPercent(relativeX * 100)
 
       const index = Math.round(relativeX * (points.length - 1))
       const point = points[index]
@@ -355,16 +359,19 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
           {/* Hover indicator dot and tooltip */}
           {hoveredPoint && (
             <>
-              {/* Blue dot on the profile line */}
+              {/* Blue dot - X follows cursor exactly, Y follows elevation profile */}
               <div
                 className="pointer-events-none absolute size-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white bg-blue-500 shadow-md"
                 style={{
-                  left: `${(hoveredPoint.distance / stats.distance) * 100}%`,
+                  left: `${hoverXPercent}%`,
                   top: `${100 - ((hoveredPoint.elevation - stats.minElevation) / (stats.maxElevation - stats.minElevation || 1)) * 100}%`,
                 }}
               />
-              {/* Tooltip */}
-              <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs text-white dark:bg-white dark:text-zinc-900">
+              {/* Tooltip - follows cursor X position */}
+              <div
+                className="pointer-events-none absolute top-0 -translate-x-1/2 rounded bg-zinc-900 px-2 py-1 text-xs text-white dark:bg-white dark:text-zinc-900"
+                style={{ left: `${hoverXPercent}%` }}
+              >
                 {hoveredPoint.distance.toFixed(1)} km | {Math.round(hoveredPoint.elevation)} m
               </div>
             </>
