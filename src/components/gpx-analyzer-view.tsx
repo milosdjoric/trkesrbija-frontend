@@ -184,11 +184,8 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
       const x = e.clientX - rect.left
       const width = rect.width
 
-      const chartStart = width * 0.1
-      const chartEnd = width * 0.98
-      const chartWidth = chartEnd - chartStart
-
-      const relativeX = (x - chartStart) / chartWidth
+      // SVG takes full width, so calculate relative position directly
+      const relativeX = x / width
       if (relativeX < 0 || relativeX > 1) {
         setHoveredPoint(null)
         return
