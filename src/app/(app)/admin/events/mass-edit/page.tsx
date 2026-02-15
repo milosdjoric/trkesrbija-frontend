@@ -74,6 +74,12 @@ export default function EventsMassEditPage() {
   const [showPast, setShowPast] = useState(false)
   const loadedRef = useRef(false)
 
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkField, setBulkField] = useState<string>('')
+  const [bulkValue, setBulkValue] = useState<string>('')
+  const [isBulkUpdating, setIsBulkUpdating] = useState(false)
+
   const loadData = useCallback(async () => {
     if (!accessToken || loadedRef.current) return
     loadedRef.current = true
@@ -114,6 +120,69 @@ export default function EventsMassEditPage() {
       const message = err instanceof Error ? err.message : 'Greska pri cuvanju'
       toast(message, 'error')
       throw err // Re-throw so EditableCell knows it failed
+    }
+  }
+
+  // Selection handlers
+  function toggleSelect(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  function toggleSelectAll(filteredIds: string[]) {
+    const allSelected = filteredIds.every((id) => selectedIds.has(id))
+    if (allSelected) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(filteredIds))
+    }
+  }
+
+  // Bulk update handler
+  async function handleBulkUpdate() {
+    if (!bulkField || selectedIds.size === 0) return
+
+    setIsBulkUpdating(true)
+    let successCount = 0
+    let errorCount = 0
+
+    // Parse bulk value based on field type
+    let parsedValue: string | string[] | null = bulkValue
+    if (bulkField === 'type' && bulkValue === '') {
+      parsedValue = null
+    } else if (bulkField === 'tags') {
+      parsedValue = bulkValue
+        ? bulkValue.split(',').map((t) => t.trim()).filter(Boolean)
+        : []
+    }
+
+    for (const eventId of selectedIds) {
+      try {
+        await gql(UPDATE_EVENT_MUTATION, { eventId, input: { [bulkField]: parsedValue } }, { accessToken })
+        setEvents((prev) => prev.map((e) => (e.id === eventId ? { ...e, [bulkField]: parsedValue } : e)))
+        successCount++
+      } catch (err) {
+        console.error(`Failed to update event ${eventId}:`, err)
+        errorCount++
+      }
+    }
+
+    setIsBulkUpdating(false)
+    setSelectedIds(new Set())
+    setBulkField('')
+    setBulkValue('')
+
+    if (errorCount === 0) {
+      toast(`Azurirano ${successCount} dogadjaja`, 'success')
+    } else {
+      toast(`Azurirano ${successCount}, greske: ${errorCount}`, 'error')
     }
   }
 
@@ -182,13 +251,94 @@ export default function EventsMassEditPage() {
       {/* Results count */}
       <p className="mt-4 text-sm text-zinc-500">
         Prikazano {filteredEvents.length} od {events.length} dogadjaja
+        {selectedIds.size > 0 && ` • Selektovano: ${selectedIds.size}`}
       </p>
+
+      {/* Bulk action toolbar */}
+      {selectedIds.size > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+          <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+            Bulk akcija:
+          </span>
+          <select
+            value={bulkField}
+            onChange={(e) => {
+              setBulkField(e.target.value)
+              setBulkValue('')
+            }}
+            className="rounded border border-blue-300 bg-white px-2 py-1 text-sm dark:border-blue-600 dark:bg-zinc-800"
+          >
+            <option value="">Izaberi polje...</option>
+            <option value="type">Tip</option>
+            <option value="tags">Tagovi</option>
+            <option value="registrationSite">Sajt za prijave</option>
+          </select>
+
+          {bulkField === 'type' && (
+            <select
+              value={bulkValue}
+              onChange={(e) => setBulkValue(e.target.value)}
+              className="rounded border border-blue-300 bg-white px-2 py-1 text-sm dark:border-blue-600 dark:bg-zinc-800"
+            >
+              <option value="">Izaberi...</option>
+              {TYPE_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {bulkField === 'tags' && (
+            <input
+              type="text"
+              value={bulkValue}
+              onChange={(e) => setBulkValue(e.target.value)}
+              placeholder="tag1, tag2, tag3..."
+              className="rounded border border-blue-300 bg-white px-2 py-1 text-sm dark:border-blue-600 dark:bg-zinc-800"
+            />
+          )}
+
+          {bulkField === 'registrationSite' && (
+            <input
+              type="text"
+              value={bulkValue}
+              onChange={(e) => setBulkValue(e.target.value)}
+              placeholder="https://..."
+              className="rounded border border-blue-300 bg-white px-2 py-1 text-sm dark:border-blue-600 dark:bg-zinc-800"
+            />
+          )}
+
+          <button
+            onClick={handleBulkUpdate}
+            disabled={!bulkField || isBulkUpdating}
+            className="rounded bg-blue-600 px-3 py-1 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isBulkUpdating ? 'Ažuriranje...' : `Primeni na ${selectedIds.size}`}
+          </button>
+
+          <button
+            onClick={() => setSelectedIds(new Set())}
+            className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400"
+          >
+            Poništi selekciju
+          </button>
+        </div>
+      )}
 
       {/* Table */}
       <div className="mt-4 overflow-x-auto">
         <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
           <thead className="bg-zinc-50 dark:bg-zinc-800">
             <tr>
+              <th className="w-[30px] px-1 py-2">
+                <input
+                  type="checkbox"
+                  checked={filteredEvents.length > 0 && filteredEvents.every((e) => selectedIds.has(e.id))}
+                  onChange={() => toggleSelectAll(filteredEvents.map((e) => e.id))}
+                  className="size-3 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+                />
+              </th>
               <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Naziv
               </th>
@@ -215,13 +365,24 @@ export default function EventsMassEditPage() {
           <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
             {filteredEvents.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-sm text-zinc-500">
+                <td colSpan={8} className="px-4 py-8 text-center text-sm text-zinc-500">
                   {search ? 'Nema rezultata pretrage' : 'Nema dogadjaja'}
                 </td>
               </tr>
             ) : (
               filteredEvents.map((event) => (
-                <tr key={event.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+                <tr
+                  key={event.id}
+                  className={`hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${selectedIds.has(event.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+                >
+                  <td className="w-[30px] px-1 py-1">
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(event.id)}
+                      onChange={() => toggleSelect(event.id)}
+                      className="size-3 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+                    />
+                  </td>
                   <td className="w-[140px] overflow-hidden px-1 py-1">
                     <EditableCell
                       value={event.eventName}
