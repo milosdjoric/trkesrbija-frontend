@@ -13,6 +13,16 @@ export type GpxStats = {
   startPoint: { lat: number; lng: number } | null
   endPoint: { lat: number; lng: number } | null
   name: string | null
+  // Advanced stats
+  averageGrade: number // % - prosečni nagib
+  maxGradeUp: number // % - maksimalni uspon
+  maxGradeDown: number // % - maksimalni pad
+  itraPoints: number // ITRA bodovi
+  effortDistance: number // km - ekvivalentna ravna distanca
+  difficulty: 'XXS' | 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL' // težinska kategorija
+  difficultyLabel: string // srpski naziv kategorije
+  isLoop: boolean // da li je kružna ruta
+  averageElevation: number // m - prosečna visina
 }
 
 export type TrackPoint = {
@@ -25,6 +35,19 @@ export type TrackPoint = {
 export type ParsedGpx = {
   stats: GpxStats
   points: TrackPoint[]
+}
+
+/**
+ * Calculate ITRA difficulty category based on ITRA points
+ */
+function getItraDifficulty(itraPoints: number): { difficulty: GpxStats['difficulty']; label: string } {
+  if (itraPoints < 25) return { difficulty: 'XXS', label: 'Veoma laka' }
+  if (itraPoints < 45) return { difficulty: 'XS', label: 'Laka' }
+  if (itraPoints < 75) return { difficulty: 'S', label: 'Srednja' }
+  if (itraPoints < 115) return { difficulty: 'M', label: 'Teška' }
+  if (itraPoints < 155) return { difficulty: 'L', label: 'Veoma teška' }
+  if (itraPoints < 210) return { difficulty: 'XL', label: 'Ultra' }
+  return { difficulty: 'XXL', label: 'Ekstremna' }
 }
 
 /**
@@ -117,6 +140,9 @@ export function parseGpx(gpxText: string): ParsedGpx {
   let elevationLoss = 0
   const elevations: number[] = []
   const points: TrackPoint[] = []
+  const grades: number[] = [] // nagibi između tačaka
+  let maxGradeUp = 0
+  let maxGradeDown = 0
 
   for (let i = 0; i < rawPoints.length; i++) {
     const point = rawPoints[i]
@@ -124,13 +150,22 @@ export function parseGpx(gpxText: string): ParsedGpx {
 
     if (i > 0) {
       const prev = rawPoints[i - 1]
-      totalDistance += haversineDistance(prev.lat, prev.lng, point.lat, point.lng)
+      const segmentDistance = haversineDistance(prev.lat, prev.lng, point.lat, point.lng)
+      totalDistance += segmentDistance
 
       const elevDiff = point.elevation - prev.elevation
       if (elevDiff > 0) {
         elevationGain += elevDiff
       } else {
         elevationLoss += Math.abs(elevDiff)
+      }
+
+      // Izračunaj nagib segmenta (%)
+      if (segmentDistance > 0) {
+        const grade = (elevDiff / segmentDistance) * 100
+        grades.push(grade)
+        if (grade > maxGradeUp) maxGradeUp = grade
+        if (grade < maxGradeDown) maxGradeDown = grade
       }
     }
 
@@ -146,8 +181,39 @@ export function parseGpx(gpxText: string): ParsedGpx {
     }
   }
 
+  const distanceKm = totalDistance / 1000
+
+  // Prosečni nagib (apsolutna vrednost svih nagiba)
+  const averageGrade = grades.length > 0
+    ? grades.reduce((sum, g) => sum + Math.abs(g), 0) / grades.length
+    : 0
+
+  // ITRA bodovi: Distance (km) + (Elevation Gain (m) / 100)
+  const itraPoints = distanceKm + elevationGain / 100
+
+  // Effort distance (Švajcarska formula): Distance + (D+ / 100) + (D- / 200)
+  const effortDistance = distanceKm + elevationGain / 100 + elevationLoss / 200
+
+  // Težinska kategorija
+  const { difficulty, label: difficultyLabel } = getItraDifficulty(itraPoints)
+
+  // Provera da li je kružna ruta (start i cilj unutar 500m)
+  const isLoop = rawPoints.length >= 2
+    ? haversineDistance(
+        rawPoints[0].lat,
+        rawPoints[0].lng,
+        rawPoints[rawPoints.length - 1].lat,
+        rawPoints[rawPoints.length - 1].lng
+      ) < 500
+    : false
+
+  // Prosečna visina
+  const averageElevation = elevations.length > 0
+    ? elevations.reduce((sum, e) => sum + e, 0) / elevations.length
+    : 0
+
   const stats: GpxStats = {
-    distance: totalDistance / 1000, // km
+    distance: distanceKm,
     elevationGain: Math.round(elevationGain),
     elevationLoss: Math.round(elevationLoss),
     minElevation: elevations.length > 0 ? Math.round(Math.min(...elevations)) : 0,
@@ -159,6 +225,16 @@ export function parseGpx(gpxText: string): ParsedGpx {
         ? { lat: rawPoints[rawPoints.length - 1].lat, lng: rawPoints[rawPoints.length - 1].lng }
         : null,
     name,
+    // Advanced stats
+    averageGrade: Math.round(averageGrade * 10) / 10,
+    maxGradeUp: Math.round(maxGradeUp * 10) / 10,
+    maxGradeDown: Math.round(Math.abs(maxGradeDown) * 10) / 10,
+    itraPoints: Math.round(itraPoints * 10) / 10,
+    effortDistance: Math.round(effortDistance * 10) / 10,
+    difficulty,
+    difficultyLabel,
+    isLoop,
+    averageElevation: Math.round(averageElevation),
   }
 
   return { stats, points }

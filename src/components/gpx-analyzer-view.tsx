@@ -288,6 +288,86 @@ export function GpxAnalyzerView({ stats, points }: GpxAnalyzerViewProps) {
         </button>
       </div>
 
+      {/* Advanced Stats */}
+      <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+        <h3 className="mb-4 text-sm font-medium text-zinc-900 dark:text-white">Napredne statistike</h3>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {/* ITRA Points */}
+          <div>
+            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.itraPoints}</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">ITRA bodovi</div>
+          </div>
+
+          {/* Difficulty */}
+          <div>
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                  stats.difficulty === 'XXS' || stats.difficulty === 'XS'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    : stats.difficulty === 'S'
+                      ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                      : stats.difficulty === 'M'
+                        ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                }`}
+              >
+                {stats.difficulty}
+              </span>
+              <span className="text-sm text-zinc-600 dark:text-zinc-300">{stats.difficultyLabel}</span>
+            </div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Težina</div>
+          </div>
+
+          {/* Effort Distance */}
+          <div>
+            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Effort distanca</div>
+          </div>
+
+          {/* Average Elevation */}
+          <div>
+            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageElevation} m</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Prosečna visina</div>
+          </div>
+
+          {/* Average Grade */}
+          <div>
+            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageGrade}%</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Prosečni nagib</div>
+          </div>
+
+          {/* Max Grade Up */}
+          <div>
+            <div className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">+{stats.maxGradeUp}%</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Max uspon</div>
+          </div>
+
+          {/* Max Grade Down */}
+          <div>
+            <div className="text-lg font-semibold text-red-600 dark:text-red-400">-{stats.maxGradeDown}%</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Max pad</div>
+          </div>
+
+          {/* Loop */}
+          <div>
+            <div className="text-lg font-semibold text-zinc-900 dark:text-white">
+              {stats.isLoop ? (
+                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                  <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  Da
+                </span>
+              ) : (
+                <span className="text-zinc-500 dark:text-zinc-400">Ne</span>
+              )}
+            </div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">Kružna ruta</div>
+          </div>
+        </div>
+      </div>
+
       {/* Elevation Profile */}
       <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
         <div className="mb-2 flex items-center justify-between">
