@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { ClimbSegment, GpxStats, TrackPoint } from '@/lib/gpx-parser'
@@ -28,6 +28,15 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [activeLayer, setActiveLayer] = useState<'street' | 'topo' | 'satellite'>('street')
   const [hoveredPoint, setHoveredPoint] = useState<TrackPoint | null>(null)
+  const [climbSort, setClimbSort] = useState<'elevation' | 'position' | 'grade'>('elevation')
+
+  const sortedClimbs = useMemo(() => {
+    return [...topClimbs].sort((a, b) => {
+      if (climbSort === 'position') return a.startKm - b.startKm
+      if (climbSort === 'grade') return b.averageGrade - a.averageGrade
+      return b.elevationGain - a.elevationGain // default: elevation
+    })
+  }, [topClimbs, climbSort])
 
   const layersRef = useRef<{
     street?: L.TileLayer
@@ -524,11 +533,28 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
       {/* Top Climbs */}
       {topClimbs.length > 0 && (
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <h3 className="mb-2 text-sm font-medium text-zinc-900 dark:text-white">
-            Top {topClimbs.length} uspon{topClimbs.length === 1 ? '' : topClimbs.length < 5 ? 'a' : 'a'}
-          </h3>
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-sm font-medium text-zinc-900 dark:text-white">
+              Top {topClimbs.length} uspon{topClimbs.length === 1 ? '' : topClimbs.length < 5 ? 'a' : 'a'}
+            </h3>
+            <div className="flex gap-1 rounded-lg bg-zinc-100 p-0.5 dark:bg-zinc-700">
+              {(['elevation', 'position', 'grade'] as const).map((sort) => (
+                <button
+                  key={sort}
+                  onClick={() => setClimbSort(sort)}
+                  className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
+                    climbSort === sort
+                      ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-white'
+                      : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+                  }`}
+                >
+                  {sort === 'elevation' ? 'D+' : sort === 'position' ? 'km' : '%'}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="space-y-1">
-            {topClimbs.map((climb, index) => (
+            {sortedClimbs.map((climb, index) => (
               <div
                 key={index}
                 className="flex items-center gap-3 rounded bg-zinc-50 px-2 py-1.5 dark:bg-zinc-800/50"
