@@ -189,25 +189,25 @@ export function CalendarView({ racesByDate }: CalendarViewProps) {
               type="button"
               onClick={() => setViewMode('single')}
               className={clsx(
-                'rounded px-2 py-1 text-xs font-medium transition-colors',
+                'rounded px-2.5 py-1 text-xs font-medium transition-colors',
                 viewMode === 'single'
                   ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-white'
                   : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
               )}
             >
-              1
+              1 mesec
             </button>
             <button
               type="button"
               onClick={() => setViewMode('double')}
               className={clsx(
-                'rounded px-2 py-1 text-xs font-medium transition-colors',
+                'rounded px-2.5 py-1 text-xs font-medium transition-colors',
                 viewMode === 'double'
                   ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-white'
                   : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
               )}
             >
-              2
+              2 meseca
             </button>
           </div>
         </div>
