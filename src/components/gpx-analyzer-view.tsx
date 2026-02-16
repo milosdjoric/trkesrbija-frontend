@@ -578,6 +578,9 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
                   <span className="text-xs text-zinc-500 dark:text-zinc-400">
                     +{climb.elevationGain}m
                   </span>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {Math.round(climb.elevationGain / climb.length)} m/km
+                  </span>
                 </div>
 
                 {/* Grade badge */}
