@@ -533,7 +533,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
       {/* Top Climbs */}
       {topClimbs.length > 0 && (
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-1 flex items-center justify-between">
             <h3 className="text-sm font-medium text-zinc-900 dark:text-white">
               Top {topClimbs.length} uspon{topClimbs.length === 1 ? '' : topClimbs.length < 5 ? 'a' : 'a'}
             </h3>
@@ -553,6 +553,9 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               ))}
             </div>
           </div>
+          <p className="mb-2 text-[10px] text-zinc-400 dark:text-zinc-500">
+            Kriterijumi: min 50m D+, min 3% nagib, min 200m dužina
+          </p>
           <div className="space-y-1">
             {sortedClimbs.map((climb, index) => (
               <div
