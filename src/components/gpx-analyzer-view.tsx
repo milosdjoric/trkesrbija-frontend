@@ -307,8 +307,8 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {/* ITRA Points */}
-          <div className="min-h-[75px]">
-            <div className="flex items-baseline gap-2">
+          <div>
+            <div className="flex min-h-[30px] items-baseline gap-2">
               <span className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.itraPoints}</span>
               <span className="text-xs text-zinc-400 dark:text-zinc-500">km-effort</span>
             </div>
@@ -319,8 +319,8 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           </div>
 
           {/* Difficulty */}
-          <div className="min-h-[75px]">
-            <div className="flex items-center gap-2">
+          <div>
+            <div className="flex min-h-[30px] items-center gap-2">
               <span
                 className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                   stats.difficulty === 'XXS' || stats.difficulty === 'XS'
@@ -349,8 +349,8 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           </div>
 
           {/* Effort Distance */}
-          <div className="min-h-[75px]">
-            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
+          <div>
+            <div className="flex min-h-[30px] items-center text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Effort distanca</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
               Koliko bi ova ruta bila teška na ravnom terenu
@@ -358,20 +358,20 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           </div>
 
           {/* Average Elevation */}
-          <div className="min-h-[75px]">
-            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageElevation} m</div>
+          <div>
+            <div className="min-h-[30px] text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageElevation} m</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Prosečna visina</div>
           </div>
 
           {/* Average Grade */}
           <div>
-            <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageGrade}%</div>
+            <div className="min-h-[30px] text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageGrade}%</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Prosečni nagib</div>
           </div>
 
           {/* Max Grade Up */}
           <div>
-            <div className="text-lg font-semibold text-emerald-600 dark:text-emerald-400">+{stats.maxGradeUp}%</div>
+            <div className="min-h-[30px] text-lg font-semibold text-emerald-600 dark:text-emerald-400">+{stats.maxGradeUp}%</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Max uspon</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
               Najstrmiji segment (min 100m)
@@ -380,7 +380,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
           {/* Max Grade Down */}
           <div>
-            <div className="text-lg font-semibold text-red-600 dark:text-red-400">-{stats.maxGradeDown}%</div>
+            <div className="min-h-[30px] text-lg font-semibold text-red-600 dark:text-red-400">-{stats.maxGradeDown}%</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Max pad</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
               Najstrmiji spust (min 100m)
@@ -389,7 +389,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
           {/* Loop */}
           <div>
-            <div className="text-lg font-semibold text-zinc-900 dark:text-white">
+            <div className="min-h-[30px] text-lg font-semibold text-zinc-900 dark:text-white">
               {stats.isLoop ? (
                 <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                   <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
