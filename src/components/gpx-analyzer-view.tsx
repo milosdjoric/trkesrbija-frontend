@@ -307,7 +307,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {/* ITRA Points */}
-          <div>
+          <div className="min-h-[75px]">
             <div className="flex items-baseline gap-2">
               <span className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.itraPoints}</span>
               <span className="text-xs text-zinc-400 dark:text-zinc-500">km-effort</span>
@@ -319,7 +319,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           </div>
 
           {/* Difficulty */}
-          <div>
+          <div className="min-h-[75px]">
             <div className="flex items-center gap-2">
               <span
                 className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
@@ -336,7 +336,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               </span>
               <span className="text-sm text-zinc-600 dark:text-zinc-300">{stats.difficultyLabel}</span>
             </div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Težina</div>
+            <div className="text-xs text-zinc-500 dark:text-zinc-400">ITRA kategorizacija težine staze</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
               {stats.difficulty === 'XXS' && '0 ITRA poena (0-24 km-effort)'}
               {stats.difficulty === 'XS' && '1 ITRA poen (25-44 km-effort)'}
@@ -349,16 +349,16 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           </div>
 
           {/* Effort Distance */}
-          <div>
+          <div className="min-h-[75px]">
             <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Effort distanca</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              Formula: km + D+/100 + D-/200
+              Koliko bi ova ruta bila teška na ravnom terenu
             </div>
           </div>
 
           {/* Average Elevation */}
-          <div>
+          <div className="min-h-[75px]">
             <div className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageElevation} m</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Prosečna visina</div>
           </div>
