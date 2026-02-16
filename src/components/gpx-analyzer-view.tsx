@@ -374,7 +374,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             <div className="min-h-[30px] text-lg font-semibold text-emerald-600 dark:text-emerald-400">+{stats.maxGradeUp}%</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Max uspon</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              Najstrmiji segment (min 100m)
+              Najstrmiji segment (min 300m)
             </div>
           </div>
 
