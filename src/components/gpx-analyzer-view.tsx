@@ -353,7 +353,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             <div className="flex min-h-[30px] items-center text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
             <div className="text-xs text-zinc-500 dark:text-zinc-400">Effort distanca</div>
             <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
-              Koliko bi ova ruta bila teška na ravnom terenu
+              Švajcarska metoda: km + D+/100 + D-/200
             </div>
           </div>
 
