@@ -62,75 +62,98 @@ function getItraDifficulty(itraPoints: number): { difficulty: GpxStats['difficul
 /**
  * Detect climb segments from track points
  * A climb is a continuous section where elevation is generally increasing
+ * with minimum average grade of 3% and tolerates drops up to 30m
  */
 function detectClimbs(
   rawPoints: { lat: number; lng: number; elevation: number }[],
-  minElevationGain: number = 30 // minimum 30m gain to count as a climb
+  minElevationGain: number = 50, // minimum 50m gain to count as a climb
+  minGrade: number = 3, // minimum 3% average grade
+  maxDrop: number = 30 // tolerate drops up to 30m before ending climb
 ): ClimbSegment[] {
   if (rawPoints.length < 2) return []
+
+  // First, calculate cumulative distances
+  const distances: number[] = [0]
+  for (let i = 1; i < rawPoints.length; i++) {
+    const prev = rawPoints[i - 1]
+    const curr = rawPoints[i]
+    const dist = haversineDistance(prev.lat, prev.lng, curr.lat, curr.lng)
+    distances.push(distances[i - 1] + dist)
+  }
 
   const climbs: ClimbSegment[] = []
   let inClimb = false
   let climbStartIdx = 0
-  let climbStartDistance = 0
-  let currentDistance = 0
-  let climbElevationGain = 0
-  let climbStartElevation = 0
-
-  // Use smoothed elevation to avoid noise
-  const smoothWindow = Math.min(5, Math.floor(rawPoints.length / 20))
+  let climbHighPoint = 0 // highest elevation reached during climb
+  let climbHighPointIdx = 0
 
   for (let i = 1; i < rawPoints.length; i++) {
-    const prev = rawPoints[i - 1]
     const curr = rawPoints[i]
-    const segmentDistance = haversineDistance(prev.lat, prev.lng, curr.lat, curr.lng)
-    currentDistance += segmentDistance
+    const prev = rawPoints[i - 1]
 
-    const elevDiff = curr.elevation - prev.elevation
-
-    if (!inClimb && elevDiff > 0) {
-      // Start of potential climb
-      inClimb = true
-      climbStartIdx = i - 1
-      climbStartDistance = currentDistance - segmentDistance
-      climbStartElevation = prev.elevation
-      climbElevationGain = elevDiff
-    } else if (inClimb) {
-      if (elevDiff > 0) {
-        // Continuing climb
-        climbElevationGain += elevDiff
-      } else if (elevDiff < -10) {
-        // Significant drop - end of climb (allow small dips)
-        if (climbElevationGain >= minElevationGain) {
-          const climbLength = (currentDistance - segmentDistance - climbStartDistance) / 1000
-          if (climbLength > 0.1) {
-            // At least 100m long
-            climbs.push({
-              startKm: Math.round((climbStartDistance / 1000) * 100) / 100,
-              endKm: Math.round(((currentDistance - segmentDistance) / 1000) * 100) / 100,
-              length: Math.round(climbLength * 100) / 100,
-              elevationGain: Math.round(climbElevationGain),
-              averageGrade: Math.round((climbElevationGain / (climbLength * 1000)) * 1000) / 10,
-            })
-          }
-        }
-        inClimb = false
-        climbElevationGain = 0
+    if (!inClimb) {
+      // Start climb when going up
+      if (curr.elevation > prev.elevation) {
+        inClimb = true
+        climbStartIdx = i - 1
+        climbHighPoint = curr.elevation
+        climbHighPointIdx = i
       }
-      // Small dips (< 10m) are ignored, climb continues
+    } else {
+      // Update high point if we're still climbing
+      if (curr.elevation > climbHighPoint) {
+        climbHighPoint = curr.elevation
+        climbHighPointIdx = i
+      }
+
+      // Check if we should end the climb
+      const dropFromHigh = climbHighPoint - curr.elevation
+
+      if (dropFromHigh > maxDrop) {
+        // End climb at the high point
+        const startElev = rawPoints[climbStartIdx].elevation
+        const elevGain = climbHighPoint - startElev
+        const climbDist = (distances[climbHighPointIdx] - distances[climbStartIdx]) / 1000 // km
+        const avgGrade = climbDist > 0 ? (elevGain / (climbDist * 1000)) * 100 : 0
+
+        // Only save if meets minimum criteria
+        if (elevGain >= minElevationGain && avgGrade >= minGrade && climbDist >= 0.2) {
+          climbs.push({
+            startKm: Math.round((distances[climbStartIdx] / 1000) * 100) / 100,
+            endKm: Math.round((distances[climbHighPointIdx] / 1000) * 100) / 100,
+            length: Math.round(climbDist * 100) / 100,
+            elevationGain: Math.round(elevGain),
+            averageGrade: Math.round(avgGrade * 10) / 10,
+          })
+        }
+
+        // Reset and check if current segment starts a new climb
+        inClimb = false
+        // Look back to see if we should start a new climb from descent
+        if (curr.elevation > prev.elevation) {
+          inClimb = true
+          climbStartIdx = i - 1
+          climbHighPoint = curr.elevation
+          climbHighPointIdx = i
+        }
+      }
     }
   }
 
   // Handle climb that ends at the last point
-  if (inClimb && climbElevationGain >= minElevationGain) {
-    const climbLength = (currentDistance - climbStartDistance) / 1000
-    if (climbLength > 0.1) {
+  if (inClimb) {
+    const startElev = rawPoints[climbStartIdx].elevation
+    const elevGain = climbHighPoint - startElev
+    const climbDist = (distances[climbHighPointIdx] - distances[climbStartIdx]) / 1000
+    const avgGrade = climbDist > 0 ? (elevGain / (climbDist * 1000)) * 100 : 0
+
+    if (elevGain >= minElevationGain && avgGrade >= minGrade && climbDist >= 0.2) {
       climbs.push({
-        startKm: Math.round((climbStartDistance / 1000) * 100) / 100,
-        endKm: Math.round((currentDistance / 1000) * 100) / 100,
-        length: Math.round(climbLength * 100) / 100,
-        elevationGain: Math.round(climbElevationGain),
-        averageGrade: Math.round((climbElevationGain / (climbLength * 1000)) * 1000) / 10,
+        startKm: Math.round((distances[climbStartIdx] / 1000) * 100) / 100,
+        endKm: Math.round((distances[climbHighPointIdx] / 1000) * 100) / 100,
+        length: Math.round(climbDist * 100) / 100,
+        elevationGain: Math.round(elevGain),
+        averageGrade: Math.round(avgGrade * 10) / 10,
       })
     }
   }
