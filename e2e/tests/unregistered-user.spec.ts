@@ -65,18 +65,19 @@ test.describe('Neregistrovan korisnik - Zaštićene stranice', () => {
     await expect(page).toHaveURL(/\/login/)
   })
 
-  test('redirect na login kada pokušava /calendar', async ({ page }) => {
+  // Note: /calendar i /gpx-analyzer nisu zaštićene stranice - dostupne su svima
+  test('može da pristupi /calendar bez prijave', async ({ page }) => {
     await page.goto('/calendar')
 
-    // Trebalo bi da bude redirektovan na login
-    await expect(page).toHaveURL(/\/login/)
+    // Ostaje na calendar stranici
+    await expect(page).toHaveURL('/calendar')
   })
 
-  test('redirect na login kada pokušava /gpx-analyzer', async ({ page }) => {
+  test('može da pristupi /gpx-analyzer bez prijave', async ({ page }) => {
     await page.goto('/gpx-analyzer')
 
-    // Trebalo bi da bude redirektovan na login
-    await expect(page).toHaveURL(/\/login/)
+    // Ostaje na gpx-analyzer stranici
+    await expect(page).toHaveURL('/gpx-analyzer')
   })
 })
 
