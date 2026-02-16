@@ -524,38 +524,36 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
       {/* Top Climbs */}
       {topClimbs.length > 0 && (
         <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <h3 className="mb-4 text-sm font-medium text-zinc-900 dark:text-white">
+          <h3 className="mb-2 text-sm font-medium text-zinc-900 dark:text-white">
             Top {topClimbs.length} uspon{topClimbs.length === 1 ? '' : topClimbs.length < 5 ? 'a' : 'a'}
           </h3>
-          <div className="space-y-2">
+          <div className="space-y-1">
             {topClimbs.map((climb, index) => (
               <div
                 key={index}
-                className="flex items-center gap-4 rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800/50"
+                className="flex items-center gap-3 rounded bg-zinc-50 px-2 py-1.5 dark:bg-zinc-800/50"
               >
                 {/* Rank */}
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                   {index + 1}
                 </div>
 
                 {/* Climb info */}
-                <div className="flex-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-medium text-zinc-900 dark:text-white">
-                      {climb.startKm} km → {climb.endKm} km
-                    </span>
-                    <span className="text-sm text-zinc-500 dark:text-zinc-400">
-                      ({climb.length} km)
-                    </span>
-                  </div>
-                  <div className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
-                    +{climb.elevationGain}m · prosečno {climb.averageGrade}%
-                  </div>
+                <div className="flex flex-1 items-center gap-2">
+                  <span className="text-sm font-medium text-zinc-900 dark:text-white">
+                    {climb.startKm} → {climb.endKm} km
+                  </span>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    ({climb.length} km)
+                  </span>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    +{climb.elevationGain}m
+                  </span>
                 </div>
 
                 {/* Grade badge */}
                 <div
-                  className={`shrink-0 rounded-full px-2 py-1 text-xs font-medium ${
+                  className={`shrink-0 rounded-full px-1.5 py-0.5 text-xs font-medium ${
                     climb.averageGrade < 5
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                       : climb.averageGrade < 10
