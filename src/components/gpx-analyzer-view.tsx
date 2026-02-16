@@ -411,8 +411,9 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
         {/* ITRA Info Note */}
         <div className="mt-4 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
           <p className="text-[11px] leading-relaxed text-blue-700 dark:text-blue-300">
-            <strong>Napomena:</strong> Zvanični ITRA bodovi mogu biti umanjeni za trke sa više identičnih krugova ili
-            previše okrepnih stanica. Ova analiza koristi osnovnu km-effort formulu.{' '}
+            <strong>Napomena:</strong> Svi prikazani rezultati su okvirni i služe kao orijentacija. Za tačne podatke o
+            stazi proverite sa organizatorom trke. Zvanični ITRA bodovi mogu biti umanjeni za trke sa više identičnih
+            krugova ili previše okrepnih stanica.{' '}
             <a
               href="https://itra.run/FAQ/ItraScore"
               target="_blank"
