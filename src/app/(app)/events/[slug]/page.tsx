@@ -3,6 +3,7 @@ import { AdminEditButton } from '@/components/admin-edit-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import { TagList } from '@/components/clickable-tag'
 import { Divider } from '@/components/divider'
 import { FavoriteButton } from '@/components/favorite-button'
 import { ImageSlider } from '@/components/image-slider'
@@ -510,12 +511,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             {event.tags && event.tags.length > 0 && (
               <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
                 <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Kategorije</div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {event.tags.map((tag) => (
-                    <Badge key={tag} color="zinc">
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="mt-3">
+                  <TagList tags={event.tags} />
                 </div>
               </div>
             )}

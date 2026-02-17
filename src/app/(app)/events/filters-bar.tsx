@@ -4,7 +4,8 @@ import { Button } from '@/components/button'
 import { Input, InputGroup } from '@/components/input'
 import { Link } from '@/components/link'
 import { Select } from '@/components/select'
-import { MagnifyingGlassIcon } from '@heroicons/react/16/solid'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/16/solid'
+import NextLink from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
@@ -20,6 +21,7 @@ type Initial = {
   eventType: string
   sortBy: string
   showPast: string
+  tag: string
 }
 
 export function FiltersBar({ initial, competitions }: { initial: Initial; competitions: Competition[] }) {
@@ -35,6 +37,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   const [eventType, setEventType] = useState(initial.eventType ?? '')
   const [sortBy, setSortBy] = useState(initial.sortBy ?? '')
   const [showPast, setShowPast] = useState(initial.showPast === 'true')
+  const activeTag = initial.tag ?? ''
 
   // Ako se user vrati nazad/forward ili ručno menja URL, uskladi state sa URL-om.
   // (Ovo rešava “ne filtrira ništa” situacije kad URL i UI odlutaju.)
@@ -75,6 +78,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     Boolean((initial.competitionId ?? '').trim()) ||
     Boolean((initial.eventType ?? '').trim()) ||
     Boolean((initial.sortBy ?? '').trim()) ||
+    Boolean((initial.tag ?? '').trim()) ||
     initial.showPast === 'true'
 
   function buildQueryString() {
@@ -99,6 +103,20 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
 
   return (
     <form onSubmit={onApply} className="mt-4 flex flex-col gap-4">
+      {/* Active tag filter */}
+      {activeTag && (
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-zinc-500 dark:text-zinc-400">Filtriranje po tagu:</span>
+          <NextLink
+            href="/events"
+            className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+          >
+            {activeTag}
+            <XMarkIcon className="size-4" />
+          </NextLink>
+        </div>
+      )}
+
       {/* Row 1: Search input */}
       <div className="w-full">
         <InputGroup>

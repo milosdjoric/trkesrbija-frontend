@@ -3,6 +3,7 @@ import { AdminEditButton } from '@/components/admin-edit-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import { TagList } from '@/components/clickable-tag'
 import { Divider } from '@/components/divider'
 import { FavoriteButtonServer } from '@/components/favorite-button-server'
 import { GpxMapWrapper } from '@/components/gpx-map-wrapper'
@@ -578,12 +579,8 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             {race.raceEvent.tags && race.raceEvent.tags.length > 0 && (
               <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
                 <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Kategorije</div>
-                <div className="mt-3 flex flex-wrap gap-1.5">
-                  {race.raceEvent.tags.map((tag) => (
-                    <Badge key={tag} color="zinc">
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="mt-3">
+                  <TagList tags={race.raceEvent.tags} />
                 </div>
               </div>
             )}

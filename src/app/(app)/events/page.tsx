@@ -44,6 +44,7 @@ export default async function Events({
     slug: string
     type: 'TRAIL' | 'ROAD' | 'OCR'
     mainImage: string | null
+    tags: string[]
     races: BackendRace[]
   }
 
@@ -55,6 +56,7 @@ export default async function Events({
         slug
         type
         mainImage
+        tags
         races {
           id
           slug
@@ -123,6 +125,7 @@ export default async function Events({
   const elevMaxRaw = getParam('elevMax').trim()
   const eventTypeRaw = getParam('eventType').trim()
   const sortByRaw = getParam('sortBy').trim()
+  const tagRaw = getParam('tag').trim()
 
   const showPastRaw = getParam('showPast').trim()
   const showPast = showPastRaw === 'true'
@@ -140,6 +143,7 @@ export default async function Events({
   const hasElevMax = elevMax != null && !Number.isNaN(elevMax)
   const hasCompetition = Boolean(competitionIdRaw)
   const hasEventType = Boolean(eventTypeRaw)
+  const hasTag = Boolean(tagRaw)
 
   function raceMatchesNumericFilters(r: BackendRace) {
     if (hasCompetition && r.competitionId !== competitionIdRaw) return false
@@ -260,6 +264,7 @@ export default async function Events({
       hasSharedLocation: sameLocation.allSame,
 
       eventType: re.type,
+      tags: re.tags ?? [],
       _eventStartTs: eventStartTs,
 
       // These are not in the backend model yet; keep placeholders so the UI stays unchanged.
@@ -276,11 +281,18 @@ export default async function Events({
   })
 
   const anyFilterActive =
-    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType
+    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType || hasTag
 
   events = events.filter((ev) => {
     // Filter by event type
     if (hasEventType && ev.eventType !== eventTypeRaw) return false
+
+    // Filter by tag (case-insensitive)
+    if (hasTag) {
+      const tagLower = tagRaw.toLowerCase()
+      const eventTags = (ev.tags ?? []).map((t: string) => t.toLowerCase())
+      if (!eventTags.includes(tagLower)) return false
+    }
 
     // Filter out past events unless showPast is true
     if (!showPast && ev._eventStartTs < now) return false
@@ -361,6 +373,7 @@ export default async function Events({
               eventType: eventTypeRaw,
               sortBy: sortByRaw,
               showPast: showPastRaw,
+              tag: tagRaw,
             }}
             competitions={competitions}
           />
