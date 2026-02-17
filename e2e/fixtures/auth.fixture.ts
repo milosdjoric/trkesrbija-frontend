@@ -11,6 +11,69 @@ export const TEST_USER = {
 // Path to store authenticated state
 const AUTH_FILE = path.join(__dirname, '../.auth/user.json')
 
+/**
+ * Shared login helper that handles rate limiting with retry
+ * Can be used from fixtures or directly in tests
+ */
+export async function loginWithRetry(
+  targetPage: Page,
+  email = TEST_USER.email,
+  password = TEST_USER.password,
+  maxRetries = 3
+): Promise<void> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    await targetPage.goto('/login')
+
+    // Fill login form
+    await targetPage.getByLabel('Email').fill(email)
+    await targetPage.getByLabel('Lozinka').fill(password)
+
+    // Submit
+    await targetPage.getByRole('button', { name: /prijavi se/i }).click()
+
+    // Wait a bit for response
+    await targetPage.waitForTimeout(1000)
+
+    // Check for rate limiting error
+    const rateLimitError = await targetPage.getByText(/too many|rate.?limit|previše pokušaja/i).isVisible()
+
+    if (rateLimitError) {
+      console.log(`Login attempt ${attempt} hit rate limit, waiting before retry...`)
+      if (attempt < maxRetries) {
+        // Wait longer between retries (exponential backoff)
+        await targetPage.waitForTimeout(2000 * attempt)
+        continue
+      } else {
+        throw new Error('Rate limited after maximum retries')
+      }
+    }
+
+    // Check if login was successful (not on login page anymore)
+    const currentUrl = targetPage.url()
+    if (!currentUrl.includes('/login')) {
+      return // Success!
+    }
+
+    // Wait for redirect if still on login page
+    try {
+      await targetPage.waitForFunction(
+        () => !window.location.pathname.includes('/login'),
+        { timeout: 10000 }
+      )
+      return // Success!
+    } catch (e) {
+      // Check for error message
+      const hasError = await targetPage.getByText(/greška|error|neuspešno|pogrešna/i).isVisible()
+      if (hasError && attempt < maxRetries) {
+        console.log(`Login attempt ${attempt} failed, retrying...`)
+        await targetPage.waitForTimeout(1000)
+        continue
+      }
+      throw e
+    }
+  }
+}
+
 export type AuthFixtures = {
   // Authenticated page - already logged in
   authenticatedPage: Page
@@ -35,25 +98,7 @@ export const test = base.extend<AuthFixtures>({
 
   // Login helper function
   login: async ({}, use) => {
-    const loginFn = async (
-      targetPage: Page,
-      email = TEST_USER.email,
-      password = TEST_USER.password
-    ) => {
-      await targetPage.goto('/login')
-
-      // Fill login form
-      await targetPage.getByLabel('Email').fill(email)
-      await targetPage.getByLabel('Lozinka').fill(password)
-
-      // Submit and wait for navigation
-      await targetPage.getByRole('button', { name: /prijavi se/i }).click()
-
-      // Wait for redirect to home page (successful login)
-      await targetPage.waitForURL('/', { timeout: 15000 })
-    }
-
-    await use(loginFn)
+    await use(loginWithRetry)
   },
 
   // Logout helper function

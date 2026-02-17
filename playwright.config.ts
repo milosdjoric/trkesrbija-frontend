@@ -3,8 +3,8 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
   testDir: './e2e/tests',
 
-  // Run tests in parallel
-  fullyParallel: true,
+  // Run tests in parallel (limited to avoid rate limiting)
+  fullyParallel: false,
 
   // Fail the build on CI if you accidentally left test.only
   forbidOnly: !!process.env.CI,
@@ -12,8 +12,8 @@ export default defineConfig({
   // Retry failed tests on CI
   retries: process.env.CI ? 2 : 0,
 
-  // Limit workers
-  workers: process.env.CI ? 1 : undefined,
+  // Limit workers to avoid rate limiting on login
+  workers: 1,
 
   // Reporter
   reporter: [['html', { open: 'never' }], ['list']],
@@ -41,9 +41,20 @@ export default defineConfig({
 
   // Projects
   projects: [
+    // Tests for unauthenticated users (includes login tests)
     {
-      name: 'chromium',
+      name: 'unauthenticated',
+      testMatch: ['unregistered-user.spec.ts', 'user-registration.spec.ts', 'race-results.spec.ts', 'authentication.spec.ts'],
       use: { ...devices['Desktop Chrome'] },
+    },
+    // Tests that require authentication - use saved auth state
+    {
+      name: 'authenticated',
+      testMatch: ['registered-user.spec.ts', 'my-registrations.spec.ts', 'race-registration.spec.ts'],
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: './e2e/.auth/user.json',
+      },
     },
   ],
 
