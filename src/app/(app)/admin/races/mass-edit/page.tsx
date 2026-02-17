@@ -262,6 +262,7 @@ export default function RacesMassEditPage() {
     { value: 'registrationEnabled', label: 'Registracija' },
     { value: 'competitionId', label: 'Takmičenje' },
     { value: 'startLocation', label: 'Lokacija' },
+    { value: 'startDateTime', label: 'Startno vreme' },
   ]
 
   // Filter races
@@ -393,6 +394,15 @@ export default function RacesMassEditPage() {
               value={bulkValue}
               onChange={(e) => setBulkValue(e.target.value)}
               placeholder="Nova lokacija..."
+              className="rounded border border-blue-300 bg-white px-2 py-1 text-sm dark:border-blue-600 dark:bg-zinc-800"
+            />
+          )}
+
+          {bulkField === 'startDateTime' && (
+            <input
+              type="datetime-local"
+              value={bulkValue}
+              onChange={(e) => setBulkValue(e.target.value)}
               className="rounded border border-blue-300 bg-white px-2 py-1 text-sm dark:border-blue-600 dark:bg-zinc-800"
             />
           )}
