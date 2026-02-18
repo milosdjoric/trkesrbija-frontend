@@ -27,7 +27,7 @@ export const ourFileRouter = {
       return { url: file.ufsUrl }
     }),
 
-  // GPX file uploader for race routes
+  // GPX file uploader for race routes (admin)
   // Using blob to accept any file type since GPX MIME types vary by OS
   gpxFile: f({
     blob: { maxFileSize: '8MB', maxFileCount: 1 },
@@ -38,6 +38,28 @@ export const ourFileRouter = {
     .onUploadComplete(async ({ metadata, file }) => {
       console.log('GPX file upload complete:', file.ufsUrl)
       return { url: file.ufsUrl }
+    }),
+
+  // GPX Analyzer uploader (public) - with custom naming
+  gpxAnalyzer: f({
+    blob: { maxFileSize: '8MB', maxFileCount: 1 },
+  })
+    .middleware(async ({ files }) => {
+      const originalName = files[0]?.name ?? 'route.gpx'
+      const timestamp = new Date().toISOString().slice(0, 10)
+      // Mala slova, zameni razmake crticama, ukloni specijalne karaktere
+      const sanitizedName = originalName
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9.-]/g, '')
+        .replace(/-+/g, '-')
+      const newName = `user-uploads-gpx-${timestamp}_${sanitizedName}`
+
+      return { uploadedBy: 'user', customName: newName }
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('GPX Analyzer upload:', file.ufsUrl)
+      return { url: file.ufsUrl, name: metadata.customName }
     }),
 
   // Profile image for users

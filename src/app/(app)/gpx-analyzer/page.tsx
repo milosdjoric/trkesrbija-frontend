@@ -6,7 +6,8 @@ import { Text } from '@/components/text'
 import { Button } from '@/components/button'
 import { GpxAnalyzerViewWrapper } from '@/components/gpx-analyzer-view-wrapper'
 import { parseGpx, readFileAsText, type ParsedGpx } from '@/lib/gpx-parser'
-import { MapIcon, ArrowUpTrayIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { useUploadThing } from '@/lib/uploadthing'
+import { MapIcon, ArrowUpTrayIcon, XMarkIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline'
 
 export default function GpxAnalyzerPage() {
   const [parsedGpx, setParsedGpx] = useState<ParsedGpx | null>(null)
@@ -14,6 +15,14 @@ export default function GpxAnalyzerPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
+  const [uploadedUrl, setUploadedUrl] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+
+  const { startUpload } = useUploadThing('gpxAnalyzer', {
+    onUploadError: (err) => {
+      console.error('Upload error:', err)
+    },
+  })
 
   const handleFile = useCallback(async (file: File) => {
     if (!file.name.toLowerCase().endsWith('.gpx')) {
@@ -22,20 +31,33 @@ export default function GpxAnalyzerPage() {
     }
 
     setIsLoading(true)
+    setIsUploading(true)
     setError(null)
 
     try {
+      // 1. Start upload (parallel)
+      const uploadPromise = startUpload([file])
+
+      // 2. Parse locally
       const text = await readFileAsText(file)
       const parsed = parseGpx(text)
+
+      // 3. Wait for upload
+      const uploadResult = await uploadPromise
+      if (uploadResult?.[0]?.url) {
+        setUploadedUrl(uploadResult[0].url)
+      }
+
       setParsedGpx(parsed)
       setFileName(file.name)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Greška pri parsiranju GPX fajla')
+      setError(err instanceof Error ? err.message : 'Greška pri obradi GPX fajla')
       setParsedGpx(null)
     } finally {
       setIsLoading(false)
+      setIsUploading(false)
     }
-  }, [])
+  }, [startUpload])
 
   const handleDrop = useCallback(
     (e: React.DragEvent<HTMLDivElement>) => {
@@ -74,6 +96,7 @@ export default function GpxAnalyzerPage() {
     setParsedGpx(null)
     setFileName(null)
     setError(null)
+    setUploadedUrl(null)
   }, [])
 
   return (
@@ -142,8 +165,22 @@ export default function GpxAnalyzerPage() {
                 <div className="truncate font-medium text-zinc-900 dark:text-white">
                   {parsedGpx.stats.name || fileName}
                 </div>
-                <div className="text-sm text-zinc-500 dark:text-zinc-400">
-                  {parsedGpx.stats.pointCount.toLocaleString()} tačaka
+                <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                  <span>{parsedGpx.stats.pointCount.toLocaleString()} tačaka</span>
+                  {uploadedUrl && (
+                    <>
+                      <span>•</span>
+                      <a
+                        href={uploadedUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+                      >
+                        <ArrowDownTrayIcon className="size-3" />
+                        Preuzmi
+                      </a>
+                    </>
+                  )}
                 </div>
               </div>
               <button
