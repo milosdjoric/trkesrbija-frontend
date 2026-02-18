@@ -87,6 +87,7 @@ export default function NewEventPage() {
     const defaultDate = new Date()
     defaultDate.setMonth(defaultDate.getMonth() + 1)
     defaultDate.setHours(9, 0, 0, 0)
+    const offset = defaultDate.getTimezoneOffset() * 60000
 
     setRaces((prev) => [
       ...prev,
@@ -95,7 +96,7 @@ export default function NewEventPage() {
         raceName: '',
         length: '',
         elevation: '',
-        startDateTime: defaultDate.toISOString().slice(0, 16),
+        startDateTime: new Date(defaultDate.getTime() - offset).toISOString().slice(0, 16),
         startLocation: '',
       },
     ])

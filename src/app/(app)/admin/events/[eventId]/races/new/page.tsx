@@ -71,7 +71,8 @@ export default function NewRacePage() {
       const defaultDate = new Date()
       defaultDate.setMonth(defaultDate.getMonth() + 1)
       defaultDate.setHours(9, 0, 0, 0)
-      setStartDateTime(defaultDate.toISOString().slice(0, 16))
+      const offset = defaultDate.getTimezoneOffset() * 60000
+      setStartDateTime(new Date(defaultDate.getTime() - offset).toISOString().slice(0, 16))
 
       // Load event data
       gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken })

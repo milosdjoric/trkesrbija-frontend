@@ -151,12 +151,14 @@ export default function EditRacePage() {
         setLength(raceData.race.length.toString())
         setElevation(raceData.race.elevation?.toString() || '')
         setGpsFile(raceData.race.gpsFile || '')
-        // Convert ISO to datetime-local format
+        // Convert ISO to datetime-local format (must use local time, not UTC)
         const dt = new Date(raceData.race.startDateTime)
-        setStartDateTime(dt.toISOString().slice(0, 16))
+        const offset = dt.getTimezoneOffset() * 60000
+        setStartDateTime(new Date(dt.getTime() - offset).toISOString().slice(0, 16))
         if (raceData.race.endDateTime) {
           const endDt = new Date(raceData.race.endDateTime)
-          setEndDateTime(endDt.toISOString().slice(0, 16))
+          const endOffset = endDt.getTimezoneOffset() * 60000
+          setEndDateTime(new Date(endDt.getTime() - endOffset).toISOString().slice(0, 16))
         }
         setStartLocation(raceData.race.startLocation || '')
         setRegistrationEnabled(raceData.race.registrationEnabled)
