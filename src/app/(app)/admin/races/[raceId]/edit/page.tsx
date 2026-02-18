@@ -8,7 +8,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
-import { toTitleCase } from '@/lib/formatters'
+import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -151,14 +151,10 @@ export default function EditRacePage() {
         setLength(raceData.race.length.toString())
         setElevation(raceData.race.elevation?.toString() || '')
         setGpsFile(raceData.race.gpsFile || '')
-        // Convert ISO to datetime-local format (must use local time, not UTC)
-        const dt = new Date(raceData.race.startDateTime)
-        const offset = dt.getTimezoneOffset() * 60000
-        setStartDateTime(new Date(dt.getTime() - offset).toISOString().slice(0, 16))
+        // Convert ISO to datetime-local format using local time components
+        setStartDateTime(toDateTimeLocalString(new Date(raceData.race.startDateTime)))
         if (raceData.race.endDateTime) {
-          const endDt = new Date(raceData.race.endDateTime)
-          const endOffset = endDt.getTimezoneOffset() * 60000
-          setEndDateTime(new Date(endDt.getTime() - endOffset).toISOString().slice(0, 16))
+          setEndDateTime(toDateTimeLocalString(new Date(raceData.race.endDateTime)))
         }
         setStartLocation(raceData.race.startLocation || '')
         setRegistrationEnabled(raceData.race.registrationEnabled)

@@ -152,6 +152,19 @@ export function isSameDay(date1: Date, date2: Date): boolean {
 }
 
 /**
+ * Convert Date to datetime-local input format (YYYY-MM-DDTHH:MM)
+ * Uses local timezone components (getHours, etc.) to avoid UTC conversion issues
+ */
+export function toDateTimeLocalString(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+/**
  * Convert string to Title Case (first letter uppercase, rest lowercase for each word).
  * Examples:
  * - "KOSTOLAČKI POLUMARATON" → "Kostolački Polumaraton"

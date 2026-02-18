@@ -7,7 +7,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
-import { toTitleCase } from '@/lib/formatters'
+import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -71,8 +71,7 @@ export default function NewRacePage() {
       const defaultDate = new Date()
       defaultDate.setMonth(defaultDate.getMonth() + 1)
       defaultDate.setHours(9, 0, 0, 0)
-      const offset = defaultDate.getTimezoneOffset() * 60000
-      setStartDateTime(new Date(defaultDate.getTime() - offset).toISOString().slice(0, 16))
+      setStartDateTime(toDateTimeLocalString(defaultDate))
 
       // Load event data
       gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken })

@@ -7,7 +7,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
-import { toTitleCase } from '@/lib/formatters'
+import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -87,7 +87,6 @@ export default function NewEventPage() {
     const defaultDate = new Date()
     defaultDate.setMonth(defaultDate.getMonth() + 1)
     defaultDate.setHours(9, 0, 0, 0)
-    const offset = defaultDate.getTimezoneOffset() * 60000
 
     setRaces((prev) => [
       ...prev,
@@ -96,7 +95,7 @@ export default function NewEventPage() {
         raceName: '',
         length: '',
         elevation: '',
-        startDateTime: new Date(defaultDate.getTime() - offset).toISOString().slice(0, 16),
+        startDateTime: toDateTimeLocalString(defaultDate),
         startLocation: '',
       },
     ])
