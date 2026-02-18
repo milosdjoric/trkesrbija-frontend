@@ -1,4 +1,5 @@
 import { Badge } from '@/components/badge'
+import { CheckBadgeIcon } from '@heroicons/react/16/solid'
 
 export type RegistrationStatus = 'PENDING' | 'CONFIRMED' | 'PAID' | 'CANCELLED'
 export type Gender = 'MALE' | 'FEMALE'
@@ -102,4 +103,16 @@ export function getMedalEmoji(position: number): string | null {
     default:
       return null
   }
+}
+
+/**
+ * Badge component for verified events
+ */
+export function VerifiedBadge() {
+  return (
+    <Badge color="sky" className="inline-flex items-center gap-1">
+      <CheckBadgeIcon className="size-3" />
+      Verifikovan
+    </Badge>
+  )
 }

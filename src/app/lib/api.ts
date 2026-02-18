@@ -99,6 +99,7 @@ export type RaceEvent = {
   mainImage?: string | null
   gallery: string[]
   tags: string[]
+  verified?: boolean
   socialMedia: string[]
   registrationSite?: string | null
   organizer?: Organizer | null
@@ -211,6 +212,7 @@ const RACE_EVENT_BY_SLUG_QUERY = `
       mainImage
       gallery
       tags
+      verified
       socialMedia
       registrationSite
       organizer {

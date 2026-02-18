@@ -2,6 +2,7 @@ import { fetchRaceEventBySlug, type RaceEventWithRaces, type Race } from '@/app/
 import { AdminEditButton } from '@/components/admin-edit-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
+import { VerifiedBadge } from '@/lib/badges'
 import { Button } from '@/components/button'
 import { TagList } from '@/components/clickable-tag'
 import { Divider } from '@/components/divider'
@@ -260,9 +261,12 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               <div className="text-sm font-medium text-white/80 mb-2">
                 {eventDateDisplay}
               </div>
-              <h1 className="text-xl font-bold text-white md:text-2xl">
-                {event.eventName}
-              </h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-xl font-bold text-white md:text-2xl">
+                  {event.eventName}
+                </h1>
+                {event.verified && <VerifiedBadge />}
+              </div>
             </div>
           </div>
 

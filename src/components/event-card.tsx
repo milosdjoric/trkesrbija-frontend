@@ -1,5 +1,6 @@
 import { Link } from '@/components/link'
 import { RaceCard } from '@/components/race-card'
+import { VerifiedBadge } from '@/lib/badges'
 
 type Race = {
   id: string
@@ -38,6 +39,8 @@ type EventCardProps = {
   showDimmed?: boolean
   /** Are filters currently active? (affects dimming logic) */
   filtersActive?: boolean
+  /** Is this event verified? */
+  verified?: boolean
 }
 
 function formatTime(d: Date) {
@@ -61,6 +64,7 @@ export function EventCard({
   races,
   showDimmed = true,
   filtersActive = false,
+  verified = false,
 }: EventCardProps) {
   const isTrail = type === 'TRAIL'
 
@@ -68,8 +72,9 @@ export function EventCard({
     <div className="flex w-full gap-6 py-6 md:w-fit">
       <div className="w-full space-y-1.5 md:w-fit">
         {/* Event name */}
-        <div className="text-lg font-semibold md:text-base/6">
+        <div className="flex items-center gap-2 text-lg font-semibold md:text-base/6">
           <Link href={url}>{name}</Link>
+          {verified && <VerifiedBadge />}
         </div>
 
         <div className="flex flex-col flex-wrap gap-2 md:flex-row">

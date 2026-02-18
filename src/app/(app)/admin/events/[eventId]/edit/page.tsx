@@ -59,6 +59,7 @@ type EventData = {
   registrationSite: string | null
   socialMedia: string[]
   tags: string[]
+  verified: boolean
   organizer: OrganizerData | null
   races: RaceData[]
 }
@@ -76,6 +77,7 @@ const EVENT_BY_ID_QUERY = `
       registrationSite
       socialMedia
       tags
+      verified
       organizer {
         id
         name
@@ -136,6 +138,7 @@ export default function EditEventPage() {
   const [socialMedia, setSocialMedia] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [slug, setSlug] = useState('')
+  const [verified, setVerified] = useState(false)
 
   // Organizer inline fields
   const [organizerName, setOrganizerName] = useState('')
@@ -161,6 +164,7 @@ export default function EditEventPage() {
         setSocialMedia(e.socialMedia || [])
         setTags(e.tags || [])
         setSlug(e.slug)
+        setVerified(e.verified ?? false)
         // Load organizer data
         setOrganizerName(e.organizer?.name || '')
         setOrganizerPhone(e.organizer?.contactPhone || '')
@@ -210,6 +214,7 @@ export default function EditEventPage() {
         registrationSite: registrationSite.trim() || null,
         socialMedia,
         tags,
+        verified,
       }
 
       // Add organizer if name is provided
@@ -360,6 +365,24 @@ export default function EditEventPage() {
             {/* Tags */}
             <div className="sm:col-span-2">
               <TagsInput value={tags} onChange={setTags} />
+            </div>
+
+            {/* Verified checkbox */}
+            <div className="sm:col-span-2">
+              <label className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={verified}
+                  onChange={(e) => setVerified(e.target.checked)}
+                  className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+                />
+                <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Verifikovan događaj
+                </span>
+              </label>
+              <p className="mt-1 text-xs text-zinc-500">
+                Označite ako događaj ima sve potrebne informacije (datum, lokacija, opis, itd.)
+              </p>
             </div>
           </div>
         </div>

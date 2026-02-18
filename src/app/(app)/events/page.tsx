@@ -45,6 +45,7 @@ export default async function Events({
     type: 'TRAIL' | 'ROAD' | 'OCR'
     mainImage: string | null
     tags: string[]
+    verified: boolean
     races: BackendRace[]
   }
 
@@ -57,6 +58,7 @@ export default async function Events({
         type
         mainImage
         tags
+        verified
         races {
           id
           slug
@@ -129,6 +131,8 @@ export default async function Events({
 
   const showPastRaw = getParam('showPast').trim()
   const showPast = showPastRaw === 'true'
+  const verifiedRaw = getParam('verified').trim()
+  const verifiedOnly = verifiedRaw === 'true'
 
   const lenMin = lenMinRaw ? Number(lenMinRaw) : null
   const lenMax = lenMaxRaw ? Number(lenMaxRaw) : null
@@ -265,6 +269,7 @@ export default async function Events({
 
       eventType: re.type,
       tags: re.tags ?? [],
+      verified: re.verified ?? false,
       _eventStartTs: eventStartTs,
 
       // These are not in the backend model yet; keep placeholders so the UI stays unchanged.
@@ -281,7 +286,7 @@ export default async function Events({
   })
 
   const anyFilterActive =
-    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType || hasTag
+    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType || hasTag || verifiedOnly
 
   events = events.filter((ev) => {
     // Filter by event type
@@ -293,6 +298,9 @@ export default async function Events({
       const eventTags = (ev.tags ?? []).map((t: string) => t.toLowerCase())
       if (!eventTags.includes(tagLower)) return false
     }
+
+    // Filter by verified status
+    if (verifiedOnly && !ev.verified) return false
 
     // Filter out past events unless showPast is true
     if (!showPast && ev._eventStartTs < now) return false
@@ -374,6 +382,7 @@ export default async function Events({
               sortBy: sortByRaw,
               showPast: showPastRaw,
               tag: tagRaw,
+              verified: verifiedRaw,
             }}
             competitions={competitions}
           />
@@ -450,6 +459,7 @@ export default async function Events({
                         races={event.races}
                         showDimmed={true}
                         filtersActive={anyFilterActive}
+                        verified={event.verified}
                       />
                     </li>
                   ))}
