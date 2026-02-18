@@ -214,6 +214,9 @@ export default function AdminEventsPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Heading>Upravljanje događajima</Heading>
         <div className="flex gap-2">
+          <Button href="/admin/events/duplicates" outline>
+            Duplikati
+          </Button>
           <Button href="/admin/events/mass-edit" outline>
             Masovna izmena
           </Button>
