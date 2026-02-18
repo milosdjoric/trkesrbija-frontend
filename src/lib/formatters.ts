@@ -165,6 +165,18 @@ export function toDateTimeLocalString(date: Date): string {
 }
 
 /**
+ * Convert datetime-local string to ISO format preserving local time as UTC.
+ * Used when sending to server - saves the time user sees as UTC.
+ *
+ * Example: "2026-03-14T11:15" (local CET) → "2026-03-14T11:15:00.000Z" (UTC)
+ */
+export function toISOPreservingLocalTime(localDateTimeString: string): string {
+  const localDate = new Date(localDateTimeString)
+  const offset = localDate.getTimezoneOffset() * 60000
+  return new Date(localDate.getTime() - offset).toISOString()
+}
+
+/**
  * Convert string to Title Case (first letter uppercase, rest lowercase for each word).
  * Examples:
  * - "KOSTOLAČKI POLUMARATON" → "Kostolački Polumaraton"

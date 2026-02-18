@@ -7,7 +7,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
-import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
+import { toTitleCase, toDateTimeLocalString, toISOPreservingLocalTime } from '@/lib/formatters'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -118,7 +118,7 @@ export default function NewRacePage() {
             raceName: raceName.trim(),
             length: parseFloat(length),
             elevation: elevation ? parseFloat(elevation) : null,
-            startDateTime: new Date(startDateTime).toISOString(),
+            startDateTime: toISOPreservingLocalTime(startDateTime),
             startLocation: startLocation.trim() || 'TBD',
             registrationEnabled,
           },
