@@ -173,7 +173,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
 
       {/* Row 3: Dropdowns (competition, type, sort, verified) */}
       <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-        <div className="grow">
+        <div className="flex-1">
           <Select
             aria-label="Takmičenje"
             value={competitionId}
@@ -187,7 +187,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             ))}
           </Select>
         </div>
-        <div className="grow">
+        <div className="flex-1">
           <Select
             aria-label="Tip događaja"
             value={eventType}
@@ -199,7 +199,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             <option value="OCR">OCR</option>
           </Select>
         </div>
-        <div className="grow">
+        <div className="flex-1">
           <Select
             aria-label="Verifikacija"
             value={verified}
@@ -210,7 +210,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             <option value="false">Samo neverifikovani</option>
           </Select>
         </div>
-        <div className="grow">
+        <div className="flex-1">
           <Select
             aria-label="Sortiraj po"
             value={sortBy}
