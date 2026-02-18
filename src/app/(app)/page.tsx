@@ -19,7 +19,9 @@ import type { Metadata } from 'next'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Trke Srbija - Početna',
+  title: 'Lista trail i uličnih trka',
+  description:
+    'Pronađite sve predstojeće trail i ulične trke u Srbiji. Online prijava, rezultati, GPX analizator ruta i još mnogo toga.',
 }
 
 type BackendRace = {

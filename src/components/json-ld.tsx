@@ -60,7 +60,7 @@ export function SiteNavigationJsonLd() {
       {
         '@type': 'SiteNavigationElement',
         position: 1,
-        name: 'Kalendar trka',
+        name: 'Lista trka',
         description: 'Pogledajte sve predstojeće trail i ulične trke u Srbiji',
         url: `${siteUrl}/events`,
       },
