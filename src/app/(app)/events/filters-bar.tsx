@@ -171,7 +171,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         </div>
       </div>
 
-      {/* Row 3: Dropdowns (competition, type, sort) */}
+      {/* Row 3: Dropdowns (competition, type, sort, verified) */}
       <div className="flex flex-col gap-2 md:flex-row md:gap-4">
         <div className="grow">
           <Select
@@ -197,6 +197,17 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             <option value="TRAIL">Trail</option>
             <option value="ROAD">Ulična</option>
             <option value="OCR">OCR</option>
+          </Select>
+        </div>
+        <div className="grow">
+          <Select
+            aria-label="Verifikacija"
+            value={verified}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVerified(e.target.value)}
+          >
+            <option value="">Svi događaji</option>
+            <option value="true">Samo verifikovani</option>
+            <option value="false">Samo neverifikovani</option>
           </Select>
         </div>
         <div className="grow">
@@ -228,16 +239,6 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             </Link>
           ) : null}
         </div>
-        <Select
-          aria-label="Verifikacija"
-          value={verified}
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVerified(e.target.value)}
-          className="w-auto"
-        >
-          <option value="">Svi događaji</option>
-          <option value="true">Samo verifikovani</option>
-          <option value="false">Samo neverifikovani</option>
-        </Select>
         <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
           <input
             type="checkbox"
