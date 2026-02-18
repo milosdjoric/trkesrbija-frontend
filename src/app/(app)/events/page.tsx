@@ -132,7 +132,7 @@ export default async function Events({
   const showPastRaw = getParam('showPast').trim()
   const showPast = showPastRaw === 'true'
   const verifiedRaw = getParam('verified').trim()
-  const verifiedOnly = verifiedRaw === 'true'
+  const verifiedFilter = verifiedRaw === 'true' ? true : verifiedRaw === 'false' ? false : null
 
   const lenMin = lenMinRaw ? Number(lenMinRaw) : null
   const lenMax = lenMaxRaw ? Number(lenMaxRaw) : null
@@ -286,7 +286,7 @@ export default async function Events({
   })
 
   const anyFilterActive =
-    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType || hasTag || verifiedOnly
+    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType || hasTag || verifiedFilter !== null
 
   events = events.filter((ev) => {
     // Filter by event type
@@ -300,7 +300,7 @@ export default async function Events({
     }
 
     // Filter by verified status
-    if (verifiedOnly && !ev.verified) return false
+    if (verifiedFilter !== null && ev.verified !== verifiedFilter) return false
 
     // Filter out past events unless showPast is true
     if (!showPast && ev._eventStartTs < now) return false

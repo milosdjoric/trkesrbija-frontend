@@ -38,7 +38,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   const [eventType, setEventType] = useState(initial.eventType ?? '')
   const [sortBy, setSortBy] = useState(initial.sortBy ?? '')
   const [showPast, setShowPast] = useState(initial.showPast === 'true')
-  const [verified, setVerified] = useState(initial.verified === 'true')
+  const [verified, setVerified] = useState(initial.verified ?? '')
   const activeTag = initial.tag ?? ''
 
   // Ako se user vrati nazad/forward ili ručno menja URL, uskladi state sa URL-om.
@@ -58,7 +58,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     setEventType(sp.get('eventType') ?? '')
     setSortBy(sp.get('sortBy') ?? '')
     setShowPast(sp.get('showPast') === 'true')
-    setVerified(sp.get('verified') === 'true')
+    setVerified(sp.get('verified') ?? '')
   }, [sp])
 
   const dirty =
@@ -71,7 +71,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     (eventType ?? '').trim() !== (initial.eventType ?? '').trim() ||
     (sortBy ?? '').trim() !== (initial.sortBy ?? '').trim() ||
     showPast !== (initial.showPast === 'true') ||
-    verified !== (initial.verified === 'true')
+    (verified ?? '').trim() !== (initial.verified ?? '').trim()
 
   const clearVisible =
     Boolean((initial.q ?? '').trim()) ||
@@ -84,7 +84,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     Boolean((initial.sortBy ?? '').trim()) ||
     Boolean((initial.tag ?? '').trim()) ||
     initial.showPast === 'true' ||
-    initial.verified === 'true'
+    Boolean((initial.verified ?? '').trim())
 
   function buildQueryString() {
     const params = new URLSearchParams()
@@ -97,7 +97,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     if (eventType.trim()) params.set('eventType', eventType.trim())
     if (sortBy.trim()) params.set('sortBy', sortBy.trim())
     if (showPast) params.set('showPast', 'true')
-    if (verified) params.set('verified', 'true')
+    if (verified.trim()) params.set('verified', verified.trim())
     const s = params.toString()
     return s ? `?${s}` : ''
   }
@@ -228,15 +228,16 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             </Link>
           ) : null}
         </div>
-        <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-          <input
-            type="checkbox"
-            checked={verified}
-            onChange={(e) => setVerified(e.target.checked)}
-            className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-          />
-          Samo verifikovani
-        </label>
+        <Select
+          aria-label="Verifikacija"
+          value={verified}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVerified(e.target.value)}
+          className="w-auto"
+        >
+          <option value="">Svi događaji</option>
+          <option value="true">Samo verifikovani</option>
+          <option value="false">Samo neverifikovani</option>
+        </Select>
         <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
           <input
             type="checkbox"
