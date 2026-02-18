@@ -110,7 +110,7 @@ export function getMedalEmoji(position: number): string | null {
  */
 export function VerifiedBadge() {
   return (
-    <Badge color="sky" className="inline-flex items-center gap-1">
+    <Badge color="violet" className="inline-flex items-center gap-1">
       <CheckBadgeIcon className="size-3" />
       Verifikovan
     </Badge>
