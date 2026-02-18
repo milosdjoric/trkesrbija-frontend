@@ -488,7 +488,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   Preuzmi GPX
                 </a>
               </div>
-              <div className="rounded-lg border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+              <div className="rounded-lg overflow-hidden">
                 <GpxMapWrapper gpxUrl={race.gpsFile} />
               </div>
             </div>
