@@ -8,10 +8,13 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { Select } from '@/components/select'
+import { useConfirm } from '@/components/confirm-dialog'
+import { useToast } from '@/components/toast'
 import {
   ChevronLeftIcon,
   ExclamationTriangleIcon,
   ArrowTopRightOnSquareIcon,
+  TrashIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -67,13 +70,22 @@ const DUPLICATES_QUERY = `
   }
 `
 
+const DELETE_EVENT_MUTATION = `
+  mutation DeleteRaceEvent($eventId: ID!) {
+    deleteRaceEvent(eventId: $eventId)
+  }
+`
+
 export default function AdminDuplicatesPage() {
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
+  const { toast } = useToast()
+  const { confirm } = useConfirm()
 
   const [loading, setLoading] = useState(true)
   const [duplicates, setDuplicates] = useState<PotentialDuplicate[]>([])
   const [threshold, setThreshold] = useState(60)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
     if (!accessToken) return
@@ -139,6 +151,36 @@ export default function AdminDuplicatesPage() {
     if (type === 'TRAIL') return 'Trail'
     if (type === 'OCR') return 'OCR'
     return 'Ulična'
+  }
+
+  async function handleDelete(event: EventInfo) {
+    const confirmed = await confirm({
+      title: 'Obriši događaj',
+      message: `Da li ste sigurni da želite da obrišete događaj "${event.eventName}"? Ova akcija se ne može poništiti.`,
+      confirmText: 'Obriši',
+      variant: 'danger',
+    })
+
+    if (!confirmed) return
+
+    setDeletingId(event.id)
+    try {
+      await gql(DELETE_EVENT_MUTATION, { eventId: event.id }, { accessToken })
+      // Remove duplicates that contain this event
+      setDuplicates((prev) =>
+        prev.filter((dup) => dup.eventA.id !== event.id && dup.eventB.id !== event.id)
+      )
+      toast('Događaj obrisan', 'success')
+    } catch (err: any) {
+      const message = err?.message ?? 'Greška pri brisanju'
+      if (message.includes('HAS_RACES') || message.includes('existing races')) {
+        toast('Ne možete obrisati događaj koji ima trke. Prvo obrišite trke.', 'error')
+      } else {
+        toast(message, 'error')
+      }
+    } finally {
+      setDeletingId(null)
+    }
   }
 
   return (
@@ -248,6 +290,13 @@ export default function AdminDuplicatesPage() {
                       Pogledaj
                       <ArrowTopRightOnSquareIcon className="size-3" />
                     </Link>
+                    <button
+                      onClick={() => handleDelete(dup.eventA)}
+                      disabled={deletingId === dup.eventA.id}
+                      className="text-sm text-red-600 hover:text-red-700 disabled:opacity-50"
+                    >
+                      {deletingId === dup.eventA.id ? 'Brisanje...' : 'Obriši'}
+                    </button>
                   </div>
                 </div>
 
@@ -286,6 +335,13 @@ export default function AdminDuplicatesPage() {
                       Pogledaj
                       <ArrowTopRightOnSquareIcon className="size-3" />
                     </Link>
+                    <button
+                      onClick={() => handleDelete(dup.eventB)}
+                      disabled={deletingId === dup.eventB.id}
+                      className="text-sm text-red-600 hover:text-red-700 disabled:opacity-50"
+                    >
+                      {deletingId === dup.eventB.id ? 'Brisanje...' : 'Obriši'}
+                    </button>
                   </div>
                 </div>
               </div>
