@@ -6,7 +6,7 @@ import { Link } from './link'
 const styles = {
   base: [
     // Base
-    'relative isolate inline-flex items-baseline justify-center gap-x-2 rounded-lg border text-base/6 font-semibold',
+    'relative isolate inline-flex items-baseline justify-center gap-x-2 rounded-lg border text-base/6 font-semibold cursor-pointer',
     // Sizing
     'px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/6',
     // Focus
@@ -34,7 +34,7 @@ const styles = {
     // Inner highlight shadow
     'after:shadow-[inset_0_1px_--theme(--color-white/15%)]',
     // White overlay on hover
-    'data-active:after:bg-(--btn-hover-overlay) data-hover:after:bg-(--btn-hover-overlay)',
+    'data-active:after:bg-(--btn-hover-overlay) data-hover:after:bg-(--btn-hover-overlay) hover:after:bg-(--btn-hover-overlay) active:after:bg-(--btn-hover-overlay)',
     // Dark mode: `after` layer expands to cover entire button
     'dark:after:-inset-px dark:after:rounded-lg',
     // Disabled
@@ -42,17 +42,17 @@ const styles = {
   ],
   outline: [
     // Base
-    'border-zinc-950/10 text-zinc-950 data-active:bg-zinc-950/[.07] data-hover:bg-zinc-950/[.07]',
+    'border-zinc-950/10 text-zinc-950 data-active:bg-zinc-950/[.07] data-hover:bg-zinc-950/[.07] hover:bg-zinc-950/[.07] active:bg-zinc-950/[.07]',
     // Dark mode
-    'dark:border-white/15 dark:text-white dark:[--btn-bg:transparent] dark:data-active:bg-white/10 dark:data-hover:bg-white/10',
+    'dark:border-white/15 dark:text-white dark:[--btn-bg:transparent] dark:data-active:bg-white/10 dark:data-hover:bg-white/10 dark:hover:bg-white/10 dark:active:bg-white/10',
     // Icon
     '[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]',
   ],
   plain: [
     // Base
-    'border-transparent text-zinc-950 data-active:bg-zinc-950/5 data-hover:bg-zinc-950/5',
+    'border-transparent text-zinc-950 data-active:bg-zinc-950/5 data-hover:bg-zinc-950/5 hover:bg-zinc-950/5 active:bg-zinc-950/5',
     // Dark mode
-    'dark:text-white dark:data-active:bg-white/10 dark:data-hover:bg-white/10',
+    'dark:text-white dark:data-active:bg-white/10 dark:data-hover:bg-white/10 dark:hover:bg-white/10 dark:active:bg-white/10',
     // Icon
     '[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:[--btn-icon:var(--color-zinc-500)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]',
   ],
@@ -182,7 +182,7 @@ export const Button = forwardRef(function Button(
       <TouchTarget>{children}</TouchTarget>
     </Link>
   ) : (
-    <Headless.Button {...props} className={clsx(classes, 'cursor-pointer')} ref={ref}>
+    <Headless.Button {...props} className={classes} ref={ref}>
       <TouchTarget>{children}</TouchTarget>
     </Headless.Button>
   )
