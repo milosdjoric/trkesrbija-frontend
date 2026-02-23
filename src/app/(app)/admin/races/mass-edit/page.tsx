@@ -27,6 +27,7 @@ type RaceRow = {
   endDateTime: string | null
   startLocation: string | null
   registrationEnabled: boolean
+  registrationSite: string | null
   competitionId: string | null
   raceEvent: {
     id: string
@@ -46,6 +47,7 @@ const RACES_QUERY = `
       endDateTime
       startLocation
       registrationEnabled
+      registrationSite
       competitionId
       raceEvent {
         id
@@ -270,6 +272,7 @@ export default function RacesMassEditPage() {
     { value: 'competitionId', label: 'Takmičenje' },
     { value: 'startLocation', label: 'Lokacija' },
     { value: 'startDateTime', label: 'Startno vreme' },
+    { value: 'registrationSite', label: 'Link za prijave' },
   ]
 
   // Filter races
@@ -414,6 +417,16 @@ export default function RacesMassEditPage() {
             />
           )}
 
+          {bulkField === 'registrationSite' && (
+            <input
+              type="text"
+              value={bulkValue}
+              onChange={(e) => setBulkValue(e.target.value)}
+              placeholder="https://..."
+              className="rounded border border-blue-300 bg-white px-2 py-1 text-sm dark:border-blue-600 dark:bg-zinc-800"
+            />
+          )}
+
           <button
             onClick={handleBulkUpdate}
             disabled={!bulkField || isBulkUpdating}
@@ -472,6 +485,9 @@ export default function RacesMassEditPage() {
                 Reg
               </th>
               <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
+                Reg. link
+              </th>
+              <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-zinc-500">
                 Takm.
               </th>
             </tr>
@@ -479,7 +495,7 @@ export default function RacesMassEditPage() {
           <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
             {filteredRaces.length === 0 ? (
               <tr>
-                <td colSpan={11} className="px-4 py-8 text-center text-sm text-zinc-500">
+                <td colSpan={12} className="px-4 py-8 text-center text-sm text-zinc-500">
                   {search ? 'Nema rezultata pretrage' : 'Nema trka'}
                 </td>
               </tr>
@@ -558,6 +574,14 @@ export default function RacesMassEditPage() {
                       value={race.registrationEnabled}
                       type="boolean"
                       onSave={(v) => handleUpdateField(race.id, 'registrationEnabled', v)}
+                    />
+                  </td>
+                  <td className="w-[100px] overflow-hidden px-1 py-1">
+                    <EditableCell
+                      value={race.registrationSite}
+                      type="text"
+                      onSave={(v) => handleUpdateField(race.id, 'registrationSite', v)}
+                      placeholder="-"
                     />
                   </td>
                   <td className="w-[80px] overflow-hidden px-1 py-1">

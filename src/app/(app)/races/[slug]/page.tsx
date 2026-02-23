@@ -58,6 +58,7 @@ type RaceWithEvent = {
   startDateTime: string
   endDateTime: string | null
   registrationEnabled: boolean
+  registrationSite: string | null
   registrationCount: number
   competitionId: string | null
   competition: Competition | null
@@ -89,6 +90,7 @@ const RACE_BY_SLUG_QUERY = `
       startDateTime
       endDateTime
       registrationEnabled
+      registrationSite
       registrationCount
       competitionId
       competition {
@@ -546,13 +548,13 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                     Prijavi se za trku
                   </Button>
                 )}
-                {!isPast && !race.registrationEnabled && race.raceEvent.registrationSite && (
-                  <Button href={race.raceEvent.registrationSite} target="_blank" color="emerald" className="w-full">
+                {!isPast && !race.registrationEnabled && (race.registrationSite || race.raceEvent.registrationSite) && (
+                  <Button href={race.registrationSite || race.raceEvent.registrationSite!} target="_blank" color="emerald" className="w-full">
                     <ArrowTopRightOnSquareIcon data-slot="icon" />
                     Prijavi se na sajtu organizatora
                   </Button>
                 )}
-                {!isPast && !race.registrationEnabled && !race.raceEvent.registrationSite && (
+                {!isPast && !race.registrationEnabled && !race.registrationSite && !race.raceEvent.registrationSite && (
                   <Button disabled className="w-full">
                     Prijave zatvorene
                   </Button>
