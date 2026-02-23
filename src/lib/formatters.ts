@@ -4,6 +4,7 @@
  */
 
 const LOCALE = 'sr-Latn-RS'
+const TIMEZONE = 'Europe/Belgrade'
 
 /**
  * Format date - standard format: "14. feb 2026."
@@ -18,11 +19,12 @@ export function formatDate(
   const d = typeof iso === 'string' ? new Date(iso) : iso
   if (Number.isNaN(d.getTime())) return 'TBD'
 
-  const day = d.getDate()
-  const year = d.getFullYear()
-  const monthShort = d.toLocaleDateString(LOCALE, { month: 'short' }).replace('.', '')
-  const monthLong = d.toLocaleDateString(LOCALE, { month: 'long' })
-  const weekday = d.toLocaleDateString(LOCALE, { weekday: 'short' }).replace('.', '')
+  const opts = { timeZone: TIMEZONE }
+  const day = parseInt(d.toLocaleDateString(LOCALE, { ...opts, day: 'numeric' }))
+  const year = parseInt(d.toLocaleDateString(LOCALE, { ...opts, year: 'numeric' }))
+  const monthShort = d.toLocaleDateString(LOCALE, { ...opts, month: 'short' }).replace('.', '')
+  const monthLong = d.toLocaleDateString(LOCALE, { ...opts, month: 'long' })
+  const weekday = d.toLocaleDateString(LOCALE, { ...opts, weekday: 'short' }).replace('.', '')
 
   if (format === 'full') {
     return `${weekday}, ${day}. ${monthLong} ${year}.`
@@ -38,7 +40,7 @@ export function formatDate(
 export function formatDateSimple(iso: string | Date): string {
   const d = typeof iso === 'string' ? new Date(iso) : iso
   if (Number.isNaN(d.getTime())) return '-'
-  return d.toLocaleDateString(LOCALE)
+  return d.toLocaleDateString(LOCALE, { timeZone: TIMEZONE })
 }
 
 /**
@@ -51,6 +53,7 @@ export function formatTime(iso: string | Date, withSeconds = false): string {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: TIMEZONE,
     ...(withSeconds && { second: '2-digit' }),
   })
 }
@@ -76,7 +79,7 @@ export function formatDuration(ms: number): string {
 export function formatMonth(iso: string | Date): string {
   const d = typeof iso === 'string' ? new Date(iso) : iso
   if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleDateString(LOCALE, { month: 'short' }).toUpperCase()
+  return d.toLocaleDateString(LOCALE, { month: 'short', timeZone: TIMEZONE }).toUpperCase()
 }
 
 /**
@@ -84,7 +87,7 @@ export function formatMonth(iso: string | Date): string {
  */
 export function formatDay(iso: string | Date): number {
   const d = typeof iso === 'string' ? new Date(iso) : iso
-  return d.getDate()
+  return parseInt(d.toLocaleDateString(LOCALE, { day: 'numeric', timeZone: TIMEZONE }))
 }
 
 /**
@@ -127,6 +130,7 @@ export function formatDateWithWeekday(date: Date): string {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
+    timeZone: TIMEZONE,
   })
 }
 
@@ -134,9 +138,11 @@ export function formatDateWithWeekday(date: Date): string {
  * Format date as YYYY-MM-DD key for grouping
  */
 export function formatDateKey(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
+  const parts = date.toLocaleDateString(LOCALE, { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: TIMEZONE }).split('.')
+  // sr-Latn-RS format: DD.MM.YYYY.
+  const day = parts[0]?.trim().padStart(2, '0')
+  const month = parts[1]?.trim().padStart(2, '0')
+  const year = parts[2]?.trim().replace('.', '')
   return `${year}-${month}-${day}`
 }
 
@@ -162,18 +168,6 @@ export function toDateTimeLocalString(date: Date): string {
   const hours = String(date.getHours()).padStart(2, '0')
   const minutes = String(date.getMinutes()).padStart(2, '0')
   return `${year}-${month}-${day}T${hours}:${minutes}`
-}
-
-/**
- * Convert datetime-local string to ISO format preserving local time as UTC.
- * Used when sending to server - saves the time user sees as UTC.
- *
- * Example: "2026-03-14T11:15" (local CET) → "2026-03-14T11:15:00.000Z" (UTC)
- */
-export function toISOPreservingLocalTime(localDateTimeString: string): string {
-  const localDate = new Date(localDateTimeString)
-  const offset = localDate.getTimezoneOffset() * 60000
-  return new Date(localDate.getTime() - offset).toISOString()
 }
 
 /**

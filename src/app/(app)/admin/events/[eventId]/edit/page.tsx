@@ -539,10 +539,11 @@ export default function EditEventPage() {
                       {' • '}
                       {(() => {
                         const d = new Date(race.startDateTime)
-                        const day = d.getDate()
-                        const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short' }).replace('.', '')
-                        const year = d.getFullYear()
-                        const time = d.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit', hour12: false })
+                        const tz = 'Europe/Belgrade'
+                        const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: tz }))
+                        const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short', timeZone: tz }).replace('.', '')
+                        const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: tz }))
+                        const time = d.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: tz })
                         return `${day}. ${month} ${year}. ${time}`
                       })()}
                     </div>

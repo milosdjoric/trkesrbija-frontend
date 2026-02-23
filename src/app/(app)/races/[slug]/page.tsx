@@ -175,9 +175,10 @@ export async function generateMetadata({
 function formatDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  const day = d.getDate()
-  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long' })
-  const year = d.getFullYear()
+  const tz = 'Europe/Belgrade'
+  const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: tz }))
+  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: tz })
+  const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: tz }))
   return `${day}. ${month} ${year}.`
 }
 
@@ -188,13 +189,14 @@ function formatTime(iso: string) {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: 'Europe/Belgrade',
   })
 }
 
 function formatWeekday(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleDateString('sr-Latn-RS', { weekday: 'long' })
+  return d.toLocaleDateString('sr-Latn-RS', { weekday: 'long', timeZone: 'Europe/Belgrade' })
 }
 
 function daysUntil(iso: string): number {

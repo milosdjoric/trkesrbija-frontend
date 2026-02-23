@@ -115,6 +115,7 @@ function formatTime(iso: string) {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: 'Europe/Belgrade',
   })
 }
 
@@ -177,16 +178,17 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const allSameDay = uniqueDates.size === 1 && sortedRaces.length > 0
 
   // Date display logic
+  const tz = 'Europe/Belgrade'
   const formatDateDisplay = (date: Date) => {
-    const day = date.getDate()
-    const month = date.toLocaleDateString('sr-Latn-RS', { month: 'long' })
-    const year = date.getFullYear()
+    const day = parseInt(date.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: tz }))
+    const month = date.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: tz })
+    const year = parseInt(date.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: tz }))
     return `${day}. ${month} ${year}.`
   }
 
   const formatShortDate = (date: Date) => {
-    const day = date.getDate()
-    const month = date.toLocaleDateString('sr-Latn-RS', { month: 'short' })
+    const day = parseInt(date.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: tz }))
+    const month = date.toLocaleDateString('sr-Latn-RS', { month: 'short', timeZone: tz })
     return `${day}. ${month}`
   }
 
@@ -199,8 +201,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
     : 'Datum nije definisan'
 
   // Weekday display
-  const eventWeekday = eventDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long' }) ?? ''
-  const latestWeekday = latestDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long' }) ?? ''
+  const eventWeekday = eventDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long', timeZone: tz }) ?? ''
+  const latestWeekday = latestDateObj?.toLocaleDateString('sr-Latn-RS', { weekday: 'long', timeZone: tz }) ?? ''
   const weekdayDisplay = allSameDay
     ? eventWeekday
     : eventWeekday && latestWeekday
