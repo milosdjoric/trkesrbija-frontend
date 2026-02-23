@@ -5,6 +5,7 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { TagList } from '@/components/clickable-tag'
 import { Divider } from '@/components/divider'
+import { ExpandableText } from '@/components/expandable-text'
 import { FavoriteButtonServer } from '@/components/favorite-button-server'
 import { GpxMapWrapper } from '@/components/gpx-map-wrapper'
 import { Subheading } from '@/components/heading'
@@ -404,9 +405,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {race.raceEvent.description && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
-              <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
-                {race.raceEvent.description}
-              </p>
+              <ExpandableText text={race.raceEvent.description} maxLines={5} />
             </div>
           )}
 
@@ -552,11 +551,6 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   <Button href={race.registrationSite || race.raceEvent.registrationSite!} target="_blank" color="emerald" className="w-full">
                     <ArrowTopRightOnSquareIcon data-slot="icon" />
                     Prijavi se na sajtu organizatora
-                  </Button>
-                )}
-                {!isPast && !race.registrationEnabled && !race.registrationSite && !race.raceEvent.registrationSite && (
-                  <Button disabled className="w-full">
-                    Prijave zatvorene
                   </Button>
                 )}
                 {isPast && (
