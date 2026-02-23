@@ -155,17 +155,17 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   }
 
   const races = event.races ?? []
-  const sortedRaces = [...races].sort((a, b) => {
-    const da = new Date(a.startDateTime).getTime()
-    const db = new Date(b.startDateTime).getTime()
-    return da - db
-  })
+  const sortedRaces = [...races].sort((a, b) => a.length - b.length)
 
-  const earliestRace = sortedRaces[0]
+  const earliestRace = [...races].sort((a, b) =>
+    new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime()
+  )[0]
 
   // Parse date components for sidebar display
   const eventDateObj = earliestRace ? new Date(earliestRace.startDateTime) : null
-  const latestRace = sortedRaces[sortedRaces.length - 1]
+  const latestRace = [...races].sort((a, b) =>
+    new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime()
+  )[races.length - 1]
   const latestDateObj = latestRace ? new Date(latestRace.startDateTime) : null
 
   // Check if all races are on the same day
