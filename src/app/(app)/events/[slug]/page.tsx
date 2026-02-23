@@ -7,6 +7,7 @@ import { Button } from '@/components/button'
 import { TagList } from '@/components/clickable-tag'
 import { Divider } from '@/components/divider'
 import { FavoriteButton } from '@/components/favorite-button'
+import { ExpandableText } from '@/components/expandable-text'
 import { ImageSlider } from '@/components/image-slider'
 import { RegisterRaceButton } from '@/components/register-race-button'
 import { Heading, Subheading } from '@/components/heading'
@@ -405,9 +406,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {event.description && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
-              <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
-                {event.description}
-              </p>
+              <ExpandableText text={event.description} maxLines={5} />
             </div>
           )}
 
