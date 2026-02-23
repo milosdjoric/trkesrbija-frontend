@@ -2,8 +2,10 @@ import { gql } from '@/app/lib/api'
 import { Divider } from '@/components/divider'
 import { EventCard } from '@/components/event-card'
 import { Heading } from '@/components/heading'
+import { InfoBanner } from '@/components/info-banner'
 import { formatDate as formatDateUtil } from '@/lib/formatters'
 import type { Metadata } from 'next'
+import { Suspense } from 'react'
 import { FiltersBar } from './filters-bar'
 
 export const metadata: Metadata = {
@@ -367,6 +369,9 @@ export default async function Events({
 
   return (
     <>
+      <Suspense>
+        <InfoBanner />
+      </Suspense>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-sm:w-full sm:flex-1">
           <Heading>Svi događaji</Heading>

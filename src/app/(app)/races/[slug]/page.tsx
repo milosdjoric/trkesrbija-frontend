@@ -21,7 +21,7 @@ import {
   FlagIcon,
 } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 type Competition = {
   id: string
@@ -261,7 +261,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
   const race = await fetchRaceBySlug(slug)
 
   if (!race) {
-    notFound()
+    redirect('/events?info=not-found')
   }
 
   const isTrail = race.raceEvent.type === 'TRAIL'

@@ -22,7 +22,7 @@ import {
 } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
 // Social media icon helper
 function getSocialMediaIcon(url: string) {
@@ -152,7 +152,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   const event = await fetchRaceEventBySlug(slug)
 
   if (!event) {
-    notFound()
+    redirect('/events?info=not-found')
   }
 
   const races = event.races ?? []
