@@ -217,6 +217,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   // Vreme prve trke
   const earliestRaceTime = earliestRace ? formatTime(earliestRace.startDateTime) : ''
+  const allSameTime = races.length > 1 && new Set(races.map((r) => formatTime(r.startDateTime))).size === 1
 
   // Google Maps navigation URL
   const getGoogleMapsUrl = (location: string) => {
@@ -446,7 +447,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     <ClockIcon className="size-5 shrink-0 text-zinc-400" />
                     <span>
                       {earliestRaceTime}
-                      {races.length > 1 ? ' (prva trka)' : ''}
+                      {races.length > 1 ? (allSameTime ? ' (sve trke)' : ' (prva trka)') : ''}
                     </span>
                   </div>
                 )}
