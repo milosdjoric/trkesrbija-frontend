@@ -184,6 +184,13 @@ export default function RacesMassEditPage() {
       parsedValue = bulkValue ? parseFloat(bulkValue) : null
     } else if (bulkField === 'competitionId' && bulkValue === '') {
       parsedValue = null
+    } else if (bulkField === 'startDateTime' || bulkField === 'endDateTime') {
+      if (bulkValue) {
+        const d = new Date(bulkValue)
+        parsedValue = isNaN(d.getTime()) ? null : d.toISOString()
+      } else {
+        parsedValue = null
+      }
     }
 
     for (const raceId of selectedIds) {
