@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState, useEffect } from 'react'
+import { Button } from '@/components/button'
 
 interface ExpandableTextProps {
   text: string
@@ -45,12 +46,11 @@ export function ExpandableText({ text, maxLines = 5, buttonLabel = 'Pogledaj vi�
         {text}
       </p>
       {needsTruncation && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-3 inline-flex cursor-pointer items-center rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-        >
-          {isExpanded ? 'Prikaži manje' : buttonLabel}
-        </button>
+        <div className="mt-3">
+          <Button outline onClick={() => setIsExpanded(!isExpanded)}>
+            {isExpanded ? 'Prikaži manje' : buttonLabel}
+          </Button>
+        </div>
       )}
     </div>
   )
