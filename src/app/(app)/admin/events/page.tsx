@@ -165,9 +165,9 @@ export default function AdminEventsPage() {
   function formatDate(iso: string) {
     const d = new Date(iso)
     if (Number.isNaN(d.getTime())) return '-'
-    const day = d.getDate()
-    const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short' }).replace('.', '')
-    const year = d.getFullYear()
+    const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
+    const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short', timeZone: 'Europe/Belgrade' }).replace('.', '')
+    const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
     return `${day}. ${month} ${year}.`
   }
 

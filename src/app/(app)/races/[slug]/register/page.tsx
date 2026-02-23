@@ -52,10 +52,10 @@ const RACE_BY_SLUG_QUERY = `
 function formatDate(iso: string) {
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return 'TBD'
-  const day = d.getDate()
-  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long' })
-  const year = d.getFullYear()
-  const weekday = d.toLocaleDateString('sr-Latn-RS', { weekday: 'long' })
+  const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
+  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: 'Europe/Belgrade' })
+  const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
+  const weekday = d.toLocaleDateString('sr-Latn-RS', { weekday: 'long', timeZone: 'Europe/Belgrade' })
   return `${weekday}, ${day}. ${month} ${year}.`
 }
 

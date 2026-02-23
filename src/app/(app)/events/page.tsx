@@ -247,7 +247,7 @@ export default async function Events({
 
     const sharedTime =
       sameStartDateTime.allSame && sameStartDateTime.value
-        ? sameStartDateTime.value.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit', hour12: false })
+        ? sameStartDateTime.value.toLocaleTimeString('sr-Latn-RS', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Europe/Belgrade' })
         : ''
     const sharedLocation = sameLocation.allSame && sameLocation.value ? sameLocation.value : 'TBD'
 
@@ -418,7 +418,7 @@ export default async function Events({
         const monthLabelFor = (ts: number) => {
           if (!Number.isFinite(ts)) return 'TBD'
           const d = new Date(ts)
-          const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long' })
+          const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: 'Europe/Belgrade' })
           const year = d.getFullYear()
           return `${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`
         }
