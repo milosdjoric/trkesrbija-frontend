@@ -107,14 +107,14 @@ export default function AdminEventsPage() {
   }, [authLoading, user, accessToken, router, loadData])
 
   async function handleDelete(event: RaceEvent) {
-    if (event.races.length > 0) {
-      toast('Ne možete obrisati događaj koji ima trke. Prvo obrišite trke.', 'error')
-      return
-    }
+    const hasRaces = event.races.length > 0
+    const message = hasRaces
+      ? `Da li ste sigurni da želite da obrišete događaj "${event.eventName}" i sve njegove trke (${event.races.length})? Ova akcija se ne može poništiti.`
+      : `Da li ste sigurni da želite da obrišete događaj "${event.eventName}"? Ova akcija se ne može poništiti.`
 
     const confirmed = await confirm({
       title: 'Obriši događaj',
-      message: `Da li ste sigurni da želite da obrišete događaj "${event.eventName}"? Ova akcija se ne može poništiti.`,
+      message,
       confirmText: 'Obriši',
       variant: 'danger',
     })
@@ -356,9 +356,9 @@ export default function AdminEventsPage() {
                         </Link>
                         <button
                           onClick={() => handleDelete(event)}
-                          disabled={deletingId === event.id || event.races.length > 0}
+                          disabled={deletingId === event.id}
                           className="text-sm text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                          title={event.races.length > 0 ? 'Prvo obrišite sve trke' : 'Obriši događaj'}
+                          title="Obriši događaj"
                         >
                           Obriši
                         </button>
