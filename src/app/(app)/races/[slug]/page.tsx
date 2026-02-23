@@ -331,10 +331,12 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   <span className="text-amber-600 dark:text-amber-400">Cut-off: {formatTime(race.endDateTime)}</span>
                 </div>
               )}
-              <div className="flex items-center gap-2">
-                <UserGroupIcon className="size-4 text-zinc-400" />
-                <span>Prijavljenih: {race.registrationCount}</span>
-              </div>
+              {race.registrationEnabled && (
+                <div className="flex items-center gap-2">
+                  <UserGroupIcon className="size-4 text-zinc-400" />
+                  <span>Prijavljenih: {race.registrationCount}</span>
+                </div>
+              )}
             </div>
           </div>
 
