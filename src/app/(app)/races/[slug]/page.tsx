@@ -405,7 +405,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {race.raceEvent.description && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
-              <ExpandableText text={race.raceEvent.description} maxLines={5} />
+              <ExpandableText text={race.raceEvent.description} maxLines={5} buttonLabel="Pogledaj više o događaju" />
             </div>
           )}
 

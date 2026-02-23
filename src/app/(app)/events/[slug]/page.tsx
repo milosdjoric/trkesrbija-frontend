@@ -406,7 +406,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {event.description && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
-              <ExpandableText text={event.description} maxLines={5} />
+              <ExpandableText text={event.description} maxLines={5} buttonLabel="Pogledaj više o događaju" />
             </div>
           )}
 

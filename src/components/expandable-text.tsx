@@ -6,10 +6,12 @@ interface ExpandableTextProps {
   text: string
   /** Maximum number of visible lines before truncation (default: 5) */
   maxLines?: number
+  /** Label for the expand button (default: 'Pogledaj više') */
+  buttonLabel?: string
   className?: string
 }
 
-export function ExpandableText({ text, maxLines = 5, className = '' }: ExpandableTextProps) {
+export function ExpandableText({ text, maxLines = 5, buttonLabel = 'Pogledaj više', className = '' }: ExpandableTextProps) {
   const textRef = useRef<HTMLParagraphElement>(null)
   const [isExpanded, setIsExpanded] = useState(false)
   const [needsTruncation, setNeedsTruncation] = useState(false)
@@ -45,9 +47,9 @@ export function ExpandableText({ text, maxLines = 5, className = '' }: Expandabl
       {needsTruncation && (
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="mt-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+          className="mt-3 inline-flex items-center rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
         >
-          {isExpanded ? 'Prikaži manje' : 'Pogledaj više'}
+          {isExpanded ? 'Prikaži manje' : buttonLabel}
         </button>
       )}
     </div>
