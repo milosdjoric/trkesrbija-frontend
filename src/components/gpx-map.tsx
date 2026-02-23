@@ -396,7 +396,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
         {!loading && !error && (
           <button
             onClick={toggleFullscreen}
-            className="absolute bottom-2 right-2 z-[1000] rounded-lg bg-white/90 p-2 shadow-md backdrop-blur transition-colors hover:bg-white dark:bg-zinc-800/90 dark:hover:bg-zinc-800"
+            className="absolute bottom-2 right-2 z-[1000] cursor-pointer rounded-lg bg-white/90 p-2 shadow-md backdrop-blur transition-colors hover:bg-white dark:bg-zinc-800/90 dark:hover:bg-zinc-800"
             title={isFullscreen ? 'Izađi iz celog ekrana' : 'Ceo ekran'}
           >
             {isFullscreen ? (

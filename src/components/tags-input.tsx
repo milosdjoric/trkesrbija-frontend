@@ -82,7 +82,7 @@ export function TagsInput({
             <button
               type="button"
               onClick={() => removeTag(index)}
-              className="ml-1 hover:text-emerald-900 dark:hover:text-emerald-200"
+              className="ml-1 cursor-pointer hover:text-emerald-900 dark:hover:text-emerald-200"
             >
               <XMarkIcon className="size-4" />
             </button>

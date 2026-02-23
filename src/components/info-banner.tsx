@@ -31,7 +31,7 @@ export function InfoBanner() {
       <span className="flex-1">{MESSAGES[info]}</span>
       <button
         onClick={handleDismiss}
-        className="shrink-0 rounded p-1 hover:bg-blue-100 dark:hover:bg-blue-800/30"
+        className="shrink-0 cursor-pointer rounded p-1 hover:bg-blue-100 dark:hover:bg-blue-800/30"
         aria-label="Zatvori"
       >
         <XMarkIcon className="size-4" />

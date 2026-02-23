@@ -93,7 +93,7 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
     >
       <Icon className="size-5 shrink-0" />
       <span className="text-sm font-medium">{toast.message}</span>
-      <button onClick={onDismiss} className="ml-2 rounded p-1 hover:bg-black/10 dark:hover:bg-white/10">
+      <button onClick={onDismiss} className="ml-2 cursor-pointer rounded p-1 hover:bg-black/10 dark:hover:bg-white/10">
         <XMarkIcon className="size-4" />
       </button>
     </div>

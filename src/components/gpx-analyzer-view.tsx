@@ -275,7 +275,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
         {/* Fullscreen button */}
         <button
           onClick={toggleFullscreen}
-          className="absolute bottom-3 right-3 z-[1000] rounded-lg bg-white p-2 shadow-md hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          className="absolute bottom-3 right-3 z-[1000] cursor-pointer rounded-lg bg-white p-2 shadow-md hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700"
           title={isFullscreen ? 'Izađi iz celog ekrana' : 'Ceo ekran'}
         >
           <svg className="size-5 text-zinc-600 dark:text-zinc-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

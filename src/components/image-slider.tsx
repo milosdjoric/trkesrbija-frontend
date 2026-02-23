@@ -40,14 +40,14 @@ export function ImageSlider({ images, alt = 'Slika' }: ImageSliderProps) {
           <>
             <button
               onClick={goToPrevious}
-              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+              className="absolute left-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
               aria-label="Prethodna slika"
             >
               <ChevronLeftIcon className="size-5" />
             </button>
             <button
               onClick={goToNext}
-              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
+              className="absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/70"
               aria-label="Sledeća slika"
             >
               <ChevronRightIcon className="size-5" />
