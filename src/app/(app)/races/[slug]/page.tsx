@@ -313,7 +313,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
 
           {/* 2. Race Info - similar style to event page */}
           <div>
-            <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Informacije o trci</div>
+            <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Informacije o trci</div>
             <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
               <div className="flex items-center gap-2">
                 <MapIcon className="size-4 text-zinc-400" />
@@ -341,7 +341,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 3. Location */}
           {race.startLocation && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Lokacija starta</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Lokacija starta</div>
               <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
                 {race.startLocation.startsWith('http') ? (
                   <a
@@ -362,7 +362,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 4. Competition */}
           {race.competition && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Takmičenje / Serija</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Takmičenje / Serija</div>
               <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
                 <div className="flex items-center gap-2">
                   <Badge color="violet">{race.competition.name}</Badge>
@@ -377,7 +377,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 5. Checkpoints */}
           {race.raceCheckpoints && race.raceCheckpoints.length > 0 && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Checkpoint-ovi</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Checkpoint-ovi</div>
               <div className="space-y-1">
                 {[...race.raceCheckpoints]
                   .sort((a, b) => a.orderIndex - b.orderIndex)
@@ -397,7 +397,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 6. Event Description */}
           {race.raceEvent.description && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
               <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
                 {race.raceEvent.description}
               </p>
@@ -407,7 +407,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 7. Social Media */}
           {race.raceEvent.socialMedia && race.raceEvent.socialMedia.length > 0 && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
               <div className="flex flex-wrap gap-2">
                 {race.raceEvent.socialMedia.map((url) => (
                   <a
@@ -427,7 +427,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 8. Organizer */}
           {race.raceEvent.organizer && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
               <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
                 <div>{race.raceEvent.organizer.name}</div>
                 {race.raceEvent.organizer.contactPhone && (
@@ -462,7 +462,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
 
           {/* 9. Event link */}
           <div>
-            <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Događaj</div>
+            <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Događaj</div>
             <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
               <a
                 href={`/events/${race.raceEvent.slug}`}

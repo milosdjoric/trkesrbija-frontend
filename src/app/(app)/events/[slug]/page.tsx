@@ -345,7 +345,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 3. Social Media Links - clearly labeled with platform colors */}
           {event.socialMedia && event.socialMedia.length > 0 && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
               <div className="flex flex-wrap gap-2">
                 {event.socialMedia.map((url) => (
                   <a
@@ -365,7 +365,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 4. Organizer Info */}
           {event.organizer && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
               <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
                 <div>{event.organizer.name}</div>
                 {event.organizer.contactPhone && (
@@ -401,7 +401,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 5. Description */}
           {event.description && (
             <div>
-              <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
               <p className="text-sm/6 text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap">
                 {event.description}
               </p>
