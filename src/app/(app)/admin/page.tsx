@@ -12,7 +12,6 @@ import {
   ClipboardDocumentListIcon,
   FlagIcon,
   UserGroupIcon,
-  CheckCircleIcon,
   ClockIcon,
   ArrowUpTrayIcon,
 } from '@heroicons/react/16/solid'
@@ -209,16 +208,6 @@ export default function AdminDashboardPage() {
           </div>
         </Link>
 
-        <Link
-          href="/events"
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <CheckCircleIcon className="size-8 text-green-500" />
-          <div>
-            <div className="font-medium">Javni sajt</div>
-            <div className="text-sm text-zinc-500">Pogledaj kao korisnik</div>
-          </div>
-        </Link>
       </div>
 
       {/* Stats */}
