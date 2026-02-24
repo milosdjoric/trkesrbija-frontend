@@ -277,7 +277,7 @@ export default function EditEventPage() {
         </Link>
       </div>
 
-      <Heading>Izmeni događaj</Heading>
+      <Heading>Izmeni događaj: {eventName || event.eventName}</Heading>
 
       <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
         {/* Basic info */}

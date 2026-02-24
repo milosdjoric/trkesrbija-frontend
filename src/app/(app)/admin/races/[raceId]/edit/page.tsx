@@ -267,7 +267,7 @@ export default function EditRacePage() {
         </Link>
       </div>
 
-      <Heading>Izmeni trku</Heading>
+      <Heading>Izmeni trku: {race.raceName || 'Bez naziva'}</Heading>
       <p className="mt-1 text-sm text-zinc-500">
         Događaj: <strong>{race.raceEvent.eventName}</strong>
       </p>
