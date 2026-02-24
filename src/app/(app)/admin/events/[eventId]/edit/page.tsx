@@ -9,6 +9,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { ImageUpload } from '@/components/image-upload'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
+import { OrganizerSelect } from '@/components/organizer-select'
 import { SocialMediaInput } from '@/components/social-media-input'
 import { TagsInput } from '@/components/tags-input'
 import { useToast } from '@/components/toast'
@@ -140,11 +141,8 @@ export default function EditEventPage() {
   const [slug, setSlug] = useState('')
   const [verified, setVerified] = useState(false)
 
-  // Organizer inline fields
-  const [organizerName, setOrganizerName] = useState('')
-  const [organizerPhone, setOrganizerPhone] = useState('')
-  const [organizerEmail, setOrganizerEmail] = useState('')
-  const [organizerSite, setOrganizerSite] = useState('')
+  // Organizer
+  const [organizerId, setOrganizerId] = useState<string | null>(null)
 
   const loadEvent = useCallback(async () => {
     if (!accessToken) return
@@ -165,11 +163,8 @@ export default function EditEventPage() {
         setTags(e.tags || [])
         setSlug(e.slug)
         setVerified(e.verified ?? false)
-        // Load organizer data
-        setOrganizerName(e.organizer?.name || '')
-        setOrganizerPhone(e.organizer?.contactPhone || '')
-        setOrganizerEmail(e.organizer?.contactEmail || '')
-        setOrganizerSite(e.organizer?.organizerSite || '')
+        // Load organizer
+        setOrganizerId(e.organizer?.id || null)
       }
     } catch (err) {
       console.error('Failed to load event:', err)
@@ -215,16 +210,7 @@ export default function EditEventPage() {
         socialMedia,
         tags,
         verified,
-      }
-
-      // Add organizer if name is provided
-      if (organizerName.trim()) {
-        input.organizer = {
-          name: organizerName.trim(),
-          contactPhone: organizerPhone.trim() || null,
-          contactEmail: organizerEmail.trim() || null,
-          organizerSite: organizerSite.trim() || null,
-        }
+        organizerId: organizerId || null,
       }
 
       await gql(
@@ -408,65 +394,11 @@ export default function EditEventPage() {
         {/* Organizer */}
         <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
           <Subheading>Organizator</Subheading>
-          <p className="mt-1 text-sm text-zinc-500">Unesite podatke o organizatoru događaja</p>
+          <p className="mt-1 mb-4 text-sm text-zinc-500">
+            Izaberite postojećeg organizatora ili dodajte novog
+          </p>
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
-            {/* Organizer name */}
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Naziv organizatora
-              </label>
-              <input
-                type="text"
-                value={organizerName}
-                onChange={(e) => setOrganizerName(e.target.value)}
-                placeholder="npr. Trkački klub Avala"
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-              />
-            </div>
-
-            {/* Organizer phone */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Telefon
-              </label>
-              <input
-                type="tel"
-                value={organizerPhone}
-                onChange={(e) => setOrganizerPhone(e.target.value)}
-                placeholder="+381 64 123 4567"
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-              />
-            </div>
-
-            {/* Organizer email */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Email
-              </label>
-              <input
-                type="email"
-                value={organizerEmail}
-                onChange={(e) => setOrganizerEmail(e.target.value)}
-                placeholder="info@organizator.rs"
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-              />
-            </div>
-
-            {/* Organizer website */}
-            <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Sajt organizatora
-              </label>
-              <input
-                type="url"
-                value={organizerSite}
-                onChange={(e) => setOrganizerSite(e.target.value)}
-                placeholder="https://organizator.rs"
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-              />
-            </div>
-          </div>
+          <OrganizerSelect value={organizerId} onChange={setOrganizerId} />
         </div>
 
         {/* Links */}

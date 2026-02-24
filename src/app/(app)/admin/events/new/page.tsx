@@ -6,6 +6,7 @@ import { Button } from '@/components/button'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
+import { OrganizerSelect } from '@/components/organizer-select'
 import { useToast } from '@/components/toast'
 import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
@@ -65,6 +66,9 @@ export default function NewEventPage() {
   const [mainImage, setMainImage] = useState('')
   const [slug, setSlug] = useState('')
   const [autoSlug, setAutoSlug] = useState(true)
+
+  // Organizer
+  const [organizerId, setOrganizerId] = useState<string | null>(null)
 
   // Races
   const [races, setRaces] = useState<RaceInput[]>([])
@@ -134,6 +138,7 @@ export default function NewEventPage() {
             type: eventType,
             description: description.trim() || null,
             mainImage: mainImage.trim() || null,
+            organizerId: organizerId || null,
           },
         },
         { accessToken }
@@ -294,6 +299,16 @@ export default function NewEventPage() {
               />
             </div>
           </div>
+        </div>
+
+        {/* Organizer */}
+        <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+          <Subheading>Organizator</Subheading>
+          <p className="mt-1 mb-4 text-sm text-zinc-500">
+            Izaberite postojećeg organizatora ili dodajte novog
+          </p>
+
+          <OrganizerSelect value={organizerId} onChange={setOrganizerId} />
         </div>
 
         {/* Races */}
