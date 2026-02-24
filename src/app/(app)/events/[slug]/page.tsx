@@ -81,6 +81,42 @@ function getSocialMediaStyles(url: string) {
   }
 }
 
+function buildEventDescription(event: RaceEventWithRaces): string {
+  const typeLabel = event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'
+  const parts: string[] = [`${typeLabel} trka`]
+
+  // Date from earliest race
+  if (event.races.length > 0) {
+    const earliest = event.races.reduce((a, b) =>
+      new Date(a.startDateTime).getTime() < new Date(b.startDateTime).getTime() ? a : b
+    )
+    const d = new Date(earliest.startDateTime)
+    if (!Number.isNaN(d.getTime())) {
+      const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
+      const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: 'Europe/Belgrade' })
+      const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
+      parts.push(`${day}. ${month} ${year}.`)
+    }
+
+    // Location from first race (if not a URL)
+    const loc = earliest.startLocation
+    if (loc && !loc.startsWith('http')) {
+      parts.push(loc)
+    }
+
+    // Race distances
+    const distances = event.races
+      .map((r) => r.length)
+      .filter((l) => l > 0)
+      .sort((a, b) => a - b)
+    if (distances.length > 0) {
+      parts.push(`Distance: ${distances.join(', ')}km`)
+    }
+  }
+
+  return `${event.eventName} — ${parts.join(' · ')}`
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const event = await fetchRaceEventBySlug(slug)
@@ -89,10 +125,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     return { title: 'Događaj nije pronađen' }
   }
 
-  const eventType = event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'
-  const description =
-    event.description ??
-    `${event.eventName} - ${eventType} trka u Srbiji. Prijavite se i učestvujte!`
+  const description = buildEventDescription(event)
 
   return {
     title: event.eventName,

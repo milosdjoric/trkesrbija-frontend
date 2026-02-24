@@ -142,6 +142,37 @@ async function fetchRaceBySlug(slug: string): Promise<RaceWithEvent | null> {
   }
 }
 
+function buildRaceDescription(race: RaceWithEvent): string {
+  const typeLabel = race.raceEvent.type === 'TRAIL' ? 'Trail' : race.raceEvent.type === 'OCR' ? 'OCR' : 'Ulična'
+  const parts: string[] = [`${typeLabel} trka`]
+
+  // Distance and elevation
+  const distElev: string[] = []
+  if (race.length > 0) distElev.push(`${race.length}km`)
+  if (race.elevation && race.elevation > 0) distElev.push(`${race.elevation}m D+`)
+  if (distElev.length > 0) parts.push(distElev.join(', '))
+
+  // Date
+  const d = new Date(race.startDateTime)
+  if (!Number.isNaN(d.getTime())) {
+    const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
+    const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: 'Europe/Belgrade' })
+    const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
+    parts.push(`${day}. ${month} ${year}.`)
+  }
+
+  // Location (if not a URL)
+  if (race.startLocation && !race.startLocation.startsWith('http')) {
+    parts.push(race.startLocation)
+  }
+
+  const raceName = race.raceName
+    ? `${race.raceName} — ${race.raceEvent.eventName}`
+    : race.raceEvent.eventName
+
+  return `${raceName} · ${parts.join(' · ')}`
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -158,7 +189,7 @@ export async function generateMetadata({
     ? `${race.raceName} - ${race.raceEvent.eventName}`
     : race.raceEvent.eventName
 
-  const description = `${title} - ${race.length}km${race.elevation ? `, ${race.elevation}m D+` : ''}. Prijavite se i učestvujte!`
+  const description = buildRaceDescription(race)
 
   return {
     title,
