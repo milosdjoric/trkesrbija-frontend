@@ -205,7 +205,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             value={verified}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVerified(e.target.value)}
           >
-            <option value="">Svi događaji</option>
+            <option value="">Svi (verifikovani i ne)</option>
             <option value="true">Samo verifikovani</option>
             <option value="false">Samo neverifikovani</option>
           </Select>
