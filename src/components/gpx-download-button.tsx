@@ -12,17 +12,25 @@ type GpxDownloadButtonProps = {
 export function GpxDownloadButton({ url, filename, className }: GpxDownloadButtonProps) {
   const [downloading, setDownloading] = useState(false)
 
-  const resolvedFilename = filename || decodeURIComponent(url.split('/').pop() || 'staza.gpx')
+  function getFilename() {
+    if (filename) return filename.endsWith('.gpx') ? filename : `${filename}.gpx`
+    try {
+      const pathname = new URL(url).pathname
+      const name = decodeURIComponent(pathname.split('/').pop() || '')
+      if (name && name.endsWith('.gpx')) return name
+    } catch {}
+    return 'staza.gpx'
+  }
 
   async function handleDownload() {
     setDownloading(true)
     try {
       const res = await fetch(url)
-      const blob = await res.blob()
+      const blob = new Blob([await res.blob()], { type: 'application/gpx+xml' })
       const blobUrl = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = blobUrl
-      a.download = resolvedFilename
+      a.download = getFilename()
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
