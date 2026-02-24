@@ -330,22 +330,22 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 <Table striped>
                   <TableHead>
                     <TableRow>
-                      <TableHeader>Trka</TableHeader>
-                      <TableHeader>Distanca</TableHeader>
-                      <TableHeader>Vis. razlika</TableHeader>
+                      <TableHeader>{event.isTraining ? 'Staza' : 'Trka'}</TableHeader>
+                      {!event.isTraining && <TableHeader>Distanca</TableHeader>}
+                      {!event.isTraining && <TableHeader>Vis. razlika</TableHeader>}
                       <TableHeader>Start</TableHeader>
                       <TableHeader className="text-right">Akcije</TableHeader>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {sortedRaces.map((race) => (
+                    {sortedRaces.map((race, index) => (
                       <TableRow key={race.id}>
                         <TableCell>
                           <Link
                             href={`/races/${race.slug}`}
                             className="font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400"
                           >
-                            {race.raceName ?? 'Trka'}
+                            {race.raceName ?? (event.isTraining ? `Staza ${index + 1}` : 'Trka')}
                           </Link>
                           {!allSameLocation && race.startLocation && (
                             <div className="text-sm text-zinc-500">
@@ -364,8 +364,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                             </div>
                           )}
                         </TableCell>
-                        <TableCell>{race.length > 0 ? `${race.length} km` : '–'}</TableCell>
-                        <TableCell>{race.elevation != null && race.elevation > 0 ? `${race.elevation} m` : '–'}</TableCell>
+                        {!event.isTraining && <TableCell>{race.length > 0 ? `${race.length} km` : '–'}</TableCell>}
+                        {!event.isTraining && <TableCell>{race.elevation != null && race.elevation > 0 ? `${race.elevation} m` : '–'}</TableCell>}
                         <TableCell>{formatTime(race.startDateTime)}</TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
@@ -447,8 +447,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 5. Description */}
           {event.description && (
             <div>
-              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
-              <ExpandableText text={event.description} maxLines={5} buttonLabel="Pogledaj više o događaju" />
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">
+                {event.isTraining ? 'O treningu' : 'O događaju'}
+              </div>
+              <ExpandableText text={event.description} maxLines={5} buttonLabel={event.isTraining ? 'Pogledaj više o treningu' : 'Pogledaj više o događaju'} />
             </div>
           )}
 

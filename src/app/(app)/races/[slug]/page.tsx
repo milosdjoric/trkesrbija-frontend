@@ -74,6 +74,7 @@ type RaceWithEvent = {
     type: 'TRAIL' | 'ROAD' | 'OCR'
     description: string | null
     mainImage: string | null
+    isTraining: boolean
     registrationSite: string | null
     socialMedia: string[]
     tags: string[]
@@ -118,6 +119,7 @@ const RACE_BY_SLUG_QUERY = `
         type
         description
         mainImage
+        isTraining
         registrationSite
         socialMedia
         tags
@@ -144,7 +146,7 @@ async function fetchRaceBySlug(slug: string): Promise<RaceWithEvent | null> {
 
 function buildRaceDescription(race: RaceWithEvent): string {
   const typeLabel = race.raceEvent.type === 'TRAIL' ? 'Trail' : race.raceEvent.type === 'OCR' ? 'OCR' : 'Ulična'
-  const parts: string[] = [`${typeLabel} trka`]
+  const parts: string[] = [race.raceEvent.isTraining ? `${typeLabel} trening` : `${typeLabel} trka`]
 
   // Distance and elevation
   const distElev: string[] = []
@@ -352,7 +354,9 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
 
           {/* 2. Race Info - similar style to event page */}
           <div>
-            <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Informacije o trci</div>
+            <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">
+              {race.raceEvent.isTraining ? 'Informacije o stazi' : 'Informacije o trci'}
+            </div>
             <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
               <div className="flex items-center gap-2">
                 <MapIcon className="size-4 text-zinc-400" />
@@ -438,13 +442,15 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 6. Event Description */}
           {race.raceEvent.description && (
             <div>
-              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">O događaju</div>
-              <ExpandableText text={race.raceEvent.description} maxLines={5} buttonLabel="Pogledaj više o događaju" />
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">
+                {race.raceEvent.isTraining ? 'O treningu' : 'O događaju'}
+              </div>
+              <ExpandableText text={race.raceEvent.description} maxLines={5} buttonLabel={race.raceEvent.isTraining ? 'Pogledaj više o treningu' : 'Pogledaj više o događaju'} />
             </div>
           )}
 
-          {/* 7. Social Media */}
-          {race.raceEvent.socialMedia && race.raceEvent.socialMedia.length > 0 && (
+          {/* 7. Social Media (hidden for trainings) */}
+          {!race.raceEvent.isTraining && race.raceEvent.socialMedia && race.raceEvent.socialMedia.length > 0 && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
               <div className="flex flex-wrap gap-2">
@@ -463,8 +469,8 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 8. Organizer */}
-          {race.raceEvent.organizer && (
+          {/* 8. Organizer (hidden for trainings) */}
+          {!race.raceEvent.isTraining && race.raceEvent.organizer && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
               <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
@@ -499,18 +505,20 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           )}
 
-          {/* 9. Event link */}
-          <div>
-            <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Događaj</div>
-            <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
-              <a
-                href={`/events/${race.raceEvent.slug}`}
-                className="hover:underline"
-              >
-                {race.raceEvent.eventName}
-              </a>
+          {/* 9. Event link (hidden for trainings) */}
+          {!race.raceEvent.isTraining && (
+            <div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Događaj</div>
+              <div className="text-sm/6 text-zinc-700 dark:text-zinc-300">
+                <a
+                  href={`/events/${race.raceEvent.slug}`}
+                  className="hover:underline"
+                >
+                  {race.raceEvent.eventName}
+                </a>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* 10. GPX Map */}
           {race.gpsFile && (
@@ -581,7 +589,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                     Prijavi se za trku
                   </Button>
                 )}
-                {!isPast && !race.registrationEnabled && (race.registrationSite || race.raceEvent.registrationSite) && (
+                {!isPast && !race.registrationEnabled && !race.raceEvent.isTraining && (race.registrationSite || race.raceEvent.registrationSite) && (
                   <Button href={race.registrationSite || race.raceEvent.registrationSite!} target="_blank" color="emerald" className="w-full">
                     <ArrowTopRightOnSquareIcon data-slot="icon" />
                     Prijavi se na sajtu organizatora
