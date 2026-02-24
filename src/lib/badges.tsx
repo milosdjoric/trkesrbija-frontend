@@ -109,10 +109,5 @@ export function getMedalEmoji(position: number): string | null {
  * Badge component for verified events
  */
 export function VerifiedBadge() {
-  return (
-    <Badge color="violet" className="inline-flex items-center gap-1">
-      <CheckBadgeIcon className="size-3" />
-      Verifikovan
-    </Badge>
-  )
+  return <CheckBadgeIcon className="size-5 text-violet-500" title="Verifikovan" />
 }

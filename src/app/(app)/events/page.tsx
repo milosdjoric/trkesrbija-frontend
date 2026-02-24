@@ -255,6 +255,18 @@ export default async function Events({
         : ''
     const sharedLocation = sameLocation.allSame && sameLocation.value ? sameLocation.value : 'TBD'
 
+    // Compute competition tags (TTLS, NSPT)
+    const competitionTags: string[] = []
+    const competitionNames = new Set(
+      racesAll
+        .map((r) => (r.competitionId ? competitionNameById.get(r.competitionId) : null))
+        .filter(Boolean) as string[]
+    )
+    for (const cName of competitionNames) {
+      if (cName === 'Treking i trejl liga Srbije') competitionTags.push('TTLS')
+      if (cName === 'Nacionalna serija u planinskom trčanju') competitionTags.push('NSPT')
+    }
+
     return {
       id: re.id,
       name: re.eventName,
@@ -274,6 +286,7 @@ export default async function Events({
       eventType: re.type,
       tags: re.tags ?? [],
       verified: re.verified ?? false,
+      competitionTags,
       _eventStartTs: eventStartTs,
 
       // These are not in the backend model yet; keep placeholders so the UI stays unchanged.
@@ -467,6 +480,7 @@ export default async function Events({
                         showDimmed={true}
                         filtersActive={anyFilterActive}
                         verified={event.verified}
+                        competitionTags={event.competitionTags}
                       />
                     </li>
                   ))}

@@ -41,6 +41,8 @@ type EventCardProps = {
   filtersActive?: boolean
   /** Is this event verified? */
   verified?: boolean
+  /** Competition tags like TTLS, NSPT */
+  competitionTags?: string[]
 }
 
 function formatTime(d: Date) {
@@ -66,6 +68,7 @@ export function EventCard({
   showDimmed = true,
   filtersActive = false,
   verified = false,
+  competitionTags = [],
 }: EventCardProps) {
   const isTrail = type === 'TRAIL'
 
@@ -73,9 +76,12 @@ export function EventCard({
     <div className="flex w-full gap-6 py-6 md:w-fit">
       <div className="w-full space-y-1.5 md:w-fit">
         {/* Event name */}
-        <div className="flex items-center gap-2 text-lg font-semibold md:text-base/6">
+        <div className="flex items-center gap-1.5 text-lg font-semibold md:text-base/6">
           <Link href={url}>{name}</Link>
           {verified && <VerifiedBadge />}
+          {competitionTags.map((tag) => (
+            <span key={tag} className="text-sm font-medium text-zinc-400">({tag})</span>
+          ))}
         </div>
 
         <div className="flex flex-col flex-wrap gap-2 md:flex-row">
