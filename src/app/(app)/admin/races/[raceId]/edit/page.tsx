@@ -164,6 +164,8 @@ export default function EditRacePage() {
         setRegistrationEnabled(raceData.race.registrationEnabled)
         setRegistrationSite(raceData.race.registrationSite || '')
         setCompetitionId(raceData.race.competitionId || '')
+
+        document.title = `Izmeni: ${raceData.race.raceName || 'Trka'} | Trke Srbija`
       }
     } catch (err) {
       console.error('Failed to load race:', err)

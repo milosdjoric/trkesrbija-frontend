@@ -165,6 +165,8 @@ export default function EditEventPage() {
         setVerified(e.verified ?? false)
         // Load organizer
         setOrganizerId(e.organizer?.id || null)
+
+        document.title = `Izmeni: ${e.eventName} | Trke Srbija`
       }
     } catch (err) {
       console.error('Failed to load event:', err)
