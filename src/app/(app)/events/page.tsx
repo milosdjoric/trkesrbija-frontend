@@ -4,7 +4,7 @@ import { EventCard } from '@/components/event-card'
 import { Heading } from '@/components/heading'
 import { InfoBanner } from '@/components/info-banner'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300 // ISR: revalidate svakih 5 minuta
 import { formatDate as formatDateUtil } from '@/lib/formatters'
 import type { Metadata } from 'next'
 import { Suspense } from 'react'

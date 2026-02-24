@@ -16,7 +16,7 @@ import {
 } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300 // ISR: revalidate svakih 5 minuta
 
 export const metadata: Metadata = {
   title: 'Lista trail i uličnih trka',

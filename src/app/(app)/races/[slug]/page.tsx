@@ -6,7 +6,7 @@ import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60 // ISR: revalidate svaki minut
 import { TagList } from '@/components/clickable-tag'
 import { Divider } from '@/components/divider'
 import { ExpandableText } from '@/components/expandable-text'
@@ -295,6 +295,20 @@ function getSocialMediaStyles(url: string) {
   return 'bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-700'
 }
 
+function buildGpxFilename(raceName: string | null, eventName: string): string {
+  const parts = [eventName, raceName].filter(Boolean).join('_')
+  return (
+    parts
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // ukloni dijakritike (š→s, č→c, ž→z itd.)
+      .replace(/đ/g, 'dj')
+      .replace(/[^a-z0-9]+/g, '_') // zameni sve ne-alfanumeričke sa _
+      .replace(/^_+|_+$/g, '') + // ukloni _ sa početka i kraja
+    '.gpx'
+  )
+}
+
 export default async function RacePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const race = await fetchRaceBySlug(slug)
@@ -525,7 +539,10 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             <div>
               <div className="flex items-center justify-between mb-4">
                 <Subheading>GPS staza</Subheading>
-                <GpxDownloadButton url={race.gpsFile} />
+                <GpxDownloadButton
+                  url={race.gpsFile}
+                  filename={buildGpxFilename(race.raceName, race.raceEvent.eventName)}
+                />
               </div>
               <div className="rounded-lg overflow-hidden">
                 <GpxMapWrapper gpxUrl={race.gpsFile} />

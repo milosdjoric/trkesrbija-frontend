@@ -1,9 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { gql } from '@/app/lib/api'
 
-// Force dynamic rendering - sitemap fetches data from API
-export const dynamic = 'force-dynamic'
-export const revalidate = 3600 // Revalidate every hour
+export const revalidate = 3600 // ISR: revalidate svaki sat
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trkesrbija.rs'
 

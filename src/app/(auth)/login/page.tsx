@@ -8,11 +8,12 @@ import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Strong, Text, TextLink } from '@/components/text'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function Login() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { login, isLoading, user } = useAuth()
   const loading = isLoading
 
@@ -20,11 +21,13 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
 
+  const redirectTo = searchParams.get('redirect') || '/'
+
   useEffect(() => {
     if (user) {
-      router.replace('/')
+      router.replace(redirectTo)
     }
-  }, [user, router])
+  }, [user, router, redirectTo])
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -32,7 +35,7 @@ export default function Login() {
 
     try {
       await login(email, password)
-      router.push('/')
+      router.push(redirectTo)
     } catch (err: any) {
       setError(err?.message ?? 'Prijava nije uspela')
     }

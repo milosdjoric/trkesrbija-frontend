@@ -4,7 +4,7 @@ import { formatDateKey } from '@/lib/formatters'
 import type { Metadata } from 'next'
 import { CalendarView } from './calendar-view'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 300 // ISR: revalidate svakih 5 minuta
 
 export const metadata: Metadata = {
   title: 'Kalendar trka',

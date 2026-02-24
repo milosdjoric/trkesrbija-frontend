@@ -27,7 +27,7 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
-export const dynamic = 'force-dynamic'
+export const revalidate = 60 // ISR: revalidate svaki minut
 
 // Social media icon helper
 function getSocialMediaIcon(url: string) {
