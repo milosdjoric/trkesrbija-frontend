@@ -3,6 +3,8 @@ import { AdminEditButton } from '@/components/admin-edit-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+
+export const dynamic = 'force-dynamic'
 import { TagList } from '@/components/clickable-tag'
 import { Divider } from '@/components/divider'
 import { ExpandableText } from '@/components/expandable-text'

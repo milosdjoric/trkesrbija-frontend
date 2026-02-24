@@ -25,6 +25,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
+export const dynamic = 'force-dynamic'
+
 // Social media icon helper
 function getSocialMediaIcon(url: string) {
   const lower = url.toLowerCase()
