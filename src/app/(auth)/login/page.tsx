@@ -21,7 +21,10 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
 
-  const redirectTo = searchParams.get('redirect') || '/'
+  // Sanitize redirect param — only allow relative paths starting with /
+  // to prevent open redirect attacks (e.g., //evil.com or https://evil.com)
+  const rawRedirect = searchParams.get('redirect')
+  const redirectTo = rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
 
   useEffect(() => {
     if (user) {
