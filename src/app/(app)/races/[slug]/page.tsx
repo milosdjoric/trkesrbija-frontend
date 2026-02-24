@@ -352,36 +352,36 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             </div>
           </div>
 
-          {/* 2. Race Info - similar style to event page */}
-          <div>
-            <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">
-              {race.raceEvent.isTraining ? 'Informacije o stazi' : 'Informacije o trci'}
-            </div>
-            <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
-              <div className="flex items-center gap-2">
-                <MapIcon className="size-4 text-zinc-400" />
-                <span>Distanca: {race.length > 0 ? `${race.length} km` : 'Nije definisano'}</span>
+          {/* 2. Race Info - similar style to event page (hidden for trainings) */}
+          {!race.raceEvent.isTraining && (
+            <div>
+              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Informacije o trci</div>
+              <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
+                <div className="flex items-center gap-2">
+                  <MapIcon className="size-4 text-zinc-400" />
+                  <span>Distanca: {race.length > 0 ? `${race.length} km` : 'Nije definisano'}</span>
+                </div>
+                {race.elevation != null && race.elevation > 0 && (
+                  <div className="flex items-center gap-2">
+                    <ArrowTrendingUpIcon className="size-4 text-zinc-400" />
+                    <span>Visinska razlika: {race.elevation} m</span>
+                  </div>
+                )}
+                {race.endDateTime && (
+                  <div className="flex items-center gap-2">
+                    <ClockIcon className="size-4 text-amber-500" />
+                    <span className="text-amber-600 dark:text-amber-400">Cut-off: {formatTime(race.endDateTime)}</span>
+                  </div>
+                )}
+                {race.registrationEnabled && (
+                  <div className="flex items-center gap-2">
+                    <UserGroupIcon className="size-4 text-zinc-400" />
+                    <span>Prijavljenih: {race.registrationCount}</span>
+                  </div>
+                )}
               </div>
-              {race.elevation != null && race.elevation > 0 && (
-                <div className="flex items-center gap-2">
-                  <ArrowTrendingUpIcon className="size-4 text-zinc-400" />
-                  <span>Visinska razlika: {race.elevation} m</span>
-                </div>
-              )}
-              {race.endDateTime && (
-                <div className="flex items-center gap-2">
-                  <ClockIcon className="size-4 text-amber-500" />
-                  <span className="text-amber-600 dark:text-amber-400">Cut-off: {formatTime(race.endDateTime)}</span>
-                </div>
-              )}
-              {race.registrationEnabled && (
-                <div className="flex items-center gap-2">
-                  <UserGroupIcon className="size-4 text-zinc-400" />
-                  <span>Prijavljenih: {race.registrationCount}</span>
-                </div>
-              )}
             </div>
-          </div>
+          )}
 
           {/* 3. Location */}
           {race.startLocation && (
