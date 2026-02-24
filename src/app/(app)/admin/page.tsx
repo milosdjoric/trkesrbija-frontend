@@ -164,7 +164,7 @@ export default function AdminDashboardPage() {
       <Heading>Admin Panel</Heading>
 
       {/* Quick Links */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <Link
           href="/admin/events"
           className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
