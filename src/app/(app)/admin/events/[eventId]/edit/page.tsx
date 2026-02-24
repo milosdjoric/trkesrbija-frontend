@@ -115,6 +115,14 @@ const DELETE_RACE_MUTATION = `
   }
 `
 
+const DUPLICATE_RACE_MUTATION = `
+  mutation DuplicateRace($raceId: ID!) {
+    duplicateRace(raceId: $raceId) {
+      id
+    }
+  }
+`
+
 export default function EditEventPage() {
   const params = useParams()
   const router = useRouter()
@@ -127,6 +135,7 @@ export default function EditEventPage() {
   const [event, setEvent] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [duplicatingRaceId, setDuplicatingRaceId] = useState<string | null>(null)
   const loadedRef = useRef(false)
 
   // Form state
@@ -247,6 +256,23 @@ export default function EditEventPage() {
       await loadEvent()
     } catch (err: any) {
       toast(err?.message ?? 'Greška pri brisanju', 'error')
+    }
+  }
+
+  async function handleDuplicateRace(raceId: string) {
+    setDuplicatingRaceId(raceId)
+    try {
+      const result = await gql<{ duplicateRace: { id: string } }>(
+        DUPLICATE_RACE_MUTATION,
+        { raceId },
+        { accessToken }
+      )
+      toast('Trka dupliirana', 'success')
+      router.push(`/admin/races/${result.duplicateRace.id}/edit`)
+    } catch (err: any) {
+      toast(err?.message ?? 'Greška pri dupliranju', 'error')
+    } finally {
+      setDuplicatingRaceId(null)
     }
   }
 
@@ -513,6 +539,13 @@ export default function EditEventPage() {
                     </Button>
                     <Button href={`/admin/races/${race.id}/registrations`} outline>
                       Prijave
+                    </Button>
+                    <Button
+                      outline
+                      disabled={duplicatingRaceId === race.id}
+                      onClick={() => handleDuplicateRace(race.id)}
+                    >
+                      {duplicatingRaceId === race.id ? 'Dupliranje...' : 'Dupliraj'}
                     </Button>
                     <button
                       onClick={() => handleDeleteRace(race.id, race.raceName)}
