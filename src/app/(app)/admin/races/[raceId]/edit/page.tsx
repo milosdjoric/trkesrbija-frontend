@@ -31,6 +31,11 @@ type Competition = {
   name: string
 }
 
+type RaceEventOption = {
+  id: string
+  eventName: string
+}
+
 type RaceData = {
   id: string
   slug: string
@@ -91,6 +96,15 @@ const COMPETITIONS_QUERY = `
   }
 `
 
+const EVENTS_QUERY = `
+  query AllEvents {
+    raceEvents(limit: 1000) {
+      id
+      eventName
+    }
+  }
+`
+
 const UPDATE_RACE_MUTATION = `
   mutation UpdateRace($raceId: ID!, $input: UpdateRaceInput!) {
     updateRace(raceId: $raceId, input: $input) {
@@ -119,6 +133,7 @@ export default function EditRacePage() {
 
   const [race, setRace] = useState<RaceData | null>(null)
   const [competitions, setCompetitions] = useState<Competition[]>([])
+  const [events, setEvents] = useState<RaceEventOption[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const loadedRef = useRef(false)
@@ -135,19 +150,25 @@ export default function EditRacePage() {
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
   const [registrationSite, setRegistrationSite] = useState('')
   const [competitionId, setCompetitionId] = useState('')
+  const [raceEventId, setRaceEventId] = useState('')
 
   const loadRace = useCallback(async () => {
     if (!accessToken) return
 
     try {
-      // Load race and competitions in parallel
-      const [raceData, competitionsData] = await Promise.all([
+      // Load race, competitions, and events in parallel
+      const [raceData, competitionsData, eventsData] = await Promise.all([
         gql<{ race: RaceData | null }>(RACE_BY_ID_QUERY, { id: raceId }, { accessToken }),
         gql<{ competitions: Competition[] }>(COMPETITIONS_QUERY, {}, { accessToken }),
+        gql<{ raceEvents: RaceEventOption[] }>(EVENTS_QUERY, {}, { accessToken }),
       ])
 
       if (competitionsData.competitions) {
         setCompetitions(competitionsData.competitions)
+      }
+
+      if (eventsData.raceEvents) {
+        setEvents(eventsData.raceEvents.sort((a, b) => a.eventName.localeCompare(b.eventName)))
       }
 
       if (raceData.race) {
@@ -166,6 +187,7 @@ export default function EditRacePage() {
         setRegistrationEnabled(raceData.race.registrationEnabled)
         setRegistrationSite(raceData.race.registrationSite || '')
         setCompetitionId(raceData.race.competitionId || '')
+        setRaceEventId(raceData.race.raceEvent.id)
 
         document.title = `Izmeni: ${raceData.race.raceName || 'Trka'} | Trke Srbija`
       }
@@ -228,6 +250,7 @@ export default function EditRacePage() {
             registrationEnabled,
             registrationSite: registrationSite.trim() || null,
             competitionId: competitionId || null,
+            raceEventId: raceEventId || null,
           },
         },
         { accessToken }
@@ -272,11 +295,32 @@ export default function EditRacePage() {
       </div>
 
       <Heading>Izmeni trku: {race.raceName || 'Bez naziva'}</Heading>
-      <p className="mt-1 text-sm text-zinc-500">
-        Događaj: <strong>{race.raceEvent.eventName}</strong>
-      </p>
 
       <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
+        {/* Event selector */}
+        <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+          <Subheading>Događaj</Subheading>
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Pripada događaju
+            </label>
+            <select
+              value={raceEventId}
+              onChange={(e) => setRaceEventId(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+            >
+              {events.map((ev) => (
+                <option key={ev.id} value={ev.id}>
+                  {ev.eventName}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-zinc-500">
+              Promenite događaj kome ova trka pripada
+            </p>
+          </div>
+        </div>
+
         <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
           <Subheading>Informacije o trci</Subheading>
 

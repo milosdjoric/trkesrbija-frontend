@@ -76,6 +76,14 @@ const DELETE_RACE_MUTATION = `
   }
 `
 
+const DUPLICATE_RACE_MUTATION = `
+  mutation DuplicateRace($raceId: ID!) {
+    duplicateRace(raceId: $raceId) {
+      id
+    }
+  }
+`
+
 export default function AdminRacesPage() {
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
@@ -91,6 +99,7 @@ export default function AdminRacesPage() {
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
     if (!accessToken) return
@@ -156,6 +165,23 @@ export default function AdminRacesPage() {
     } finally {
       setDeletingId(null)
       setConfirmDeleteId(null)
+    }
+  }
+
+  async function handleDuplicateRace(raceId: string) {
+    setDuplicatingId(raceId)
+    try {
+      const data = await gql<{ duplicateRace: { id: string } }>(
+        DUPLICATE_RACE_MUTATION,
+        { raceId },
+        { accessToken }
+      )
+      toast('Trka duplirana', 'success')
+      router.push(`/admin/races/${data.duplicateRace.id}/edit`)
+    } catch (err: any) {
+      toast(err?.message ?? 'Greška pri dupliciranju', 'error')
+    } finally {
+      setDuplicatingId(null)
     }
   }
 
@@ -418,6 +444,13 @@ export default function AdminRacesPage() {
                         >
                           CP
                         </Link>
+                        <button
+                          onClick={() => handleDuplicateRace(race.id)}
+                          disabled={duplicatingId === race.id}
+                          className="cursor-pointer text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
+                        >
+                          {duplicatingId === race.id ? '...' : 'Dupliraj'}
+                        </button>
                         {confirmDeleteId === race.id ? (
                           <span className="inline-flex items-center gap-1">
                             <button

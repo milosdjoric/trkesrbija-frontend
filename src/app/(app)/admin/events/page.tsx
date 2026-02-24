@@ -65,6 +65,14 @@ const DELETE_EVENT_MUTATION = `
   }
 `
 
+const DUPLICATE_EVENT_MUTATION = `
+  mutation DuplicateRaceEvent($eventId: ID!) {
+    duplicateRaceEvent(eventId: $eventId) {
+      id
+    }
+  }
+`
+
 export default function AdminEventsPage() {
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
@@ -77,6 +85,7 @@ export default function AdminEventsPage() {
   const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD' | 'OCR'>('ALL')
   const [showPast, setShowPast] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
     if (!accessToken) return
@@ -130,6 +139,23 @@ export default function AdminEventsPage() {
       toast(err?.message ?? 'Greška pri brisanju', 'error')
     } finally {
       setDeletingId(null)
+    }
+  }
+
+  async function handleDuplicate(eventId: string) {
+    setDuplicatingId(eventId)
+    try {
+      const data = await gql<{ duplicateRaceEvent: { id: string } }>(
+        DUPLICATE_EVENT_MUTATION,
+        { eventId },
+        { accessToken }
+      )
+      toast('Događaj dupliran', 'success')
+      router.push(`/admin/events/${data.duplicateRaceEvent.id}/edit`)
+    } catch (err: any) {
+      toast(err?.message ?? 'Greška pri dupliciranju', 'error')
+    } finally {
+      setDuplicatingId(null)
     }
   }
 
@@ -354,6 +380,13 @@ export default function AdminEventsPage() {
                         >
                           Dodaj trku
                         </Link>
+                        <button
+                          onClick={() => handleDuplicate(event.id)}
+                          disabled={duplicatingId === event.id}
+                          className="cursor-pointer text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
+                        >
+                          {duplicatingId === event.id ? '...' : 'Dupliraj'}
+                        </button>
                         <button
                           onClick={() => handleDelete(event)}
                           disabled={deletingId === event.id}
