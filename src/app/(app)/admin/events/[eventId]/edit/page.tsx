@@ -307,13 +307,26 @@ export default function EditEventPage() {
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Slug (URL)
               </label>
-              <input
-                type="text"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder={generateSlug(eventName) || 'avala-trail-2024'}
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 font-mono text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-              />
+              <div className="mt-1 flex items-center gap-2">
+                <input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  placeholder={generateSlug(eventName) || 'avala-trail-2024'}
+                  className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 font-mono text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+                />
+                <Button
+                  type="button"
+                  outline
+                  onClick={() => {
+                    if (eventName.trim()) {
+                      setSlug(generateSlug(eventName))
+                    }
+                  }}
+                >
+                  Generiši slug
+                </Button>
+              </div>
               <p className="mt-1 text-xs text-zinc-500">
                 URL: /events/{slug || generateSlug(eventName) || 'slug'}
                 {!slug && eventName && ' (automatski generisan)'}

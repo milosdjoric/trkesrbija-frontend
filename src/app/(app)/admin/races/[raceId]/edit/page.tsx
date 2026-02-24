@@ -354,6 +354,17 @@ export default function EditRacePage() {
                   placeholder={generateSlug(raceName) || 'naziv-trke-2025'}
                   className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
                 />
+                <Button
+                  type="button"
+                  outline
+                  onClick={() => {
+                    if (raceName.trim()) {
+                      setSlug(generateSlug(raceName))
+                    }
+                  }}
+                >
+                  Generiši slug
+                </Button>
               </div>
               <p className="mt-1 text-xs text-zinc-500">
                 URL: /races/{slug || generateSlug(raceName) || 'slug'}
