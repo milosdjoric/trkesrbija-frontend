@@ -49,6 +49,7 @@ type RaceData = {
     id: string
     eventName: string
     slug: string
+    registrationSite: string | null
   }
 }
 
@@ -75,6 +76,7 @@ const RACE_BY_ID_QUERY = `
         id
         eventName
         slug
+        registrationSite
       }
     }
   }
@@ -450,6 +452,14 @@ export default function EditRacePage() {
               <p className="mt-1 text-xs text-zinc-500">
                 Ako ima link na nivou događaja, ovaj ga zamenjuje za ovu trku
               </p>
+              {race?.raceEvent.registrationSite && (
+                <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+                  Događaj već ima link za prijave:{' '}
+                  <a href={race.raceEvent.registrationSite} target="_blank" rel="noopener noreferrer" className="underline break-all">
+                    {race.raceEvent.registrationSite}
+                  </a>
+                </p>
+              )}
             </div>
           </div>
         </div>
