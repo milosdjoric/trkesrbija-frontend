@@ -15,6 +15,7 @@ import {
   ClipboardDocumentListIcon,
   CheckCircleIcon,
   XCircleIcon,
+  MapIcon,
   TrashIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
@@ -26,6 +27,7 @@ type Race = {
   raceName: string | null
   length: number
   elevation: number | null
+  gpsFile: string | null
   startDateTime: string
   registrationEnabled: boolean
   registrationCount: number
@@ -45,6 +47,7 @@ const RACES_QUERY = `
       raceName
       length
       elevation
+      gpsFile
       startDateTime
       registrationEnabled
       registrationCount
@@ -83,6 +86,7 @@ export default function AdminRacesPage() {
   const [search, setSearch] = useState('')
   const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD' | 'OCR'>('ALL')
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'OPEN' | 'CLOSED'>('ALL')
+  const [filterGpx, setFilterGpx] = useState<'ALL' | 'HAS_GPX' | 'NO_GPX'>('ALL')
   const [showPast, setShowPast] = useState(false)
   const [togglingId, setTogglingId] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -181,13 +185,19 @@ export default function AdminRacesPage() {
       (filterStatus === 'OPEN' && race.registrationEnabled) ||
       (filterStatus === 'CLOSED' && !race.registrationEnabled)
 
+    // GPX filter
+    const matchesGpx =
+      filterGpx === 'ALL' ||
+      (filterGpx === 'HAS_GPX' && !!race.gpsFile) ||
+      (filterGpx === 'NO_GPX' && !race.gpsFile)
+
     // Past filter
     const now = new Date().getTime()
     const raceTs = new Date(race.startDateTime).getTime()
     const isPast = raceTs < now
     const matchesPast = showPast || !isPast
 
-    return matchesSearch && matchesType && matchesStatus && matchesPast
+    return matchesSearch && matchesType && matchesStatus && matchesGpx && matchesPast
   })
 
   function formatDate(iso: string) {
@@ -202,6 +212,7 @@ export default function AdminRacesPage() {
   const openCount = races.filter((r) => r.registrationEnabled).length
   const closedCount = races.filter((r) => !r.registrationEnabled).length
   const totalRegistrations = races.reduce((sum, r) => sum + r.registrationCount, 0)
+  const gpxCount = races.filter((r) => !!r.gpsFile).length
 
   const statItems: StatItem[] = [
     {
@@ -210,14 +221,14 @@ export default function AdminRacesPage() {
       icon: <FlagIcon className="size-5" />,
     },
     {
+      label: 'Ima GPX',
+      value: `${gpxCount}/${races.length}`,
+      icon: <MapIcon className="size-5" />,
+    },
+    {
       label: 'Otvorene prijave',
       value: openCount,
       icon: <CheckCircleIcon className="size-5" />,
-    },
-    {
-      label: 'Zatvorene prijave',
-      value: closedCount,
-      icon: <XCircleIcon className="size-5" />,
     },
     {
       label: 'Ukupno prijava',
@@ -253,7 +264,7 @@ export default function AdminRacesPage() {
       <StatsGrid items={statItems} className="mt-6" />
 
       {/* Filters - Full Width */}
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-4">
         {/* Search */}
         <div className="relative">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
@@ -288,6 +299,17 @@ export default function AdminRacesPage() {
           <option value="OPEN">Otvorene prijave</option>
           <option value="CLOSED">Zatvorene prijave</option>
         </select>
+
+        {/* GPX filter */}
+        <select
+          value={filterGpx}
+          onChange={(e) => setFilterGpx(e.target.value as any)}
+          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+        >
+          <option value="ALL">GPX: svi</option>
+          <option value="HAS_GPX">Ima GPX</option>
+          <option value="NO_GPX">Nema GPX</option>
+        </select>
       </div>
 
       {/* Show past toggle */}
@@ -320,6 +342,9 @@ export default function AdminRacesPage() {
                   Datum
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
+                  GPX
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
                   Prijave
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
@@ -333,7 +358,7 @@ export default function AdminRacesPage() {
             <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
               {filteredRaces.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-zinc-500">
+                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-zinc-500">
                     {search || filterType !== 'ALL' || filterStatus !== 'ALL'
                       ? 'Nema trka koje odgovaraju filterima'
                       : 'Nema trka'}
@@ -355,6 +380,13 @@ export default function AdminRacesPage() {
                     </td>
                     <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
                       {formatDate(race.startDateTime)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {race.gpsFile ? (
+                        <Badge color="green">Da</Badge>
+                      ) : (
+                        <Badge color="zinc">Ne</Badge>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       <span className="font-medium">{race.registrationCount}</span>
