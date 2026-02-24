@@ -1,5 +1,6 @@
 import { fetchRaceEventBySlug, type RaceEventWithRaces, type Race } from '@/app/lib/api'
 import { AdminEditButton } from '@/components/admin-edit-button'
+import { TrainingEditButton } from '@/components/training-edit-button'
 import { ReportIssueButton } from '@/components/report-issue-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
@@ -83,7 +84,7 @@ function getSocialMediaStyles(url: string) {
 
 function buildEventDescription(event: RaceEventWithRaces): string {
   const typeLabel = event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'
-  const parts: string[] = [`${typeLabel} trka`]
+  const parts: string[] = [event.isTraining ? `${typeLabel} trening` : `${typeLabel} trka`]
 
   // Date from earliest race
   if (event.races.length > 0) {
@@ -275,7 +276,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   return (
     <>
-      <BackLink href="/events">Događaji</BackLink>
+      <BackLink href={event.isTraining ? '/training' : '/events'}>
+        {event.isTraining ? 'Moji treninzi' : 'Događaji'}
+      </BackLink>
 
       {/* Two-column layout */}
       <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-8 lg:grid-cols-[1fr_320px]">
@@ -306,13 +309,16 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                   {event.eventName}
                 </h1>
                 {event.verified && <VerifiedBadge />}
+                {event.isTraining && (
+                  <Badge color="blue">Trening</Badge>
+                )}
               </div>
             </div>
           </div>
 
           {/* 2. Races Table */}
           <div>
-            <Subheading>Trke ({races.length})</Subheading>
+            <Subheading>{event.isTraining ? 'Staze' : 'Trke'} ({races.length})</Subheading>
 
             {races.length === 0 ? (
               <div className="mt-4 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
@@ -382,8 +388,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             )}
           </div>
 
-          {/* 3. Social Media Links - clearly labeled with platform colors */}
-          {event.socialMedia && event.socialMedia.length > 0 && (
+          {/* 3. Social Media Links - clearly labeled with platform colors (hidden for trainings) */}
+          {!event.isTraining && event.socialMedia && event.socialMedia.length > 0 && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
               <div className="flex flex-wrap gap-2">
@@ -402,8 +408,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
           )}
 
-          {/* 4. Organizer Info */}
-          {event.organizer && (
+          {/* 4. Organizer Info (hidden for trainings) */}
+          {!event.isTraining && event.organizer && (
             <div>
               <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
               <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
@@ -504,6 +510,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
               {/* Action Buttons */}
               <div className="space-y-2">
+                {/* Training owner edit button */}
+                {event.isTraining && (
+                  <TrainingEditButton eventId={event.id} createdById={event.createdById} />
+                )}
+
                 {/* Admin edit button */}
                 <AdminEditButton href={`/admin/events/${event.id}/edit`} label="Izmeni događaj" />
 
@@ -534,8 +545,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                   </>
                 )}
 
-                {/* External registration link */}
-                {event.registrationSite && (
+                {/* External registration link (hidden for trainings) */}
+                {!event.isTraining && event.registrationSite && (
                   <Button
                     href={event.registrationSite}
                     target="_blank"

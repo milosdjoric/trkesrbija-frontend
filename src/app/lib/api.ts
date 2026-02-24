@@ -100,6 +100,8 @@ export type RaceEvent = {
   gallery: string[]
   tags: string[]
   verified?: boolean
+  isTraining?: boolean
+  createdById?: string | null
   socialMedia: string[]
   registrationSite?: string | null
   organizer?: Organizer | null
@@ -213,6 +215,8 @@ const RACE_EVENT_BY_SLUG_QUERY = `
       gallery
       tags
       verified
+      isTraining
+      createdById
       socialMedia
       registrationSite
       organizer {

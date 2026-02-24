@@ -55,7 +55,7 @@ export default async function Events({
 
   const RACE_EVENTS_QUERY = `
     query RaceEventsForList($limit: Int!, $skip: Int!) {
-      raceEvents(limit: $limit, skip: $skip, orderBy: CREATED_AT_DESC) {
+      raceEvents(limit: $limit, skip: $skip, orderBy: CREATED_AT_DESC, isTraining: false) {
         id
         eventName
         slug

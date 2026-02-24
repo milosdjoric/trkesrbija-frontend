@@ -161,6 +161,10 @@ export function ApplicationLayout({
                     <ClipboardDocumentListIcon />
                     <SidebarLabel>Prijave na trke</SidebarLabel>
                   </SidebarItem>
+                  <SidebarItem href="/training" current={pathname.startsWith('/training')}>
+                    <MapIcon />
+                    <SidebarLabel>Treninzi</SidebarLabel>
+                  </SidebarItem>
                 </>
               ) : (
                 <>
@@ -172,6 +176,11 @@ export function ApplicationLayout({
                   <SidebarItem href="/login">
                     <ClipboardDocumentListIcon />
                     <SidebarLabel className="text-zinc-400">Prijave na trke</SidebarLabel>
+                    <span className="text-xs text-zinc-500">(potrebna prijava)</span>
+                  </SidebarItem>
+                  <SidebarItem href="/login">
+                    <MapIcon />
+                    <SidebarLabel className="text-zinc-400">Treninzi</SidebarLabel>
                     <span className="text-xs text-zinc-500">(potrebna prijava)</span>
                   </SidebarItem>
                 </>
