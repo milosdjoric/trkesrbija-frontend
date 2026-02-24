@@ -1,5 +1,6 @@
 import { gql } from '@/app/lib/api'
 import { AdminEditButton } from '@/components/admin-edit-button'
+import { GpxDownloadButton } from '@/components/gpx-download-button'
 import { ReportIssueButton } from '@/components/report-issue-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
@@ -19,7 +20,6 @@ import {
   MapPinIcon,
   ArrowTrendingUpIcon,
   MapIcon,
-  ArrowDownTrayIcon,
   UserGroupIcon,
   ArrowTopRightOnSquareIcon,
   FlagIcon,
@@ -525,15 +525,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             <div>
               <div className="flex items-center justify-between mb-4">
                 <Subheading>GPS staza</Subheading>
-                <a
-                  href={race.gpsFile}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-                >
-                  <ArrowDownTrayIcon className="size-4" />
-                  Preuzmi GPX
-                </a>
+                <GpxDownloadButton url={race.gpsFile} />
               </div>
               <div className="rounded-lg overflow-hidden">
                 <GpxMapWrapper gpxUrl={race.gpsFile} />
