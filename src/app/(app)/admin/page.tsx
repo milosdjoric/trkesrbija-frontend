@@ -10,6 +10,7 @@ import { StatsGrid, type StatItem } from '@/components/stats-grid'
 import {
   CalendarIcon,
   ClipboardDocumentListIcon,
+  ExclamationTriangleIcon,
   FlagIcon,
   UserGroupIcon,
   ClockIcon,
@@ -205,6 +206,17 @@ export default function AdminDashboardPage() {
           <div>
             <div className="font-medium">Import</div>
             <div className="text-sm text-zinc-500">CSV import podataka</div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/reports"
+          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+        >
+          <ExclamationTriangleIcon className="size-8 text-red-500" />
+          <div>
+            <div className="font-medium">Prijave grešaka</div>
+            <div className="text-sm text-zinc-500">Korisničke prijave pogrešnih podataka</div>
           </div>
         </Link>
 

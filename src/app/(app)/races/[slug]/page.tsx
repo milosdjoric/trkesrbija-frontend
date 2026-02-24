@@ -1,5 +1,6 @@
 import { gql } from '@/app/lib/api'
 import { AdminEditButton } from '@/components/admin-edit-button'
+import { ReportIssueButton } from '@/components/report-issue-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
@@ -534,6 +535,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
               <div className="space-y-2">
                 {/* Admin edit button */}
                 <AdminEditButton href={`/admin/races/${race.id}/edit`} label="Izmeni trku" />
+                <ReportIssueButton entityType="RACE" entityId={race.id} entityName={race.raceName || race.raceEvent.eventName} />
 
                 {/* Navigate to start - only if location exists */}
                 {race.startLocation && (

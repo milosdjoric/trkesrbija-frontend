@@ -1,5 +1,6 @@
 import { fetchRaceEventBySlug, type RaceEventWithRaces, type Race } from '@/app/lib/api'
 import { AdminEditButton } from '@/components/admin-edit-button'
+import { ReportIssueButton } from '@/components/report-issue-button'
 import { BackLink } from '@/components/back-link'
 import { Badge } from '@/components/badge'
 import { VerifiedBadge } from '@/lib/badges'
@@ -472,6 +473,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
               <div className="space-y-2">
                 {/* Admin edit button */}
                 <AdminEditButton href={`/admin/events/${event.id}/edit`} label="Izmeni događaj" />
+                <ReportIssueButton entityType="EVENT" entityId={event.id} entityName={event.eventName} />
 
                 {/* 5. Vodi me do starta - only if all same location */}
                 {allSameLocation && eventLocation && (
