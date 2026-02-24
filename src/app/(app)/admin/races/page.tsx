@@ -15,6 +15,7 @@ import {
   ClipboardDocumentListIcon,
   CheckCircleIcon,
   XCircleIcon,
+  TrashIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -66,6 +67,12 @@ const TOGGLE_REGISTRATION_MUTATION = `
   }
 `
 
+const DELETE_RACE_MUTATION = `
+  mutation DeleteRace($raceId: ID!) {
+    deleteRace(raceId: $raceId)
+  }
+`
+
 export default function AdminRacesPage() {
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
@@ -78,6 +85,8 @@ export default function AdminRacesPage() {
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'OPEN' | 'CLOSED'>('ALL')
   const [showPast, setShowPast] = useState(false)
   const [togglingId, setTogglingId] = useState<string | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null)
 
   const loadData = useCallback(async () => {
     if (!accessToken) return
@@ -129,6 +138,20 @@ export default function AdminRacesPage() {
       toast(err?.message ?? 'Greška pri promeni statusa', 'error')
     } finally {
       setTogglingId(null)
+    }
+  }
+
+  async function handleDeleteRace(raceId: string) {
+    setDeletingId(raceId)
+    try {
+      await gql(DELETE_RACE_MUTATION, { raceId }, { accessToken })
+      setRaces((prev) => prev.filter((r) => r.id !== raceId))
+      toast('Trka obrisana', 'success')
+    } catch (err: any) {
+      toast(err?.message ?? 'Greška pri brisanju trke', 'error')
+    } finally {
+      setDeletingId(null)
+      setConfirmDeleteId(null)
     }
   }
 
@@ -350,7 +373,7 @@ export default function AdminRacesPage() {
                       </button>
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex items-center justify-end gap-2">
                         <Link
                           href={`/admin/races/${race.id}/registrations`}
                           className="text-sm text-blue-600 hover:text-blue-700"
@@ -363,6 +386,31 @@ export default function AdminRacesPage() {
                         >
                           CP
                         </Link>
+                        {confirmDeleteId === race.id ? (
+                          <span className="inline-flex items-center gap-1">
+                            <button
+                              onClick={() => handleDeleteRace(race.id)}
+                              disabled={deletingId === race.id}
+                              className="cursor-pointer rounded bg-red-600 px-2 py-1 text-xs font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                            >
+                              {deletingId === race.id ? '...' : 'Da'}
+                            </button>
+                            <button
+                              onClick={() => setConfirmDeleteId(null)}
+                              className="cursor-pointer rounded bg-zinc-200 px-2 py-1 text-xs font-medium text-zinc-700 hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
+                            >
+                              Ne
+                            </button>
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => setConfirmDeleteId(race.id)}
+                            className="cursor-pointer rounded p-1 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+                            title="Obriši trku"
+                          >
+                            <TrashIcon className="size-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
