@@ -535,7 +535,6 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
               <div className="space-y-2">
                 {/* Admin edit button */}
                 <AdminEditButton href={`/admin/races/${race.id}/edit`} label="Izmeni trku" />
-                <ReportIssueButton entityType="RACE" entityId={race.id} entityName={race.raceName || race.raceEvent.eventName} />
 
                 {/* Navigate to start - only if location exists */}
                 {race.startLocation && (
@@ -565,6 +564,8 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
 
                 {/* Favorite button */}
                 <FavoriteButtonServer raceId={race.id} />
+
+                <ReportIssueButton entityType="RACE" entityId={race.id} entityName={race.raceName || race.raceEvent.eventName} />
               </div>
             </div>
 
