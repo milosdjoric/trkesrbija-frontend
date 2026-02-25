@@ -56,6 +56,15 @@ export default defineConfig({
         storageState: './e2e/.auth/user.json',
       },
     },
+    // Admin tests - use saved admin auth state
+    {
+      name: 'admin',
+      testMatch: ['admin.spec.ts'],
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: './e2e/.auth/admin.json',
+      },
+    },
   ],
 
   // Output directory for test artifacts
