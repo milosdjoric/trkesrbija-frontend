@@ -1,5 +1,4 @@
 import { gql } from '@/app/lib/api'
-import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { EventCard } from '@/components/event-card'
 import { Heading, Subheading } from '@/components/heading'
@@ -234,7 +233,7 @@ export default async function HomePage() {
         >
           <div className="aspect-[16/9] bg-gradient-to-br from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
-            <Badge color="emerald" className="w-fit">Trail trke</Badge>
+            <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Trail trke</span>
             <h3 className="mt-2 text-2xl font-bold text-white">Trail</h3>
             <p className="text-sm text-emerald-100">Planinske i brdske staze • {trailCount} događaja</p>
           </div>
@@ -246,7 +245,7 @@ export default async function HomePage() {
         >
           <div className="aspect-[16/9] bg-gradient-to-br from-sky-500 to-sky-700 dark:from-sky-600 dark:to-sky-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
-            <Badge color="sky" className="w-fit">Ulične trke</Badge>
+            <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Ulične trke</span>
             <h3 className="mt-2 text-2xl font-bold text-white">Ulična</h3>
             <p className="text-sm text-sky-100">Gradske i ulične staze • {roadCount} događaja</p>
           </div>
@@ -258,7 +257,7 @@ export default async function HomePage() {
         >
           <div className="aspect-[16/9] bg-gradient-to-br from-orange-500 to-orange-700 dark:from-orange-600 dark:to-orange-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
-            <Badge color="orange" className="w-fit">OCR trke</Badge>
+            <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">OCR trke</span>
             <h3 className="mt-2 text-2xl font-bold text-white">OCR</h3>
             <p className="text-sm text-orange-100">Preponske trke • {ocrCount} događaja</p>
           </div>
