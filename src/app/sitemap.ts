@@ -16,34 +16,41 @@ type RaceForSitemap = {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // Fetch all events
-  const eventsData = await gql<{ raceEvents: RaceEventForSitemap[] }>(
-    `
-      query EventsForSitemap {
-        raceEvents(limit: 1000, skip: 0) {
-          slug
-          updatedAt
-        }
-      }
-    `,
-    {}
-  )
+  let events: RaceEventForSitemap[] = []
+  let races: RaceForSitemap[] = []
 
-  // Fetch all races
-  const racesData = await gql<{ races: RaceForSitemap[] }>(
-    `
-      query RacesForSitemap {
-        races(limit: 1000, skip: 0) {
-          slug
-          updatedAt
+  try {
+    // Fetch all events
+    const eventsData = await gql<{ raceEvents: RaceEventForSitemap[] }>(
+      `
+        query EventsForSitemap {
+          raceEvents(limit: 1000, skip: 0) {
+            slug
+            updatedAt
+          }
         }
-      }
-    `,
-    {}
-  )
+      `,
+      {}
+    )
+    events = eventsData?.raceEvents ?? []
 
-  const events = eventsData?.raceEvents ?? []
-  const races = racesData?.races ?? []
+    // Fetch all races
+    const racesData = await gql<{ races: RaceForSitemap[] }>(
+      `
+        query RacesForSitemap {
+          races(limit: 1000, skip: 0) {
+            slug
+            updatedAt
+          }
+        }
+      `,
+      {}
+    )
+    races = racesData?.races ?? []
+  } catch (err) {
+    // If backend is unavailable during build, return static pages only
+    console.warn('[sitemap] Failed to fetch data from API, returning static pages only:', (err as Error).message)
+  }
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
