@@ -9,12 +9,13 @@ import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { PasswordStrength, validatePassword } from '@/components/password-strength'
 import { Strong, Text, TextLink } from '@/components/text'
+import { GoogleLogin } from '@react-oauth/google'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Register() {
   const router = useRouter()
-  const { register } = useAuth()
+  const { register, loginWithGoogle } = useAuth()
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -23,6 +24,20 @@ export default function Register() {
   const [error, setError] = useState<string | null>(null)
 
   const passwordValidation = validatePassword(password)
+
+  async function handleGoogleLogin(credential: string | undefined) {
+    if (!credential) return
+    setError(null)
+    setLoading(true)
+    try {
+      await loginWithGoogle(credential)
+      router.push('/')
+    } catch (err: any) {
+      setError(err?.message ?? 'Google prijava nije uspela')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -113,6 +128,22 @@ export default function Register() {
       >
         {loading ? 'Kreiranje…' : 'Kreiraj nalog'}
       </Button>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+        <Text className="text-zinc-500">ili</Text>
+        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+
+      <div className="flex justify-center">
+        <GoogleLogin
+          onSuccess={(res) => handleGoogleLogin(res.credential)}
+          onError={() => setError('Google prijava nije uspela')}
+          useOneTap={false}
+          width="368"
+          text="signup_with"
+        />
+      </div>
 
       <Text>
         Već imaš nalog?{' '}

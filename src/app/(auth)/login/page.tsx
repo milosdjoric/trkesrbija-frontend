@@ -8,13 +8,14 @@ import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Strong, Text, TextLink } from '@/components/text'
+import { GoogleLogin } from '@react-oauth/google'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 export default function Login() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { login, isLoading, user } = useAuth()
+  const { login, loginWithGoogle, isLoading, user } = useAuth()
   const loading = isLoading
 
   const [email, setEmail] = useState('')
@@ -41,6 +42,17 @@ export default function Login() {
       router.push(redirectTo)
     } catch (err: any) {
       setError(err?.message ?? 'Prijava nije uspela')
+    }
+  }
+
+  async function handleGoogleLogin(credential: string | undefined) {
+    if (!credential) return
+    setError(null)
+    try {
+      await loginWithGoogle(credential)
+      router.push(redirectTo)
+    } catch (err: any) {
+      setError(err?.message ?? 'Google prijava nije uspela')
     }
   }
 
@@ -90,6 +102,21 @@ export default function Login() {
       <Button type="submit" className="w-full" disabled={loading || !email.trim() || !password}>
         {loading ? 'Prijavljivanje…' : 'Prijavi se'}
       </Button>
+
+      <div className="flex items-center gap-3">
+        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+        <Text className="text-zinc-500">ili</Text>
+        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+      </div>
+
+      <div className="flex justify-center">
+        <GoogleLogin
+          onSuccess={(res) => handleGoogleLogin(res.credential)}
+          onError={() => setError('Google prijava nije uspela')}
+          useOneTap={false}
+          width="368"
+        />
+      </div>
 
       <Text>
         Nemaš nalog?{' '}

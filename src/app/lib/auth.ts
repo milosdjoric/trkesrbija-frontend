@@ -86,11 +86,33 @@ const ME_QUERY = `
   }
 `
 
+const LOGIN_WITH_GOOGLE_MUTATION = `
+  mutation LoginWithGoogle($idToken: String!) {
+    loginWithGoogle(idToken: $idToken) {
+      accessToken
+      user {
+        id
+        email
+        name
+        role
+        emailVerified
+        assignedCheckpointId
+        isParticipant
+      }
+    }
+  }
+`
+
 export async function login(email: string, password: string) {
   const data = await gql<{ login: AuthResponse }>(LOGIN_MUTATION, {
     input: { email, password },
   })
   return data.login
+}
+
+export async function loginWithGoogle(idToken: string) {
+  const data = await gql<{ loginWithGoogle: AuthResponse }>(LOGIN_WITH_GOOGLE_MUTATION, { idToken })
+  return data.loginWithGoogle
 }
 
 export async function register(payload: { email: string; password: string; name?: string }) {
