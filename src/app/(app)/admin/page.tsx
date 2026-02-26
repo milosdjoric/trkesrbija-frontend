@@ -226,8 +226,8 @@ export default function AdminDashboardPage() {
           { label: 'Događaji', value: stats?.totalEvents ?? 0, icon: <CalendarIcon className="size-4" /> },
           { label: 'Trke', value: stats?.totalRaces ?? 0, icon: <FlagIcon className="size-4" /> },
           { label: 'Treninzi', value: stats?.totalTrainings ?? 0, icon: <BoltIcon className="size-4" /> },
-          { label: 'Prijave', value: stats?.totalRegistrations ?? 0, icon: <ClipboardDocumentListIcon className="size-4" /> },
           { label: 'Korisnici', value: stats?.totalUsers ?? 0, icon: <UserGroupIcon className="size-4" /> },
+          { label: 'Prijave', value: stats?.totalRegistrations ?? 0, icon: <ClipboardDocumentListIcon className="size-4" /> },
         ]}
         columns={5}
         className="mt-6"
