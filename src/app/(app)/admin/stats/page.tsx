@@ -13,6 +13,7 @@ type EntityStat = { entityId: string; name: string; slug: string | null; count: 
 type SearchStat = { query: string; count: number }
 type DayStat = { date: string; count: number; uniqueCount: number }
 type UserStat = { userId: string; email: string; name: string | null; count: number }
+type LoginStat = { email: string; userId: string | null; name: string | null; loginCount: number; lastLogin: string }
 
 type AnalyticsStats = {
   topEvents: EntityStat[]
@@ -21,6 +22,7 @@ type AnalyticsStats = {
   topFavorites: EntityStat[]
   viewsPerDay: DayStat[]
   topUsers: UserStat[]
+  recentLogins: LoginStat[]
 }
 
 const ANALYTICS_QUERY = `
@@ -32,11 +34,14 @@ const ANALYTICS_QUERY = `
       topFavorites { entityId name slug count uniqueCount }
       viewsPerDay { date count uniqueCount }
       topUsers { userId email name count }
+      recentLogins { email userId name loginCount lastLogin }
     }
   }
 `
 
 const DAY_OPTIONS = [
+  { label: 'Danas', value: 1 },
+  { label: 'Juče', value: -1 },
   { label: 'Poslednjih 7 dana', value: 7 },
   { label: 'Poslednjih 30 dana', value: 30 },
   { label: 'Poslednjih 90 dana', value: 90 },
@@ -49,6 +54,14 @@ function CountCell({ count, uniqueCount }: { count: number; uniqueCount: number 
       <span className="ml-1 text-xs text-zinc-400">/ {uniqueCount}</span>
     </TableCell>
   )
+}
+
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString('sr-Latn-RS', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Belgrade',
+  })
 }
 
 export default function AdminStatsPage() {
@@ -194,7 +207,7 @@ export default function AdminStatsPage() {
 
           </div>
 
-          {/* Searches, favorites & users */}
+          {/* Searches, favorites & active users */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
             <section>
@@ -281,6 +294,36 @@ export default function AdminStatsPage() {
             )}
 
           </div>
+
+          {/* Today's logins */}
+          {stats.recentLogins.length > 0 && (
+            <section>
+              <Subheading>Ko se logovao danas</Subheading>
+              <div className="mt-2 overflow-x-auto">
+                <Table striped>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Korisnik</TableHeader>
+                      <TableHeader className="text-right">Prijava u</TableHeader>
+                      <TableHeader className="text-right">Puta</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {stats.recentLogins.map((l) => (
+                      <TableRow key={l.email}>
+                        <TableCell>
+                          <span className="font-medium">{l.name ?? l.email}</span>
+                          {l.name && <span className="ml-1 text-xs text-zinc-400">{l.email}</span>}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums text-sm">{formatTime(l.lastLogin)}</TableCell>
+                        <TableCell className="text-right font-medium tabular-nums">{l.loginCount}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </section>
+          )}
         </>
       )}
     </div>
