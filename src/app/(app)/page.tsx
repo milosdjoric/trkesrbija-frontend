@@ -259,7 +259,7 @@ export default async function HomePage() {
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">OCR trke</span>
             <h3 className="mt-2 text-2xl font-bold text-white">OCR</h3>
-            <p className="text-sm text-orange-100">Preponske trke • {ocrCount} događaja</p>
+            <p className="text-sm text-orange-100">Trke sa preponama • {ocrCount} događaja</p>
           </div>
         </Link>
       </div>
