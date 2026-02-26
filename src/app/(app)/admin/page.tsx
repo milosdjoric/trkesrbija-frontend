@@ -13,8 +13,8 @@ import {
   ExclamationTriangleIcon,
   FlagIcon,
   UserGroupIcon,
-  ClockIcon,
   ArrowUpTrayIcon,
+  BoltIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -22,6 +22,8 @@ import { useCallback, useEffect, useState } from 'react'
 type DashboardStats = {
   totalEvents: number
   totalRaces: number
+  totalTrainings: number
+  totalTrainingRaces: number
   totalRegistrations: number
   pendingRegistrations: number
   confirmedRegistrations: number
@@ -38,6 +40,7 @@ type RecentRace = {
     id: string
     eventName: string
     slug: string
+    isTraining: boolean
   }
 }
 
@@ -45,6 +48,7 @@ const DASHBOARD_STATS_QUERY = `
   query DashboardStats {
     raceEvents(limit: 1000) {
       id
+      isTraining
     }
     races(limit: 1000) {
       id
@@ -56,6 +60,7 @@ const DASHBOARD_STATS_QUERY = `
         id
         eventName
         slug
+        isTraining
       }
     }
     users(limit: 1000) {
@@ -78,20 +83,25 @@ export default function AdminDashboardPage() {
 
     try {
       const data = await gql<{
-        raceEvents: Array<{ id: string }>
+        raceEvents: Array<{ id: string; isTraining: boolean }>
         races: RecentRace[]
         users: Array<{ id: string }>
       }>(DASHBOARD_STATS_QUERY, {}, { accessToken })
 
       // Calculate stats
       const races = data.races ?? []
-      const totalRegistrations = races.reduce((sum, r) => sum + (r.registrationCount ?? 0), 0)
+      const allEvents = data.raceEvents ?? []
+      const trainingRaces = races.filter((r) => r.raceEvent.isTraining)
+      const nonTrainingRaces = races.filter((r) => !r.raceEvent.isTraining)
+      const totalRegistrations = nonTrainingRaces.reduce((sum, r) => sum + (r.registrationCount ?? 0), 0)
 
       setStats({
-        totalEvents: data.raceEvents?.length ?? 0,
-        totalRaces: races.length,
+        totalEvents: allEvents.filter((e) => !e.isTraining).length,
+        totalRaces: nonTrainingRaces.length,
+        totalTrainings: allEvents.filter((e) => e.isTraining).length,
+        totalTrainingRaces: trainingRaces.length,
         totalRegistrations,
-        pendingRegistrations: 0, // Would need separate query
+        pendingRegistrations: 0,
         confirmedRegistrations: 0,
         totalUsers: data.users?.length ?? 0,
       })
@@ -137,6 +147,16 @@ export default function AdminDashboardPage() {
       label: 'Trke',
       value: stats?.totalRaces ?? 0,
       icon: <FlagIcon className="size-5" />,
+    },
+    {
+      label: 'Treninzi',
+      value: stats?.totalTrainings ?? 0,
+      icon: <BoltIcon className="size-5" />,
+    },
+    {
+      label: 'Staze treninga',
+      value: stats?.totalTrainingRaces ?? 0,
+      icon: <BoltIcon className="size-5" />,
     },
     {
       label: 'Prijave',
