@@ -97,6 +97,7 @@ export function ApplicationLayout({
 }) {
   let pathname = usePathname()
   const { user, isLoading: authLoading } = useAuth()
+  const isAdmin = !authLoading && user?.role === 'ADMIN'
 
   return (
     <SidebarLayout
@@ -138,96 +139,98 @@ export function ApplicationLayout({
           </SidebarHeader>
 
           <SidebarBody>
-            {/* Opšte - svi vide */}
-            <SidebarSection>
-              <SidebarHeading>Opšte</SidebarHeading>
-              <SidebarItem href="/events" current={pathname === '/events' || pathname.startsWith('/events/')}>
-                <Square2StackIcon />
-                <SidebarLabel>Svi događaji</SidebarLabel>
-              </SidebarItem>
-              <SidebarItem href="/calendar" current={pathname === '/calendar'}>
-                <CalendarIcon />
-                <SidebarLabel>Kalendar</SidebarLabel>
-              </SidebarItem>
-            </SidebarSection>
-
-            {/* Moji linkovi - prijavljeni korisnici */}
-            <SidebarSection>
-              <SidebarHeading>Moji linkovi</SidebarHeading>
-              {authLoading ? (
-                <>
-                  <div className="flex items-center gap-3 px-2 py-1">
-                    <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
-                    <div className="h-4 w-24 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
-                  </div>
-                  <div className="flex items-center gap-3 px-2 py-1">
-                    <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
-                    <div className="h-4 w-28 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
-                  </div>
-                  <div className="flex items-center gap-3 px-2 py-1">
-                    <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
-                    <div className="h-4 w-20 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
-                  </div>
-                </>
-              ) : user ? (
-                <>
-                  <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
-                    <HeartIcon />
-                    <SidebarLabel>Omiljene trke</SidebarLabel>
-                  </SidebarItem>
-                  <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
-                    <ClipboardDocumentListIcon />
-                    <SidebarLabel>Prijave na trke</SidebarLabel>
-                  </SidebarItem>
-                  <SidebarItem href="/training" current={pathname.startsWith('/training')}>
-                    <MapIcon />
-                    <SidebarLabel>Treninzi</SidebarLabel>
-                  </SidebarItem>
-                </>
-              ) : (
-                <>
-                  <SidebarItem href="/login">
-                    <HeartIcon />
-                    <SidebarLabel className="text-zinc-400">Omiljene trke</SidebarLabel>
-                    <span className="text-xs text-zinc-500">(potrebna prijava)</span>
-                  </SidebarItem>
-                  <SidebarItem href="/login">
-                    <ClipboardDocumentListIcon />
-                    <SidebarLabel className="text-zinc-400">Prijave na trke</SidebarLabel>
-                    <span className="text-xs text-zinc-500">(potrebna prijava)</span>
-                  </SidebarItem>
-                  <SidebarItem href="/login">
-                    <MapIcon />
-                    <SidebarLabel className="text-zinc-400">Treninzi</SidebarLabel>
-                    <span className="text-xs text-zinc-500">(potrebna prijava)</span>
-                  </SidebarItem>
-                </>
-              )}
-            </SidebarSection>
-
-            {/* Alati */}
-            <SidebarSection>
-              <SidebarHeading>Alati</SidebarHeading>
-              <SidebarItem href="/gpx-analyzer" current={pathname === '/gpx-analyzer'}>
-                <MapIcon />
-                <SidebarLabel>GPX Analyzer</SidebarLabel>
-              </SidebarItem>
-            </SidebarSection>
-
-            {/* Sudija - samo korisnici sa dodeljenim checkpoint-om */}
-            {!authLoading && user?.assignedCheckpointId && (
+            <div className={isAdmin ? 'opacity-40' : undefined}>
+              {/* Opšte - svi vide */}
               <SidebarSection>
-                <SidebarHeading>Sudija</SidebarHeading>
-                <SidebarItem href="/judge" current={pathname.startsWith('/judge')}>
-                  <ClockIcon />
-                  <SidebarLabel>Sudijska tabla</SidebarLabel>
+                <SidebarHeading>Opšte</SidebarHeading>
+                <SidebarItem href="/events" current={pathname === '/events' || pathname.startsWith('/events/')}>
+                  <Square2StackIcon />
+                  <SidebarLabel>Svi događaji</SidebarLabel>
+                </SidebarItem>
+                <SidebarItem href="/calendar" current={pathname === '/calendar'}>
+                  <CalendarIcon />
+                  <SidebarLabel>Kalendar</SidebarLabel>
                 </SidebarItem>
               </SidebarSection>
-            )}
+
+              {/* Moji linkovi - prijavljeni korisnici */}
+              <SidebarSection className="mt-8">
+                <SidebarHeading>Moji linkovi</SidebarHeading>
+                {authLoading ? (
+                  <>
+                    <div className="flex items-center gap-3 px-2 py-1">
+                      <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                      <div className="h-4 w-24 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                    </div>
+                    <div className="flex items-center gap-3 px-2 py-1">
+                      <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                      <div className="h-4 w-28 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                    </div>
+                    <div className="flex items-center gap-3 px-2 py-1">
+                      <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                      <div className="h-4 w-20 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                    </div>
+                  </>
+                ) : user ? (
+                  <>
+                    <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
+                      <HeartIcon />
+                      <SidebarLabel>Omiljene trke</SidebarLabel>
+                    </SidebarItem>
+                    <SidebarItem href="/my-registrations" current={pathname.startsWith('/my-registrations')}>
+                      <ClipboardDocumentListIcon />
+                      <SidebarLabel>Prijave na trke</SidebarLabel>
+                    </SidebarItem>
+                    <SidebarItem href="/training" current={pathname.startsWith('/training')}>
+                      <MapIcon />
+                      <SidebarLabel>Treninzi</SidebarLabel>
+                    </SidebarItem>
+                  </>
+                ) : (
+                  <>
+                    <SidebarItem href="/login">
+                      <HeartIcon />
+                      <SidebarLabel className="text-zinc-400">Omiljene trke</SidebarLabel>
+                      <span className="text-xs text-zinc-500">(potrebna prijava)</span>
+                    </SidebarItem>
+                    <SidebarItem href="/login">
+                      <ClipboardDocumentListIcon />
+                      <SidebarLabel className="text-zinc-400">Prijave na trke</SidebarLabel>
+                      <span className="text-xs text-zinc-500">(potrebna prijava)</span>
+                    </SidebarItem>
+                    <SidebarItem href="/login">
+                      <MapIcon />
+                      <SidebarLabel className="text-zinc-400">Treninzi</SidebarLabel>
+                      <span className="text-xs text-zinc-500">(potrebna prijava)</span>
+                    </SidebarItem>
+                  </>
+                )}
+              </SidebarSection>
+
+              {/* Alati */}
+              <SidebarSection className="mt-8">
+                <SidebarHeading>Alati</SidebarHeading>
+                <SidebarItem href="/gpx-analyzer" current={pathname === '/gpx-analyzer'}>
+                  <MapIcon />
+                  <SidebarLabel>GPX Analyzer</SidebarLabel>
+                </SidebarItem>
+              </SidebarSection>
+
+              {/* Sudija - samo korisnici sa dodeljenim checkpoint-om */}
+              {!authLoading && user?.assignedCheckpointId && (
+                <SidebarSection className="mt-8">
+                  <SidebarHeading>Sudija</SidebarHeading>
+                  <SidebarItem href="/judge" current={pathname.startsWith('/judge')}>
+                    <ClockIcon />
+                    <SidebarLabel>Sudijska tabla</SidebarLabel>
+                  </SidebarItem>
+                </SidebarSection>
+              )}
+            </div>
 
             {/* Admin - samo admin */}
             {!authLoading && user?.role === 'ADMIN' && (
-              <SidebarSection>
+              <SidebarSection className="mt-8">
                 <SidebarHeading>Admin</SidebarHeading>
                 <SidebarItem href="/admin" current={pathname === '/admin'}>
                   <WrenchScrewdriverIcon />
