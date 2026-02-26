@@ -6,7 +6,6 @@ import { Badge } from '@/components/badge'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
-import { StatsGrid, type StatItem } from '@/components/stats-grid'
 import {
   CalendarIcon,
   ClipboardDocumentListIcon,
@@ -137,34 +136,6 @@ export default function AdminDashboardPage() {
     return null
   }
 
-  const statItems: StatItem[] = [
-    {
-      label: 'Događaji',
-      value: stats?.totalEvents ?? 0,
-      icon: <CalendarIcon className="size-5" />,
-    },
-    {
-      label: 'Trke',
-      value: stats?.totalRaces ?? 0,
-      icon: <FlagIcon className="size-5" />,
-    },
-    {
-      label: 'Treninzi',
-      value: stats?.totalTrainings ?? 0,
-      icon: <BoltIcon className="size-5" />,
-    },
-    {
-      label: 'Prijave',
-      value: stats?.totalRegistrations ?? 0,
-      icon: <ClipboardDocumentListIcon className="size-5" />,
-    },
-    {
-      label: 'Korisnici',
-      value: stats?.totalUsers ?? 0,
-      icon: <UserGroupIcon className="size-5" />,
-    },
-  ]
-
   function formatDate(iso: string) {
     const d = new Date(iso)
     if (Number.isNaN(d.getTime())) return 'TBD'
@@ -249,7 +220,21 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Stats */}
-      <StatsGrid items={statItems} className="mt-8" />
+      {/* Stats */}
+      <div className="mt-6 grid grid-cols-5 gap-3">
+        {[
+          { label: 'Događaji', value: stats?.totalEvents ?? 0, icon: <CalendarIcon className="size-4" /> },
+          { label: 'Trke', value: stats?.totalRaces ?? 0, icon: <FlagIcon className="size-4" /> },
+          { label: 'Treninzi', value: stats?.totalTrainings ?? 0, icon: <BoltIcon className="size-4" /> },
+          { label: 'Prijave', value: stats?.totalRegistrations ?? 0, icon: <ClipboardDocumentListIcon className="size-4" /> },
+          { label: 'Korisnici', value: stats?.totalUsers ?? 0, icon: <UserGroupIcon className="size-4" /> },
+        ].map((s) => (
+          <div key={s.label} className="rounded-lg border border-zinc-200 px-4 py-3 dark:border-zinc-700">
+            <div className="flex items-center gap-1.5 text-zinc-400">{s.icon}<span className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">{s.value}</span></div>
+            <div className="mt-0.5 text-xs text-zinc-500">{s.label}</div>
+          </div>
+        ))}
+      </div>
 
       {/* Recent Races */}
       <div className="mt-10">
