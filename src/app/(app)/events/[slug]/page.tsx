@@ -23,6 +23,7 @@ import {
   ArrowTopRightOnSquareIcon,
   ArrowRightIcon,
 } from '@heroicons/react/16/solid'
+import { EventJsonLd, BreadcrumbJsonLd } from '@/components/json-ld'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -83,39 +84,48 @@ function getSocialMediaStyles(url: string) {
 }
 
 function buildEventDescription(event: RaceEventWithRaces): string {
-  const typeLabel = event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'
-  const parts: string[] = [event.isTraining ? `${typeLabel} trening` : `${typeLabel} trka`]
-
-  // Date from earliest race
-  if (event.races.length > 0) {
-    const earliest = event.races.reduce((a, b) =>
-      new Date(a.startDateTime).getTime() < new Date(b.startDateTime).getTime() ? a : b
-    )
-    const d = new Date(earliest.startDateTime)
-    if (!Number.isNaN(d.getTime())) {
-      const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
-      const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: 'Europe/Belgrade' })
-      const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
-      parts.push(`${day}. ${month} ${year}.`)
-    }
-
-    // Location from first race (if not a URL)
-    const loc = earliest.startLocation
-    if (loc && !loc.startsWith('http')) {
-      parts.push(loc)
-    }
-
-    // Race distances
-    const distances = event.races
-      .map((r) => r.length)
-      .filter((l) => l > 0)
-      .sort((a, b) => a - b)
-    if (distances.length > 0) {
-      parts.push(`Distance: ${distances.join(', ')}km`)
-    }
+  if (event.description) {
+    const text = event.description.trim()
+    return text.length > 120 ? `${text.slice(0, 120).trimEnd()}…` : text
   }
 
-  return `${event.eventName} — ${parts.join(' · ')}`
+  if (event.races.length === 0) return event.eventName
+
+  const earliest = event.races.reduce((a, b) =>
+    new Date(a.startDateTime).getTime() < new Date(b.startDateTime).getTime() ? a : b
+  )
+
+  const sentences: string[] = []
+  const dateParts: string[] = []
+
+  const d = new Date(earliest.startDateTime)
+  if (!Number.isNaN(d.getTime())) {
+    const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
+    const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: 'Europe/Belgrade' })
+    const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
+    dateParts.push(`${day}. ${month} ${year}.`)
+  }
+
+  const loc = earliest.startLocation
+  if (loc && !loc.startsWith('http')) {
+    dateParts.push(loc)
+  }
+
+  if (dateParts.length > 0) sentences.push(dateParts.join(', '))
+
+  const distances = event.races
+    .map((r) => r.length)
+    .filter((l) => l > 0)
+    .sort((a, b) => a - b)
+  if (distances.length > 0) {
+    const distStr =
+      distances.length === 1
+        ? `${distances[0]}km`
+        : `${distances.slice(0, -1).join(', ')} i ${distances[distances.length - 1]}km`
+    sentences.push(`Udaljenosti: ${distStr}.`)
+  }
+
+  return sentences.join(' ')
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -274,8 +284,30 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       ? `data:text/calendar;charset=utf8,${encodeURIComponent(generateICS(event, earliestRace))}`
       : ''
 
+  const firstNonUrlLocation =
+    races.map((r) => r.startLocation).find((loc) => loc && !loc.startsWith('http')) ?? 'Srbija'
+
   return (
     <>
+      {earliestRace && (
+        <EventJsonLd
+          name={event.eventName}
+          description={buildEventDescription(event)}
+          startDate={earliestRace.startDateTime}
+          endDate={latestRace?.startDateTime}
+          location={firstNonUrlLocation}
+          url={`https://trkesrbija.rs/events/${slug}`}
+          image={event.mainImage ?? undefined}
+          organizer={event.organizer?.name ?? undefined}
+        />
+      )}
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Početna', url: 'https://trkesrbija.rs' },
+          { name: 'Svi događaji', url: 'https://trkesrbija.rs/events' },
+          { name: event.eventName, url: `https://trkesrbija.rs/events/${slug}` },
+        ]}
+      />
       <BackLink href={event.isTraining ? '/training' : '/events'}>
         {event.isTraining ? 'Moji treninzi' : 'Događaji'}
       </BackLink>

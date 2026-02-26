@@ -1,5 +1,6 @@
 import { gql } from '@/app/lib/api'
 import { AdminEditButton } from '@/components/admin-edit-button'
+import { EventJsonLd, BreadcrumbJsonLd } from '@/components/json-ld'
 import { GpxDownloadButton } from '@/components/gpx-download-button'
 import { ReportIssueButton } from '@/components/report-issue-button'
 import { BackLink } from '@/components/back-link'
@@ -146,33 +147,32 @@ async function fetchRaceBySlug(slug: string): Promise<RaceWithEvent | null> {
 
 function buildRaceDescription(race: RaceWithEvent): string {
   const typeLabel = race.raceEvent.type === 'TRAIL' ? 'Trail' : race.raceEvent.type === 'OCR' ? 'OCR' : 'Ulična'
-  const parts: string[] = [race.raceEvent.isTraining ? `${typeLabel} trening` : `${typeLabel} trka`]
+  const infoParts: string[] = [race.raceEvent.isTraining ? `${typeLabel} trening` : `${typeLabel} trka`]
 
-  // Distance and elevation
   const distElev: string[] = []
   if (race.length > 0) distElev.push(`${race.length}km`)
   if (race.elevation && race.elevation > 0) distElev.push(`${race.elevation}m D+`)
-  if (distElev.length > 0) parts.push(distElev.join(', '))
+  if (distElev.length > 0) infoParts.push(distElev.join(' i '))
 
-  // Date
   const d = new Date(race.startDateTime)
   if (!Number.isNaN(d.getTime())) {
     const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
     const month = d.toLocaleDateString('sr-Latn-RS', { month: 'long', timeZone: 'Europe/Belgrade' })
     const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
-    parts.push(`${day}. ${month} ${year}.`)
+    infoParts.push(`${day}. ${month} ${year}.`)
   }
 
-  // Location (if not a URL)
   if (race.startLocation && !race.startLocation.startsWith('http')) {
-    parts.push(race.startLocation)
+    infoParts.push(race.startLocation)
   }
 
-  const raceName = race.raceName
-    ? `${race.raceName} — ${race.raceEvent.eventName}`
-    : race.raceEvent.eventName
+  let desc = infoParts.join(', ')
 
-  return `${raceName} · ${parts.join(' · ')}`
+  if (!race.raceEvent.isTraining) {
+    desc += ` Deo događaja: ${race.raceEvent.eventName}.`
+  }
+
+  return desc
 }
 
 export async function generateMetadata({
@@ -326,6 +326,23 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
 
   return (
     <>
+      <EventJsonLd
+        name={race.raceName ? `${race.raceName} – ${race.raceEvent.eventName}` : race.raceEvent.eventName}
+        description={buildRaceDescription(race)}
+        startDate={race.startDateTime}
+        endDate={race.endDateTime ?? race.startDateTime}
+        location={race.startLocation.startsWith('http') ? race.raceEvent.eventName : race.startLocation}
+        url={`https://trkesrbija.rs/races/${slug}`}
+        image={race.raceEvent.mainImage ?? undefined}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: 'Početna', url: 'https://trkesrbija.rs' },
+          { name: 'Svi događaji', url: 'https://trkesrbija.rs/events' },
+          { name: race.raceEvent.eventName, url: `https://trkesrbija.rs/events/${race.raceEvent.slug}` },
+          { name: race.raceName ?? 'Trka', url: `https://trkesrbija.rs/races/${slug}` },
+        ]}
+      />
       <BackLink href={`/events/${race.raceEvent.slug}`}>{race.raceEvent.eventName}</BackLink>
 
       {/* Two-column layout */}
