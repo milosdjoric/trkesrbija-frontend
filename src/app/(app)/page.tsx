@@ -286,7 +286,10 @@ export default async function HomePage() {
             {/* Ove nedelje */}
             {thisWeekEvents.length > 0 && (
               <div>
-                <h3 className="mb-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">Ove nedelje</h3>
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Ove nedelje</span>
+                  <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                </div>
                 <ul>
                   {thisWeekEvents.map((event, index) => (
                     <li key={event.id}>
@@ -312,7 +315,10 @@ export default async function HomePage() {
             {/* Sledeće nedelje */}
             {nextWeekEvents.length > 0 && (
               <div>
-                <h3 className="mb-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">Sledeće nedelje</h3>
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Sledeće nedelje</span>
+                  <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                </div>
                 <ul>
                   {nextWeekEvents.map((event, index) => (
                     <li key={event.id}>
@@ -338,7 +344,10 @@ export default async function HomePage() {
             {/* Kasnije */}
             {laterEvents.length > 0 && (
               <div>
-                <h3 className="mb-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">Kasnije</h3>
+                <div className="mb-3 flex items-center gap-3">
+                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Kasnije</span>
+                  <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                </div>
                 <ul>
                   {laterEvents.map((event, index) => (
                     <li key={event.id}>
