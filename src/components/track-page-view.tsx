@@ -1,5 +1,6 @@
 'use client'
 
+import { useAuth } from '@/app/auth/auth-context'
 import { trackEvent } from '@/app/lib/analytics'
 import { useEffect } from 'react'
 
@@ -20,9 +21,11 @@ function getOrCreateVisitorId(): string {
 }
 
 export function TrackPageView({ entityId, entityType, metadata }: Props) {
+  const { user } = useAuth()
+
   useEffect(() => {
     const visitorId = getOrCreateVisitorId()
-    trackEvent({ type: 'PAGE_VIEW', entityId, entityType, metadata, visitorId })
+    trackEvent({ type: 'PAGE_VIEW', entityId, entityType, metadata, visitorId, userId: user?.id ?? undefined })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return null

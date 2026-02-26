@@ -12,6 +12,7 @@ import Link from 'next/link'
 type EntityStat = { entityId: string; name: string; slug: string | null; count: number; uniqueCount: number }
 type SearchStat = { query: string; count: number }
 type DayStat = { date: string; count: number; uniqueCount: number }
+type UserStat = { userId: string; email: string; name: string | null; count: number }
 
 type AnalyticsStats = {
   topEvents: EntityStat[]
@@ -19,6 +20,7 @@ type AnalyticsStats = {
   topSearches: SearchStat[]
   topFavorites: EntityStat[]
   viewsPerDay: DayStat[]
+  topUsers: UserStat[]
 }
 
 const ANALYTICS_QUERY = `
@@ -29,6 +31,7 @@ const ANALYTICS_QUERY = `
       topSearches { query count }
       topFavorites { entityId name slug count uniqueCount }
       viewsPerDay { date count uniqueCount }
+      topUsers { userId email name count }
     }
   }
 `
@@ -265,6 +268,36 @@ export default function AdminStatsPage() {
               )}
             </section>
           </div>
+
+          {/* Top users */}
+          {stats.topUsers.length > 0 && (
+            <section>
+              <Subheading>Najaktivniji korisnici</Subheading>
+              <div className="mt-4 overflow-x-auto">
+                <Table striped>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>#</TableHeader>
+                      <TableHeader>Korisnik</TableHeader>
+                      <TableHeader className="text-right">Pregledi</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {stats.topUsers.map((u, i) => (
+                      <TableRow key={u.userId}>
+                        <TableCell className="text-zinc-400">{i + 1}</TableCell>
+                        <TableCell>
+                          <span className="font-medium">{u.name ?? u.email}</span>
+                          {u.name && <span className="ml-2 text-xs text-zinc-400">{u.email}</span>}
+                        </TableCell>
+                        <TableCell className="text-right font-medium">{u.count}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </section>
+          )}
         </>
       )}
     </div>

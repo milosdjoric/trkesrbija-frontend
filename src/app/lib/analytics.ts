@@ -10,6 +10,7 @@ export function trackEvent(input: {
   entityType?: 'EVENT' | 'RACE'
   metadata?: Record<string, unknown>
   visitorId?: string
+  userId?: string
 }) {
   // Fire-and-forget — ne blokiramo UI
   fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL!, {
