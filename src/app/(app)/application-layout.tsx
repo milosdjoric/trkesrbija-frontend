@@ -322,6 +322,7 @@ export function ApplicationLayout({
                 <SidebarLabel>Prijavi se</SidebarLabel>
               </SidebarItem>
             )}
+            <div className="px-2 pt-1 text-xs text-zinc-400 dark:text-zinc-600">v1.0</div>
           </SidebarFooter>
         </Sidebar>
       }
