@@ -9,9 +9,9 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 
-type EntityStat = { entityId: string; name: string; slug: string | null; count: number }
+type EntityStat = { entityId: string; name: string; slug: string | null; count: number; uniqueCount: number }
 type SearchStat = { query: string; count: number }
-type DayStat = { date: string; count: number }
+type DayStat = { date: string; count: number; uniqueCount: number }
 
 type AnalyticsStats = {
   topEvents: EntityStat[]
@@ -24,11 +24,11 @@ type AnalyticsStats = {
 const ANALYTICS_QUERY = `
   query AnalyticsStats($days: Int) {
     analyticsStats(days: $days) {
-      topEvents { entityId name slug count }
-      topRaces  { entityId name slug count }
+      topEvents { entityId name slug count uniqueCount }
+      topRaces  { entityId name slug count uniqueCount }
       topSearches { query count }
-      topFavorites { entityId name slug count }
-      viewsPerDay { date count }
+      topFavorites { entityId name slug count uniqueCount }
+      viewsPerDay { date count uniqueCount }
     }
   }
 `
@@ -103,6 +103,7 @@ export default function AdminStatsPage() {
                     <TableRow>
                       <TableHeader>Datum</TableHeader>
                       <TableHeader className="text-right">Pregledi</TableHeader>
+                      <TableHeader className="text-right">Jedinstveni</TableHeader>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -110,6 +111,7 @@ export default function AdminStatsPage() {
                       <TableRow key={d.date}>
                         <TableCell>{d.date}</TableCell>
                         <TableCell className="text-right font-medium">{d.count}</TableCell>
+                        <TableCell className="text-right text-zinc-500">{d.uniqueCount}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -132,6 +134,7 @@ export default function AdminStatsPage() {
                         <TableHeader>#</TableHeader>
                         <TableHeader>Događaj</TableHeader>
                         <TableHeader className="text-right">Pregledi</TableHeader>
+                        <TableHeader className="text-right">Jedinstveni</TableHeader>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -148,6 +151,7 @@ export default function AdminStatsPage() {
                             )}
                           </TableCell>
                           <TableCell className="text-right font-medium">{e.count}</TableCell>
+                          <TableCell className="text-right text-zinc-500">{e.uniqueCount}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -168,6 +172,7 @@ export default function AdminStatsPage() {
                         <TableHeader>#</TableHeader>
                         <TableHeader>Trka</TableHeader>
                         <TableHeader className="text-right">Pregledi</TableHeader>
+                        <TableHeader className="text-right">Jedinstveni</TableHeader>
                       </TableRow>
                     </TableHead>
                     <TableBody>
@@ -184,6 +189,7 @@ export default function AdminStatsPage() {
                             )}
                           </TableCell>
                           <TableCell className="text-right font-medium">{r.count}</TableCell>
+                          <TableCell className="text-right text-zinc-500">{r.uniqueCount}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>

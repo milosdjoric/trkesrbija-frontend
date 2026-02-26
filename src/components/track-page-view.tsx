@@ -9,9 +9,20 @@ type Props = {
   metadata?: Record<string, unknown>
 }
 
+function getOrCreateVisitorId(): string {
+  const key = 'trke_vid'
+  let vid = localStorage.getItem(key)
+  if (!vid) {
+    vid = crypto.randomUUID()
+    localStorage.setItem(key, vid)
+  }
+  return vid
+}
+
 export function TrackPageView({ entityId, entityType, metadata }: Props) {
   useEffect(() => {
-    trackEvent({ type: 'PAGE_VIEW', entityId, entityType, metadata })
+    const visitorId = getOrCreateVisitorId()
+    trackEvent({ type: 'PAGE_VIEW', entityId, entityType, metadata, visitorId })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   return null
