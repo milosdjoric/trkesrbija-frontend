@@ -41,7 +41,7 @@ const DAY_OPTIONS = [
 
 export default function AdminStatsPage() {
   const router = useRouter()
-  const { user, isLoading } = useAuth()
+  const { user, accessToken, isLoading } = useAuth()
   const [stats, setStats] = useState<AnalyticsStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [days, setDays] = useState(30)
@@ -55,14 +55,14 @@ export default function AdminStatsPage() {
   const fetchStats = useCallback(async () => {
     setLoading(true)
     try {
-      const data = await gql<{ analyticsStats: AnalyticsStats }>(ANALYTICS_QUERY, { days })
+      const data = await gql<{ analyticsStats: AnalyticsStats }>(ANALYTICS_QUERY, { days }, { accessToken })
       setStats(data.analyticsStats)
     } catch {
       // ignore
     } finally {
       setLoading(false)
     }
-  }, [days])
+  }, [days, accessToken])
 
   useEffect(() => {
     if (user?.role === 'ADMIN') fetchStats()
