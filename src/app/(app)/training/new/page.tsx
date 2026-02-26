@@ -244,7 +244,7 @@ export default function NewTrainingPage() {
                     value={race.raceName}
                     onChange={(e) => updateRace(race.id, 'raceName', e.target.value)}
                     placeholder={`Staza ${index + 1}`}
-                    className="flex-1 rounded-md border border-transparent bg-transparent px-1 py-0.5 text-sm font-medium text-zinc-700 hover:border-zinc-300 focus:border-zinc-400 focus:outline-none dark:text-zinc-300 dark:hover:border-zinc-600 dark:focus:border-zinc-500"
+                    className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
                   />
                   {races.length > 1 && (
                     <button
