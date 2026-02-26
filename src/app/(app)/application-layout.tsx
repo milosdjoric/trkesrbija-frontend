@@ -322,7 +322,12 @@ export function ApplicationLayout({
                 <SidebarLabel>Prijavi se</SidebarLabel>
               </SidebarItem>
             )}
-            <div className="px-2 pt-1 text-xs text-zinc-400 dark:text-zinc-600">v1.0</div>
+            <div className="px-2 pt-1 text-xs text-zinc-400 dark:text-zinc-600">
+              v1.0 · © {new Date().getFullYear()}{' '}
+              <a href="https://milosdjoric.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-600 dark:hover:text-zinc-400">
+                milosdjoric.com
+              </a>
+            </div>
           </SidebarFooter>
         </Sidebar>
       }
