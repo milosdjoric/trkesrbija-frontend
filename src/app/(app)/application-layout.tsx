@@ -154,7 +154,7 @@ export function ApplicationLayout({
               </SidebarSection>
 
               {/* Moji linkovi - prijavljeni korisnici */}
-              <SidebarSection className="mt-8">
+              <SidebarSection className="mt-4">
                 <SidebarHeading>Moji linkovi</SidebarHeading>
                 {authLoading ? (
                   <>
@@ -208,7 +208,7 @@ export function ApplicationLayout({
               </SidebarSection>
 
               {/* Alati */}
-              <SidebarSection className="mt-8">
+              <SidebarSection className="mt-4">
                 <SidebarHeading>Alati</SidebarHeading>
                 <SidebarItem href="/gpx-analyzer" current={pathname === '/gpx-analyzer'}>
                   <MapIcon />
@@ -218,7 +218,7 @@ export function ApplicationLayout({
 
               {/* Sudija - samo korisnici sa dodeljenim checkpoint-om */}
               {!authLoading && user?.assignedCheckpointId && (
-                <SidebarSection className="mt-8">
+                <SidebarSection className="mt-4">
                   <SidebarHeading>Sudija</SidebarHeading>
                   <SidebarItem href="/judge" current={pathname.startsWith('/judge')}>
                     <ClockIcon />
@@ -230,7 +230,7 @@ export function ApplicationLayout({
 
             {/* Admin - samo admin */}
             {!authLoading && user?.role === 'ADMIN' && (
-              <SidebarSection className="mt-8">
+              <SidebarSection className="mt-4">
                 <SidebarHeading>Admin</SidebarHeading>
                 <SidebarItem href="/admin" current={pathname === '/admin'}>
                   <WrenchScrewdriverIcon />
@@ -292,6 +292,13 @@ export function ApplicationLayout({
                 <SidebarLabel>Dnevnik promena</SidebarLabel>
               </SidebarItem>
             </SidebarSection>
+
+            <div className="px-2 pt-2 text-xs text-zinc-400 dark:text-zinc-600">
+              v1.0 · © {new Date().getFullYear()}{' '}
+              <a href="https://milosdjoric.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-600 dark:hover:text-zinc-400">
+                milosdjoric.com
+              </a>
+            </div>
           </SidebarBody>
 
           <SidebarFooter className="max-lg:hidden">
@@ -322,12 +329,6 @@ export function ApplicationLayout({
                 <SidebarLabel>Prijavi se</SidebarLabel>
               </SidebarItem>
             )}
-            <div className="px-2 pt-1 text-xs text-zinc-400 dark:text-zinc-600">
-              v1.0 · © {new Date().getFullYear()}{' '}
-              <a href="https://milosdjoric.com" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-600 dark:hover:text-zinc-400">
-                milosdjoric.com
-              </a>
-            </div>
           </SidebarFooter>
         </Sidebar>
       }
