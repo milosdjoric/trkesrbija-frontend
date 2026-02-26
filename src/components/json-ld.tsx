@@ -75,7 +75,7 @@ export function SiteNavigationJsonLd() {
         '@type': 'SiteNavigationElement',
         position: 3,
         name: 'OCR trke',
-        description: 'Pronađite sve OCR trke u Srbiji - trke sa preponama',
+        description: 'Pronađite sve OCR trke u Srbiji - trke sa preprekama',
         url: `${siteUrl}/events?type=OCR`,
       },
       {
