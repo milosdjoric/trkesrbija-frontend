@@ -96,7 +96,7 @@ export function ApplicationLayout({
   children: React.ReactNode
 }) {
   let pathname = usePathname()
-  const { user } = useAuth()
+  const { user, isLoading: authLoading } = useAuth()
 
   return (
     <SidebarLayout
@@ -104,7 +104,9 @@ export function ApplicationLayout({
         <Navbar>
           <NavbarSpacer />
           <NavbarSection>
-            {user ? (
+            {authLoading ? (
+              <div className="h-5 w-24 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+            ) : user ? (
               <Dropdown>
                 <DropdownButton as={SidebarItem}>
                   <span className="flex min-w-0 items-center gap-3">
@@ -152,7 +154,22 @@ export function ApplicationLayout({
             {/* Moji linkovi - prijavljeni korisnici */}
             <SidebarSection>
               <SidebarHeading>Moji linkovi</SidebarHeading>
-              {user ? (
+              {authLoading ? (
+                <>
+                  <div className="flex items-center gap-3 px-2 py-1">
+                    <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                    <div className="h-4 w-24 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                  </div>
+                  <div className="flex items-center gap-3 px-2 py-1">
+                    <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                    <div className="h-4 w-28 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                  </div>
+                  <div className="flex items-center gap-3 px-2 py-1">
+                    <div className="h-4 w-4 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                    <div className="h-4 w-20 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+                  </div>
+                </>
+              ) : user ? (
                 <>
                   <SidebarItem href="/favorites" current={pathname.startsWith('/favorites')}>
                     <HeartIcon />
@@ -198,7 +215,7 @@ export function ApplicationLayout({
             </SidebarSection>
 
             {/* Sudija - samo korisnici sa dodeljenim checkpoint-om */}
-            {user?.assignedCheckpointId && (
+            {!authLoading && user?.assignedCheckpointId && (
               <SidebarSection>
                 <SidebarHeading>Sudija</SidebarHeading>
                 <SidebarItem href="/judge" current={pathname.startsWith('/judge')}>
@@ -209,7 +226,7 @@ export function ApplicationLayout({
             )}
 
             {/* Admin - samo admin */}
-            {user?.role === 'ADMIN' && (
+            {!authLoading && user?.role === 'ADMIN' && (
               <SidebarSection>
                 <SidebarHeading>Admin</SidebarHeading>
                 <SidebarItem href="/admin" current={pathname === '/admin'}>
@@ -275,7 +292,11 @@ export function ApplicationLayout({
           </SidebarBody>
 
           <SidebarFooter className="max-lg:hidden">
-            {user ? (
+            {authLoading ? (
+              <div className="flex items-center gap-3 px-2 py-2">
+                <div className="h-4 w-32 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+              </div>
+            ) : user ? (
               <Dropdown>
                 <DropdownButton as={SidebarItem}>
                   <span className="flex min-w-0 items-center gap-3">
