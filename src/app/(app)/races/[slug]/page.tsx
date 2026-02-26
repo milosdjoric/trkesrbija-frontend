@@ -499,7 +499,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
+                    className={`inline-flex items-center gap-2 overflow-hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
                   >
                     {getSocialMediaName(url)}
                   </a>

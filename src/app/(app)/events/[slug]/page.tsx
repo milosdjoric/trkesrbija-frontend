@@ -68,19 +68,19 @@ function getSocialMediaStyles(url: string) {
   const type = getSocialMediaIcon(url)
   switch (type) {
     case 'facebook':
-      return 'bg-[#1877F2] hover:bg-[#166FE5] text-white border-[#1877F2]'
+      return 'border bg-[#1877F2] hover:bg-[#166FE5] text-white border-[#1877F2]'
     case 'instagram':
-      return 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white border-transparent'
+      return 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white'
     case 'strava':
-      return 'bg-[#FC4C02] hover:bg-[#E34402] text-white border-[#FC4C02]'
+      return 'border bg-[#FC4C02] hover:bg-[#E34402] text-white border-[#FC4C02]'
     case 'twitter':
-      return 'bg-black hover:bg-zinc-800 text-white border-black dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:border-white'
+      return 'border bg-black hover:bg-zinc-800 text-white border-black dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:border-white'
     case 'youtube':
-      return 'bg-[#FF0000] hover:bg-[#CC0000] text-white border-[#FF0000]'
+      return 'border bg-[#FF0000] hover:bg-[#CC0000] text-white border-[#FF0000]'
     case 'tiktok':
-      return 'bg-black hover:bg-zinc-800 text-white border-black'
+      return 'border bg-black hover:bg-zinc-800 text-white border-black'
     default:
-      return 'bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-700'
+      return 'border bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-700'
   }
 }
 
@@ -439,7 +439,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
+                    className={`inline-flex items-center gap-2 overflow-hidden rounded-lg px-3 py-2 text-sm font-medium transition-colors ${getSocialMediaStyles(url)}`}
                   >
                     {getSocialMediaName(url)}
                   </a>
