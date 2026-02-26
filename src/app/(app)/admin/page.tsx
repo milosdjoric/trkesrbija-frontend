@@ -179,10 +179,10 @@ export default function AdminDashboardPage() {
       <Heading>Admin Panel</Heading>
 
       {/* Quick Links */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+      <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
         <Link
           href="/admin/events"
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
           <CalendarIcon className="size-8 text-blue-500" />
           <div>
@@ -193,7 +193,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/races"
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
           <FlagIcon className="size-8 text-emerald-500" />
           <div>
@@ -204,7 +204,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/users"
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
           <UserGroupIcon className="size-8 text-purple-500" />
           <div>
@@ -215,7 +215,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/import"
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
           <ArrowUpTrayIcon className="size-8 text-amber-500" />
           <div>
@@ -226,7 +226,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/trainings"
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
           <BoltIcon className="size-8 text-indigo-500" />
           <div>
@@ -237,7 +237,7 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/reports"
-          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
           <ExclamationTriangleIcon className="size-8 text-red-500" />
           <div>
