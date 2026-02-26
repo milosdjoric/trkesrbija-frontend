@@ -42,6 +42,15 @@ const DAY_OPTIONS = [
   { label: 'Poslednjih 90 dana', value: 90 },
 ]
 
+function CountCell({ count, uniqueCount }: { count: number; uniqueCount: number }) {
+  return (
+    <TableCell className="text-right tabular-nums">
+      <span className="font-medium">{count}</span>
+      <span className="ml-1 text-xs text-zinc-400">/ {uniqueCount}</span>
+    </TableCell>
+  )
+}
+
 export default function AdminStatsPage() {
   const router = useRouter()
   const { user, accessToken, isLoading } = useAuth()
@@ -74,7 +83,7 @@ export default function AdminStatsPage() {
   if (isLoading || !user) return <LoadingState />
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <Heading>Statistike</Heading>
         <select
@@ -94,67 +103,31 @@ export default function AdminStatsPage() {
         <p className="text-sm text-zinc-500">Nema podataka.</p>
       ) : (
         <>
-          {/* Views per day */}
-          <section>
-            <Subheading>Pregledi po danu</Subheading>
-            {stats.viewsPerDay.length === 0 ? (
-              <p className="mt-2 text-sm text-zinc-500">Nema pregleda u izabranom periodu.</p>
-            ) : (
-              <div className="mt-4 overflow-x-auto">
-                <Table striped>
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>Datum</TableHeader>
-                      <TableHeader className="text-right">Pregledi</TableHeader>
-                      <TableHeader className="text-right">Jedinstveni</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {[...stats.viewsPerDay].reverse().map((d) => (
-                      <TableRow key={d.date}>
-                        <TableCell>{d.date}</TableCell>
-                        <TableCell className="text-right font-medium">{d.count}</TableCell>
-                        <TableCell className="text-right text-zinc-500">{d.uniqueCount}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </section>
+          {/* Top events, races & views per day */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
-          {/* Top events & races */}
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <section>
-              <Subheading>Top događaji po pregledima</Subheading>
+              <Subheading>Top događaji</Subheading>
               {stats.topEvents.length === 0 ? (
                 <p className="mt-2 text-sm text-zinc-500">Nema podataka.</p>
               ) : (
-                <div className="mt-4 overflow-x-auto">
+                <div className="mt-2 overflow-x-auto">
                   <Table striped>
                     <TableHead>
                       <TableRow>
-                        <TableHeader>#</TableHeader>
                         <TableHeader>Događaj</TableHeader>
-                        <TableHeader className="text-right">Pregledi</TableHeader>
-                        <TableHeader className="text-right">Jedinstveni</TableHeader>
+                        <TableHeader className="text-right">Ukupno / Uniq.</TableHeader>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topEvents.map((e, i) => (
+                      {stats.topEvents.map((e) => (
                         <TableRow key={e.entityId}>
-                          <TableCell className="text-zinc-400">{i + 1}</TableCell>
-                          <TableCell>
+                          <TableCell className="max-w-[180px] truncate">
                             {e.slug ? (
-                              <Link href={`/events/${e.slug}`} className="hover:underline">
-                                {e.name}
-                              </Link>
-                            ) : (
-                              e.name
-                            )}
+                              <Link href={`/events/${e.slug}`} className="hover:underline">{e.name}</Link>
+                            ) : e.name}
                           </TableCell>
-                          <TableCell className="text-right font-medium">{e.count}</TableCell>
-                          <TableCell className="text-right text-zinc-500">{e.uniqueCount}</TableCell>
+                          <CountCell count={e.count} uniqueCount={e.uniqueCount} />
                         </TableRow>
                       ))}
                     </TableBody>
@@ -164,35 +137,27 @@ export default function AdminStatsPage() {
             </section>
 
             <section>
-              <Subheading>Top trke po pregledima</Subheading>
+              <Subheading>Top trke</Subheading>
               {stats.topRaces.length === 0 ? (
                 <p className="mt-2 text-sm text-zinc-500">Nema podataka.</p>
               ) : (
-                <div className="mt-4 overflow-x-auto">
+                <div className="mt-2 overflow-x-auto">
                   <Table striped>
                     <TableHead>
                       <TableRow>
-                        <TableHeader>#</TableHeader>
                         <TableHeader>Trka</TableHeader>
-                        <TableHeader className="text-right">Pregledi</TableHeader>
-                        <TableHeader className="text-right">Jedinstveni</TableHeader>
+                        <TableHeader className="text-right">Ukupno / Uniq.</TableHeader>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topRaces.map((r, i) => (
+                      {stats.topRaces.map((r) => (
                         <TableRow key={r.entityId}>
-                          <TableCell className="text-zinc-400">{i + 1}</TableCell>
-                          <TableCell>
+                          <TableCell className="max-w-[180px] truncate">
                             {r.slug ? (
-                              <Link href={`/races/${r.slug}`} className="hover:underline">
-                                {r.name}
-                              </Link>
-                            ) : (
-                              r.name
-                            )}
+                              <Link href={`/races/${r.slug}`} className="hover:underline">{r.name}</Link>
+                            ) : r.name}
                           </TableCell>
-                          <TableCell className="text-right font-medium">{r.count}</TableCell>
-                          <TableCell className="text-right text-zinc-500">{r.uniqueCount}</TableCell>
+                          <CountCell count={r.count} uniqueCount={r.uniqueCount} />
                         </TableRow>
                       ))}
                     </TableBody>
@@ -200,30 +165,56 @@ export default function AdminStatsPage() {
                 </div>
               )}
             </section>
-          </div>
 
-          {/* Top searches & favorites */}
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <section>
-              <Subheading>Top pretrage</Subheading>
-              {stats.topSearches.length === 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">Nema pretraga u izabranom periodu.</p>
+              <Subheading>Pregledi po danu</Subheading>
+              {stats.viewsPerDay.length === 0 ? (
+                <p className="mt-2 text-sm text-zinc-500">Nema pregleda.</p>
               ) : (
-                <div className="mt-4 overflow-x-auto">
+                <div className="mt-2 overflow-x-auto">
                   <Table striped>
                     <TableHead>
                       <TableRow>
-                        <TableHeader>#</TableHeader>
+                        <TableHeader>Datum</TableHeader>
+                        <TableHeader className="text-right">Ukupno / Uniq.</TableHeader>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {[...stats.viewsPerDay].reverse().map((d) => (
+                        <TableRow key={d.date}>
+                          <TableCell className="text-sm">{d.date}</TableCell>
+                          <CountCell count={d.count} uniqueCount={d.uniqueCount} />
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </section>
+
+          </div>
+
+          {/* Searches, favorites & users */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+            <section>
+              <Subheading>Top pretrage</Subheading>
+              {stats.topSearches.length === 0 ? (
+                <p className="mt-2 text-sm text-zinc-500">Nema pretraga.</p>
+              ) : (
+                <div className="mt-2 overflow-x-auto">
+                  <Table striped>
+                    <TableHead>
+                      <TableRow>
                         <TableHeader>Pretraga</TableHeader>
                         <TableHeader className="text-right">Puta</TableHeader>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topSearches.map((s, i) => (
+                      {stats.topSearches.map((s) => (
                         <TableRow key={s.query}>
-                          <TableCell className="text-zinc-400">{i + 1}</TableCell>
-                          <TableCell className="font-mono text-sm">&ldquo;{s.query}&rdquo;</TableCell>
-                          <TableCell className="text-right font-medium">{s.count}</TableCell>
+                          <TableCell className="font-mono text-xs">&ldquo;{s.query}&rdquo;</TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">{s.count}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -233,33 +224,27 @@ export default function AdminStatsPage() {
             </section>
 
             <section>
-              <Subheading>Top omiljene trke (sve vreme)</Subheading>
+              <Subheading>Top omiljene (sve vreme)</Subheading>
               {stats.topFavorites.length === 0 ? (
                 <p className="mt-2 text-sm text-zinc-500">Nema omiljenih.</p>
               ) : (
-                <div className="mt-4 overflow-x-auto">
+                <div className="mt-2 overflow-x-auto">
                   <Table striped>
                     <TableHead>
                       <TableRow>
-                        <TableHeader>#</TableHeader>
                         <TableHeader>Trka</TableHeader>
                         <TableHeader className="text-right">♥</TableHeader>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topFavorites.map((f, i) => (
+                      {stats.topFavorites.map((f) => (
                         <TableRow key={f.entityId}>
-                          <TableCell className="text-zinc-400">{i + 1}</TableCell>
-                          <TableCell>
+                          <TableCell className="max-w-[180px] truncate">
                             {f.slug ? (
-                              <Link href={`/races/${f.slug}`} className="hover:underline">
-                                {f.name}
-                              </Link>
-                            ) : (
-                              f.name
-                            )}
+                              <Link href={`/races/${f.slug}`} className="hover:underline">{f.name}</Link>
+                            ) : f.name}
                           </TableCell>
-                          <TableCell className="text-right font-medium">{f.count}</TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">{f.count}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -267,37 +252,35 @@ export default function AdminStatsPage() {
                 </div>
               )}
             </section>
-          </div>
 
-          {/* Top users */}
-          {stats.topUsers.length > 0 && (
-            <section>
-              <Subheading>Najaktivniji korisnici</Subheading>
-              <div className="mt-4 overflow-x-auto">
-                <Table striped>
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>#</TableHeader>
-                      <TableHeader>Korisnik</TableHeader>
-                      <TableHeader className="text-right">Pregledi</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {stats.topUsers.map((u, i) => (
-                      <TableRow key={u.userId}>
-                        <TableCell className="text-zinc-400">{i + 1}</TableCell>
-                        <TableCell>
-                          <span className="font-medium">{u.name ?? u.email}</span>
-                          {u.name && <span className="ml-2 text-xs text-zinc-400">{u.email}</span>}
-                        </TableCell>
-                        <TableCell className="text-right font-medium">{u.count}</TableCell>
+            {stats.topUsers.length > 0 && (
+              <section>
+                <Subheading>Najaktivniji korisnici</Subheading>
+                <div className="mt-2 overflow-x-auto">
+                  <Table striped>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeader>Korisnik</TableHeader>
+                        <TableHeader className="text-right">Pregledi</TableHeader>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </section>
-          )}
+                    </TableHead>
+                    <TableBody>
+                      {stats.topUsers.map((u) => (
+                        <TableRow key={u.userId}>
+                          <TableCell>
+                            <span className="font-medium">{u.name ?? u.email}</span>
+                            {u.name && <span className="ml-1 text-xs text-zinc-400">{u.email}</span>}
+                          </TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">{u.count}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </section>
+            )}
+
+          </div>
         </>
       )}
     </div>
