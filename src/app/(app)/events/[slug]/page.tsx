@@ -326,11 +326,17 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             {/* Color overlay based on event type */}
             <div
               className={`absolute inset-0 ${
-                event.type === 'TRAIL'
-                  ? 'bg-gradient-to-r from-emerald-700/60 to-emerald-900/50'
-                  : event.type === 'OCR'
-                    ? 'bg-gradient-to-r from-orange-700/60 to-orange-900/50'
-                    : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
+                event.mainImage
+                  ? event.type === 'TRAIL'
+                    ? 'bg-gradient-to-r from-emerald-700/60 to-emerald-900/50'
+                    : event.type === 'OCR'
+                      ? 'bg-gradient-to-r from-orange-700/60 to-orange-900/50'
+                      : 'bg-gradient-to-r from-sky-700/60 to-sky-900/50'
+                  : event.type === 'TRAIL'
+                    ? 'bg-gradient-to-r from-emerald-600 to-emerald-100'
+                    : event.type === 'OCR'
+                      ? 'bg-gradient-to-r from-orange-500 to-orange-100'
+                      : 'bg-gradient-to-r from-sky-600 to-sky-100'
               }`}
             />
             {/* Content */}
