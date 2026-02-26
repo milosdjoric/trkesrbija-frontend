@@ -115,7 +115,7 @@ export function GpxUpload({ value, onChange, label = 'GPX fajl' }: GpxUploadProp
           className={`cursor-pointer rounded-lg border-2 border-dashed transition-colors ${
             dragActive
               ? 'border-zinc-400 bg-zinc-100 dark:border-zinc-500 dark:bg-zinc-700/50'
-              : 'border-zinc-300 bg-zinc-900/50 hover:border-zinc-400 dark:border-zinc-600 dark:bg-zinc-800/80 dark:hover:border-zinc-500'
+              : 'border-zinc-300 bg-zinc-100 hover:border-zinc-400 dark:border-zinc-600 dark:bg-zinc-800/80 dark:hover:border-zinc-500'
           }`}
         >
           <input
