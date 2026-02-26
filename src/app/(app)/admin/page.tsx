@@ -154,11 +154,6 @@ export default function AdminDashboardPage() {
       icon: <BoltIcon className="size-5" />,
     },
     {
-      label: 'Staze treninga',
-      value: stats?.totalTrainingRaces ?? 0,
-      icon: <BoltIcon className="size-5" />,
-    },
-    {
       label: 'Prijave',
       value: stats?.totalRegistrations ?? 0,
       icon: <ClipboardDocumentListIcon className="size-5" />,
@@ -184,7 +179,7 @@ export default function AdminDashboardPage() {
       <Heading>Admin Panel</Heading>
 
       {/* Quick Links */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
         <Link
           href="/admin/events"
           className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
@@ -226,6 +221,17 @@ export default function AdminDashboardPage() {
           <div>
             <div className="font-medium">Import</div>
             <div className="text-sm text-zinc-500">CSV import podataka</div>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/trainings"
+          className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+        >
+          <BoltIcon className="size-8 text-indigo-500" />
+          <div>
+            <div className="font-medium">Treninzi</div>
+            <div className="text-sm text-zinc-500">Svi treninzi korisnika</div>
           </div>
         </Link>
 
