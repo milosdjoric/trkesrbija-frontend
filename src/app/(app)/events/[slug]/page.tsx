@@ -68,19 +68,19 @@ function getSocialMediaStyles(url: string) {
   const type = getSocialMediaIcon(url)
   switch (type) {
     case 'facebook':
-      return 'border bg-[#1877F2] hover:bg-[#166FE5] text-white border-[#1877F2]'
+      return 'bg-[#1877F2] hover:bg-[#166FE5] text-white'
     case 'instagram':
       return 'bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#F77737] hover:opacity-90 text-white'
     case 'strava':
-      return 'border bg-[#FC4C02] hover:bg-[#E34402] text-white border-[#FC4C02]'
+      return 'bg-[#FC4C02] hover:bg-[#E34402] text-white'
     case 'twitter':
-      return 'border bg-black hover:bg-zinc-800 text-white border-black dark:bg-white dark:text-black dark:hover:bg-zinc-200 dark:border-white'
+      return 'bg-black hover:bg-zinc-800 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200'
     case 'youtube':
-      return 'border bg-[#FF0000] hover:bg-[#CC0000] text-white border-[#FF0000]'
+      return 'bg-[#FF0000] hover:bg-[#CC0000] text-white'
     case 'tiktok':
-      return 'border bg-black hover:bg-zinc-800 text-white border-black'
+      return 'bg-black hover:bg-zinc-800 text-white'
     default:
-      return 'border bg-white hover:bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700 dark:hover:bg-zinc-700'
+      return 'bg-white hover:bg-zinc-50 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
   }
 }
 
