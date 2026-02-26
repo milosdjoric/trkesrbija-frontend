@@ -16,6 +16,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 type ExistingRace = {
   id: string
+  raceName: string
   gpsFile: string | null
   startLocation: string
   startDateTime: string
@@ -24,6 +25,7 @@ type ExistingRace = {
 
 type NewRace = {
   id: string
+  raceName: string
   gpsFile: string
   startLocation: string
   startDateTime: string
@@ -40,6 +42,7 @@ type TrainingEvent = {
   description: string | null
   races: Array<{
     id: string
+    raceName: string | null
     gpsFile: string | null
     startLocation: string
     startDateTime: string
@@ -58,6 +61,7 @@ const TRAINING_EVENT_QUERY = `
       createdById
       races {
         id
+        raceName
         gpsFile
         startLocation
         startDateTime
@@ -76,16 +80,16 @@ const UPDATE_TRAINING_EVENT_MUTATION = `
 `
 
 const CREATE_TRAINING_RACE_MUTATION = `
-  mutation CreateTrainingRace($eventId: ID!, $gpsFile: String, $startLocation: String!, $startDateTime: DateTime!) {
-    createTrainingRace(eventId: $eventId, gpsFile: $gpsFile, startLocation: $startLocation, startDateTime: $startDateTime) {
+  mutation CreateTrainingRace($eventId: ID!, $raceName: String, $gpsFile: String, $startLocation: String!, $startDateTime: DateTime!) {
+    createTrainingRace(eventId: $eventId, raceName: $raceName, gpsFile: $gpsFile, startLocation: $startLocation, startDateTime: $startDateTime) {
       id
     }
   }
 `
 
 const UPDATE_TRAINING_RACE_MUTATION = `
-  mutation UpdateTrainingRace($raceId: ID!, $gpsFile: String, $startLocation: String, $startDateTime: DateTime) {
-    updateTrainingRace(raceId: $raceId, gpsFile: $gpsFile, startLocation: $startLocation, startDateTime: $startDateTime) {
+  mutation UpdateTrainingRace($raceId: ID!, $raceName: String, $gpsFile: String, $startLocation: String, $startDateTime: DateTime) {
+    updateTrainingRace(raceId: $raceId, raceName: $raceName, gpsFile: $gpsFile, startLocation: $startLocation, startDateTime: $startDateTime) {
       id
     }
   }
@@ -99,7 +103,7 @@ const DELETE_TRAINING_RACE_MUTATION = `
 
 let raceIdCounter = 0
 
-function newRaceDefaults(): NewRace {
+function newRaceDefaults(index: number): NewRace {
   raceIdCounter++
   const defaultDate = new Date()
   defaultDate.setMonth(defaultDate.getMonth() + 1)
@@ -107,6 +111,7 @@ function newRaceDefaults(): NewRace {
 
   return {
     id: `new-${raceIdCounter}`,
+    raceName: `Staza ${index + 1}`,
     gpsFile: '',
     startLocation: '',
     startDateTime: toDateTimeLocalString(defaultDate),
@@ -164,8 +169,9 @@ export default function EditTrainingPage() {
       setEventType(event.type)
       setDescription(event.description ?? '')
       setRaces(
-        event.races.map((r) => ({
+        event.races.map((r, i) => ({
           id: r.id,
+          raceName: r.raceName ?? `Staza ${i + 1}`,
           gpsFile: r.gpsFile,
           startLocation: r.startLocation,
           startDateTime: toLocalDateTime(r.startDateTime),
@@ -192,7 +198,7 @@ export default function EditTrainingPage() {
   }, [authLoading, user, accessToken, loadEvent, router])
 
   function addRace() {
-    setRaces((prev) => [...prev, newRaceDefaults()])
+    setRaces((prev) => [...prev, newRaceDefaults(prev.length)])
   }
 
   async function removeRace(race: RaceForm) {
@@ -268,6 +274,7 @@ export default function EditTrainingPage() {
             CREATE_TRAINING_RACE_MUTATION,
             {
               eventId,
+              raceName: race.raceName.trim() || null,
               gpsFile: race.gpsFile.trim() || null,
               startLocation: race.startLocation.trim(),
               startDateTime: new Date(race.startDateTime).toISOString(),
@@ -279,6 +286,7 @@ export default function EditTrainingPage() {
             UPDATE_TRAINING_RACE_MUTATION,
             {
               raceId: race.id,
+              raceName: race.raceName.trim() || null,
               gpsFile: race.gpsFile,
               startLocation: race.startLocation.trim(),
               startDateTime: new Date(race.startDateTime).toISOString(),
@@ -385,13 +393,19 @@ export default function EditTrainingPage() {
                 key={race.id}
                 className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Staza {index + 1}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex flex-1 items-center gap-2">
+                    <input
+                      type="text"
+                      value={race.raceName}
+                      onChange={(e) => updateRace(race.id, 'raceName', e.target.value)}
+                      placeholder={`Staza ${index + 1}`}
+                      className="flex-1 rounded-md border border-transparent bg-transparent px-1 py-0.5 text-sm font-medium text-zinc-700 hover:border-zinc-300 focus:border-zinc-400 focus:outline-none dark:text-zinc-300 dark:hover:border-zinc-600 dark:focus:border-zinc-500"
+                    />
                     {race.isNew && (
-                      <span className="ml-2 text-xs text-blue-500">(nova)</span>
+                      <span className="text-xs text-blue-500">(nova)</span>
                     )}
-                  </span>
+                  </div>
                   {races.length > 1 && (
                     <button
                       type="button"

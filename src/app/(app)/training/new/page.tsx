@@ -15,6 +15,7 @@ import { useEffect, useState } from 'react'
 
 type TrainingRaceForm = {
   id: string
+  raceName: string
   gpsFile: string
   startLocation: string
   startDateTime: string
@@ -30,8 +31,8 @@ const CREATE_TRAINING_EVENT_MUTATION = `
 `
 
 const CREATE_TRAINING_RACE_MUTATION = `
-  mutation CreateTrainingRace($eventId: ID!, $gpsFile: String, $startLocation: String!, $startDateTime: DateTime!) {
-    createTrainingRace(eventId: $eventId, gpsFile: $gpsFile, startLocation: $startLocation, startDateTime: $startDateTime) {
+  mutation CreateTrainingRace($eventId: ID!, $raceName: String, $gpsFile: String, $startLocation: String!, $startDateTime: DateTime!) {
+    createTrainingRace(eventId: $eventId, raceName: $raceName, gpsFile: $gpsFile, startLocation: $startLocation, startDateTime: $startDateTime) {
       id
     }
   }
@@ -39,7 +40,7 @@ const CREATE_TRAINING_RACE_MUTATION = `
 
 let raceIdCounter = 0
 
-function defaultRace(): TrainingRaceForm {
+function defaultRace(index: number): TrainingRaceForm {
   raceIdCounter++
   const defaultDate = new Date()
   defaultDate.setMonth(defaultDate.getMonth() + 1)
@@ -47,6 +48,7 @@ function defaultRace(): TrainingRaceForm {
 
   return {
     id: `new-${raceIdCounter}`,
+    raceName: `Staza ${index + 1}`,
     gpsFile: '',
     startLocation: '',
     startDateTime: toDateTimeLocalString(defaultDate),
@@ -61,7 +63,7 @@ export default function NewTrainingPage() {
   const [eventName, setEventName] = useState('')
   const [eventType, setEventType] = useState<'TRAIL' | 'ROAD' | 'OCR'>('TRAIL')
   const [description, setDescription] = useState('')
-  const [races, setRaces] = useState<TrainingRaceForm[]>([defaultRace()])
+  const [races, setRaces] = useState<TrainingRaceForm[]>([defaultRace(0)])
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
@@ -71,7 +73,7 @@ export default function NewTrainingPage() {
   }, [authLoading, user, router])
 
   function addRace() {
-    setRaces((prev) => [...prev, defaultRace()])
+    setRaces((prev) => [...prev, defaultRace(prev.length)])
   }
 
   function removeRace(id: string) {
@@ -130,6 +132,7 @@ export default function NewTrainingPage() {
           CREATE_TRAINING_RACE_MUTATION,
           {
             eventId,
+            raceName: race.raceName.trim() || null,
             gpsFile: race.gpsFile.trim() || null,
             startLocation: race.startLocation.trim(),
             startDateTime: new Date(race.startDateTime).toISOString(),
@@ -235,10 +238,14 @@ export default function NewTrainingPage() {
                 key={race.id}
                 className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800/50"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                    Staza {index + 1}
-                  </span>
+                <div className="flex items-center justify-between gap-3">
+                  <input
+                    type="text"
+                    value={race.raceName}
+                    onChange={(e) => updateRace(race.id, 'raceName', e.target.value)}
+                    placeholder={`Staza ${index + 1}`}
+                    className="flex-1 rounded-md border border-transparent bg-transparent px-1 py-0.5 text-sm font-medium text-zinc-700 hover:border-zinc-300 focus:border-zinc-400 focus:outline-none dark:text-zinc-300 dark:hover:border-zinc-600 dark:focus:border-zinc-500"
+                  />
                   {races.length > 1 && (
                     <button
                       type="button"
