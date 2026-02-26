@@ -33,6 +33,7 @@ import {
   LightBulbIcon,
   MapIcon,
   WrenchScrewdriverIcon,
+  ChartBarIcon,
 } from '@heroicons/react/16/solid'
 import { QuestionMarkCircleIcon, SparklesIcon, Square2StackIcon } from '@heroicons/react/20/solid'
 import { usePathname } from 'next/navigation'
@@ -214,6 +215,10 @@ export function ApplicationLayout({
                 <SidebarItem href="/admin" current={pathname === '/admin'}>
                   <WrenchScrewdriverIcon />
                   <SidebarLabel>Admin Panel</SidebarLabel>
+                </SidebarItem>
+                <SidebarItem href="/admin/stats" current={pathname === '/admin/stats'}>
+                  <ChartBarIcon />
+                  <SidebarLabel>Statistike</SidebarLabel>
                 </SidebarItem>
               </SidebarSection>
             )}

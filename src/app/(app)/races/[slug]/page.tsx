@@ -1,6 +1,7 @@
 import { gql } from '@/app/lib/api'
 import { AdminEditButton } from '@/components/admin-edit-button'
 import { EventJsonLd, BreadcrumbJsonLd } from '@/components/json-ld'
+import { TrackPageView } from '@/components/track-page-view'
 import { GpxDownloadButton } from '@/components/gpx-download-button'
 import { ReportIssueButton } from '@/components/report-issue-button'
 import { BackLink } from '@/components/back-link'
@@ -343,6 +344,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           { name: race.raceName ?? 'Trka', url: `https://trkesrbija.rs/races/${slug}` },
         ]}
       />
+      <TrackPageView entityId={race.id} entityType="RACE" metadata={{ slug, name: race.raceName ?? race.raceEvent.eventName }} />
       <BackLink href={`/events/${race.raceEvent.slug}`}>{race.raceEvent.eventName}</BackLink>
 
       {/* Two-column layout */}

@@ -24,6 +24,7 @@ import {
   ArrowRightIcon,
 } from '@heroicons/react/16/solid'
 import { EventJsonLd, BreadcrumbJsonLd } from '@/components/json-ld'
+import { TrackPageView } from '@/components/track-page-view'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
@@ -308,6 +309,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           { name: event.eventName, url: `https://trkesrbija.rs/events/${slug}` },
         ]}
       />
+      <TrackPageView entityId={event.id} entityType="EVENT" metadata={{ slug, name: event.eventName }} />
       <BackLink href={event.isTraining ? '/training' : '/events'}>
         {event.isTraining ? 'Moji treninzi' : 'Događaji'}
       </BackLink>

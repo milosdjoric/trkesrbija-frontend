@@ -1,5 +1,6 @@
 'use client'
 
+import { trackEvent } from '@/app/lib/analytics'
 import { Button } from '@/components/button'
 import { Input, InputGroup } from '@/components/input'
 import { Link } from '@/components/link'
@@ -104,6 +105,9 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
 
   function onApply(e: React.FormEvent) {
     e.preventDefault()
+    if (q.trim()) {
+      trackEvent({ type: 'SEARCH', metadata: { query: q.trim(), eventType } })
+    }
     router.push(`/events${buildQueryString()}`)
   }
 
