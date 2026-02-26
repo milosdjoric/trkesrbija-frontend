@@ -9,6 +9,9 @@ export type User = {
   emailVerified?: boolean
   assignedCheckpointId?: string | null
   isParticipant?: boolean
+  emailSubMonthly?: boolean
+  emailSubNews?: boolean
+  emailSubNewEvents?: boolean
 }
 
 export type AuthResponse = {
@@ -28,6 +31,9 @@ const LOGIN_MUTATION = `
         emailVerified
         assignedCheckpointId
         isParticipant
+        emailSubMonthly
+        emailSubNews
+        emailSubNewEvents
       }
     }
   }
@@ -45,6 +51,9 @@ const REGISTER_MUTATION = `
         emailVerified
         assignedCheckpointId
         isParticipant
+        emailSubMonthly
+        emailSubNews
+        emailSubNewEvents
       }
     }
   }
@@ -62,6 +71,9 @@ const REFRESH_MUTATION = `
         emailVerified
         assignedCheckpointId
         isParticipant
+        emailSubMonthly
+        emailSubNews
+        emailSubNewEvents
       }
     }
   }
@@ -82,6 +94,9 @@ const ME_QUERY = `
       role
       emailVerified
       isParticipant
+      emailSubMonthly
+      emailSubNews
+      emailSubNewEvents
     }
   }
 `
@@ -98,6 +113,9 @@ const LOGIN_WITH_GOOGLE_MUTATION = `
         emailVerified
         assignedCheckpointId
         isParticipant
+        emailSubMonthly
+        emailSubNews
+        emailSubNewEvents
       }
     }
   }
