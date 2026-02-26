@@ -175,6 +175,17 @@ export default function AdminDashboardPage() {
         </Link>
 
         <Link
+          href="/admin/trainings"
+          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+        >
+          <BoltIcon className="size-8 text-indigo-500" />
+          <div>
+            <div className="font-medium">Treninzi</div>
+            <div className="text-sm text-zinc-500">Svi treninzi korisnika</div>
+          </div>
+        </Link>
+
+        <Link
           href="/admin/users"
           className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
         >
@@ -193,17 +204,6 @@ export default function AdminDashboardPage() {
           <div>
             <div className="font-medium">Import</div>
             <div className="text-sm text-zinc-500">CSV import podataka</div>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/trainings"
-          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <BoltIcon className="size-8 text-indigo-500" />
-          <div>
-            <div className="font-medium">Treninzi</div>
-            <div className="text-sm text-zinc-500">Svi treninzi korisnika</div>
           </div>
         </Link>
 
