@@ -7,6 +7,7 @@ import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
+import { GpxUpload } from '@/components/gpx-upload'
 import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useParams, useRouter } from 'next/navigation'
@@ -58,6 +59,7 @@ export default function NewRacePage() {
   const [startLocation, setStartLocation] = useState('')
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
   const [registrationSite, setRegistrationSite] = useState('')
+  const [gpsFile, setGpsFile] = useState('')
 
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'ADMIN')) {
@@ -123,6 +125,7 @@ export default function NewRacePage() {
             startLocation: startLocation.trim() || 'TBD',
             registrationEnabled,
             registrationSite: registrationSite.trim() || null,
+            gpsFile: gpsFile.trim() || null,
           },
         },
         { accessToken }
@@ -281,6 +284,11 @@ export default function NewRacePage() {
               <p className="mt-1 text-xs text-zinc-500">
                 Opciono — link ka eksternoj registraciji specifičan za ovu trku
               </p>
+            </div>
+
+            {/* GPX file */}
+            <div className="sm:col-span-2">
+              <GpxUpload value={gpsFile || null} onChange={(url) => setGpsFile(url || '')} label="GPX staza" />
             </div>
           </div>
         </div>
