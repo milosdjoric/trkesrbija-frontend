@@ -8,8 +8,11 @@ import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { OrganizerSelect } from '@/components/organizer-select'
 import { useToast } from '@/components/toast'
+import { GalleryUpload } from '@/components/gallery-upload'
 import { GpxUpload } from '@/components/gpx-upload'
 import { ImageUpload } from '@/components/image-upload'
+import { SocialMediaInput } from '@/components/social-media-input'
+import { TagsInput } from '@/components/tags-input'
 import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
@@ -21,8 +24,17 @@ type RaceInput = {
   length: string
   elevation: string
   startDateTime: string
+  endDateTime: string
   startLocation: string
+  registrationEnabled: boolean
+  registrationSite: string
+  competitionId: string
   gpsFile: string
+}
+
+type Competition = {
+  id: string
+  name: string
 }
 
 const CREATE_EVENT_MUTATION = `
@@ -38,6 +50,15 @@ const CREATE_RACE_MUTATION = `
   mutation CreateRace($input: CreateRaceInput!) {
     createRace(input: $input) {
       id
+    }
+  }
+`
+
+const COMPETITIONS_QUERY = `
+  query Competitions {
+    competitions {
+      id
+      name
     }
   }
 `
@@ -67,11 +88,18 @@ export default function NewEventPage() {
   const [eventType, setEventType] = useState<'TRAIL' | 'ROAD' | 'OCR'>('TRAIL')
   const [description, setDescription] = useState('')
   const [mainImage, setMainImage] = useState('')
+  const [gallery, setGallery] = useState<string[]>([])
+  const [registrationSite, setRegistrationSite] = useState('')
+  const [socialMedia, setSocialMedia] = useState<string[]>([])
+  const [tags, setTags] = useState<string[]>([])
   const [slug, setSlug] = useState('')
   const [autoSlug, setAutoSlug] = useState(true)
 
   // Organizer
   const [organizerId, setOrganizerId] = useState<string | null>(null)
+
+  // Competitions
+  const [competitions, setCompetitions] = useState<Competition[]>([])
 
   // Races
   const [races, setRaces] = useState<RaceInput[]>([])
@@ -79,8 +107,17 @@ export default function NewEventPage() {
   useEffect(() => {
     if (!authLoading && (!user || user.role !== 'ADMIN')) {
       router.push('/')
+      return
     }
-  }, [authLoading, user, router])
+
+    if (accessToken) {
+      gql<{ competitions: Competition[] }>(COMPETITIONS_QUERY, {}, { accessToken })
+        .then((data) => {
+          if (data.competitions) setCompetitions(data.competitions)
+        })
+        .catch(() => {})
+    }
+  }, [authLoading, user, accessToken, router])
 
   // Auto-generate slug when name changes
   useEffect(() => {
@@ -103,13 +140,17 @@ export default function NewEventPage() {
         length: '',
         elevation: '',
         startDateTime: toDateTimeLocalString(defaultDate),
+        endDateTime: '',
         startLocation: '',
+        registrationEnabled: true,
+        registrationSite: '',
+        competitionId: '',
         gpsFile: '',
       },
     ])
   }
 
-  function updateRace(tempId: string, field: keyof RaceInput, value: string) {
+  function updateRace(tempId: string, field: keyof RaceInput, value: string | boolean) {
     setRaces((prev) => prev.map((r) => (r.tempId === tempId ? { ...r, [field]: value } : r)))
   }
 
@@ -142,6 +183,10 @@ export default function NewEventPage() {
             type: eventType,
             description: description.trim() || null,
             mainImage: mainImage.trim() || null,
+            gallery: gallery.length > 0 ? gallery : null,
+            registrationSite: registrationSite.trim() || null,
+            socialMedia: socialMedia.length > 0 ? socialMedia : null,
+            tags: tags.length > 0 ? tags : null,
             organizerId: organizerId || null,
           },
         },
@@ -163,7 +208,11 @@ export default function NewEventPage() {
               length: parseFloat(race.length),
               elevation: race.elevation ? parseFloat(race.elevation) : null,
               startDateTime: new Date(race.startDateTime).toISOString(),
+              endDateTime: race.endDateTime ? new Date(race.endDateTime).toISOString() : null,
               startLocation: race.startLocation.trim() || 'TBD',
+              registrationEnabled: race.registrationEnabled,
+              registrationSite: race.registrationSite.trim() || null,
+              competitionId: race.competitionId || null,
               gpsFile: race.gpsFile.trim() || null,
             },
           },
@@ -276,16 +325,6 @@ export default function NewEventPage() {
               </select>
             </div>
 
-            {/* Main image */}
-            <div className="sm:col-span-2">
-              <ImageUpload
-                value={mainImage || null}
-                onChange={(url) => setMainImage(url || '')}
-                endpoint="eventImage"
-                label="Glavna slika"
-              />
-            </div>
-
             {/* Description */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -299,6 +338,27 @@ export default function NewEventPage() {
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
               />
             </div>
+
+            {/* Tags */}
+            <div className="sm:col-span-2">
+              <TagsInput value={tags} onChange={setTags} />
+            </div>
+          </div>
+        </div>
+
+        {/* Media */}
+        <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+          <Subheading>Slike</Subheading>
+
+          <div className="mt-4 space-y-6">
+            <ImageUpload
+              value={mainImage || null}
+              onChange={(url) => setMainImage(url || '')}
+              endpoint="eventImage"
+              label="Glavna slika"
+            />
+
+            <GalleryUpload value={gallery} onChange={setGallery} />
           </div>
         </div>
 
@@ -310,6 +370,31 @@ export default function NewEventPage() {
           </p>
 
           <OrganizerSelect value={organizerId} onChange={setOrganizerId} />
+        </div>
+
+        {/* Links */}
+        <div className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+          <Subheading>Linkovi i društvene mreže</Subheading>
+
+          <div className="mt-4 space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Sajt za prijave
+              </label>
+              <input
+                type="url"
+                value={registrationSite}
+                onChange={(e) => setRegistrationSite(e.target.value)}
+                placeholder="https://prijave.example.com"
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+              <p className="mt-1 text-xs text-zinc-500">
+                Eksterni link ako se prijave ne vode preko ovog sistema
+              </p>
+            </div>
+
+            <SocialMediaInput value={socialMedia} onChange={setSocialMedia} />
+          </div>
         </div>
 
         {/* Races */}
@@ -376,6 +461,18 @@ export default function NewEventPage() {
 
                     <div>
                       <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                        Cut-off vreme
+                      </label>
+                      <input
+                        type="datetime-local"
+                        value={race.endDateTime}
+                        onChange={(e) => updateRace(race.tempId, 'endDateTime', e.target.value)}
+                        className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
                         Dužina (km) *
                       </label>
                       <input
@@ -410,6 +507,55 @@ export default function NewEventPage() {
                         value={race.startLocation}
                         onChange={(e) => updateRace(race.tempId, 'startLocation', e.target.value)}
                         placeholder="Adresa ili Google Maps link"
+                        className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800"
+                      />
+                    </div>
+
+                    {/* Competition */}
+                    {competitions.length > 0 && (
+                      <div className="sm:col-span-2">
+                        <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                          Takmičenje / Serija
+                        </label>
+                        <select
+                          value={race.competitionId}
+                          onChange={(e) => updateRace(race.tempId, 'competitionId', e.target.value)}
+                          className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800"
+                        >
+                          <option value="">Bez takmičenja</option>
+                          {competitions.map((comp) => (
+                            <option key={comp.id} value={comp.id}>
+                              {comp.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {/* Registration */}
+                    <div className="sm:col-span-2">
+                      <label className="flex items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={race.registrationEnabled}
+                          onChange={(e) => updateRace(race.tempId, 'registrationEnabled', e.target.checked)}
+                          className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500"
+                        />
+                        <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                          Omogući prijave za ovu trku
+                        </span>
+                      </label>
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                        Link za registraciju (eksterni)
+                      </label>
+                      <input
+                        type="url"
+                        value={race.registrationSite}
+                        onChange={(e) => updateRace(race.tempId, 'registrationSite', e.target.value)}
+                        placeholder="https://..."
                         className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800"
                       />
                     </div>

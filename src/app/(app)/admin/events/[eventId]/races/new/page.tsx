@@ -19,12 +19,26 @@ type EventData = {
   slug: string
 }
 
+type Competition = {
+  id: string
+  name: string
+}
+
 const EVENT_BY_ID_QUERY = `
   query RaceEventById($id: ID!) {
     raceEvent(id: $id) {
       id
       eventName
       slug
+    }
+  }
+`
+
+const COMPETITIONS_QUERY = `
+  query Competitions {
+    competitions {
+      id
+      name
     }
   }
 `
@@ -59,6 +73,9 @@ export default function NewRacePage() {
   const [startLocation, setStartLocation] = useState('')
   const [registrationEnabled, setRegistrationEnabled] = useState(true)
   const [registrationSite, setRegistrationSite] = useState('')
+  const [endDateTime, setEndDateTime] = useState('')
+  const [competitionId, setCompetitionId] = useState('')
+  const [competitions, setCompetitions] = useState<Competition[]>([])
   const [gpsFile, setGpsFile] = useState('')
 
   useEffect(() => {
@@ -76,16 +93,22 @@ export default function NewRacePage() {
       defaultDate.setHours(9, 0, 0, 0)
       setStartDateTime(toDateTimeLocalString(defaultDate))
 
-      // Load event data
-      gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken })
-        .then((data) => {
-          if (data.raceEvent) {
-            setEvent(data.raceEvent)
+      // Load event data and competitions in parallel
+      Promise.all([
+        gql<{ raceEvent: EventData | null }>(EVENT_BY_ID_QUERY, { id: eventId }, { accessToken }),
+        gql<{ competitions: Competition[] }>(COMPETITIONS_QUERY, {}, { accessToken }),
+      ])
+        .then(([eventData, competitionsData]) => {
+          if (eventData.raceEvent) {
+            setEvent(eventData.raceEvent)
+          }
+          if (competitionsData.competitions) {
+            setCompetitions(competitionsData.competitions)
           }
         })
         .catch((err) => {
-          console.error('Failed to load event:', err)
-          toast('Greška pri učitavanju događaja', 'error')
+          console.error('Failed to load data:', err)
+          toast('Greška pri učitavanju podataka', 'error')
         })
         .finally(() => {
           setLoading(false)
@@ -122,9 +145,11 @@ export default function NewRacePage() {
             length: parseFloat(length),
             elevation: elevation ? parseFloat(elevation) : null,
             startDateTime: new Date(startDateTime).toISOString(),
+            endDateTime: endDateTime ? new Date(endDateTime).toISOString() : null,
             startLocation: startLocation.trim() || 'TBD',
             registrationEnabled,
             registrationSite: registrationSite.trim() || null,
+            competitionId: competitionId || null,
             gpsFile: gpsFile.trim() || null,
           },
         },
@@ -208,6 +233,20 @@ export default function NewRacePage() {
               />
             </div>
 
+            {/* End date/time (cut-off) */}
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Cut-off vreme
+              </label>
+              <input
+                type="datetime-local"
+                value={endDateTime}
+                onChange={(e) => setEndDateTime(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              />
+              <p className="mt-1 text-xs text-zinc-500">Opciono - krajnje vreme za završetak trke</p>
+            </div>
+
             {/* Length */}
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -253,6 +292,30 @@ export default function NewRacePage() {
                 className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
               />
             </div>
+
+            {/* Competition */}
+            {competitions.length > 0 && (
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Takmičenje / Serija
+                </label>
+                <select
+                  value={competitionId}
+                  onChange={(e) => setCompetitionId(e.target.value)}
+                  className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+                >
+                  <option value="">Bez takmičenja</option>
+                  {competitions.map((comp) => (
+                    <option key={comp.id} value={comp.id}>
+                      {comp.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-zinc-500">
+                  Opciono - ako trka pripada nekoj seriji ili ligi
+                </p>
+              </div>
+            )}
 
             {/* Registration enabled */}
             <div className="sm:col-span-2">
