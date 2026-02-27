@@ -122,7 +122,7 @@ export default function AdminStatsPage() {
         <p className="text-sm text-zinc-500">Nema podataka.</p>
       ) : (
         <>
-          {/* Top events, races & views per day */}
+          {/* ═══════════ PERIOD-DEPENDENT SECTION ═══════════ */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
             <section>
@@ -213,7 +213,88 @@ export default function AdminStatsPage() {
 
           </div>
 
-          {/* Searches, favorites & active users */}
+          {/* Anonymous visitor stats (period-dependent) */}
+          {(stats.totalUniqueVisitors > 0 || stats.newVisitorsPerDay.length > 0) && (
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <section className="lg:col-span-1">
+                <Subheading>Anonimni posetioci</Subheading>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+                    <span className="text-sm text-zinc-500">Jedinstveni u periodu</span>
+                    <span className="text-lg font-semibold tabular-nums">{stats.totalUniqueVisitors}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+                    <span className="text-sm text-zinc-500">Novi (prva poseta)</span>
+                    <span className="text-lg font-semibold tabular-nums">{stats.newVisitorCount}</span>
+                  </div>
+                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+                    <span className="text-sm text-zinc-500">Povratnici</span>
+                    <span className="text-lg font-semibold tabular-nums">{Math.max(0, stats.totalUniqueVisitors - stats.newVisitorCount)}</span>
+                  </div>
+                </div>
+              </section>
+
+              {stats.newVisitorsPerDay.length > 0 && (
+                <section className="lg:col-span-2">
+                  <Subheading>Novi posetioci po danu</Subheading>
+                  <div className="mt-2 overflow-x-auto">
+                    <Table striped>
+                      <TableHead>
+                        <TableRow>
+                          <TableHeader>Datum</TableHeader>
+                          <TableHeader className="text-right">Novi posetioci</TableHeader>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {[...stats.newVisitorsPerDay].reverse().map((d) => (
+                          <TableRow key={d.date}>
+                            <TableCell className="text-sm">{d.date}</TableCell>
+                            <TableCell className="text-right font-medium tabular-nums">{d.count}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </section>
+              )}
+            </div>
+          )}
+
+          {/* Today's logins (period-dependent — always last 24h) */}
+          {stats.recentLogins.length > 0 && (
+            <section>
+              <Subheading>Ko se logovao danas</Subheading>
+              <div className="mt-2 overflow-x-auto">
+                <Table striped>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeader>Korisnik</TableHeader>
+                      <TableHeader className="text-right">Prijava u</TableHeader>
+                      <TableHeader className="text-right">Puta</TableHeader>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {stats.recentLogins.map((l) => (
+                      <TableRow key={l.email}>
+                        <TableCell>
+                          <span className="font-medium">{l.name ?? l.email}</span>
+                          {l.name && <span className="ml-1 text-xs text-zinc-400">{l.email}</span>}
+                        </TableCell>
+                        <TableCell className="text-right tabular-nums text-sm">{formatTime(l.lastLogin)}</TableCell>
+                        <TableCell className="text-right font-medium tabular-nums">{l.loginCount}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </section>
+          )}
+
+          {/* ═══════════ ALL-TIME SECTION ═══════════ */}
+          <div className="border-t border-zinc-200 pt-6 dark:border-zinc-700">
+            <Subheading className="mb-4 text-base text-zinc-400 dark:text-zinc-500">Sve vreme</Subheading>
+          </div>
+
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
             <section>
@@ -243,7 +324,7 @@ export default function AdminStatsPage() {
             </section>
 
             <section>
-              <Subheading>Top omiljene (sve vreme)</Subheading>
+              <Subheading>Top omiljene</Subheading>
               {stats.topFavorites.length === 0 ? (
                 <p className="mt-2 text-sm text-zinc-500">Nema omiljenih.</p>
               ) : (
@@ -300,83 +381,6 @@ export default function AdminStatsPage() {
             )}
 
           </div>
-
-          {/* Anonymous visitor stats */}
-          {(stats.totalUniqueVisitors > 0 || stats.newVisitorsPerDay.length > 0) && (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              <section className="lg:col-span-1">
-                <Subheading>Anonimni posetioci</Subheading>
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-                    <span className="text-sm text-zinc-500">Jedinstveni u periodu</span>
-                    <span className="text-lg font-semibold tabular-nums">{stats.totalUniqueVisitors}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-                    <span className="text-sm text-zinc-500">Novi (prva poseta)</span>
-                    <span className="text-lg font-semibold tabular-nums">{stats.newVisitorCount}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
-                    <span className="text-sm text-zinc-500">Povratnici</span>
-                    <span className="text-lg font-semibold tabular-nums">{Math.max(0, stats.totalUniqueVisitors - stats.newVisitorCount)}</span>
-                  </div>
-                </div>
-              </section>
-
-              {stats.newVisitorsPerDay.length > 0 && (
-                <section className="lg:col-span-2">
-                  <Subheading>Novi posetioci po danu</Subheading>
-                  <div className="mt-2 overflow-x-auto">
-                    <Table striped>
-                      <TableHead>
-                        <TableRow>
-                          <TableHeader>Datum</TableHeader>
-                          <TableHeader className="text-right">Novi posetioci</TableHeader>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {[...stats.newVisitorsPerDay].reverse().map((d) => (
-                          <TableRow key={d.date}>
-                            <TableCell className="text-sm">{d.date}</TableCell>
-                            <TableCell className="text-right font-medium tabular-nums">{d.count}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </div>
-                </section>
-              )}
-            </div>
-          )}
-
-          {/* Today's logins */}
-          {stats.recentLogins.length > 0 && (
-            <section>
-              <Subheading>Ko se logovao danas</Subheading>
-              <div className="mt-2 overflow-x-auto">
-                <Table striped>
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>Korisnik</TableHeader>
-                      <TableHeader className="text-right">Prijava u</TableHeader>
-                      <TableHeader className="text-right">Puta</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {stats.recentLogins.map((l) => (
-                      <TableRow key={l.email}>
-                        <TableCell>
-                          <span className="font-medium">{l.name ?? l.email}</span>
-                          {l.name && <span className="ml-1 text-xs text-zinc-400">{l.email}</span>}
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums text-sm">{formatTime(l.lastLogin)}</TableCell>
-                        <TableCell className="text-right font-medium tabular-nums">{l.loginCount}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </section>
-          )}
         </>
       )}
     </div>
