@@ -8,6 +8,7 @@ import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { OrganizerSelect } from '@/components/organizer-select'
 import { useToast } from '@/components/toast'
+import { GpxUpload } from '@/components/gpx-upload'
 import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
@@ -20,6 +21,7 @@ type RaceInput = {
   elevation: string
   startDateTime: string
   startLocation: string
+  gpsFile: string
 }
 
 const CREATE_EVENT_MUTATION = `
@@ -101,6 +103,7 @@ export default function NewEventPage() {
         elevation: '',
         startDateTime: toDateTimeLocalString(defaultDate),
         startLocation: '',
+        gpsFile: '',
       },
     ])
   }
@@ -160,6 +163,7 @@ export default function NewEventPage() {
               elevation: race.elevation ? parseFloat(race.elevation) : null,
               startDateTime: new Date(race.startDateTime).toISOString(),
               startLocation: race.startLocation.trim() || 'TBD',
+              gpsFile: race.gpsFile.trim() || null,
             },
           },
           { accessToken }
@@ -410,6 +414,14 @@ export default function NewEventPage() {
                         onChange={(e) => updateRace(race.tempId, 'startLocation', e.target.value)}
                         placeholder="Adresa ili Google Maps link"
                         className="mt-1 w-full rounded border border-zinc-300 px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none dark:border-zinc-600 dark:bg-zinc-800"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <GpxUpload
+                        value={race.gpsFile || null}
+                        onChange={(url) => updateRace(race.tempId, 'gpsFile', url || '')}
+                        label="GPX staza"
                       />
                     </div>
                   </div>
