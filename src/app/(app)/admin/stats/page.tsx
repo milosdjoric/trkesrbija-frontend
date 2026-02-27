@@ -123,15 +123,15 @@ export default function AdminStatsPage() {
       ) : (
         <>
           {/* ═══════════ PERIOD-DEPENDENT SECTION ═══════════ */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
             <section>
               <Subheading>Top događaji</Subheading>
               {stats.topEvents.length === 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">Nema podataka.</p>
+                <p className="mt-1 text-sm text-zinc-500">Nema podataka.</p>
               ) : (
-                <div className="mt-2 overflow-x-auto">
-                  <Table striped>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
                     <TableHead>
                       <TableRow>
                         <TableHeader>Događaj</TableHeader>
@@ -139,7 +139,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topEvents.map((e) => (
+                      {stats.topEvents.slice(0, 5).map((e) => (
                         <TableRow key={e.entityId}>
                           <TableCell className="max-w-[180px] truncate">
                             {e.slug ? (
@@ -158,10 +158,10 @@ export default function AdminStatsPage() {
             <section>
               <Subheading>Top trke</Subheading>
               {stats.topRaces.length === 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">Nema podataka.</p>
+                <p className="mt-1 text-sm text-zinc-500">Nema podataka.</p>
               ) : (
-                <div className="mt-2 overflow-x-auto">
-                  <Table striped>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
                     <TableHead>
                       <TableRow>
                         <TableHeader>Trka</TableHeader>
@@ -169,7 +169,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topRaces.map((r) => (
+                      {stats.topRaces.slice(0, 5).map((r) => (
                         <TableRow key={r.entityId}>
                           <TableCell className="max-w-[180px] truncate">
                             {r.slug ? (
@@ -188,10 +188,10 @@ export default function AdminStatsPage() {
             <section>
               <Subheading>Pregledi po danu</Subheading>
               {stats.viewsPerDay.length === 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">Nema pregleda.</p>
+                <p className="mt-1 text-sm text-zinc-500">Nema pregleda.</p>
               ) : (
-                <div className="mt-2 overflow-x-auto">
-                  <Table striped>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
                     <TableHead>
                       <TableRow>
                         <TableHeader>Datum</TableHeader>
@@ -199,7 +199,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {[...stats.viewsPerDay].reverse().map((d) => (
+                      {[...stats.viewsPerDay].reverse().slice(0, 5).map((d) => (
                         <TableRow key={d.date}>
                           <TableCell className="text-sm">{d.date}</TableCell>
                           <CountCell count={d.count} uniqueCount={d.uniqueCount} />
