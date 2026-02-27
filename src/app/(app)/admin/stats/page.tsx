@@ -215,21 +215,21 @@ export default function AdminStatsPage() {
 
           {/* Anonymous visitor stats (period-dependent) */}
           {(stats.totalUniqueVisitors > 0 || stats.newVisitorsPerDay.length > 0) && (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               <section className="lg:col-span-1">
                 <Subheading>Anonimni posetioci</Subheading>
-                <div className="mt-2 space-y-2">
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+                <div className="mt-1 space-y-1.5">
+                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
                     <span className="text-sm text-zinc-500">Jedinstveni u periodu</span>
-                    <span className="text-lg font-semibold tabular-nums">{stats.totalUniqueVisitors}</span>
+                    <span className="text-base font-semibold tabular-nums">{stats.totalUniqueVisitors}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
                     <span className="text-sm text-zinc-500">Novi (prva poseta)</span>
-                    <span className="text-lg font-semibold tabular-nums">{stats.newVisitorCount}</span>
+                    <span className="text-base font-semibold tabular-nums">{stats.newVisitorCount}</span>
                   </div>
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 dark:bg-zinc-800">
+                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
                     <span className="text-sm text-zinc-500">Povratnici</span>
-                    <span className="text-lg font-semibold tabular-nums">{Math.max(0, stats.totalUniqueVisitors - stats.newVisitorCount)}</span>
+                    <span className="text-base font-semibold tabular-nums">{Math.max(0, stats.totalUniqueVisitors - stats.newVisitorCount)}</span>
                   </div>
                 </div>
               </section>
@@ -237,8 +237,8 @@ export default function AdminStatsPage() {
               {stats.newVisitorsPerDay.length > 0 && (
                 <section className="lg:col-span-2">
                   <Subheading>Novi posetioci po danu</Subheading>
-                  <div className="mt-2 overflow-x-auto">
-                    <Table striped>
+                  <div className="mt-1 overflow-x-auto">
+                    <Table dense striped>
                       <TableHead>
                         <TableRow>
                           <TableHeader>Datum</TableHeader>
@@ -246,7 +246,7 @@ export default function AdminStatsPage() {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {[...stats.newVisitorsPerDay].reverse().map((d) => (
+                        {[...stats.newVisitorsPerDay].reverse().slice(0, 5).map((d) => (
                           <TableRow key={d.date}>
                             <TableCell className="text-sm">{d.date}</TableCell>
                             <TableCell className="text-right font-medium tabular-nums">{d.count}</TableCell>
@@ -264,8 +264,8 @@ export default function AdminStatsPage() {
           {stats.recentLogins.length > 0 && (
             <section>
               <Subheading>Ko se logovao danas</Subheading>
-              <div className="mt-2 overflow-x-auto">
-                <Table striped>
+              <div className="mt-1 overflow-x-auto">
+                <Table dense striped>
                   <TableHead>
                     <TableRow>
                       <TableHeader>Korisnik</TableHeader>
@@ -274,7 +274,7 @@ export default function AdminStatsPage() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {stats.recentLogins.map((l) => (
+                    {stats.recentLogins.slice(0, 5).map((l) => (
                       <TableRow key={l.email}>
                         <TableCell>
                           <span className="font-medium">{l.name ?? l.email}</span>
@@ -295,15 +295,15 @@ export default function AdminStatsPage() {
             <Subheading className="mb-4 text-base text-zinc-400 dark:text-zinc-500">Sve vreme</Subheading>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
 
             <section>
               <Subheading>Top pretrage</Subheading>
               {stats.topSearches.length === 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">Nema pretraga.</p>
+                <p className="mt-1 text-sm text-zinc-500">Nema pretraga.</p>
               ) : (
-                <div className="mt-2 overflow-x-auto">
-                  <Table striped>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
                     <TableHead>
                       <TableRow>
                         <TableHeader>Pretraga</TableHeader>
@@ -311,7 +311,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topSearches.map((s) => (
+                      {stats.topSearches.slice(0, 5).map((s) => (
                         <TableRow key={s.query}>
                           <TableCell className="font-mono text-xs">&ldquo;{s.query}&rdquo;</TableCell>
                           <TableCell className="text-right font-medium tabular-nums">{s.count}</TableCell>
@@ -326,10 +326,10 @@ export default function AdminStatsPage() {
             <section>
               <Subheading>Top omiljene</Subheading>
               {stats.topFavorites.length === 0 ? (
-                <p className="mt-2 text-sm text-zinc-500">Nema omiljenih.</p>
+                <p className="mt-1 text-sm text-zinc-500">Nema omiljenih.</p>
               ) : (
-                <div className="mt-2 overflow-x-auto">
-                  <Table striped>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
                     <TableHead>
                       <TableRow>
                         <TableHeader>Trka</TableHeader>
@@ -337,7 +337,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topFavorites.map((f) => (
+                      {stats.topFavorites.slice(0, 5).map((f) => (
                         <TableRow key={f.entityId}>
                           <TableCell className="max-w-[180px] truncate">
                             {f.slug ? (
@@ -356,8 +356,8 @@ export default function AdminStatsPage() {
             {stats.topUsers.length > 0 && (
               <section>
                 <Subheading>Najaktivniji korisnici</Subheading>
-                <div className="mt-2 overflow-x-auto">
-                  <Table striped>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
                     <TableHead>
                       <TableRow>
                         <TableHeader>Korisnik</TableHeader>
@@ -365,7 +365,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topUsers.map((u) => (
+                      {stats.topUsers.slice(0, 5).map((u) => (
                         <TableRow key={u.userId}>
                           <TableCell>
                             <span className="font-medium">{u.name ?? u.email}</span>
