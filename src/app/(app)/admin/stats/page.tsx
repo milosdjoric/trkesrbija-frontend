@@ -216,26 +216,36 @@ export default function AdminStatsPage() {
           {/* Anonymous visitor stats (period-dependent) */}
           {(stats.totalUniqueVisitors > 0 || stats.newVisitorsPerDay.length > 0) && (
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-              <section className="lg:col-span-1">
+              <section>
                 <Subheading>Anonimni posetioci</Subheading>
-                <div className="mt-1 space-y-1.5">
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
-                    <span className="text-sm text-zinc-500">Jedinstveni u periodu</span>
-                    <span className="text-base font-semibold tabular-nums">{stats.totalUniqueVisitors}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
-                    <span className="text-sm text-zinc-500">Novi (prva poseta)</span>
-                    <span className="text-base font-semibold tabular-nums">{stats.newVisitorCount}</span>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-zinc-50 px-3 py-2 dark:bg-zinc-800">
-                    <span className="text-sm text-zinc-500">Povratnici</span>
-                    <span className="text-base font-semibold tabular-nums">{Math.max(0, stats.totalUniqueVisitors - stats.newVisitorCount)}</span>
-                  </div>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeader>Metrika</TableHeader>
+                        <TableHeader className="text-right">Broj</TableHeader>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Jedinstveni u periodu</TableCell>
+                        <TableCell className="text-right font-medium tabular-nums">{stats.totalUniqueVisitors}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Novi (prva poseta)</TableCell>
+                        <TableCell className="text-right font-medium tabular-nums">{stats.newVisitorCount}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Povratnici</TableCell>
+                        <TableCell className="text-right font-medium tabular-nums">{Math.max(0, stats.totalUniqueVisitors - stats.newVisitorCount)}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </div>
               </section>
 
               {stats.newVisitorsPerDay.length > 0 && (
-                <section className="lg:col-span-2">
+                <section>
                   <Subheading>Novi posetioci po danu</Subheading>
                   <div className="mt-1 overflow-x-auto">
                     <Table dense striped>
