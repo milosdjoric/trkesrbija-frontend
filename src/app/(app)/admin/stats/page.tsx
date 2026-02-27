@@ -260,36 +260,6 @@ export default function AdminStatsPage() {
             </div>
           )}
 
-          {/* Today's logins (period-dependent — always last 24h) */}
-          {stats.recentLogins.length > 0 && (
-            <section>
-              <Subheading>Ko se logovao danas</Subheading>
-              <div className="mt-1 overflow-x-auto">
-                <Table dense striped>
-                  <TableHead>
-                    <TableRow>
-                      <TableHeader>Korisnik</TableHeader>
-                      <TableHeader className="text-right">Prijava u</TableHeader>
-                      <TableHeader className="text-right">Puta</TableHeader>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {stats.recentLogins.slice(0, 5).map((l) => (
-                      <TableRow key={l.email}>
-                        <TableCell>
-                          <span className="font-medium">{l.name ?? l.email}</span>
-                          {l.name && <span className="ml-1 text-xs text-zinc-400">{l.email}</span>}
-                        </TableCell>
-                        <TableCell className="text-right tabular-nums text-sm">{formatTime(l.lastLogin)}</TableCell>
-                        <TableCell className="text-right font-medium tabular-nums">{l.loginCount}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </section>
-          )}
-
           {/* ═══════════ ALL-TIME SECTION ═══════════ */}
           <div className="border-t border-zinc-200 pt-6 dark:border-zinc-700">
             <Subheading className="mb-4 text-base text-zinc-400 dark:text-zinc-500">Sve vreme</Subheading>
@@ -381,6 +351,42 @@ export default function AdminStatsPage() {
             )}
 
           </div>
+
+          {/* ═══════════ TODAY'S LOGINS SECTION ═══════════ */}
+          {stats.recentLogins.length > 0 && (
+            <>
+              <div className="border-t border-zinc-200 pt-6 dark:border-zinc-700">
+                <Subheading className="mb-4 text-base text-zinc-400 dark:text-zinc-500">Danas</Subheading>
+              </div>
+
+              <section>
+                <Subheading>Ko se logovao danas</Subheading>
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeader>Korisnik</TableHeader>
+                        <TableHeader className="text-right">Prijava u</TableHeader>
+                        <TableHeader className="text-right">Puta</TableHeader>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {stats.recentLogins.slice(0, 5).map((l) => (
+                        <TableRow key={l.email}>
+                          <TableCell>
+                            <span className="font-medium">{l.name ?? l.email}</span>
+                            {l.name && <span className="ml-1 text-xs text-zinc-400">{l.email}</span>}
+                          </TableCell>
+                          <TableCell className="text-right tabular-nums text-sm">{formatTime(l.lastLogin)}</TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">{l.loginCount}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </section>
+            </>
+          )}
         </>
       )}
     </div>
