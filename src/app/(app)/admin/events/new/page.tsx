@@ -9,6 +9,7 @@ import { LoadingState } from '@/components/loading-state'
 import { OrganizerSelect } from '@/components/organizer-select'
 import { useToast } from '@/components/toast'
 import { GpxUpload } from '@/components/gpx-upload'
+import { ImageUpload } from '@/components/image-upload'
 import { toTitleCase, toDateTimeLocalString } from '@/lib/formatters'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
@@ -276,16 +277,12 @@ export default function NewEventPage() {
             </div>
 
             {/* Main image */}
-            <div>
-              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Slika (URL)
-              </label>
-              <input
-                type="url"
-                value={mainImage}
-                onChange={(e) => setMainImage(e.target.value)}
-                placeholder="https://..."
-                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+            <div className="sm:col-span-2">
+              <ImageUpload
+                value={mainImage || null}
+                onChange={(url) => setMainImage(url || '')}
+                endpoint="eventImage"
+                label="Glavna slika"
               />
             </div>
 
