@@ -60,6 +60,7 @@ type EventData = {
   registrationSite: string | null
   socialMedia: string[]
   tags: string[]
+  country: string | null
   verified: boolean
   organizer: OrganizerData | null
   races: RaceData[]
@@ -78,6 +79,7 @@ const EVENT_BY_ID_QUERY = `
       registrationSite
       socialMedia
       tags
+      country
       verified
       organizer {
         id
@@ -148,6 +150,7 @@ export default function EditEventPage() {
   const [socialMedia, setSocialMedia] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
   const [slug, setSlug] = useState('')
+  const [country, setCountry] = useState('')
   const [verified, setVerified] = useState(false)
 
   // Organizer
@@ -171,6 +174,7 @@ export default function EditEventPage() {
         setSocialMedia(e.socialMedia || [])
         setTags(e.tags || [])
         setSlug(e.slug)
+        setCountry(e.country || '')
         setVerified(e.verified ?? false)
         // Load organizer
         setOrganizerId(e.organizer?.id || null)
@@ -220,6 +224,7 @@ export default function EditEventPage() {
         registrationSite: registrationSite.trim() || null,
         socialMedia,
         tags,
+        country: country || null,
         verified,
         organizerId: organizerId || null,
       }
@@ -372,6 +377,24 @@ export default function EditEventPage() {
                 <option value="TRAIL">Trail</option>
                 <option value="ROAD">Ulična</option>
                 <option value="OCR">OCR</option>
+              </select>
+            </div>
+
+            {/* Country */}
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Država
+              </label>
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              >
+                <option value="">Nije definisano</option>
+                <option value="ser">Srbija</option>
+                <option value="cro">Hrvatska</option>
+                <option value="bih">BiH</option>
+                <option value="reg">Region</option>
               </select>
             </div>
 

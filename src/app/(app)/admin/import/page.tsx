@@ -29,6 +29,7 @@ type ParsedEvent = {
   registrationSite?: string
   tags?: string[]
   socialMedia?: string[]
+  country?: string
   valid: boolean
   errors: string[]
 }
@@ -59,6 +60,7 @@ type ParsedCombinedRow = {
   registrationSite?: string
   tags?: string[]
   socialMedia?: string[]
+  country?: string
   // Race fields
   raceName?: string
   raceSlug?: string
@@ -149,6 +151,7 @@ function parseEvents(rows: string[][]): ParsedEvent[] {
   const regSiteIdx = header.findIndex(h => h.toLowerCase().includes('prijav') || h.toLowerCase().includes('registration'))
   const tagsIdx = header.findIndex(h => h.toLowerCase().includes('tag') || h.toLowerCase().includes('kategorij'))
   const socialIdx = header.findIndex(h => h.toLowerCase().includes('social') || h.toLowerCase().includes('mrež') || h.toLowerCase().includes('mrez'))
+  const countryIdx = header.findIndex(h => h.toLowerCase().includes('država') || h.toLowerCase().includes('drzava') || h.toLowerCase() === 'country')
 
   return dataRows.map(row => {
     const errors: string[] = []
@@ -171,6 +174,7 @@ function parseEvents(rows: string[][]): ParsedEvent[] {
     const tags = tagsRaw ? tagsRaw.split(';').map(t => t.trim()).filter(Boolean) : undefined
     const socialRaw = row[socialIdx]?.trim() || ''
     const socialMedia = socialRaw ? socialRaw.split(';').map(s => s.trim()).filter(Boolean) : undefined
+    const country = countryIdx >= 0 ? row[countryIdx]?.trim() || undefined : undefined
 
     return {
       eventName,
@@ -180,6 +184,7 @@ function parseEvents(rows: string[][]): ParsedEvent[] {
       registrationSite,
       tags,
       socialMedia,
+      country,
       valid: errors.length === 0,
       errors,
     }
@@ -481,6 +486,7 @@ export default function ImportPage() {
             registrationSite: e.registrationSite || null,
             tags: e.tags || [],
             socialMedia: e.socialMedia || [],
+            country: e.country || null,
           }))
 
         const races = parsedCombined
@@ -549,6 +555,7 @@ export default function ImportPage() {
           registrationSite: e.registrationSite || null,
           tags: e.tags || [],
           socialMedia: e.socialMedia || [],
+          country: e.country || null,
         }))
 
         const result = await gql<{ importEvents: typeof importResult }>(

@@ -20,6 +20,7 @@ type Initial = {
   elevMax: string
   competitionId: string
   eventType: string
+  country: string
   sortBy: string
   showPast: string
   tag: string
@@ -37,6 +38,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   const [elevMax, setElevMax] = useState(initial.elevMax ?? '')
   const [competitionId, setCompetitionId] = useState(initial.competitionId ?? '')
   const [eventType, setEventType] = useState(initial.eventType ?? '')
+  const [country, setCountry] = useState(initial.country ?? '')
   const [sortBy, setSortBy] = useState(initial.sortBy ?? '')
   const [showPast, setShowPast] = useState(initial.showPast === 'true')
   const [verified, setVerified] = useState(initial.verified ?? '')
@@ -57,6 +59,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     setElevMax(sp.get('elevMax') ?? '')
     setCompetitionId(sp.get('competitionId') ?? '')
     setEventType(sp.get('eventType') ?? '')
+    setCountry(sp.get('country') ?? '')
     setSortBy(sp.get('sortBy') ?? '')
     setShowPast(sp.get('showPast') === 'true')
     setVerified(sp.get('verified') ?? '')
@@ -70,6 +73,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     (elevMax ?? '').trim() !== (initial.elevMax ?? '').trim() ||
     (competitionId ?? '').trim() !== (initial.competitionId ?? '').trim() ||
     (eventType ?? '').trim() !== (initial.eventType ?? '').trim() ||
+    (country ?? '').trim() !== (initial.country ?? '').trim() ||
     (sortBy ?? '').trim() !== (initial.sortBy ?? '').trim() ||
     showPast !== (initial.showPast === 'true') ||
     (verified ?? '').trim() !== (initial.verified ?? '').trim()
@@ -82,6 +86,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     Boolean((initial.elevMax ?? '').trim()) ||
     Boolean((initial.competitionId ?? '').trim()) ||
     Boolean((initial.eventType ?? '').trim()) ||
+    Boolean((initial.country ?? '').trim()) ||
     Boolean((initial.sortBy ?? '').trim()) ||
     Boolean((initial.tag ?? '').trim()) ||
     initial.showPast === 'true' ||
@@ -96,6 +101,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     if (elevMax.trim()) params.set('elevMax', elevMax.trim())
     if (competitionId.trim()) params.set('competitionId', competitionId.trim())
     if (eventType.trim()) params.set('eventType', eventType.trim())
+    if (country.trim()) params.set('country', country.trim())
     if (sortBy.trim()) params.set('sortBy', sortBy.trim())
     if (showPast) params.set('showPast', 'true')
     if (verified.trim()) params.set('verified', verified.trim())
@@ -201,6 +207,19 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             <option value="TRAIL">Trail</option>
             <option value="ROAD">Ulična</option>
             <option value="OCR">OCR</option>
+          </Select>
+        </div>
+        <div className="flex-1">
+          <Select
+            aria-label="Država"
+            value={country}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCountry(e.target.value)}
+          >
+            <option value="">Sve države</option>
+            <option value="ser">Srbija</option>
+            <option value="cro">Hrvatska</option>
+            <option value="bih">BiH</option>
+            <option value="reg">Region</option>
           </Select>
         </div>
         <div className="flex-1">

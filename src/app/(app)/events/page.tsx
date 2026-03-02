@@ -49,6 +49,7 @@ export default async function Events({
     type: 'TRAIL' | 'ROAD' | 'OCR'
     mainImage: string | null
     tags: string[]
+    country: string | null
     verified: boolean
     races: BackendRace[]
   }
@@ -62,6 +63,7 @@ export default async function Events({
         type
         mainImage
         tags
+        country
         verified
         races {
           id
@@ -133,6 +135,7 @@ export default async function Events({
   const sortByRaw = getParam('sortBy').trim()
   const tagRaw = getParam('tag').trim()
 
+  const countryRaw = getParam('country').trim()
   const showPastRaw = getParam('showPast').trim()
   const showPast = showPastRaw === 'true'
   const verifiedRaw = getParam('verified').trim()
@@ -151,6 +154,7 @@ export default async function Events({
   const hasElevMax = elevMax != null && !Number.isNaN(elevMax)
   const hasCompetition = Boolean(competitionIdRaw)
   const hasEventType = Boolean(eventTypeRaw)
+  const hasCountry = Boolean(countryRaw)
   const hasTag = Boolean(tagRaw)
 
   function raceMatchesNumericFilters(r: BackendRace) {
@@ -284,6 +288,7 @@ export default async function Events({
       hasSharedLocation: sameLocation.allSame,
 
       eventType: re.type,
+      country: re.country ?? null,
       tags: re.tags ?? [],
       verified: re.verified ?? false,
       competitionTags,
@@ -303,11 +308,14 @@ export default async function Events({
   })
 
   const anyFilterActive =
-    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType || hasTag || verifiedFilter !== null
+    Boolean(q) || hasLenMin || hasLenMax || hasElevMin || hasElevMax || hasCompetition || hasEventType || hasCountry || hasTag || verifiedFilter !== null
 
   events = events.filter((ev) => {
     // Filter by event type
     if (hasEventType && ev.eventType !== eventTypeRaw) return false
+
+    // Filter by country
+    if (hasCountry && ev.country !== countryRaw) return false
 
     // Filter by tag (case-insensitive)
     if (hasTag) {
@@ -401,6 +409,7 @@ export default async function Events({
               eventType: eventTypeRaw,
               sortBy: sortByRaw,
               showPast: showPastRaw,
+              country: countryRaw,
               tag: tagRaw,
               verified: verifiedRaw,
             }}

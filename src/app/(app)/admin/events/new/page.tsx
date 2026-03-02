@@ -94,6 +94,7 @@ export default function NewEventPage() {
   const [tags, setTags] = useState<string[]>([])
   const [slug, setSlug] = useState('')
   const [autoSlug, setAutoSlug] = useState(true)
+  const [country, setCountry] = useState('')
 
   // Organizer
   const [organizerId, setOrganizerId] = useState<string | null>(null)
@@ -187,6 +188,7 @@ export default function NewEventPage() {
             registrationSite: registrationSite.trim() || null,
             socialMedia: socialMedia.length > 0 ? socialMedia : null,
             tags: tags.length > 0 ? tags : null,
+            country: country || null,
             organizerId: organizerId || null,
           },
         },
@@ -322,6 +324,24 @@ export default function NewEventPage() {
                 <option value="TRAIL">Trail</option>
                 <option value="ROAD">Ulična</option>
                 <option value="OCR">OCR</option>
+              </select>
+            </div>
+
+            {/* Country */}
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Država
+              </label>
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+              >
+                <option value="">Nije definisano</option>
+                <option value="ser">Srbija</option>
+                <option value="cro">Hrvatska</option>
+                <option value="bih">BiH</option>
+                <option value="reg">Region</option>
               </select>
             </div>
 
