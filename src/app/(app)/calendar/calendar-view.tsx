@@ -14,12 +14,12 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 import { useMemo, useState } from 'react'
-import type { RaceWithEvent } from './page'
+import type { EventOnDate } from './page'
 
 type EventType = 'ALL' | 'TRAIL' | 'ROAD' | 'OCR'
 
 interface CalendarViewProps {
-  racesByDate: Record<string, RaceWithEvent[]>
+  eventsByDate: Record<string, EventOnDate[]>
 }
 
 interface CalendarDay {
@@ -55,7 +55,7 @@ function generateCalendarDays(year: number, month: number): CalendarDay[] {
   return days
 }
 
-export function CalendarView({ racesByDate }: CalendarViewProps) {
+export function CalendarView({ eventsByDate }: CalendarViewProps) {
   const [currentMonth, setCurrentMonth] = useState(() => {
     const now = new Date()
     return new Date(now.getFullYear(), now.getMonth(), 1)
@@ -81,15 +81,15 @@ export function CalendarView({ racesByDate }: CalendarViewProps) {
 
   const selectedDateKey = selectedDate ? formatDateKey(selectedDate) : null
 
-  const racesForSelectedDate = useMemo(() => {
+  const eventsForSelectedDate = useMemo(() => {
     if (!selectedDateKey) return []
-    return racesByDate[selectedDateKey] ?? []
-  }, [selectedDateKey, racesByDate])
+    return eventsByDate[selectedDateKey] ?? []
+  }, [selectedDateKey, eventsByDate])
 
-  const filteredRaces = useMemo(() => {
-    if (activeFilter === 'ALL') return racesForSelectedDate
-    return racesForSelectedDate.filter((r) => r.event.type === activeFilter)
-  }, [racesForSelectedDate, activeFilter])
+  const filteredEvents = useMemo(() => {
+    if (activeFilter === 'ALL') return eventsForSelectedDate
+    return eventsForSelectedDate.filter((e) => e.event.type === activeFilter)
+  }, [eventsForSelectedDate, activeFilter])
 
   function goToPreviousMonth() {
     setCurrentMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))
@@ -100,8 +100,8 @@ export function CalendarView({ racesByDate }: CalendarViewProps) {
   }
 
   function getEventTypesForDate(dateKey: string): Set<'TRAIL' | 'ROAD' | 'OCR'> {
-    const races = racesByDate[dateKey] ?? []
-    return new Set(races.map((r) => r.event.type))
+    const events = eventsByDate[dateKey] ?? []
+    return new Set(events.map((e) => e.event.type))
   }
 
   // Reusable month grid component
@@ -284,8 +284,8 @@ export function CalendarView({ racesByDate }: CalendarViewProps) {
               {(['ALL', 'TRAIL', 'ROAD', 'OCR'] as const).map((type) => {
                 const count =
                   type === 'ALL'
-                    ? racesForSelectedDate.length
-                    : racesForSelectedDate.filter((r) => r.event.type === type).length
+                    ? eventsForSelectedDate.length
+                    : eventsForSelectedDate.filter((e) => e.event.type === type).length
                 const isActive = activeFilter === type
                 const label = type === 'ALL' ? 'Sve' : type === 'ROAD' ? 'Ulične' : type
 
@@ -306,62 +306,86 @@ export function CalendarView({ racesByDate }: CalendarViewProps) {
               })}
             </div>
 
-            {/* Race List */}
+            {/* Event Cards */}
             <div className="mt-6 space-y-3">
-              {filteredRaces.length === 0 ? (
+              {filteredEvents.length === 0 ? (
                 <div className="rounded-lg border border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
-                  {racesForSelectedDate.length === 0
+                  {eventsForSelectedDate.length === 0
                     ? 'Nema trka ovog dana.'
                     : 'Nema trka za izabrani filter.'}
                 </div>
               ) : (
-                filteredRaces.map((item) => (
-                  <Link
-                    key={item.race.id}
-                    href={`/races/${item.race.slug}`}
-                    className="block rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            color={
-                              item.event.type === 'TRAIL'
-                                ? 'emerald'
-                                : item.event.type === 'ROAD'
-                                  ? 'sky'
-                                  : 'orange'
-                            }
-                          >
-                            {item.event.type === 'ROAD' ? 'Ulična' : item.event.type}
-                          </Badge>
-                          <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                            {formatTime(item.race.startDateTime)}
-                          </span>
+                filteredEvents.map((item) => {
+                  const badgeColor =
+                    item.event.type === 'TRAIL' ? 'emerald' : item.event.type === 'ROAD' ? 'sky' : 'orange'
+                  const typeLabel = item.event.type === 'ROAD' ? 'Ulična' : item.event.type
+                  const primaryLocation = item.races.find((r) => r.startLocation)?.startLocation
+
+                  return (
+                    <div
+                      key={item.event.id}
+                      className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700"
+                    >
+                      {/* Event header */}
+                      <Link
+                        href={`/events/${item.event.slug}`}
+                        className="flex items-start justify-between gap-3 p-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <Badge color={badgeColor}>{typeLabel}</Badge>
+                          <h3 className="mt-1.5 font-medium text-zinc-900 dark:text-white">
+                            {toTitleCase(item.event.eventName)}
+                          </h3>
+                          {primaryLocation && (
+                            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                              📍 {primaryLocation}
+                            </p>
+                          )}
                         </div>
-                        <h3 className="mt-1 font-medium text-zinc-900 dark:text-white">
-                          {toTitleCase(item.race.raceName) || toTitleCase(item.event.eventName)}
-                        </h3>
-                        <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
-                          {toTitleCase(item.event.eventName)}
-                        </p>
-                      </div>
-                      <div className="text-right text-sm text-zinc-500 dark:text-zinc-400">
-                        <div className="font-medium text-zinc-700 dark:text-zinc-300">
-                          {item.race.length} km
+                      </Link>
+
+                      {/* Race rows */}
+                      {item.races.length > 0 && (
+                        <div className="divide-y divide-zinc-100 border-t border-zinc-100 dark:divide-zinc-700/50 dark:border-zinc-700/50">
+                          {item.races.map((race) => {
+                            const hasCustomName =
+                              race.raceName && race.raceName !== `${race.length} km` && race.raceName !== `${race.length}.0 km`
+                            return (
+                              <Link
+                                key={race.id}
+                                href={`/races/${race.slug}`}
+                                className="flex items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                              >
+                                <div className="flex min-w-0 items-center gap-3">
+                                  <span className="w-10 shrink-0 text-xs text-zinc-400 dark:text-zinc-500">
+                                    {formatTime(race.startDateTime)}
+                                  </span>
+                                  {hasCustomName && (
+                                    <span className="truncate text-zinc-600 dark:text-zinc-400">
+                                      {toTitleCase(race.raceName)}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex shrink-0 items-center gap-2 text-right">
+                                  {race.length > 0 && (
+                                    <span className="font-medium text-zinc-700 dark:text-zinc-300">
+                                      {race.length} km
+                                    </span>
+                                  )}
+                                  {race.elevation != null && (
+                                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                      {race.elevation} m D+
+                                    </span>
+                                  )}
+                                </div>
+                              </Link>
+                            )
+                          })}
                         </div>
-                        {item.race.elevation != null && (
-                          <div className="text-xs">{item.race.elevation} m D+</div>
-                        )}
-                      </div>
+                      )}
                     </div>
-                    {item.race.startLocation && (
-                      <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
-                        📍 {item.race.startLocation}
-                      </p>
-                    )}
-                  </Link>
-                ))
+                  )
+                })
               )}
             </div>
           </>

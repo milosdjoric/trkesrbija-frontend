@@ -34,14 +34,14 @@ type BackendRaceEvent = {
   races: BackendRace[]
 }
 
-export type RaceWithEvent = {
-  race: BackendRace
+export type EventOnDate = {
   event: {
     id: string
     eventName: string
     slug: string
     type: 'TRAIL' | 'ROAD' | 'OCR'
   }
+  races: BackendRace[]
 }
 
 const RACE_EVENTS_QUERY = `
@@ -71,36 +71,33 @@ export default async function CalendarPage() {
     skip: 0,
   })
 
-  // Group races by date (YYYY-MM-DD)
-  const racesByDate: Record<string, RaceWithEvent[]> = {}
+  // Group by date, then by event within each date
+  const eventsByDate: Record<string, EventOnDate[]> = {}
 
   for (const event of data.raceEvents ?? []) {
+    const byDate: Record<string, BackendRace[]> = {}
     for (const race of event.races ?? []) {
-      const date = new Date(race.startDateTime)
-      if (Number.isNaN(date.getTime())) continue
-
-      const dateKey = formatDateKey(date)
-      if (!racesByDate[dateKey]) {
-        racesByDate[dateKey] = []
-      }
-      racesByDate[dateKey].push({
-        race,
-        event: {
-          id: event.id,
-          eventName: event.eventName,
-          slug: event.slug,
-          type: event.type,
-        },
+      const d = new Date(race.startDateTime)
+      if (Number.isNaN(d.getTime())) continue
+      const dateKey = formatDateKey(d)
+      if (!byDate[dateKey]) byDate[dateKey] = []
+      byDate[dateKey].push(race)
+    }
+    for (const [dateKey, races] of Object.entries(byDate)) {
+      if (!eventsByDate[dateKey]) eventsByDate[dateKey] = []
+      eventsByDate[dateKey].push({
+        event: { id: event.id, eventName: event.eventName, slug: event.slug, type: event.type },
+        races: races.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime()),
       })
     }
   }
 
-  // Sort races within each date by start time
-  for (const dateKey of Object.keys(racesByDate)) {
-    racesByDate[dateKey].sort((a, b) => {
-      const timeA = new Date(a.race.startDateTime).getTime()
-      const timeB = new Date(b.race.startDateTime).getTime()
-      return timeA - timeB
+  // Sort events within each date by earliest race start time
+  for (const dateKey of Object.keys(eventsByDate)) {
+    eventsByDate[dateKey].sort((a, b) => {
+      const minA = Math.min(...a.races.map((r) => new Date(r.startDateTime).getTime()))
+      const minB = Math.min(...b.races.map((r) => new Date(r.startDateTime).getTime()))
+      return minA - minB
     })
   }
 
@@ -111,7 +108,7 @@ export default async function CalendarPage() {
         Izaberite datum da vidite zakazane trke.
       </p>
       <div className="mt-8">
-        <CalendarView racesByDate={racesByDate} />
+        <CalendarView eventsByDate={eventsByDate} />
       </div>
     </>
   )
