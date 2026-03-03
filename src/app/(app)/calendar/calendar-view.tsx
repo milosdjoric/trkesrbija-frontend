@@ -329,19 +329,17 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                       {/* Event header */}
                       <Link
                         href={`/events/${item.event.slug}`}
-                        className="flex items-start justify-between gap-3 p-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                        className="flex items-center gap-2 px-3 py-2 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                       >
-                        <div className="min-w-0 flex-1">
-                          <Badge color={badgeColor}>{typeLabel}</Badge>
-                          <h3 className="mt-1.5 font-medium text-zinc-900 dark:text-white">
-                            {toTitleCase(item.event.eventName)}
-                          </h3>
-                          {primaryLocation && (
-                            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
-                              📍 {primaryLocation}
-                            </p>
-                          )}
-                        </div>
+                        <Badge color={badgeColor}>{typeLabel}</Badge>
+                        <span className="min-w-0 flex-1 truncate text-sm font-medium text-zinc-900 dark:text-white">
+                          {toTitleCase(item.event.eventName)}
+                        </span>
+                        {primaryLocation && (
+                          <span className="shrink-0 text-xs text-zinc-400 dark:text-zinc-500">
+                            📍 {primaryLocation}
+                          </span>
+                        )}
                       </Link>
 
                       {/* Race rows */}
@@ -354,26 +352,26 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                               <Link
                                 key={race.id}
                                 href={`/races/${race.slug}`}
-                                className="flex items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+                                className="flex items-center justify-between px-3 py-1.5 text-xs transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
                               >
-                                <div className="flex min-w-0 items-center gap-3">
-                                  <span className="w-10 shrink-0 text-xs text-zinc-400 dark:text-zinc-500">
+                                <div className="flex min-w-0 items-center gap-2">
+                                  <span className="w-9 shrink-0 text-zinc-400 dark:text-zinc-500">
                                     {formatTime(race.startDateTime)}
                                   </span>
                                   {hasCustomName && (
-                                    <span className="truncate text-zinc-600 dark:text-zinc-400">
+                                    <span className="truncate text-zinc-500 dark:text-zinc-400">
                                       {toTitleCase(race.raceName)}
                                     </span>
                                   )}
                                 </div>
-                                <div className="flex shrink-0 items-center gap-2 text-right">
+                                <div className="flex shrink-0 items-center gap-2">
                                   {race.length > 0 && (
                                     <span className="font-medium text-zinc-700 dark:text-zinc-300">
                                       {race.length} km
                                     </span>
                                   )}
                                   {race.elevation != null && (
-                                    <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                    <span className="text-zinc-400 dark:text-zinc-500">
                                       {race.elevation} m D+
                                     </span>
                                   )}
