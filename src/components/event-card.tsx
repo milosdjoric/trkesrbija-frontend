@@ -129,7 +129,9 @@ export function EventCard({
                       ? ''
                       : formatTime(dt)
                     : ''
-                const length = typeof r.length === 'number' && r.length > 0 ? `${r.length}km` : ''
+                // Skip length if raceName is already the auto-generated "X km" format (avoids duplicate)
+                const isAutoName = raceName === `${r.length} km`
+                const length = !isAutoName && typeof r.length === 'number' && r.length > 0 ? `${r.length}km` : ''
                 const elevation = r.elevation != null && r.elevation > 0 ? `${r.elevation}m` : ''
                 const parts = [raceTime, length, elevation].filter(Boolean).join(' / ')
 
