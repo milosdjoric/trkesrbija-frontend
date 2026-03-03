@@ -112,7 +112,7 @@ export default async function Events({
     return { allSame, value: allSame ? first : null }
   }
 
-  const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, { limit: 50, skip: 0 })
+  const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, { limit: 1000, skip: 0 })
   const competitionsData = await gql<{ competitions: BackendCompetition[] }>(COMPETITIONS_QUERY)
   const competitions = competitionsData.competitions ?? []
   const competitionNameById = new Map<string, string>(competitions.map((c) => [c.id, c.name]))
