@@ -464,14 +464,14 @@ export default async function Events({
         }
 
         return (
-          <div className="mt-10 space-y-4">
+          <div className="mt-6 space-y-2">
             {groups.map((g, gi) => (
               <details key={`${g.month}-${gi}`} className="rounded-xl" open>
                 <summary className="cursor-pointer px-4 py-3 text-sm font-normal select-none">
                   {g.month} <span className="font-normal text-zinc-500">({g.items.length})</span>
                 </summary>
 
-                <ul className="px-4 pb-4">
+                <ul className="px-4 pb-2">
                   {g.items.map((event: any, index: number) => (
                     <li key={event.id}>
                       <Divider soft={index > 0} />

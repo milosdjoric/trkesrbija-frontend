@@ -73,8 +73,8 @@ export function EventCard({
   const isTrail = type === 'TRAIL'
 
   return (
-    <div className="flex w-full gap-6 py-6 md:w-fit">
-      <div className="w-full space-y-1.5 md:w-fit">
+    <div className="flex w-full gap-4 py-2 md:w-fit">
+      <div className="w-full space-y-0.5 md:w-fit">
         {/* Event name */}
         <div className="flex items-center gap-1.5 text-lg font-semibold md:text-base/6">
           <Link href={url}>{name}</Link>
