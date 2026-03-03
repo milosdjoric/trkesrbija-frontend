@@ -67,7 +67,7 @@ const RACE_EVENTS_QUERY = `
 
 export default async function CalendarPage() {
   const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, {
-    limit: 200,
+    limit: 2000,
     skip: 0,
   })
 
