@@ -155,7 +155,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                     )}
                   >
                     {/* Date number */}
-                    <div className="mb-1 flex items-center justify-between">
+                    <div className="mb-1">
                       <span
                         className={clsx(
                           'inline-flex size-6 items-center justify-center rounded-full text-xs font-medium',
@@ -166,15 +166,12 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                       >
                         {day.date.getDate()}
                       </span>
-                      {events.length > 2 && (
-                        <span className="text-[10px] text-gray-500">+{events.length - 2}</span>
-                      )}
                     </div>
 
                     {/* Events in cell */}
                     {hasEvents && (
                       <div className="space-y-0.5">
-                        {events.slice(0, 2).map((item) => {
+                        {events.map((item) => {
                           const distances = item.races
                             .map((r) => r.length)
                             .filter((l) => l > 0)
