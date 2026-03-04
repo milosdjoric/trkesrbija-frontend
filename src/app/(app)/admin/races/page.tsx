@@ -17,6 +17,8 @@ import {
  XCircleIcon,
  MapIcon,
  TrashIcon,
+ DocumentDuplicateIcon,
+ UserGroupIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -431,25 +433,28 @@ export default function AdminRacesPage() {
            </button>
           </td>
           <td className="px-4 py-3 text-right">
-           <div className="flex items-center justify-end gap-2">
+           <div className="flex items-center justify-end gap-1">
             <Link
              href={`/admin/races/${race.id}/registrations`}
-             className="text-sm text-brand-green hover:text-brand-green-dark"
+             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
+             title="Prijave"
             >
-             Prijave
+             <UserGroupIcon className="size-4" />
             </Link>
             <Link
              href={`/admin/races/${race.id}/checkpoints`}
-             className="text-sm text-brand-green hover:text-brand-green-dark"
+             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
+             title="Checkpoint-i"
             >
-             CP
+             <MapIcon className="size-4" />
             </Link>
             <button
              onClick={() => handleDuplicateRace(race.id)}
              disabled={duplicatingId === race.id}
-             className="cursor-pointer text-sm text-brand-green hover:text-brand-green-dark disabled:opacity-50"
+             className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white disabled:opacity-50"
+             title="Dupliraj"
             >
-             {duplicatingId === race.id ? '...' : 'Dupliraj'}
+             <DocumentDuplicateIcon className="size-4" />
             </button>
             {confirmDeleteId === race.id ? (
              <span className="inline-flex items-center gap-1">
