@@ -205,22 +205,41 @@ export default async function HomePage() {
   return (
     <>
       {/* Hero sekcija sa pretragom */}
-      <div className="mb-8">
-        <Heading>Dobrodošli na Trke Srbija</Heading>
-        <Text className="mt-2 max-w-2xl text-zinc-600 dark:text-zinc-400">
-          Pronađite i prijavite se za trail i ulične trke širom Srbije.
-        </Text>
+      <div className="mb-12 pt-8 text-center">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-dark-border bg-dark-surface px-4 py-1.5 text-sm font-medium text-brand-green">
+          <span>🏃</span>
+          <span>Sezona 2026 je počela</span>
+        </div>
+
+        <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+          Sve trke u Srbiji.
+        </h1>
+        <h2 className="mt-2 text-4xl font-extrabold tracking-tight text-gray-600 sm:text-5xl md:text-6xl">
+          Na jednom mestu.
+        </h2>
+
+        <p className="mx-auto mt-6 max-w-xl text-base text-gray-500">
+          Pronađi trku, prijavi se online, prati rezultate uživo. Od 5k fun run-ova do ultramaratona.
+        </p>
 
         {/* Search bar */}
-        <form action="/events" className="mt-6 max-full">
-          <div className="relative">
-            <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-zinc-400" />
-            <input
-              type="text"
-              name="q"
-              placeholder="Pretraži događaje ili trke..."
-              className="w-full rounded-lg border border-zinc-300 bg-white py-3 pl-10 pr-4 text-sm placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-600 dark:bg-zinc-800 dark:text-zinc-100 dark:placeholder:text-zinc-500 dark:focus:border-zinc-400 dark:focus:ring-zinc-400"
-            />
+        <form action="/events" className="mx-auto mt-10 max-w-2xl">
+          <div className="flex gap-3">
+            <div className="relative flex-1">
+              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-500" />
+              <input
+                type="text"
+                name="q"
+                placeholder="Pretraži trke, gradove..."
+                className="w-full rounded-xl border border-dark-border bg-dark-surface py-4 pl-12 pr-4 text-base text-white placeholder:text-gray-500 focus:border-dark-border-light focus:outline-none focus:ring-2 focus:ring-brand-green"
+              />
+            </div>
+            <button
+              type="submit"
+              className="rounded-xl bg-brand-green px-8 py-4 text-base font-bold text-black transition-colors hover:bg-brand-green-dark"
+            >
+              Traži
+            </button>
           </div>
         </form>
       </div>
