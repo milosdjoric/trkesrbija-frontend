@@ -213,7 +213,7 @@ export default function AdminNewRegistrationPage() {
    <div className="mx-auto mt-6 max-w-2xl">
     <Heading>Nova prijava</Heading>
 
-    <div className="mt-4 rounded-lg border border-dark-border bg-dark-surface p-4 border-dark-border bg-dark-surface">
+    <div className="mt-4 rounded-lg border border-dark-border bg-dark-surface p-4">
      <Subheading>{race.raceName ?? race.raceEvent.eventName}</Subheading>
      <div className="mt-2 text-sm text-gray-400">
       {formatDate(race.startDateTime)} • {race.length} km
@@ -221,7 +221,7 @@ export default function AdminNewRegistrationPage() {
     </div>
 
     {error && (
-     <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+     <div className="mt-4 rounded-lg border border-red-800 bg-red-900/20 p-3 text-sm text-red-400">
       {error}
      </div>
     )}

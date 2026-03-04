@@ -132,7 +132,7 @@ export default function CompetitionsPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Admin
@@ -146,7 +146,7 @@ export default function CompetitionsPage() {
 
    {/* Create new competition */}
    <form onSubmit={handleCreate} className="mt-6 max-w-md">
-    <div className="rounded-lg border border-dark-border p-4 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-4">
      <Subheading>Novo takmičenje</Subheading>
      <div className="mt-3 flex gap-2">
       <input
@@ -154,7 +154,7 @@ export default function CompetitionsPage() {
        value={newName}
        onChange={(e) => setNewName(e.target.value)}
        placeholder="Naziv takmičenja"
-       className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+       className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
       />
       <Button type="submit" color="blue" disabled={creating}>
        <PlusIcon className="size-4" />
@@ -169,7 +169,7 @@ export default function CompetitionsPage() {
     <Subheading>Postojeća takmičenja ({competitions.length})</Subheading>
 
     {competitions.length === 0 ? (
-     <div className="mt-4 rounded-lg border border-dark-border p-6 text-sm/6 border-dark-border">
+     <div className="mt-4 rounded-lg border border-dark-border p-6 text-sm/6">
       <div className="font-medium">Nema takmičenja</div>
       <div className="mt-1 text-gray-400">Kreirajte prvo takmičenje iznad.</div>
      </div>
@@ -190,7 +190,7 @@ export default function CompetitionsPage() {
            <button
             type="button"
             onClick={() => handleDelete(comp.id, comp.name)}
-            className="inline-flex items-center gap-1 rounded-lg border border-red-300 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20"
+            className="inline-flex items-center gap-1 rounded-lg border border-red-700 px-3 py-1.5 text-sm text-red-400 hover:bg-red-900/20"
            >
             <TrashIcon className="size-4" />
             Obriši

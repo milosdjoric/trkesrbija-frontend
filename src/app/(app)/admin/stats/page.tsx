@@ -108,7 +108,7 @@ export default function AdminStatsPage() {
     <select
      value={days}
      onChange={(e) => setDays(Number(e.target.value))}
-     className="rounded-md border border-dark-border-light bg-dark-card px-3 py-1.5 text-sm border-dark-border-light bg-dark-surface text-white"
+     className="rounded-md border border-dark-border-light bg-dark-card px-3 py-1.5 text-sm bg-dark-surface text-white"
     >
      {DAY_OPTIONS.map((o) => (
       <option key={o.value} value={o.value}>{o.label}</option>
@@ -271,7 +271,7 @@ export default function AdminStatsPage() {
      )}
 
      {/* ═══════════ ALL-TIME SECTION ═══════════ */}
-     <div className="border-t border-dark-border pt-6 border-dark-border">
+     <div className="border-t border-dark-border pt-6">
       <Subheading className="mb-4 text-base text-gray-400">Sve vreme</Subheading>
      </div>
 
@@ -365,7 +365,7 @@ export default function AdminStatsPage() {
      {/* ═══════════ TODAY'S LOGINS SECTION ═══════════ */}
      {stats.recentLogins.length > 0 && (
       <>
-       <div className="border-t border-dark-border pt-6 border-dark-border">
+       <div className="border-t border-dark-border pt-6">
         <Subheading className="mb-4 text-base text-gray-400">Danas</Subheading>
        </div>
 

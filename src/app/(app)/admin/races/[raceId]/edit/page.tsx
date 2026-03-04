@@ -287,7 +287,7 @@ export default function EditRacePage() {
    <div className="mb-4">
     <Link
      href="/admin/races"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Sve trke
@@ -298,7 +298,7 @@ export default function EditRacePage() {
 
    <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
     {/* Event selector */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Događaj</Subheading>
      <div className="mt-4">
       <label className="block text-sm font-medium text-gray-300">
@@ -307,7 +307,7 @@ export default function EditRacePage() {
       <select
        value={raceEventId}
        onChange={(e) => setRaceEventId(e.target.value)}
-       className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+       className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
       >
        {events.map((ev) => (
         <option key={ev.id} value={ev.id}>
@@ -321,7 +321,7 @@ export default function EditRacePage() {
      </div>
     </div>
 
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Informacije o trci</Subheading>
 
      <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -335,7 +335,7 @@ export default function EditRacePage() {
         value={raceName}
         onChange={(e) => setRaceName(toTitleCase(e.target.value))}
         placeholder="npr. Avala 18K"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
         required
        />
       </div>
@@ -352,7 +352,7 @@ export default function EditRacePage() {
          value={slug}
          onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
          placeholder={generateSlug(raceName) || 'naziv-trke-2025'}
-         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
         />
         <Button
          type="button"
@@ -381,7 +381,7 @@ export default function EditRacePage() {
         type="datetime-local"
         value={startDateTime}
         onChange={(e) => setStartDateTime(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
         required
        />
       </div>
@@ -395,7 +395,7 @@ export default function EditRacePage() {
         type="datetime-local"
         value={endDateTime}
         onChange={(e) => setEndDateTime(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
        <p className="mt-1 text-xs text-gray-400">Opciono - krajnje vreme za završetak trke</p>
       </div>
@@ -412,7 +412,7 @@ export default function EditRacePage() {
         value={length}
         onChange={(e) => setLength(e.target.value)}
         placeholder="18"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
         required
        />
       </div>
@@ -428,7 +428,7 @@ export default function EditRacePage() {
         value={elevation}
         onChange={(e) => setElevation(e.target.value)}
         placeholder="520"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
       </div>
 
@@ -442,7 +442,7 @@ export default function EditRacePage() {
         value={startLocation}
         onChange={(e) => setStartLocation(e.target.value)}
         placeholder="Adresa ili Google Maps link"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
       </div>
 
@@ -463,7 +463,7 @@ export default function EditRacePage() {
        <select
         value={competitionId}
         onChange={(e) => setCompetitionId(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        >
         <option value="">Bez takmičenja</option>
         {competitions.map((comp) => (
@@ -502,13 +502,13 @@ export default function EditRacePage() {
         value={registrationSite}
         onChange={(e) => setRegistrationSite(e.target.value)}
         placeholder="https://..."
-        className="mt-1 block w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 block w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
        <p className="mt-1 text-xs text-gray-400">
         Ako ima link na nivou događaja, ovaj ga zamenjuje za ovu trku
        </p>
        {race?.raceEvent.registrationSite && (
-        <p className="mt-2 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
+        <p className="mt-2 rounded-md bg-amber-900/20 px-3 py-2 text-xs text-amber-400">
          Događaj već ima link za prijave:{' '}
          <a href={race.raceEvent.registrationSite} target="_blank" rel="noopener noreferrer" className="underline break-all">
           {race.raceEvent.registrationSite}
@@ -531,7 +531,7 @@ export default function EditRacePage() {
    </form>
 
    {/* Quick links */}
-   <div className="mt-8 max-w-2xl rounded-lg border border-dark-border p-6 border-dark-border">
+   <div className="mt-8 max-w-2xl rounded-lg border border-dark-border p-6">
     <Subheading>Brzi linkovi</Subheading>
     <div className="mt-4 flex flex-wrap gap-3">
      <Button href={`/admin/races/${raceId}/registrations`} outline>

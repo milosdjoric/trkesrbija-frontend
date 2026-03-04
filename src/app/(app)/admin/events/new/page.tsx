@@ -245,7 +245,7 @@ export default function NewEventPage() {
    <div className="mb-4">
     <Link
      href="/admin/events"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Događaji
@@ -256,7 +256,7 @@ export default function NewEventPage() {
 
    <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
     {/* Event details */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Osnovne informacije</Subheading>
 
      <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -270,7 +270,7 @@ export default function NewEventPage() {
         value={eventName}
         onChange={(e) => setEventName(toTitleCase(e.target.value))}
         placeholder="npr. Avala Trail"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
         required
        />
       </div>
@@ -289,7 +289,7 @@ export default function NewEventPage() {
           setAutoSlug(false)
          }}
          placeholder="avala-trail-2024"
-         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
          required
         />
         {!autoSlug && (
@@ -300,7 +300,7 @@ export default function NewEventPage() {
            const year = new Date().getFullYear()
            setSlug(generateSlug(eventName, year))
           }}
-          className="rounded-lg border border-dark-border-light px-3 py-2 text-sm hover:bg-dark-card-hover border-dark-border-light hover:bg-dark-card-hover"
+          className="rounded-lg border border-dark-border-light px-3 py-2 text-sm hover:bg-dark-card-hover"
          >
           Auto
          </button>
@@ -319,7 +319,7 @@ export default function NewEventPage() {
        <select
         value={eventType}
         onChange={(e) => setEventType(e.target.value as any)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        >
         <option value="TRAIL">Trail</option>
         <option value="ROAD">Ulična</option>
@@ -335,7 +335,7 @@ export default function NewEventPage() {
        <select
         value={country}
         onChange={(e) => setCountry(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        >
         <option value="">Nije definisano</option>
         <option value="ser">Srbija</option>
@@ -355,7 +355,7 @@ export default function NewEventPage() {
         onChange={(e) => setDescription(e.target.value)}
         rows={3}
         placeholder="Kratki opis događaja..."
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
       </div>
 
@@ -367,7 +367,7 @@ export default function NewEventPage() {
     </div>
 
     {/* Media */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Slike</Subheading>
 
      <div className="mt-4 space-y-6">
@@ -383,7 +383,7 @@ export default function NewEventPage() {
     </div>
 
     {/* Organizer */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Organizator</Subheading>
      <p className="mt-1 mb-4 text-sm text-gray-400">
       Izaberite postojećeg organizatora ili dodajte novog
@@ -393,7 +393,7 @@ export default function NewEventPage() {
     </div>
 
     {/* Links */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Linkovi i društvene mreže</Subheading>
 
      <div className="mt-4 space-y-4">
@@ -406,7 +406,7 @@ export default function NewEventPage() {
         value={registrationSite}
         onChange={(e) => setRegistrationSite(e.target.value)}
         placeholder="https://prijave.example.com"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
        <p className="mt-1 text-xs text-gray-400">
         Eksterni link ako se prijave ne vode preko ovog sistema
@@ -418,13 +418,13 @@ export default function NewEventPage() {
     </div>
 
     {/* Races */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <div className="flex items-center justify-between">
       <Subheading>Trke ({races.length})</Subheading>
       <button
        type="button"
        onClick={addRace}
-       className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-600 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-400"
+       className="inline-flex items-center gap-1 rounded-lg bg-blue-900/30 px-3 py-1.5 text-sm font-medium text-blue-400 hover:bg-blue-900/50"
       >
        <PlusIcon className="size-4" />
        Dodaj trku
@@ -440,7 +440,7 @@ export default function NewEventPage() {
        {races.map((race, index) => (
         <div
          key={race.tempId}
-         className="rounded-lg border border-dark-border bg-dark-surface p-4 border-dark-border bg-dark-surface"
+         className="rounded-lg border border-dark-border bg-dark-surface p-4"
         >
          <div className="mb-3 flex items-center justify-between">
           <span className="font-medium">Trka #{index + 1}</span>
@@ -463,7 +463,7 @@ export default function NewEventPage() {
             value={race.raceName}
             onChange={(e) => updateRace(race.tempId, 'raceName', toTitleCase(e.target.value))}
             placeholder="npr. Avala 18K"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
            />
           </div>
 
@@ -475,7 +475,7 @@ export default function NewEventPage() {
             type="datetime-local"
             value={race.startDateTime}
             onChange={(e) => updateRace(race.tempId, 'startDateTime', e.target.value)}
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
            />
           </div>
 
@@ -487,7 +487,7 @@ export default function NewEventPage() {
             type="datetime-local"
             value={race.endDateTime}
             onChange={(e) => updateRace(race.tempId, 'endDateTime', e.target.value)}
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
            />
           </div>
 
@@ -501,7 +501,7 @@ export default function NewEventPage() {
             value={race.length}
             onChange={(e) => updateRace(race.tempId, 'length', e.target.value)}
             placeholder="18"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
            />
           </div>
 
@@ -514,7 +514,7 @@ export default function NewEventPage() {
             value={race.elevation}
             onChange={(e) => updateRace(race.tempId, 'elevation', e.target.value)}
             placeholder="520"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
            />
           </div>
 
@@ -527,7 +527,7 @@ export default function NewEventPage() {
             value={race.startLocation}
             onChange={(e) => updateRace(race.tempId, 'startLocation', e.target.value)}
             placeholder="Adresa ili Google Maps link"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
            />
           </div>
 
@@ -540,7 +540,7 @@ export default function NewEventPage() {
             <select
              value={race.competitionId}
              onChange={(e) => updateRace(race.tempId, 'competitionId', e.target.value)}
-             className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+             className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
             >
              <option value="">Bez takmičenja</option>
              {competitions.map((comp) => (
@@ -576,7 +576,7 @@ export default function NewEventPage() {
             value={race.registrationSite}
             onChange={(e) => updateRace(race.tempId, 'registrationSite', e.target.value)}
             placeholder="https://..."
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none border-dark-border-light bg-dark-surface"
+            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
            />
           </div>
 

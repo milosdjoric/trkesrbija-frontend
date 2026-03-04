@@ -189,7 +189,7 @@ export default function AdminDuplicatesPage() {
    <div className="mb-4">
     <Link
      href="/admin/events"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Događaji
@@ -229,7 +229,7 @@ export default function AdminDuplicatesPage() {
    {/* Results */}
    <div className="mt-8 space-y-4">
     {duplicates.length === 0 ? (
-     <div className="rounded-lg border border-dark-border p-8 text-center border-dark-border">
+     <div className="rounded-lg border border-dark-border p-8 text-center">
       <ExclamationTriangleIcon className="mx-auto size-12 text-gray-400" />
       <p className="mt-4 text-gray-400">
        Nema pronađenih duplikata sa sličnošću {'>='} {threshold}%
@@ -239,7 +239,7 @@ export default function AdminDuplicatesPage() {
      duplicates.map((dup, index) => (
       <div
        key={`${dup.eventA.id}-${dup.eventB.id}`}
-       className="rounded-lg border border-dark-border bg-dark-card p-4 border-dark-border bg-dark-card"
+       className="rounded-lg border border-dark-border bg-dark-card p-4"
       >
        {/* Header with similarity score */}
        <div className="mb-4 flex items-center justify-between">
@@ -256,7 +256,7 @@ export default function AdminDuplicatesPage() {
        {/* Two events side by side */}
        <div className="grid gap-4 md:grid-cols-2">
         {/* Event A */}
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4 border-dark-border bg-dark-surface">
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
          <div className="flex items-start justify-between">
           <div>
            <h3 className="font-medium text-white">
@@ -301,7 +301,7 @@ export default function AdminDuplicatesPage() {
         </div>
 
         {/* Event B */}
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4 border-dark-border bg-dark-surface">
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
          <div className="flex items-start justify-between">
           <div>
            <h3 className="font-medium text-white">

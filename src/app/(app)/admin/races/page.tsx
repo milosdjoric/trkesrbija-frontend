@@ -269,7 +269,7 @@ export default function AdminRacesPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -280,7 +280,7 @@ export default function AdminRacesPage() {
     <Heading>Upravljanje trkama</Heading>
     <Link
      href="/admin/races/mass-edit"
-     className="rounded-lg border border-dark-border-light px-4 py-2 text-sm font-medium text-gray-300 hover:bg-dark-card-hover border-dark-border-light text-gray-300 hover:bg-dark-card-hover"
+     className="rounded-lg border border-dark-border-light px-4 py-2 text-sm font-medium text-gray-300 hover:bg-dark-card-hover"
     >
      Masovna izmena
     </Link>
@@ -299,7 +299,7 @@ export default function AdminRacesPage() {
       placeholder="Pretraži trke..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
      />
     </div>
 
@@ -307,7 +307,7 @@ export default function AdminRacesPage() {
     <select
      value={filterType}
      onChange={(e) => setFilterType(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
     >
      <option value="ALL">Svi tipovi</option>
      <option value="TRAIL">Trail</option>
@@ -319,7 +319,7 @@ export default function AdminRacesPage() {
     <select
      value={filterStatus}
      onChange={(e) => setFilterStatus(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
     >
      <option value="ALL">Svi statusi</option>
      <option value="OPEN">Otvorene prijave</option>
@@ -330,7 +330,7 @@ export default function AdminRacesPage() {
     <select
      value={filterGpx}
      onChange={(e) => setFilterGpx(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
     >
      <option value="ALL">GPX: svi</option>
      <option value="HAS_GPX">Ima GPX</option>
@@ -345,7 +345,7 @@ export default function AdminRacesPage() {
       type="checkbox"
       checked={showPast}
       onChange={(e) => setShowPast(e.target.checked)}
-      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
      />
      Prikaži istekle trke
     </label>
@@ -381,7 +381,7 @@ export default function AdminRacesPage() {
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-dark-border bg-dark-card">
        {filteredRaces.length === 0 ? (
         <tr>
          <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-400">
@@ -397,7 +397,7 @@ export default function AdminRacesPage() {
            <div>
             <Link
              href={`/races/${race.slug}`}
-             className="font-medium text-white hover:text-blue-600 text-white hover:text-brand-green"
+             className="font-medium text-white hover:text-brand-green"
             >
              {race.raceName ?? 'Neimenovana'}
             </Link>
@@ -462,7 +462,7 @@ export default function AdminRacesPage() {
               </button>
               <button
                onClick={() => setConfirmDeleteId(null)}
-               className="cursor-pointer rounded bg-dark-surface px-2 py-1 text-xs font-medium text-gray-300 hover:bg-dark-card-hover bg-dark-surface text-gray-300 hover:bg-dark-card-hover"
+               className="cursor-pointer rounded bg-dark-surface px-2 py-1 text-xs font-medium text-gray-300 hover:bg-dark-card-hover"
               >
                Ne
               </button>
@@ -470,7 +470,7 @@ export default function AdminRacesPage() {
             ) : (
              <button
               onClick={() => setConfirmDeleteId(race.id)}
-              className="cursor-pointer rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+              className="cursor-pointer rounded p-1 text-gray-400 hover:bg-red-900/20 hover:text-red-400"
               title="Obriši trku"
              >
               <TrashIcon className="size-4" />

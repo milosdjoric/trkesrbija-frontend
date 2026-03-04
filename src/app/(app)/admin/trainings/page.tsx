@@ -137,7 +137,7 @@ export default function AdminTrainingsPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -173,7 +173,7 @@ export default function AdminTrainingsPage() {
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-dark-border bg-dark-card">
        {events.map((event) => {
         const now = new Date().getTime()
         const upcomingRaces = event.races
@@ -213,7 +213,7 @@ export default function AdminTrainingsPage() {
             </Link>
             <button
              onClick={() => handleDelete(event.id, event.eventName)}
-             className="rounded p-1 text-red-500 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+             className="rounded p-1 text-red-400 hover:bg-red-900/20"
              title="Obriši trening"
             >
              <TrashIcon className="size-4" />

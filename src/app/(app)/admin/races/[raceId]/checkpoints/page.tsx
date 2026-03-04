@@ -414,7 +414,7 @@ export default function AdminCheckpointsPage() {
       raceCheckpoints.map((rc, idx) => (
        <div
         key={rc.id}
-        className="flex items-center justify-between rounded-lg border border-dark-border bg-dark-card p-3 border-dark-border bg-dark-card"
+        className="flex items-center justify-between rounded-lg border border-dark-border bg-dark-card p-3"
        >
         <div className="flex items-center gap-3">
          <Badge color="blue">{rc.orderIndex}</Badge>
@@ -490,7 +490,7 @@ export default function AdminCheckpointsPage() {
       />
      ) : (
       eventCheckpoints.map((checkpoint) => (
-       <div key={checkpoint.id} className="rounded-lg border border-dark-border p-4 border-dark-border">
+       <div key={checkpoint.id} className="rounded-lg border border-dark-border p-4">
         <div className="flex items-start justify-between gap-4">
          <div className="flex-1">
           <div className="flex items-center gap-2">
@@ -514,7 +514,7 @@ export default function AdminCheckpointsPage() {
                {judge.name || judge.email}
                <button
                 onClick={() => handleUnassignJudge(judge.id)}
-                className="ml-1 rounded hover:bg-blue-200 dark:hover:bg-blue-800"
+                className="ml-1 rounded hover:bg-blue-800"
                >
                 <XMarkIcon className="size-3" />
                </button>
@@ -523,7 +523,7 @@ export default function AdminCheckpointsPage() {
             )}
             <button
              onClick={() => setAssigningCheckpoint(checkpoint)}
-             className="inline-flex items-center gap-1 rounded border border-dashed border-dark-border-light px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-gray-300 border-dark-border-light hover:border-dark-border-light "
+             className="inline-flex items-center gap-1 rounded border border-dashed border-dark-border-light px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-gray-300"
             >
              <UserPlusIcon className="size-3" />
              Dodaj

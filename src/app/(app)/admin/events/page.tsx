@@ -230,7 +230,7 @@ export default function AdminEventsPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -266,7 +266,7 @@ export default function AdminEventsPage() {
       placeholder="Pretraži događaje..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
      />
     </div>
 
@@ -274,7 +274,7 @@ export default function AdminEventsPage() {
     <select
      value={filterType}
      onChange={(e) => setFilterType(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
     >
      <option value="ALL">Svi tipovi</option>
      <option value="TRAIL">Trail</option>
@@ -290,7 +290,7 @@ export default function AdminEventsPage() {
       type="checkbox"
       checked={showPast}
       onChange={(e) => setShowPast(e.target.checked)}
-      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
      />
      Prikaži istekle događaje
     </label>
@@ -323,7 +323,7 @@ export default function AdminEventsPage() {
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-dark-border bg-dark-card">
        {filteredEvents.length === 0 ? (
         <tr>
          <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
@@ -347,7 +347,7 @@ export default function AdminEventsPage() {
             <div>
              <Link
               href={`/events/${event.slug}`}
-              className="font-medium text-white hover:text-blue-600 text-white hover:text-brand-green"
+              className="font-medium text-white hover:text-brand-green"
              >
               {event.eventName}
              </Link>

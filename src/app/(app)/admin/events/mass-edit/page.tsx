@@ -287,7 +287,7 @@ export default function EventsMassEditPage() {
       placeholder="Pretrazi po nazivu ili slug-u..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
      />
     </div>
     <label className="flex items-center gap-2 text-sm text-gray-400">
@@ -295,7 +295,7 @@ export default function EventsMassEditPage() {
       type="checkbox"
       checked={showPast}
       onChange={(e) => setShowPast(e.target.checked)}
-      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
      />
      Prikazi istekle
     </label>
@@ -415,7 +415,7 @@ export default function EventsMassEditPage() {
        </th>
       </tr>
      </thead>
-     <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+     <tbody className="divide-y divide-dark-border bg-dark-card">
       {filteredEvents.length === 0 ? (
        <tr>
         <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">

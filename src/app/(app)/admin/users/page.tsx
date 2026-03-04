@@ -157,7 +157,7 @@ export default function AdminUsersPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -182,7 +182,7 @@ export default function AdminUsersPage() {
       placeholder="Pretraži po email ili imenu..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
      />
     </div>
 
@@ -190,7 +190,7 @@ export default function AdminUsersPage() {
     <select
      value={filterRole}
      onChange={(e) => setFilterRole(e.target.value as any)}
-     className="rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     className="rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
     >
      <option value="ALL">Sve uloge</option>
      <option value="ADMIN">Admini</option>
@@ -221,7 +221,7 @@ export default function AdminUsersPage() {
        </th>
       </tr>
      </thead>
-     <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+     <tbody className="divide-y divide-dark-border bg-dark-card">
       {filteredUsers.length === 0 ? (
        <tr>
         <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
@@ -265,8 +265,8 @@ export default function AdminUsersPage() {
             disabled={updatingId === u.id}
             className={`rounded px-2 py-1 text-xs ${
              u.role === 'ADMIN'
-              ? 'bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400'
-              : 'bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-400'
+              ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
+              : 'bg-purple-900/30 text-purple-400 hover:bg-purple-900/50'
             } ${updatingId === u.id ? 'opacity-50' : ''}`}
            >
             {updatingId === u.id

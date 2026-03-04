@@ -377,7 +377,7 @@ export default function AdminRegistrationsPage() {
          <td className="px-4 py-3">
           <button
            onClick={() => handleDelete(reg.id)}
-           className="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300"
+           className="text-red-400 hover:text-red-300"
            title="Obriši prijavu"
           >
            <TrashIcon className="size-4" />

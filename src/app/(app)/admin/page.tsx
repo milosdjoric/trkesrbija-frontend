@@ -154,7 +154,7 @@ export default function AdminDashboardPage() {
    <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
     <Link
      href="/admin/events"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
     >
      <CalendarIcon className="size-8 text-blue-500" />
      <div>
@@ -165,7 +165,7 @@ export default function AdminDashboardPage() {
 
     <Link
      href="/admin/races"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
     >
      <FlagIcon className="size-8 text-emerald-500" />
      <div>
@@ -176,7 +176,7 @@ export default function AdminDashboardPage() {
 
     <Link
      href="/admin/trainings"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
     >
      <BoltIcon className="size-8 text-indigo-500" />
      <div>
@@ -187,7 +187,7 @@ export default function AdminDashboardPage() {
 
     <Link
      href="/admin/users"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
     >
      <UserGroupIcon className="size-8 text-purple-500" />
      <div>
@@ -198,7 +198,7 @@ export default function AdminDashboardPage() {
 
     <Link
      href="/admin/import"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
     >
      <ArrowUpTrayIcon className="size-8 text-amber-500" />
      <div>
@@ -209,7 +209,7 @@ export default function AdminDashboardPage() {
 
     <Link
      href="/admin/reports"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
     >
      <ExclamationTriangleIcon className="size-8 text-red-500" />
      <div>
@@ -249,7 +249,7 @@ export default function AdminDashboardPage() {
        type="checkbox"
        checked={showPast}
        onChange={(e) => setShowPast(e.target.checked)}
-       className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
+       className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
       />
       Prikaži istekle trke
      </label>
@@ -276,7 +276,7 @@ export default function AdminDashboardPage() {
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-dark-border bg-dark-card">
        {(() => {
         const now = new Date().getTime()
         const filteredRaces = recentRaces.filter((race) => {

@@ -651,7 +651,7 @@ export default function ImportPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -670,7 +670,7 @@ export default function ImportPage() {
      className={`flex items-center gap-2 rounded-lg border px-4 py-3 transition-colors ${
       importType === 'combined'
        ? 'border-brand-green bg-brand-green/10 text-brand-green'
-       : 'border-dark-border hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover'
+       : 'border-dark-border hover:bg-dark-card-hover'
      }`}
     >
      <DocumentTextIcon className="size-5" />
@@ -684,7 +684,7 @@ export default function ImportPage() {
      className={`flex items-center gap-2 rounded-lg border px-4 py-3 transition-colors ${
       importType === 'events'
        ? 'border-brand-green bg-brand-green/10 text-brand-green'
-       : 'border-dark-border hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover'
+       : 'border-dark-border hover:bg-dark-card-hover'
      }`}
     >
      <DocumentTextIcon className="size-5" />
@@ -695,7 +695,7 @@ export default function ImportPage() {
      className={`flex items-center gap-2 rounded-lg border px-4 py-3 transition-colors ${
       importType === 'races'
        ? 'border-brand-green bg-brand-green/10 text-brand-green'
-       : 'border-dark-border hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover'
+       : 'border-dark-border hover:bg-dark-card-hover'
      }`}
     >
      <DocumentTextIcon className="size-5" />
@@ -704,12 +704,12 @@ export default function ImportPage() {
    </div>
 
    {/* CSV Format Info */}
-   <div className="mt-6 rounded-lg border border-dark-border bg-dark-surface p-4 border-dark-border bg-dark-surface">
+   <div className="mt-6 rounded-lg border border-dark-border bg-dark-surface p-4">
     <Subheading>Format CSV fajla</Subheading>
     {importType === 'combined' ? (
      <div className="mt-2 text-sm text-gray-400">
       <p className="mb-2">Kolone (header u prvom redu):</p>
-      <code className="block rounded bg-dark-surface p-2 text-xs bg-dark-surface">
+      <code className="block rounded bg-dark-surface p-2 text-xs">
        tip_reda,naziv_dogadjaja,tip_dogadjaja,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje
       </code>
       <div className="mt-3 space-y-1 text-xs">
@@ -721,7 +721,7 @@ export default function ImportPage() {
     ) : importType === 'events' ? (
      <div className="mt-2 text-sm text-gray-400">
       <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
-      <code className="block rounded bg-dark-surface p-2 text-xs bg-dark-surface">
+      <code className="block rounded bg-dark-surface p-2 text-xs">
        naziv,tip,opis,sajt_prijava,tagovi,social_media
       </code>
       <p className="mt-2 text-xs">
@@ -731,7 +731,7 @@ export default function ImportPage() {
     ) : (
      <div className="mt-2 text-sm text-gray-400">
       <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
-      <code className="block rounded bg-dark-surface p-2 text-xs bg-dark-surface">
+      <code className="block rounded bg-dark-surface p-2 text-xs">
        event_slug,naziv,dužina,visinska_razlika,datum_start,lokacija,prijave,takmicenje
       </code>
       <p className="mt-2 text-xs">
@@ -813,10 +813,10 @@ export default function ImportPage() {
          <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">Greške</th>
         </tr>
        </thead>
-       <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+       <tbody className="divide-y divide-dark-border bg-dark-card">
         {importType === 'combined' ? (
          parsedCombined.map((row, idx) => (
-          <tr key={idx} className={`${row.valid ? '' : 'bg-red-50 dark:bg-red-900/10'} ${row.rowType === 'event' ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''}`}>
+          <tr key={idx} className={`${row.valid ? '' : 'bg-red-900/10'} ${row.rowType === 'event' ? 'bg-blue-900/10' : ''}`}>
            <td className="px-4 py-3">
             {row.valid ? (
              <CheckCircleIcon className="size-5 text-green-500" />
@@ -849,7 +849,7 @@ export default function ImportPage() {
          ))
         ) : importType === 'events' ? (
          parsedEvents.map((event, idx) => (
-          <tr key={idx} className={event.valid ? '' : 'bg-red-50 dark:bg-red-900/10'}>
+          <tr key={idx} className={event.valid ? '' : 'bg-red-900/10'}>
            <td className="px-4 py-3">
             {event.valid ? (
              <CheckCircleIcon className="size-5 text-green-500" />
@@ -868,7 +868,7 @@ export default function ImportPage() {
          ))
         ) : (
          parsedRaces.map((race, idx) => (
-          <tr key={idx} className={race.valid ? '' : 'bg-red-50 dark:bg-red-900/10'}>
+          <tr key={idx} className={race.valid ? '' : 'bg-red-900/10'}>
            <td className="px-4 py-3">
             {race.valid ? (
              <CheckCircleIcon className="size-5 text-green-500" />
@@ -916,8 +916,8 @@ export default function ImportPage() {
    {importResult && (
     <div className={`mt-6 rounded-lg border p-4 ${
      importResult.success
-      ? 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20'
-      : 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20'
+      ? 'border-green-800 bg-green-900/20'
+      : 'border-red-800 bg-red-900/20'
     }`}>
      <div className="flex items-center gap-2">
       {importResult.success ? (
@@ -944,7 +944,7 @@ export default function ImportPage() {
    )}
 
    {/* Download Template */}
-   <div className="mt-8 border-t border-dark-border pt-6 border-dark-border">
+   <div className="mt-8 border-t border-dark-border pt-6">
     <Subheading>Preuzmi šablon</Subheading>
     <div className="mt-4 flex flex-wrap gap-4">
      <a
@@ -958,7 +958,7 @@ export default function ImportPage() {
      <a
       href="/templates/events-template.csv"
       download
-      className="inline-flex items-center gap-2 rounded-lg border border-dark-border px-4 py-2 text-sm hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+      className="inline-flex items-center gap-2 rounded-lg border border-dark-border px-4 py-2 text-sm hover:bg-dark-card-hover"
      >
       <DocumentTextIcon className="size-4" />
       Šablon za događaje
@@ -966,7 +966,7 @@ export default function ImportPage() {
      <a
       href="/templates/races-template.csv"
       download
-      className="inline-flex items-center gap-2 rounded-lg border border-dark-border px-4 py-2 text-sm hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+      className="inline-flex items-center gap-2 rounded-lg border border-dark-border px-4 py-2 text-sm hover:bg-dark-card-hover"
      >
       <DocumentTextIcon className="size-4" />
       Šablon za trke

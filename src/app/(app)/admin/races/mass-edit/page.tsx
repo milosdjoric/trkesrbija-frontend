@@ -329,7 +329,7 @@ export default function RacesMassEditPage() {
       placeholder="Pretrazi po nazivu, slug-u ili dogadjaju..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
      />
     </div>
     <label className="flex items-center gap-2 text-sm text-gray-400">
@@ -337,7 +337,7 @@ export default function RacesMassEditPage() {
       type="checkbox"
       checked={showPast}
       onChange={(e) => setShowPast(e.target.checked)}
-      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
+      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
      />
      Prikazi istekle
     </label>
@@ -492,7 +492,7 @@ export default function RacesMassEditPage() {
        </th>
       </tr>
      </thead>
-     <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+     <tbody className="divide-y divide-dark-border bg-dark-card">
       {filteredRaces.length === 0 ? (
        <tr>
         <td colSpan={12} className="px-4 py-8 text-center text-sm text-gray-400">

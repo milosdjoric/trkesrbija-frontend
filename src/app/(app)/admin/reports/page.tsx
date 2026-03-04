@@ -128,7 +128,7 @@ export default function AdminReportsPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -148,7 +148,7 @@ export default function AdminReportsPage() {
       setFilterStatus(e.target.value)
       setLoading(true)
      }}
-     className="rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     className="rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
     >
      <option value="">Sve prijave</option>
      <option value="PENDING">Neobrađene</option>
@@ -165,7 +165,7 @@ export default function AdminReportsPage() {
      reports.map((report) => (
       <div
        key={report.id}
-       className="rounded-lg border border-dark-border p-4 border-dark-border"
+       className="rounded-lg border border-dark-border p-4"
       >
        <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
@@ -199,7 +199,7 @@ export default function AdminReportsPage() {
            {report.fields.map((f) => (
             <span
              key={f}
-             className="inline-block rounded bg-red-50 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/20 dark:text-red-400"
+             className="inline-block rounded bg-red-900/20 px-2 py-0.5 text-xs font-medium text-red-400"
             >
              {FIELD_LABELS[f] || f}
             </span>
@@ -244,7 +244,7 @@ export default function AdminReportsPage() {
           <button
            onClick={() => handleUpdateStatus(report.id, 'DISMISSED')}
            disabled={updatingId === report.id}
-           className="cursor-pointer rounded-lg bg-dark-surface px-3 py-1.5 text-xs font-medium text-gray-300 hover:bg-dark-card-hover bg-dark-surface text-gray-300 hover:bg-dark-card-hover disabled:opacity-50"
+           className="cursor-pointer rounded-lg bg-dark-surface px-3 py-1.5 text-xs font-medium text-gray-300 hover:bg-dark-card-hover disabled:opacity-50"
           >
            Odbaci
           </button>

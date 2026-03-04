@@ -303,7 +303,7 @@ export default function EditEventPage() {
    <div className="mb-4">
     <Link
      href="/admin/events"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
     >
      <ChevronLeftIcon className="size-4" />
      Događaji
@@ -314,7 +314,7 @@ export default function EditEventPage() {
 
    <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
     {/* Basic info */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Osnovne informacije</Subheading>
 
      <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -328,7 +328,7 @@ export default function EditEventPage() {
         value={eventName}
         onChange={(e) => setEventName(toTitleCase(e.target.value))}
         placeholder="npr. Avala Trail"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
         required
        />
       </div>
@@ -344,7 +344,7 @@ export default function EditEventPage() {
          value={slug}
          onChange={(e) => setSlug(e.target.value)}
          placeholder={generateSlug(eventName) || 'avala-trail-2024'}
-         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
         />
         <Button
          type="button"
@@ -372,7 +372,7 @@ export default function EditEventPage() {
        <select
         value={eventType}
         onChange={(e) => setEventType(e.target.value as any)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        >
         <option value="TRAIL">Trail</option>
         <option value="ROAD">Ulična</option>
@@ -388,7 +388,7 @@ export default function EditEventPage() {
        <select
         value={country}
         onChange={(e) => setCountry(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        >
         <option value="">Nije definisano</option>
         <option value="ser">Srbija</option>
@@ -408,7 +408,7 @@ export default function EditEventPage() {
         onChange={(e) => setDescription(e.target.value)}
         rows={4}
         placeholder="Detaljni opis događaja..."
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
       </div>
 
@@ -424,7 +424,7 @@ export default function EditEventPage() {
          type="checkbox"
          checked={verified}
          onChange={(e) => setVerified(e.target.checked)}
-         className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
+         className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
         />
         <span className="text-sm font-medium text-gray-300">
          Verifikovan događaj
@@ -438,7 +438,7 @@ export default function EditEventPage() {
     </div>
 
     {/* Media */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Slike</Subheading>
 
      <div className="mt-4 space-y-6">
@@ -456,7 +456,7 @@ export default function EditEventPage() {
     </div>
 
     {/* Organizer */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Organizator</Subheading>
      <p className="mt-1 mb-4 text-sm text-gray-400">
       Izaberite postojećeg organizatora ili dodajte novog
@@ -466,7 +466,7 @@ export default function EditEventPage() {
     </div>
 
     {/* Links */}
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <Subheading>Linkovi i društvene mreže</Subheading>
 
      <div className="mt-4 space-y-4">
@@ -480,7 +480,7 @@ export default function EditEventPage() {
         value={registrationSite}
         onChange={(e) => setRegistrationSite(e.target.value)}
         placeholder="https://prijave.example.com"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
        />
        <p className="mt-1 text-xs text-gray-400">
         Eksterni link ako se prijave ne vode preko ovog sistema
@@ -505,7 +505,7 @@ export default function EditEventPage() {
 
    {/* Races section */}
    <div className="mt-8 max-w-2xl">
-    <div className="rounded-lg border border-dark-border p-6 border-dark-border">
+    <div className="rounded-lg border border-dark-border p-6">
      <div className="flex items-center justify-between">
       <Subheading>Trke ({event.races.length})</Subheading>
       <Button href={`/admin/events/${eventId}/races/new`} outline>
@@ -523,7 +523,7 @@ export default function EditEventPage() {
        {event.races.map((race) => (
         <div
          key={race.id}
-         className="flex items-center justify-between rounded-lg border border-dark-border bg-dark-surface p-4 border-dark-border bg-dark-surface"
+         className="flex items-center justify-between rounded-lg border border-dark-border bg-dark-surface p-4"
         >
          <div>
           <div className="font-medium text-white">
@@ -545,7 +545,7 @@ export default function EditEventPage() {
           </div>
           <div className="mt-1">
            {race.registrationEnabled ? (
-            <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700 dark:bg-green-900/30 dark:text-green-400">
+            <span className="inline-flex items-center rounded-full bg-green-900/30 px-2 py-0.5 text-xs font-medium text-green-400">
              Prijave otvorene
             </span>
            ) : (
@@ -572,7 +572,7 @@ export default function EditEventPage() {
           </Button>
           <button
            onClick={() => handleDeleteRace(race.id, race.raceName)}
-           className="rounded-lg p-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+           className="rounded-lg p-2 text-red-400 hover:bg-red-900/20"
            title="Obriši trku"
           >
            <TrashIcon className="size-4" />
