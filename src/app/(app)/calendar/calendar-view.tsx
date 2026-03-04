@@ -174,19 +174,31 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                     {/* Events in cell */}
                     {hasEvents && (
                       <div className="space-y-0.5">
-                        {events.slice(0, 2).map((item) => (
-                          <Link
-                            key={item.event.id}
-                            href={`/events/${item.event.slug}`}
-                            className={clsx(
-                              'block truncate rounded px-1 py-0.5 text-[11px] font-medium leading-tight transition-opacity hover:opacity-80',
-                              TYPE_COLORS[item.event.type]
-                            )}
-                            title={toTitleCase(item.event.eventName)}
-                          >
-                            {toTitleCase(item.event.eventName)}
-                          </Link>
-                        ))}
+                        {events.slice(0, 2).map((item) => {
+                          const loc = item.races[0]?.startLocation
+                          const raceCount = item.races.length
+                          const subtitle = [loc, raceCount > 1 ? `${raceCount} trke` : null].filter(Boolean).join(' · ')
+                          return (
+                            <Link
+                              key={item.event.id}
+                              href={`/events/${item.event.slug}`}
+                              className={clsx(
+                                'block rounded px-1 py-0.5 transition-opacity hover:opacity-80',
+                                TYPE_COLORS[item.event.type]
+                              )}
+                              title={toTitleCase(item.event.eventName)}
+                            >
+                              <div className="truncate text-[11px] font-medium leading-tight">
+                                {toTitleCase(item.event.eventName)}
+                              </div>
+                              {subtitle && (
+                                <div className="truncate text-[9px] leading-tight opacity-70">
+                                  {subtitle}
+                                </div>
+                              )}
+                            </Link>
+                          )
+                        })}
                       </div>
                     )}
                   </div>
@@ -274,18 +286,28 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                     const events = eventsByDate[day.dateKey] ?? []
                     return (
                       <div className="space-y-1.5">
-                        {events.map((item) => (
-                          <Link
-                            key={item.event.id}
-                            href={`/events/${item.event.slug}`}
-                            className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-dark-card-hover"
-                          >
-                            <span className={clsx('size-2 shrink-0 rounded-full', TYPE_DOTS[item.event.type])} />
-                            <span className="min-w-0 truncate text-sm font-medium text-white">
-                              {toTitleCase(item.event.eventName)}
-                            </span>
-                          </Link>
-                        ))}
+                        {events.map((item) => {
+                          const loc = item.races[0]?.startLocation
+                          const raceCount = item.races.length
+                          const subtitle = [loc, raceCount > 1 ? `${raceCount} trke` : null].filter(Boolean).join(' · ')
+                          return (
+                            <Link
+                              key={item.event.id}
+                              href={`/events/${item.event.slug}`}
+                              className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-dark-card-hover"
+                            >
+                              <span className={clsx('size-2 shrink-0 rounded-full', TYPE_DOTS[item.event.type])} />
+                              <div className="min-w-0">
+                                <div className="truncate text-sm font-medium text-white">
+                                  {toTitleCase(item.event.eventName)}
+                                </div>
+                                {subtitle && (
+                                  <div className="truncate text-xs text-gray-500">{subtitle}</div>
+                                )}
+                              </div>
+                            </Link>
+                          )
+                        })}
                       </div>
                     )
                   })()}
