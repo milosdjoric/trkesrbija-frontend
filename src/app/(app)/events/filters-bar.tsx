@@ -122,7 +122,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
       {/* Active tag filter */}
       {activeTag && (
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Filtriranje po tagu:</span>
+          <span className="text-sm text-gray-400">Filtriranje po tagu:</span>
           <NextLink
             href="/events"
             className="inline-flex items-center gap-1 rounded-full bg-dark-surface px-3 py-1 text-sm font-medium text-gray-300 transition-colors hover:bg-dark-surface-hover"

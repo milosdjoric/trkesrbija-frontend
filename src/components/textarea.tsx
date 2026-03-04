@@ -30,7 +30,7 @@ export const Textarea = forwardRef(function Textarea(
           // Basic layout
           'relative block h-full w-full appearance-none rounded-lg px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
           // Typography
-          'text-base/6 text-white placeholder:text-gray-500 sm:text-sm/6',
+          'text-base/6 text-white placeholder:text-gray-400 sm:text-sm/6',
           // Border
           'border border-dark-border data-hover:border-dark-border-light',
           // Background color

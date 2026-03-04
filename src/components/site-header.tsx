@@ -44,7 +44,7 @@ export function SiteHeader() {
         {/* Logo */}
         <Link href="/" className="flex items-baseline">
           <span className="text-xl font-extrabold tracking-tight text-brand-green">trke</span>
-          <span className="text-xl font-light tracking-tight text-gray-500">srbija</span>
+          <span className="text-xl font-light tracking-tight text-gray-400">srbija</span>
         </Link>
 
         {/* Desktop nav */}
@@ -74,7 +74,7 @@ export function SiteHeader() {
                     key={link.href}
                     href={link.href}
                     className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                      isActive ? 'bg-dark-surface text-white' : 'text-gray-500 hover:text-gray-300'
+                      isActive ? 'bg-dark-surface text-white' : 'text-gray-400 hover:text-gray-300'
                     }`}
                   >
                     {link.label}
@@ -93,7 +93,7 @@ export function SiteHeader() {
             <Dropdown>
               <DropdownButton as="button" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-dark-surface">
                 <span className="max-w-[150px] truncate">{user.name ?? user.email}</span>
-                <ChevronDownIcon className="size-4 text-gray-500" />
+                <ChevronDownIcon className="size-4 text-gray-400" />
               </DropdownButton>
               <DropdownMenu anchor="bottom end" className="min-w-56">
                 {/* Quick links visible only on mobile (desktop has nav bar) */}

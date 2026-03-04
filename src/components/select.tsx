@@ -33,7 +33,7 @@ export const Select = forwardRef(function Select(
           // Options (multi-select)
           '[&_optgroup]:font-semibold',
           // Typography
-          'text-base/6 text-white placeholder:text-gray-500 sm:text-sm/6 *:text-white',
+          'text-base/6 text-white placeholder:text-gray-400 sm:text-sm/6 *:text-white',
           // Border
           'border border-dark-border data-hover:border-dark-border-light',
           // Background color
@@ -49,7 +49,7 @@ export const Select = forwardRef(function Select(
       {!multiple && (
         <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
           <svg
-            className="size-5 stroke-gray-500 group-has-data-disabled:stroke-gray-600 sm:size-4 forced-colors:stroke-[CanvasText]"
+            className="size-5 stroke-gray-400 group-has-data-disabled:stroke-gray-500 sm:size-4 forced-colors:stroke-[CanvasText]"
             viewBox="0 0 16 16"
             aria-hidden="true"
             fill="none"

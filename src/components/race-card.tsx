@@ -75,7 +75,7 @@ export function RaceCard({
           </a>
         ) : (
           <span
-            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-500"
+            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400"
             title={startLocation}
           >
             <MapPinIcon className="size-3" />

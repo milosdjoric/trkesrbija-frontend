@@ -15,9 +15,9 @@ export function BackLink({ href, children }: BackLinkProps) {
     <div className="max-lg:hidden">
       <Link
         href={href}
-        className="inline-flex items-center gap-2 text-sm/6 text-gray-500 hover:text-gray-300"
+        className="inline-flex items-center gap-2 text-sm/6 text-gray-400 hover:text-gray-300"
       >
-        <ChevronLeftIcon className="size-4 fill-gray-500" />
+        <ChevronLeftIcon className="size-4 fill-gray-400" />
         {children}
       </Link>
     </div>

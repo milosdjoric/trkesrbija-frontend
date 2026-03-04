@@ -468,7 +468,7 @@ export default async function Events({
             {groups.map((g, gi) => (
               <details key={`${g.month}-${gi}`} className="rounded-xl" open>
                 <summary className="cursor-pointer px-4 py-3 text-sm font-normal select-none">
-                  {g.month} <span className="font-normal text-gray-500">({g.items.length})</span>
+                  {g.month} <span className="font-normal text-gray-400">({g.items.length})</span>
                 </summary>
 
                 <ul className="px-4 pb-2">

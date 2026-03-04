@@ -47,7 +47,7 @@ export function BottomTabBar() {
                 href={tab.href}
                 className={clsx(
                   'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-                  isActive ? 'text-brand-green' : 'text-gray-600'
+                  isActive ? 'text-brand-green' : 'text-gray-400'
                 )}
               >
                 <tab.icon className="size-5" />
@@ -61,7 +61,7 @@ export function BottomTabBar() {
             href={profileHref}
             className={clsx(
               'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-              pathname === '/settings' || pathname === '/login' ? 'text-brand-green' : 'text-gray-600'
+              pathname === '/settings' || pathname === '/login' ? 'text-brand-green' : 'text-gray-400'
             )}
           >
             <UserCircleIcon className="size-5" />
@@ -73,7 +73,7 @@ export function BottomTabBar() {
             onClick={() => setMoreOpen(true)}
             className={clsx(
               'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-              moreOpen ? 'text-brand-green' : 'text-gray-600'
+              moreOpen ? 'text-brand-green' : 'text-gray-400'
             )}
           >
             <EllipsisHorizontalIcon className="size-5" />
@@ -98,7 +98,7 @@ export function BottomTabBar() {
               </Headless.DialogTitle>
               <button
                 onClick={() => setMoreOpen(false)}
-                className="rounded-lg p-1.5 text-gray-500 hover:text-gray-300"
+                className="rounded-lg p-1.5 text-gray-400 hover:text-gray-300"
               >
                 <XMarkIcon className="size-5" />
               </button>
@@ -163,7 +163,7 @@ function SheetLink({
       onClick={onClick}
       className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300 hover:bg-dark-surface"
     >
-      <Icon className="size-5 text-gray-500" />
+      <Icon className="size-5 text-gray-400" />
       {children}
     </Link>
   )

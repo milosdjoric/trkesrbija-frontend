@@ -136,7 +136,7 @@ export default function RaceResultsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-gray-500">Učitavanje...</div>
+        <div className="animate-pulse text-gray-400">Učitavanje...</div>
       </div>
     )
   }
@@ -157,9 +157,9 @@ export default function RaceResultsPage() {
       <div className="max-lg:hidden">
         <Link
           href={`/events/${race.raceEvent.slug}`}
-          className="inline-flex items-center gap-2 text-sm/6 text-gray-500 hover:text-gray-300"
+          className="inline-flex items-center gap-2 text-sm/6 text-gray-400 hover:text-gray-300"
         >
-          <ChevronLeftIcon className="size-4 fill-gray-500" />
+          <ChevronLeftIcon className="size-4 fill-gray-400" />
           {race.raceEvent.eventName}
         </Link>
       </div>
@@ -188,21 +188,21 @@ export default function RaceResultsPage() {
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold">{results.length}</div>
-          <div className="text-sm text-gray-500">Učesnika</div>
+          <div className="text-sm text-gray-400">Učesnika</div>
         </div>
         <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold text-green-600">{finishers}</div>
-          <div className="text-sm text-gray-500">Završilo</div>
+          <div className="text-sm text-gray-400">Završilo</div>
         </div>
         <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold">{checkpoints.length}</div>
-          <div className="text-sm text-gray-500">Checkpoint-a</div>
+          <div className="text-sm text-gray-400">Checkpoint-a</div>
         </div>
         <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold text-amber-600">
             {results.length - finishers}
           </div>
-          <div className="text-sm text-gray-500">Nije završilo</div>
+          <div className="text-sm text-gray-400">Nije završilo</div>
         </div>
       </div>
 
@@ -215,7 +215,7 @@ export default function RaceResultsPage() {
         ) : (
           <table className="min-w-full divide-y divide-dark-border">
             <thead>
-              <tr className="text-left text-sm font-medium text-gray-500">
+              <tr className="text-left text-sm font-medium text-gray-400">
                 <th className="px-4 py-3">Poz.</th>
                 <th className="px-4 py-3">#</th>
                 <th className="px-4 py-3">Učesnik</th>
@@ -246,7 +246,7 @@ export default function RaceResultsPage() {
                           <span className="text-gray-400">{position}</span>
                         )
                       ) : (
-                        <span className="text-gray-500">-</span>
+                        <span className="text-gray-400">-</span>
                       )}
                     </td>
                     <td className="px-4 py-3 font-mono font-bold">
@@ -274,7 +274,7 @@ export default function RaceResultsPage() {
                           {formatDuration(result.totalTime)}
                         </span>
                       ) : (
-                        <span className="text-gray-500">DNF</span>
+                        <span className="text-gray-400">DNF</span>
                       )}
                     </td>
                   </tr>

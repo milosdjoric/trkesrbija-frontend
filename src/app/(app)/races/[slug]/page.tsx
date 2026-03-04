@@ -394,15 +394,15 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 2. Race Info - similar style to event page (hidden for trainings) */}
           {!race.raceEvent.isTraining && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-2">Informacije o trci</div>
+              <div className="text-base font-medium underline text-gray-400 mb-2">Informacije o trci</div>
               <div className="text-sm/6 text-gray-300 space-y-1">
                 <div className="flex items-center gap-2">
-                  <MapIcon className="size-4 text-gray-500" />
+                  <MapIcon className="size-4 text-gray-400" />
                   <span>Distanca: {race.length > 0 ? `${race.length} km` : 'Nije definisano'}</span>
                 </div>
                 {race.elevation != null && race.elevation > 0 && (
                   <div className="flex items-center gap-2">
-                    <ArrowTrendingUpIcon className="size-4 text-gray-500" />
+                    <ArrowTrendingUpIcon className="size-4 text-gray-400" />
                     <span>Visinska razlika: {race.elevation} m</span>
                   </div>
                 )}
@@ -414,7 +414,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                 )}
                 {race.registrationEnabled && (
                   <div className="flex items-center gap-2">
-                    <UserGroupIcon className="size-4 text-gray-500" />
+                    <UserGroupIcon className="size-4 text-gray-400" />
                     <span>Prijavljenih: {race.registrationCount}</span>
                   </div>
                 )}
@@ -425,7 +425,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 3. Location */}
           {race.startLocation && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-2">Lokacija starta</div>
+              <div className="text-base font-medium underline text-gray-400 mb-2">Lokacija starta</div>
               <div className="text-sm/6 text-gray-300">
                 {race.startLocation.startsWith('http') ? (
                   <a
@@ -446,13 +446,13 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 4. Competition */}
           {race.competition && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-2">Takmičenje / Serija</div>
+              <div className="text-base font-medium underline text-gray-400 mb-2">Takmičenje / Serija</div>
               <div className="text-sm/6 text-gray-300 space-y-1">
                 <div className="flex items-center gap-2">
                   <Badge color="violet">{race.competition.name}</Badge>
                 </div>
                 {race.competition.description && (
-                  <p className="text-gray-500 mt-1">{race.competition.description}</p>
+                  <p className="text-gray-400 mt-1">{race.competition.description}</p>
                 )}
               </div>
             </div>
@@ -461,16 +461,16 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 5. Checkpoints */}
           {race.raceCheckpoints && race.raceCheckpoints.length > 0 && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-2">Checkpoint-ovi</div>
+              <div className="text-base font-medium underline text-gray-400 mb-2">Checkpoint-ovi</div>
               <div className="space-y-1">
                 {[...race.raceCheckpoints]
                   .sort((a, b) => a.orderIndex - b.orderIndex)
                   .map((rc, idx) => (
                     <div key={rc.id} className="flex items-center gap-2 text-sm text-gray-300">
-                      <FlagIcon className={`size-4 ${idx === 0 ? 'text-green-500' : idx === race.raceCheckpoints.length - 1 ? 'text-red-500' : 'text-gray-500'}`} />
+                      <FlagIcon className={`size-4 ${idx === 0 ? 'text-green-500' : idx === race.raceCheckpoints.length - 1 ? 'text-red-500' : 'text-gray-400'}`} />
                       <span className="font-medium">{rc.checkpoint.name}</span>
                       {rc.distance != null && rc.distance > 0 && (
-                        <span className="text-gray-500">({rc.distance} km)</span>
+                        <span className="text-gray-400">({rc.distance} km)</span>
                       )}
                     </div>
                   ))}
@@ -481,7 +481,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 6. Event Description */}
           {race.raceEvent.description && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-2">
+              <div className="text-base font-medium underline text-gray-400 mb-2">
                 {race.raceEvent.isTraining ? 'O treningu' : 'O događaju'}
               </div>
               <ExpandableText text={race.raceEvent.description} maxLines={5} buttonLabel={race.raceEvent.isTraining ? 'Pogledaj više o treningu' : 'Pogledaj više o događaju'} />
@@ -491,7 +491,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 7. Social Media (hidden for trainings) */}
           {!race.raceEvent.isTraining && race.raceEvent.socialMedia && race.raceEvent.socialMedia.length > 0 && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-3">Pratite nas</div>
+              <div className="text-base font-medium underline text-gray-400 mb-3">Pratite nas</div>
               <div className="flex flex-wrap gap-2">
                 {race.raceEvent.socialMedia.map((url) => (
                   <a
@@ -511,7 +511,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 8. Organizer (hidden for trainings) */}
           {!race.raceEvent.isTraining && race.raceEvent.organizer && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-2">Organizator</div>
+              <div className="text-base font-medium underline text-gray-400 mb-2">Organizator</div>
               <div className="text-sm/6 text-gray-300 space-y-1">
                 <div>{race.raceEvent.organizer.name}</div>
                 {race.raceEvent.organizer.contactPhone && (
@@ -547,7 +547,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
           {/* 9. Event link (hidden for trainings) */}
           {!race.raceEvent.isTraining && (
             <div>
-              <div className="text-base font-medium underline text-gray-500 mb-2">Događaj</div>
+              <div className="text-base font-medium underline text-gray-400 mb-2">Događaj</div>
               <div className="text-sm/6 text-gray-300">
                 <a
                   href={`/events/${race.raceEvent.slug}`}
@@ -585,19 +585,19 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
               <div className="space-y-3">
                 {/* Date */}
                 <div className="flex items-center gap-3 text-sm text-gray-400">
-                  <CalendarIcon className="size-5 shrink-0 text-gray-500" />
+                  <CalendarIcon className="size-5 shrink-0 text-gray-400" />
                   <span className="font-medium text-white">{formatDate(race.startDateTime)}</span>
                 </div>
 
                 {/* Weekday */}
                 <div className="flex items-center gap-3 text-sm text-gray-400">
-                  <CalendarIcon className="size-5 shrink-0 text-gray-500" />
+                  <CalendarIcon className="size-5 shrink-0 text-gray-400" />
                   <span className="capitalize">{formatWeekday(race.startDateTime)}</span>
                 </div>
 
                 {/* Time */}
                 <div className="flex items-center gap-3 text-sm text-gray-400">
-                  <ClockIcon className="size-5 shrink-0 text-gray-500" />
+                  <ClockIcon className="size-5 shrink-0 text-gray-400" />
                   <span>Start u {formatTime(race.startDateTime)}</span>
                 </div>
               </div>
@@ -644,7 +644,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
 
             {/* Tags - type badge */}
             <div className="rounded-lg border border-dark-border p-4">
-              <div className="text-sm font-medium text-gray-500">Tip trke</div>
+              <div className="text-sm font-medium text-gray-400">Tip trke</div>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 <Badge color={eventType === 'TRAIL' ? 'emerald' : eventType === 'OCR' ? 'orange' : 'sky'}>
                   {eventType === 'TRAIL' ? 'Trail' : eventType === 'OCR' ? 'OCR' : 'Ulična'}
@@ -656,7 +656,7 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
             {/* Event tags */}
             {race.raceEvent.tags && race.raceEvent.tags.length > 0 && (
               <div className="rounded-lg border border-dark-border p-4">
-                <div className="text-sm font-medium text-gray-500">Kategorije</div>
+                <div className="text-sm font-medium text-gray-400">Kategorije</div>
                 <div className="mt-3">
                   <TagList tags={race.raceEvent.tags} />
                 </div>

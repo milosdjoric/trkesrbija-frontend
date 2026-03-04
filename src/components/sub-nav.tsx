@@ -35,7 +35,7 @@ export function SubNav() {
                 href={tab.href}
                 className={clsx(
                   'shrink-0 rounded-lg px-5 py-2 text-sm font-semibold whitespace-nowrap transition-colors',
-                  isActive ? 'bg-dark-border-light text-white' : 'text-gray-500 hover:text-gray-300'
+                  isActive ? 'bg-dark-border-light text-white' : 'text-gray-400 hover:text-gray-300'
                 )}
               >
                 {tab.label}

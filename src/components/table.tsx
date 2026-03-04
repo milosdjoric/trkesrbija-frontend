@@ -35,7 +35,7 @@ export function Table({
 }
 
 export function TableHead({ className, ...props }: React.ComponentPropsWithoutRef<'thead'>) {
-  return <thead {...props} className={clsx(className, 'text-xs font-bold uppercase tracking-widest text-gray-500')} />
+  return <thead {...props} className={clsx(className, 'text-xs font-bold uppercase tracking-widest text-gray-400')} />
 }
 
 export function TableBody(props: React.ComponentPropsWithoutRef<'tbody'>) {

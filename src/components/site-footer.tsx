@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-const linkClass = 'text-sm text-gray-600 hover:text-white transition-colors'
+const linkClass = 'text-sm text-gray-400 hover:text-white transition-colors'
 
 export function SiteFooter() {
   return (
@@ -11,9 +11,9 @@ export function SiteFooter() {
           <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-baseline">
               <span className="text-base font-extrabold tracking-tight text-brand-green">trke</span>
-              <span className="text-base font-light tracking-tight text-gray-500">srbija</span>
+              <span className="text-base font-light tracking-tight text-gray-400">srbija</span>
             </Link>
-            <p className="mt-3 max-w-xs text-sm text-gray-600">
+            <p className="mt-3 max-w-xs text-sm text-gray-400">
               Tvoj trkački portal za trail i drumske trke u Srbiji. Pronađi trke, prijavi se online, prati rezultate i
               GPX rute.
             </p>
@@ -121,18 +121,18 @@ export function SiteFooter() {
 
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-dark-border pt-6 sm:flex-row">
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-gray-500">
             v1.0 · © {new Date().getFullYear()} Trke Srbija · Napravio{' '}
             <a
               href="https://milosdjoric.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-gray-400"
+              className="hover:text-gray-300"
             >
               milosdjoric.com
             </a>
           </p>
-          <p className="text-xs text-gray-600">Podaci o trkama se redovno ažuriraju. Za ispravke, kontaktirajte nas.</p>
+          <p className="text-xs text-gray-500">Podaci o trkama se redovno ažuriraju. Za ispravke, kontaktirajte nas.</p>
         </div>
       </div>
     </footer>

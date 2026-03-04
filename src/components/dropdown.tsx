@@ -73,7 +73,7 @@ export function DropdownItem({
     'col-span-full grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] items-center supports-[grid-template-columns:subgrid]:grid-cols-subgrid',
     // Icons
     '*:data-[slot=icon]:col-start-1 *:data-[slot=icon]:row-start-1 *:data-[slot=icon]:mr-2.5 *:data-[slot=icon]:-ml-0.5 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:mr-2 sm:*:data-[slot=icon]:size-4',
-    '*:data-[slot=icon]:text-gray-500 data-focus:*:data-[slot=icon]:text-white',
+    '*:data-[slot=icon]:text-gray-400 data-focus:*:data-[slot=icon]:text-white',
     // Avatar
     '*:data-[slot=avatar]:mr-2.5 *:data-[slot=avatar]:-ml-1 *:data-[slot=avatar]:size-6 sm:*:data-[slot=avatar]:mr-2 sm:*:data-[slot=avatar]:size-5'
   )
@@ -114,7 +114,7 @@ export function DropdownHeading({
       {...props}
       className={clsx(
         className,
-        'col-span-full grid grid-cols-[1fr_auto] gap-x-12 px-3.5 pt-2 pb-1 text-sm/5 font-medium text-gray-500 sm:px-3 sm:text-xs/5'
+        'col-span-full grid grid-cols-[1fr_auto] gap-x-12 px-3.5 pt-2 pb-1 text-sm/5 font-medium text-gray-400 sm:px-3 sm:text-xs/5'
       )}
     />
   )
@@ -149,7 +149,7 @@ export function DropdownDescription({
       {...props}
       className={clsx(
         className,
-        'col-span-2 col-start-2 row-start-2 text-sm/5 text-gray-500 group-data-focus:text-white sm:text-xs/5 forced-colors:group-data-focus:text-[HighlightText]'
+        'col-span-2 col-start-2 row-start-2 text-sm/5 text-gray-400 group-data-focus:text-white sm:text-xs/5 forced-colors:group-data-focus:text-[HighlightText]'
       )}
     />
   )

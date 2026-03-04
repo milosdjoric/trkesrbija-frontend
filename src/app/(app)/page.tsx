@@ -214,11 +214,11 @@ export default async function HomePage() {
         <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
           Sve trke u Srbiji.
         </h1>
-        <h2 className="mt-2 text-4xl font-extrabold tracking-tight text-gray-600 sm:text-5xl md:text-6xl">
+        <h2 className="mt-2 text-4xl font-extrabold tracking-tight text-gray-400 sm:text-5xl md:text-6xl">
           Na jednom mestu.
         </h2>
 
-        <p className="mx-auto mt-6 max-w-xl text-base text-gray-500">
+        <p className="mx-auto mt-6 max-w-xl text-base text-gray-400">
           Pronađi trku, prijavi se online, prati rezultate uživo. Od 5k fun run-ova do ultramaratona.
         </p>
 
@@ -226,12 +226,12 @@ export default async function HomePage() {
         <form action="/events" className="mx-auto mt-10 max-w-2xl">
           <div className="flex gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-500" />
+              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 name="q"
                 placeholder="Pretraži trke, gradove..."
-                className="w-full rounded-xl border border-dark-border bg-dark-surface py-4 pl-12 pr-4 text-base text-white placeholder:text-gray-500 focus:border-dark-border-light focus:outline-none focus:ring-2 focus:ring-brand-green"
+                className="w-full rounded-xl border border-dark-border bg-dark-surface py-4 pl-12 pr-4 text-base text-white placeholder:text-gray-400 focus:border-dark-border-light focus:outline-none focus:ring-2 focus:ring-brand-green"
               />
             </div>
             <button
@@ -289,7 +289,7 @@ export default async function HomePage() {
           <Subheading>Nadolazeći događaji</Subheading>
           <Link
             href="/events"
-            className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-300"
+            className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
           >
             Svi događaji
             <ArrowRightIcon className="size-3" />
@@ -297,7 +297,7 @@ export default async function HomePage() {
         </div>
 
         {processedEvents.length === 0 ? (
-          <div className="mt-4 rounded-lg border border-dark-border p-6 text-center text-sm text-gray-500">
+          <div className="mt-4 rounded-lg border border-dark-border p-6 text-center text-sm text-gray-400">
             Nema nadolazećih događaja
           </div>
         ) : (
