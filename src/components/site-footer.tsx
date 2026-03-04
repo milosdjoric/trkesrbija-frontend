@@ -61,17 +61,17 @@ export function SiteFooter() {
             <h3 className="text-sm font-semibold text-white">Tipovi trka</h3>
             <ul className="mt-3 space-y-2">
               <li>
-                <Link href="/events?type=TRAIL" className={linkClass}>
+                <Link href="/events?eventType=TRAIL" className={linkClass}>
                   Trail trke
                 </Link>
               </li>
               <li>
-                <Link href="/events?type=ROAD" className={linkClass}>
+                <Link href="/events?eventType=ROAD" className={linkClass}>
                   Drumske trke
                 </Link>
               </li>
               <li>
-                <Link href="/events?type=OCR" className={linkClass}>
+                <Link href="/events?eventType=OCR" className={linkClass}>
                   OCR trke
                 </Link>
               </li>
