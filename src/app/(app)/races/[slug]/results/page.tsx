@@ -10,12 +10,13 @@ import {
 } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Heading } from '@/components/heading'
+import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Text } from '@/components/text'
 import { ChevronLeftIcon, TrophyIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 type RaceInfo = {
   id: string
@@ -103,23 +104,17 @@ export default function RaceResultsPage() {
   const [results, setResults] = useState<RaceResult[]>([])
   const [loading, setLoading] = useState(true)
   const [genderFilter, setGenderFilter] = useState<Gender | ''>('')
+  const [nameSearch, setNameSearch] = useState('')
 
   const loadData = useCallback(async () => {
     try {
-      // Load race info by slug
-      const raceData = await gql<{
-        race: RaceInfo | null
-      }>(RACE_BY_SLUG_QUERY, { slug })
+      const raceData = await gql<{ race: RaceInfo | null }>(RACE_BY_SLUG_QUERY, { slug })
 
       if (raceData.race) {
         setRace(raceData.race)
-
-        // Load checkpoints using race ID
         const cps = await fetchCheckpoints(raceData.race.id)
         setCheckpoints(cps.sort((a, b) => a.orderIndex - b.orderIndex))
-
-        // Load results using race ID
-        const raceResults = await fetchRaceResults(raceData.race.id, genderFilter || undefined)
+        const raceResults = await fetchRaceResults(raceData.race.id)
         setResults(raceResults)
       }
     } catch (err) {
@@ -127,11 +122,38 @@ export default function RaceResultsPage() {
     } finally {
       setLoading(false)
     }
-  }, [slug, genderFilter])
+  }, [slug])
 
   useEffect(() => {
     loadData()
   }, [loadData])
+
+  const filteredResults = useMemo(() => {
+    let filtered = results
+
+    if (genderFilter) {
+      filtered = filtered.filter((r) => r.registration.gender === genderFilter)
+    }
+
+    if (nameSearch.trim()) {
+      const query = nameSearch
+        .trim()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+      filtered = filtered.filter((r) => {
+        const fullName = `${r.registration.firstName} ${r.registration.lastName}`
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/đ/g, 'd')
+        return fullName.includes(query)
+      })
+    }
+
+    return filtered
+  }, [results, genderFilter, nameSearch])
 
   if (loading) {
     return (
@@ -150,7 +172,7 @@ export default function RaceResultsPage() {
   }
 
   // Count finishers
-  const finishers = results.filter((r) => r.totalTime != null).length
+  const finishers = filteredResults.filter((r) => r.totalTime != null).length
 
   return (
     <>
@@ -172,7 +194,14 @@ export default function RaceResultsPage() {
           </Text>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <Input
+            type="search"
+            placeholder="Pretraži ime..."
+            value={nameSearch}
+            onChange={(e) => setNameSearch(e.target.value)}
+            className="w-44"
+          />
           <Select
             value={genderFilter}
             onChange={(e) => setGenderFilter(e.target.value as Gender | '')}
@@ -187,7 +216,7 @@ export default function RaceResultsPage() {
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div className="rounded-lg border border-border-primary bg-card p-4">
-          <div className="text-2xl font-semibold">{results.length}</div>
+          <div className="text-2xl font-semibold">{filteredResults.length}</div>
           <div className="text-sm text-text-secondary">Učesnika</div>
         </div>
         <div className="rounded-lg border border-border-primary bg-card p-4">
@@ -200,7 +229,7 @@ export default function RaceResultsPage() {
         </div>
         <div className="rounded-lg border border-border-primary bg-card p-4">
           <div className="text-2xl font-semibold text-amber-600">
-            {results.length - finishers}
+            {filteredResults.length - finishers}
           </div>
           <div className="text-sm text-text-secondary">Nije završilo</div>
         </div>
@@ -229,7 +258,7 @@ export default function RaceResultsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border-primary">
-              {results.map((result, index) => {
+              {filteredResults.map((result, index) => {
                 const position = result.totalTime != null ? index + 1 : null
                 const medalColor = position ? getMedalColor(position) : null
 

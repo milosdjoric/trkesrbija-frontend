@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { fetchRaceResults, fetchCheckpoints, type RaceResult, type Checkpoint, type Gender } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
+import { Input } from '@/components/input'
 import { Select } from '@/components/select'
 import { Subheading } from '@/components/heading'
 import { Text } from '@/components/text'
@@ -35,17 +36,28 @@ function formatTime(iso: string): string {
   })
 }
 
+/** Normalize string for accent-insensitive search (č→c, š→s, ž→z, đ→d, ć→c) */
+function normalize(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'd')
+}
+
 export function RaceResults({ raceId, raceName }: Props) {
   const [results, setResults] = useState<RaceResult[]>([])
   const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([])
   const [loading, setLoading] = useState(true)
   const [genderFilter, setGenderFilter] = useState<Gender | ''>('')
+  const [nameSearch, setNameSearch] = useState('')
 
   useEffect(() => {
     async function loadData() {
       try {
         const [resultsData, checkpointsData] = await Promise.all([
-          fetchRaceResults(raceId, genderFilter || undefined),
+          fetchRaceResults(raceId),
           fetchCheckpoints(raceId),
         ])
         setResults(resultsData)
@@ -58,7 +70,25 @@ export function RaceResults({ raceId, raceName }: Props) {
     }
 
     loadData()
-  }, [raceId, genderFilter])
+  }, [raceId])
+
+  const filteredResults = useMemo(() => {
+    let filtered = results
+
+    if (genderFilter) {
+      filtered = filtered.filter((r) => r.registration.gender === genderFilter)
+    }
+
+    if (nameSearch.trim()) {
+      const query = normalize(nameSearch.trim())
+      filtered = filtered.filter((r) => {
+        const fullName = normalize(`${r.registration.firstName} ${r.registration.lastName}`)
+        return fullName.includes(query)
+      })
+    }
+
+    return filtered
+  }, [results, genderFilter, nameSearch])
 
   // Don't render if no checkpoints configured
   if (!loading && checkpoints.length === 0) {
@@ -80,17 +110,24 @@ export function RaceResults({ raceId, raceName }: Props) {
   }
 
   // Count finished participants
-  const finishedCount = results.filter((r) => r.totalTime != null).length
-  const totalCount = results.length
+  const finishedCount = filteredResults.filter((r) => r.totalTime != null).length
+  const totalCount = filteredResults.length
 
   return (
     <div className="mt-8">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Subheading>Rezultati{raceName && ` - ${raceName}`}</Subheading>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <Text className="text-sm text-text-secondary">
             {finishedCount} od {totalCount} završilo
           </Text>
+          <Input
+            type="search"
+            placeholder="Pretraži ime..."
+            value={nameSearch}
+            onChange={(e) => setNameSearch(e.target.value)}
+            className="w-40"
+          />
           <Select
             value={genderFilter}
             onChange={(e) => setGenderFilter(e.target.value as Gender | '')}
@@ -120,8 +157,8 @@ export function RaceResults({ raceId, raceName }: Props) {
               <th className="px-3 py-2 text-right">Vreme</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
-            {results.map((result, index) => {
+          <tbody className="divide-y divide-border-primary">
+            {filteredResults.map((result, index) => {
               const position = result.totalTime != null ? index + 1 : '-'
 
               return (
