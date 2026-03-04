@@ -9,6 +9,9 @@ export const revalidate = 300 // ISR: revalidate svakih 5 minuta
 export const metadata: Metadata = {
   title: 'Kalendar trka',
   description: 'Pregledajte kalendar trail i uličnih trka u Srbiji. Vidite koje trke su zakazane za svaki dan.',
+  alternates: {
+    canonical: '/calendar',
+  },
   openGraph: {
     title: 'Kalendar trka - Trke Srbija',
     description: 'Pregledajte kalendar trail i uličnih trka u Srbiji.',

@@ -197,6 +197,9 @@ export async function generateMetadata({
   return {
     title,
     description,
+    alternates: {
+      canonical: `/races/${slug}`,
+    },
     openGraph: {
       title,
       description,

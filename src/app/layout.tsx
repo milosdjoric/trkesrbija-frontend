@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   publisher: 'Trke Srbija',
   metadataBase: new URL(siteUrl),
   alternates: {
-    canonical: siteUrl,
+    canonical: '/',
   },
   openGraph: {
     type: 'website',

@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   title: 'Svi događaji',
   description:
     'Pregledajte sve trail i ulične trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
+  alternates: {
+    canonical: '/events',
+  },
   openGraph: {
     title: 'Svi događaji - Trke Srbija',
     description:
