@@ -1,4 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#121212"/>
-  <text x="16" y="24" text-anchor="middle" font-family="system-ui, -apple-system, sans-serif" font-size="22" font-weight="800" fill="#00D084">t</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#121212"/>
+  <!-- Letter "t" as path - bold geometric style -->
+  <path d="M152 128 h208 v56 h-76 v200 h-56 v-200 h-76 z" fill="#00D084"/>
 </svg>
