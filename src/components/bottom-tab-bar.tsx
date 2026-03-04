@@ -37,8 +37,8 @@ export function BottomTabBar() {
 
   return (
     <>
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-dark-border bg-dark-bg/95 backdrop-blur-md lg:hidden">
-        <div className="flex items-center justify-around">
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-dark-border bg-dark-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
+        <div className="flex items-center justify-around px-1">
           {tabs.map((tab) => {
             const isActive = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
             return (
@@ -46,38 +46,52 @@ export function BottomTabBar() {
                 key={tab.href}
                 href={tab.href}
                 className={clsx(
-                  'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-                  isActive ? 'text-brand-green' : 'text-gray-400'
+                  'relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] transition-colors',
+                  isActive ? 'font-bold text-brand-green' : 'font-medium text-gray-500'
                 )}
               >
-                <tab.icon className="size-5" />
+                <tab.icon className={clsx('size-6', isActive && 'drop-shadow-[0_0_6px_rgba(0,208,132,0.5)]')} />
                 {tab.label}
+                {isActive && (
+                  <span className="absolute top-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-brand-green" />
+                )}
               </Link>
             )
           })}
 
           {/* Profile tab */}
-          <Link
-            href={profileHref}
-            className={clsx(
-              'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-              pathname === '/settings' || pathname === '/login' ? 'text-brand-green' : 'text-gray-400'
-            )}
-          >
-            <UserCircleIcon className="size-5" />
-            {profileLabel}
-          </Link>
+          {(() => {
+            const isActive = pathname === '/settings' || pathname === '/login'
+            return (
+              <Link
+                href={profileHref}
+                className={clsx(
+                  'relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] transition-colors',
+                  isActive ? 'font-bold text-brand-green' : 'font-medium text-gray-500'
+                )}
+              >
+                <UserCircleIcon className={clsx('size-6', isActive && 'drop-shadow-[0_0_6px_rgba(0,208,132,0.5)]')} />
+                {profileLabel}
+                {isActive && (
+                  <span className="absolute top-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-brand-green" />
+                )}
+              </Link>
+            )
+          })()}
 
           {/* More tab */}
           <button
             onClick={() => setMoreOpen(true)}
             className={clsx(
-              'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-              moreOpen ? 'text-brand-green' : 'text-gray-400'
+              'relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] transition-colors',
+              moreOpen ? 'font-bold text-brand-green' : 'font-medium text-gray-500'
             )}
           >
-            <EllipsisHorizontalIcon className="size-5" />
+            <EllipsisHorizontalIcon className={clsx('size-6', moreOpen && 'drop-shadow-[0_0_6px_rgba(0,208,132,0.5)]')} />
             Još
+            {moreOpen && (
+              <span className="absolute top-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-brand-green" />
+            )}
           </button>
         </div>
       </nav>
