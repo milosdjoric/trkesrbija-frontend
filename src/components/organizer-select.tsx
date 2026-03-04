@@ -119,12 +119,12 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
   }
 
   const inputClass =
-    'mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800'
+    'mt-1 w-full rounded-lg border border-dark-border bg-dark-surface px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500'
 
   return (
     <div>
       {/* Dropdown */}
-      <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+      <label className="block text-sm font-medium text-gray-300">
         Organizator
       </label>
       <div className="mt-1 flex gap-2">
@@ -135,7 +135,7 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
             onChange(val || null)
           }}
           disabled={loadingOrganizers}
-          className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          className="flex-1 rounded-lg border border-dark-border bg-dark-surface px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           <option value="">
             {loadingOrganizers ? 'Učitavanje...' : '— Bez organizatora —'}
@@ -150,7 +150,7 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
         <button
           type="button"
           onClick={() => setShowNewForm(!showNewForm)}
-          className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+          className="cursor-pointer inline-flex items-center gap-1 rounded-lg border border-dark-border px-3 py-2 text-sm font-medium text-gray-300 hover:bg-dark-surface-hover"
           title="Dodaj novog organizatora"
         >
           <PlusIcon className="size-4" />
@@ -160,14 +160,14 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
 
       {/* New organizer form */}
       {showNewForm && (
-        <div className="mt-4 rounded-lg border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
-          <p className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+        <div className="mt-4 rounded-lg border border-blue-800 bg-blue-900/20 p-4">
+          <p className="mb-3 text-sm font-medium text-gray-300">
             Novi organizator
           </p>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+              <label className="block text-xs font-medium text-gray-400">
                 Naziv *
               </label>
               <input
@@ -180,7 +180,7 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+              <label className="block text-xs font-medium text-gray-400">
                 Telefon
               </label>
               <input
@@ -193,7 +193,7 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+              <label className="block text-xs font-medium text-gray-400">
                 Email
               </label>
               <input
@@ -206,7 +206,7 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-zinc-600 dark:text-zinc-400">
+              <label className="block text-xs font-medium text-gray-400">
                 Sajt
               </label>
               <input
@@ -237,7 +237,7 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
                 setNewEmail('')
                 setNewSite('')
               }}
-              className="cursor-pointer rounded-lg border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-600 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="cursor-pointer rounded-lg border border-dark-border px-4 py-2 text-sm font-medium text-gray-300 hover:bg-dark-surface-hover"
             >
               Otkaži
             </button>

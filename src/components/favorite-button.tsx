@@ -83,7 +83,7 @@ export function FavoriteButton({
         'rounded-full p-1.5 transition-colors',
         isFavorite
           ? 'text-red-500 hover:text-red-600'
-          : 'text-zinc-400 hover:text-red-500 dark:text-zinc-500 dark:hover:text-red-500',
+          : 'text-gray-400 hover:text-red-500',
         isPending && 'opacity-50 cursor-not-allowed',
         className
       )}

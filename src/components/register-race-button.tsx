@@ -6,10 +6,10 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 const linkStyles =
-  'inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200'
+  'inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400 hover:border-zinc-500 hover:text-zinc-200'
 
 const disabledStyles =
-  'inline-flex items-center gap-1 rounded border border-zinc-200 px-2 py-0.5 text-xs text-zinc-400 dark:border-zinc-700 dark:text-zinc-500'
+  'inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400'
 
 const CHECK_REGISTRATION_QUERY = `
   query CheckRegistration {

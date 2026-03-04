@@ -74,7 +74,7 @@ export function RaceResults({ raceId, raceName }: Props) {
     return (
       <div className="mt-8">
         <Subheading>Rezultati{raceName && ` - ${raceName}`}</Subheading>
-        <div className="mt-4 animate-pulse text-zinc-500">Učitavanje rezultata...</div>
+        <div className="mt-4 animate-pulse text-gray-400">Učitavanje rezultata...</div>
       </div>
     )
   }
@@ -88,7 +88,7 @@ export function RaceResults({ raceId, raceName }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Subheading>Rezultati{raceName && ` - ${raceName}`}</Subheading>
         <div className="flex items-center gap-4">
-          <Text className="text-sm text-zinc-500">
+          <Text className="text-sm text-gray-400">
             {finishedCount} od {totalCount} završilo
           </Text>
           <Select
@@ -105,9 +105,9 @@ export function RaceResults({ raceId, raceName }: Props) {
 
       {/* Results table */}
       <div className="mt-4 overflow-x-auto">
-        <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+        <table className="min-w-full divide-y divide-dark-border">
           <thead>
-            <tr className="text-left text-sm font-medium text-zinc-500 dark:text-zinc-400">
+            <tr className="text-left text-sm font-medium text-gray-400">
               <th className="px-3 py-2">#</th>
               <th className="px-3 py-2">Broj</th>
               <th className="px-3 py-2">Učesnik</th>
@@ -120,7 +120,7 @@ export function RaceResults({ raceId, raceName }: Props) {
               <th className="px-3 py-2 text-right">Vreme</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800">
+          <tbody className="divide-y divide-gray-100">
             {results.map((result, index) => {
               const position = result.totalTime != null ? index + 1 : '-'
 
@@ -141,7 +141,7 @@ export function RaceResults({ raceId, raceName }: Props) {
                   {checkpoints.map((cp) => {
                     const cpTime = result.checkpointTimes.find((ct) => ct.checkpointId === cp.id)
                     return (
-                      <td key={cp.id} className="whitespace-nowrap px-3 py-2 text-center font-mono text-zinc-600 dark:text-zinc-400">
+                      <td key={cp.id} className="whitespace-nowrap px-3 py-2 text-center font-mono text-gray-400">
                         {cpTime ? formatTime(cpTime.timestamp) : '-'}
                       </td>
                     )

@@ -43,7 +43,7 @@ export function PasswordStrength({ password, showRequirements = true, className 
 
   // Determine color based on strength
   const getStrengthColor = () => {
-    if (strengthPercent === 0) return 'bg-zinc-200 dark:bg-zinc-700'
+    if (strengthPercent === 0) return 'bg-zinc-700'
     if (strengthPercent <= 40) return 'bg-red-500'
     if (strengthPercent <= 60) return 'bg-orange-500'
     if (strengthPercent <= 80) return 'bg-yellow-500'
@@ -64,7 +64,7 @@ export function PasswordStrength({ password, showRequirements = true, className 
     <div className={clsx('space-y-2', className)}>
       {/* Strength bar */}
       <div className="flex items-center gap-2">
-        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-700">
           <div
             className={clsx('h-full transition-all duration-300', getStrengthColor())}
             style={{ width: `${strengthPercent}%` }}
@@ -73,10 +73,10 @@ export function PasswordStrength({ password, showRequirements = true, className 
         <span
           className={clsx(
             'text-xs font-medium',
-            strengthPercent <= 40 && 'text-red-600 dark:text-red-400',
-            strengthPercent > 40 && strengthPercent <= 60 && 'text-orange-600 dark:text-orange-400',
-            strengthPercent > 60 && strengthPercent <= 80 && 'text-yellow-600 dark:text-yellow-400',
-            strengthPercent > 80 && 'text-green-600 dark:text-green-400'
+            strengthPercent <= 40 && 'text-red-400',
+            strengthPercent > 40 && strengthPercent <= 60 && 'text-orange-400',
+            strengthPercent > 60 && strengthPercent <= 80 && 'text-yellow-400',
+            strengthPercent > 80 && 'text-green-400'
           )}
         >
           {getStrengthLabel()}
@@ -93,11 +93,11 @@ export function PasswordStrength({ password, showRequirements = true, className 
                 {passed ? (
                   <CheckCircleIcon className="size-3.5 text-green-500" />
                 ) : (
-                  <XCircleIcon className="size-3.5 text-zinc-400 dark:text-zinc-500" />
+                  <XCircleIcon className="size-3.5 text-gray-400" />
                 )}
                 <span
                   className={clsx(
-                    passed ? 'text-green-600 dark:text-green-400' : 'text-zinc-500 dark:text-zinc-400'
+                    passed ? 'text-green-400' : 'text-gray-400'
                   )}
                 >
                   {req.label}

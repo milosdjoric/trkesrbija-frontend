@@ -80,7 +80,7 @@ export function ImageUpload({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">
+        <label className="block text-sm font-medium text-white">
           {label}
         </label>
       )}
@@ -90,7 +90,7 @@ export function ImageUpload({
           <img
             src={value}
             alt="Preview"
-            className="aspect-video w-full max-w-md rounded-lg border border-zinc-200 object-cover dark:border-zinc-700"
+            className="aspect-video w-full max-w-md rounded-lg border border-dark-border object-cover"
           />
           <button
             type="button"
@@ -108,8 +108,8 @@ export function ImageUpload({
           onDragLeave={handleDragLeave}
           className={`cursor-pointer rounded-lg border-2 border-dashed transition-colors ${
             dragActive
-              ? 'border-zinc-400 bg-zinc-100 dark:border-zinc-500 dark:bg-zinc-700/50'
-              : 'border-zinc-300 bg-zinc-900/50 hover:border-zinc-400 dark:border-zinc-600 dark:bg-zinc-800/80 dark:hover:border-zinc-500'
+              ? 'border-zinc-500 bg-zinc-700/50'
+              : 'border-dark-border bg-zinc-800/80 hover:border-zinc-500'
           }`}
         >
           <input
@@ -124,16 +124,16 @@ export function ImageUpload({
           <div className="flex flex-col items-center justify-center p-6">
             {isUploading ? (
               <>
-                <svg className="size-8 animate-spin text-zinc-400" viewBox="0 0 24 24">
+                <svg className="size-8 animate-spin text-gray-400" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                <span className="mt-2 text-sm text-zinc-400">Upload u toku...</span>
+                <span className="mt-2 text-sm text-gray-400">Upload u toku...</span>
               </>
             ) : (
               <>
-                <CloudUploadIcon className="size-12 text-zinc-400 dark:text-zinc-500" />
-                <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+                <CloudUploadIcon className="size-12 text-gray-400" />
+                <p className="mt-2 text-sm text-gray-400">
                   {description}
                 </p>
               </>

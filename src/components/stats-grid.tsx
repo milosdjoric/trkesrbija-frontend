@@ -27,13 +27,13 @@ export function StatsGrid({ items, columns = 4, className = '' }: StatsGridProps
       {items.map((stat) => (
         <div
           key={stat.label}
-          className="rounded-lg border border-zinc-200 px-4 py-3 dark:border-zinc-700"
+          className="rounded-lg border border-dark-border px-4 py-3"
         >
-          <div className="flex items-center gap-1.5 text-zinc-400">
+          <div className="flex items-center gap-1.5 text-gray-400">
             {stat.icon && <span>{stat.icon}</span>}
-            <span className={`text-xl font-semibold text-zinc-900 dark:text-zinc-100 ${stat.color ?? ''}`}>{stat.value}</span>
+            <span className={`text-xl font-semibold text-white ${stat.color ?? ''}`}>{stat.value}</span>
           </div>
-          <div className="mt-0.5 text-xs text-zinc-500">{stat.label}</div>
+          <div className="mt-0.5 text-xs text-gray-400">{stat.label}</div>
         </div>
       ))}
     </div>

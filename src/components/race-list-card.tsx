@@ -70,23 +70,23 @@ export function RaceListCard({
   return (
     <Link
       href={`/events/${eventSlug}`}
-      className="flex items-center gap-4 rounded-lg border border-zinc-200 p-4 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800/50"
+      className="flex items-center gap-4 rounded-lg border border-dark-border p-4 transition-colors hover:bg-dark-card-hover"
     >
       {/* Date box */}
-      <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-zinc-100 py-2 text-center dark:bg-zinc-800">
-        <span className="text-xs font-medium uppercase text-zinc-500 dark:text-zinc-400">
+      <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-dark-surface py-2 text-center">
+        <span className="text-xs font-medium uppercase text-gray-400">
           {formatMonth(startDateTime)}
         </span>
-        <span className="text-xl font-bold text-zinc-900 dark:text-zinc-100">{formatDay(startDateTime)}</span>
+        <span className="text-xl font-bold text-white">{formatDay(startDateTime)}</span>
       </div>
 
       {/* Info */}
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-medium text-zinc-900 dark:text-zinc-100">{eventName}</span>
+          <span className="font-medium text-white">{eventName}</span>
           <Badge color={badgeColor}>{raceName ?? typeLabel}</Badge>
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-400">
           <IconText icon={<CalendarIcon className="size-3.5" />}>
             {formatDate(startDateTime, 'short')} · {formatTime(startDateTime)}
           </IconText>

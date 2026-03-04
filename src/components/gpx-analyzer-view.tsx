@@ -223,48 +223,48 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <div className="text-2xl font-bold text-zinc-900 dark:text-white">{stats.distance.toFixed(2)} km</div>
-          <div className="text-sm text-zinc-500 dark:text-zinc-400">Dužina</div>
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+          <div className="text-2xl font-bold text-white">{stats.distance.toFixed(2)} km</div>
+          <div className="text-sm text-gray-400">Dužina</div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.elevationGain} m</div>
-          <div className="text-sm text-zinc-500 dark:text-zinc-400">Uspon (D+)</div>
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+          <div className="text-2xl font-bold text-emerald-400">{stats.elevationGain} m</div>
+          <div className="text-sm text-gray-400">Uspon (D+)</div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <div className="text-2xl font-bold text-red-600 dark:text-red-400">{stats.elevationLoss} m</div>
-          <div className="text-sm text-zinc-500 dark:text-zinc-400">Pad (D-)</div>
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+          <div className="text-2xl font-bold text-red-400">{stats.elevationLoss} m</div>
+          <div className="text-sm text-gray-400">Pad (D-)</div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <div className="text-2xl font-bold text-zinc-900 dark:text-white">{stats.minElevation} m</div>
-          <div className="text-sm text-zinc-500 dark:text-zinc-400">Min visina</div>
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+          <div className="text-2xl font-bold text-white">{stats.minElevation} m</div>
+          <div className="text-sm text-gray-400">Min visina</div>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-          <div className="text-2xl font-bold text-zinc-900 dark:text-white">{stats.maxElevation} m</div>
-          <div className="text-sm text-zinc-500 dark:text-zinc-400">Max visina</div>
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+          <div className="text-2xl font-bold text-white">{stats.maxElevation} m</div>
+          <div className="text-sm text-gray-400">Max visina</div>
         </div>
       </div>
 
       {/* Map */}
       <div
         ref={mapContainerRef}
-        className={`relative ${isFullscreen ? 'bg-white p-4 dark:bg-zinc-900' : ''}`}
+        className={`relative ${isFullscreen ? 'bg-dark-card p-4' : ''}`}
       >
         <div
           ref={mapRef}
-          className="h-[400px] w-full rounded-lg border border-zinc-200 dark:border-zinc-700"
+          className="h-[400px] w-full rounded-lg border border-dark-border"
         />
 
         {/* Layer switcher */}
-        <div className="absolute right-3 top-3 z-[1000] flex gap-1 rounded-lg bg-white p-1 shadow-md dark:bg-zinc-800">
+        <div className="absolute right-3 top-3 z-[1000] flex gap-1 rounded-lg bg-dark-surface p-1 shadow-md">
           {(['street', 'topo', 'satellite'] as const).map((layer) => (
             <button
               key={layer}
               onClick={() => switchLayer(layer)}
               className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
                 activeLayer === layer
-                  ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
-                  : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-700'
+                  ? 'bg-white text-zinc-900'
+                  : 'text-gray-300 hover:bg-dark-card-hover'
               }`}
             >
               {layer === 'street' ? 'Ulice' : layer === 'topo' ? 'Topo' : 'Satelit'}
@@ -275,10 +275,10 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
         {/* Fullscreen button */}
         <button
           onClick={toggleFullscreen}
-          className="absolute bottom-3 right-3 z-[1000] cursor-pointer rounded-lg bg-white p-2 shadow-md hover:bg-zinc-100 dark:bg-zinc-800 dark:hover:bg-zinc-700"
+          className="absolute bottom-3 right-3 z-[1000] cursor-pointer rounded-lg bg-dark-surface p-2 shadow-md hover:bg-dark-surface-hover"
           title={isFullscreen ? 'Izađi iz celog ekrana' : 'Ceo ekran'}
         >
-          <svg className="size-5 text-zinc-600 dark:text-zinc-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="size-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isFullscreen ? (
               <path
                 strokeLinecap="round"
@@ -299,14 +299,14 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
       </div>
 
       {/* Advanced Stats */}
-      <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-zinc-900 dark:text-white">Napredne statistike</h3>
+          <h3 className="text-sm font-medium text-white">Napredne statistike</h3>
           <a
             href="https://itra.run/FAQ/ItraScore"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-[10px] text-blue-500 hover:text-blue-600 hover:underline dark:text-blue-400"
+            className="flex items-center gap-1 text-[10px] text-blue-400 hover:text-blue-300 hover:underline"
           >
             <svg className="size-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -318,11 +318,11 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           {/* ITRA Points */}
           <div>
             <div className="flex min-h-[30px] items-baseline gap-2">
-              <span className="text-lg font-semibold text-zinc-900 dark:text-white">{stats.itraPoints}</span>
-              <span className="text-xs text-zinc-400 dark:text-zinc-500">km-effort</span>
+              <span className="text-lg font-semibold text-white">{stats.itraPoints}</span>
+              <span className="text-xs text-gray-400">km-effort</span>
             </div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">ITRA bodovi</div>
-            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+            <div className="text-xs text-gray-400">ITRA bodovi</div>
+            <div className="mt-0.5 text-[10px] text-gray-400">
               Formula: km + D+ / 100
             </div>
           </div>
@@ -333,20 +333,20 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               <span
                 className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                   stats.difficulty === 'XXS' || stats.difficulty === 'XS'
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                    ? 'bg-green-900/30 text-green-400'
                     : stats.difficulty === 'S'
-                      ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                      ? 'bg-yellow-900/30 text-yellow-400'
                       : stats.difficulty === 'M'
-                        ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
-                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                        ? 'bg-orange-900/30 text-orange-400'
+                        : 'bg-red-900/30 text-red-400'
                 }`}
               >
                 {stats.difficulty}
               </span>
-              <span className="text-sm text-zinc-600 dark:text-zinc-300">{stats.difficultyLabel}</span>
+              <span className="text-sm text-gray-300">{stats.difficultyLabel}</span>
             </div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">ITRA kategorizacija težine staze</div>
-            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+            <div className="text-xs text-gray-400">ITRA kategorizacija težine staze</div>
+            <div className="mt-0.5 text-[10px] text-gray-400">
               {stats.difficulty === 'XXS' && '0 ITRA poena (0-24 km-effort)'}
               {stats.difficulty === 'XS' && '1 ITRA poen (25-44 km-effort)'}
               {stats.difficulty === 'S' && '2 ITRA poena (45-74 km-effort)'}
@@ -359,67 +359,67 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
           {/* Effort Distance */}
           <div>
-            <div className="flex min-h-[30px] items-center text-lg font-semibold text-zinc-900 dark:text-white">{stats.effortDistance} km</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Effort distanca</div>
-            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+            <div className="flex min-h-[30px] items-center text-lg font-semibold text-white">{stats.effortDistance} km</div>
+            <div className="text-xs text-gray-400">Effort distanca</div>
+            <div className="mt-0.5 text-[10px] text-gray-400">
               Švajcarska metoda: km + D+/100 + D-/200
             </div>
           </div>
 
           {/* Average Elevation */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageElevation} m</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Prosečna visina</div>
+            <div className="min-h-[30px] text-lg font-semibold text-white">{stats.averageElevation} m</div>
+            <div className="text-xs text-gray-400">Prosečna visina</div>
           </div>
 
           {/* Average Grade */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-zinc-900 dark:text-white">{stats.averageGrade}%</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Prosečni nagib</div>
+            <div className="min-h-[30px] text-lg font-semibold text-white">{stats.averageGrade}%</div>
+            <div className="text-xs text-gray-400">Prosečni nagib</div>
           </div>
 
           {/* Max Grade Up */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-emerald-600 dark:text-emerald-400">+{stats.maxGradeUp}%</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Max uspon</div>
-            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+            <div className="min-h-[30px] text-lg font-semibold text-emerald-400">+{stats.maxGradeUp}%</div>
+            <div className="text-xs text-gray-400">Max uspon</div>
+            <div className="mt-0.5 text-[10px] text-gray-400">
               Najstrmiji segment (min 300m)
             </div>
           </div>
 
           {/* Max Grade Down */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-red-600 dark:text-red-400">-{stats.maxGradeDown}%</div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Max pad</div>
-            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+            <div className="min-h-[30px] text-lg font-semibold text-red-400">-{stats.maxGradeDown}%</div>
+            <div className="text-xs text-gray-400">Max pad</div>
+            <div className="mt-0.5 text-[10px] text-gray-400">
               Najstrmiji spust (min 100m)
             </div>
           </div>
 
           {/* Loop */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-zinc-900 dark:text-white">
+            <div className="min-h-[30px] text-lg font-semibold text-white">
               {stats.isLoop ? (
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                <span className="flex items-center gap-1 text-emerald-400">
                   <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                   Da
                 </span>
               ) : (
-                <span className="text-zinc-500 dark:text-zinc-400">Ne</span>
+                <span className="text-gray-400">Ne</span>
               )}
             </div>
-            <div className="text-xs text-zinc-500 dark:text-zinc-400">Kružna ruta</div>
-            <div className="mt-0.5 text-[10px] text-zinc-400 dark:text-zinc-500">
+            <div className="text-xs text-gray-400">Kružna ruta</div>
+            <div className="mt-0.5 text-[10px] text-gray-400">
               Start i cilj unutar 500m
             </div>
           </div>
         </div>
 
         {/* ITRA Info Note */}
-        <div className="mt-4 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
-          <p className="text-[11px] leading-relaxed text-blue-700 dark:text-blue-300">
+        <div className="mt-4 rounded-lg bg-blue-900/20 p-3">
+          <p className="text-[11px] leading-relaxed text-blue-300">
             <strong>Napomena:</strong> Svi prikazani rezultati su okvirni i služe kao orijentacija. Za tačne podatke o
             stazi proverite sa organizatorom trke. Zvanični ITRA bodovi mogu biti umanjeni za trke sa više identičnih
             krugova ili previše okrepnih stanica.{' '}
@@ -427,7 +427,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               href="https://itra.run/FAQ/ItraScore"
               target="_blank"
               rel="noopener noreferrer"
-              className="underline hover:text-blue-800 dark:hover:text-blue-200"
+              className="underline hover:text-blue-200"
             >
               Više informacija →
             </a>
@@ -436,27 +436,27 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
       </div>
 
       {/* Elevation Profile */}
-      <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+      <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Visinski profil</span>
+          <span className="text-xs font-medium text-gray-400">Visinski profil</span>
           {hoveredPoint && (
-            <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="text-xs text-gray-400">
               {hoveredPoint.distance.toFixed(1)} km · {Math.round(hoveredPoint.elevation)} m
             </span>
           )}
         </div>
         <div
-          className="relative h-[120px] w-full cursor-crosshair rounded-lg border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50"
+          className="relative h-[120px] w-full cursor-crosshair rounded-lg border border-dark-border bg-dark-card"
           onMouseMove={handleProfileHover}
           onMouseLeave={handleProfileLeave}
         >
           {/* Y-axis labels - positioned outside SVG */}
-          <div className="pointer-events-none absolute left-2 top-2 text-[10px] text-zinc-400">{stats.maxElevation}m</div>
-          <div className="pointer-events-none absolute bottom-6 left-2 text-[10px] text-zinc-400">{stats.minElevation}m</div>
+          <div className="pointer-events-none absolute left-2 top-2 text-[10px] text-gray-400">{stats.maxElevation}m</div>
+          <div className="pointer-events-none absolute bottom-6 left-2 text-[10px] text-gray-400">{stats.minElevation}m</div>
 
           {/* X-axis labels - positioned outside SVG */}
-          <div className="pointer-events-none absolute bottom-1 left-10 text-[10px] text-zinc-400">0</div>
-          <div className="pointer-events-none absolute bottom-1 right-2 text-[10px] text-zinc-400">{stats.distance.toFixed(1)}km</div>
+          <div className="pointer-events-none absolute bottom-1 left-10 text-[10px] text-gray-400">0</div>
+          <div className="pointer-events-none absolute bottom-1 right-2 text-[10px] text-gray-400">{stats.distance.toFixed(1)}km</div>
 
           {/* Hover indicator - HTML elements for perfect positioning */}
           {hoveredPoint && (
@@ -486,7 +486,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             {/* Grid lines */}
             <defs>
               <pattern id="grid" width="10" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-zinc-300 dark:text-zinc-600" />
+                <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-gray-300" />
               </pattern>
               <linearGradient id="elevationGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="#10b981" />
@@ -532,20 +532,20 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
       {/* Top Climbs */}
       {topClimbs.length > 0 && (
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
           <div className="mb-1 flex items-center justify-between">
-            <h3 className="text-sm font-medium text-zinc-900 dark:text-white">
+            <h3 className="text-sm font-medium text-white">
               Top {topClimbs.length} uspon{topClimbs.length === 1 ? '' : topClimbs.length < 5 ? 'a' : 'a'}
             </h3>
-            <div className="flex gap-1 rounded-lg bg-zinc-100 p-0.5 dark:bg-zinc-700">
+            <div className="flex gap-1 rounded-lg bg-zinc-700 p-0.5">
               {(['elevation', 'position', 'grade'] as const).map((sort) => (
                 <button
                   key={sort}
                   onClick={() => setClimbSort(sort)}
                   className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
                     climbSort === sort
-                      ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-600 dark:text-white'
-                      : 'text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200'
+                      ? 'bg-zinc-600 text-white shadow-sm'
+                      : 'text-gray-400 hover:text-zinc-200'
                   }`}
                 >
                   {sort === 'elevation' ? 'D+' : sort === 'position' ? 'km' : '%'}
@@ -553,32 +553,32 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               ))}
             </div>
           </div>
-          <p className="mb-2 text-[10px] text-zinc-400 dark:text-zinc-500">
+          <p className="mb-2 text-[10px] text-gray-400">
             Kriterijumi: min 50m D+, min 3% nagib, min 200m dužina
           </p>
           <div className="space-y-1">
             {sortedClimbs.map((climb, index) => (
               <div
                 key={index}
-                className="flex items-center gap-3 rounded bg-zinc-50 px-2 py-1.5 dark:bg-zinc-800/50"
+                className="flex items-center gap-3 rounded bg-dark-card px-2 py-1.5"
               >
                 {/* Rank */}
-                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-900/30 text-xs font-bold text-emerald-400">
                   {index + 1}
                 </div>
 
                 {/* Climb info */}
                 <div className="flex flex-1 items-center gap-2">
-                  <span className="text-sm font-medium text-zinc-900 dark:text-white">
+                  <span className="text-sm font-medium text-white">
                     {climb.startKm} → {climb.endKm} km
                   </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <span className="text-xs text-gray-400">
                     ({climb.length} km)
                   </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <span className="text-xs text-gray-400">
                     +{climb.elevationGain}m
                   </span>
-                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                  <span className="text-xs text-gray-400">
                     {Math.round(climb.elevationGain / climb.length)} m/km
                   </span>
                 </div>
@@ -587,12 +587,12 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
                 <div
                   className={`shrink-0 rounded-full px-1.5 py-0.5 text-xs font-medium ${
                     climb.averageGrade < 5
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+                      ? 'bg-green-900/30 text-green-400'
                       : climb.averageGrade < 10
-                        ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                        ? 'bg-yellow-900/30 text-yellow-400'
                         : climb.averageGrade < 15
-                          ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
-                          : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                          ? 'bg-orange-900/30 text-orange-400'
+                          : 'bg-red-900/30 text-red-400'
                   }`}
                 >
                   {climb.averageGrade}%

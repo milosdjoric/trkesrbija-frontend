@@ -72,8 +72,8 @@ export function ImageSlider({ images, alt = 'Slika' }: ImageSliderProps) {
               onClick={() => goToSlide(index)}
               className={`size-2 rounded-full transition-colors ${
                 index === currentIndex
-                  ? 'bg-zinc-900 dark:bg-white'
-                  : 'bg-zinc-300 hover:bg-zinc-400 dark:bg-zinc-600 dark:hover:bg-zinc-500'
+                  ? 'bg-white'
+                  : 'bg-zinc-600 hover:bg-zinc-500'
               }`}
               aria-label={`Idi na sliku ${index + 1}`}
             />

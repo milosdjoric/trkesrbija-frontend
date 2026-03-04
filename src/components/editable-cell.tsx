@@ -128,15 +128,15 @@ export function EditableCell({
         onDoubleClick={() => !disabled && setIsEditing(true)}
         className={clsx(
           'min-h-[20px] cursor-pointer overflow-hidden truncate rounded px-1 py-0.5 text-xs transition-colors',
-          'hover:bg-zinc-100 dark:hover:bg-zinc-700',
+          'hover:bg-dark-card-hover',
           disabled && 'cursor-not-allowed opacity-50',
-          saveStatus === 'success' && 'bg-green-100 dark:bg-green-900/30',
-          saveStatus === 'error' && 'bg-red-100 dark:bg-red-900/30',
+          saveStatus === 'success' && 'bg-green-900/30',
+          saveStatus === 'error' && 'bg-red-900/30',
           className
         )}
         title={disabled ? undefined : 'Dupli klik za izmenu'}
       >
-        <span className={clsx(!value && value !== 0 && 'text-zinc-400')}>
+        <span className={clsx(!value && value !== 0 && 'text-gray-400')}>
           {formatDisplayValue(value, type, options, placeholder)}
         </span>
       </div>
@@ -154,7 +154,7 @@ export function EditableCell({
           onBlur={handleSave}
           onKeyDown={handleKeyDown}
           disabled={isSaving}
-          className="w-full rounded border-2 border-blue-500 bg-white px-1 py-0.5 text-xs focus:outline-none dark:bg-zinc-800"
+          className="w-full rounded border-2 border-blue-500 bg-dark-surface px-1 py-0.5 text-xs focus:outline-none"
         >
           <option value="">-</option>
           {options?.map((opt) => (
@@ -174,11 +174,11 @@ export function EditableCell({
           disabled={isSaving}
           placeholder={placeholder}
           step={type === 'number' ? 'any' : undefined}
-          className="w-full rounded border-2 border-blue-500 bg-white px-1 py-0.5 text-xs focus:outline-none dark:bg-zinc-800"
+          className="w-full rounded border-2 border-blue-500 bg-dark-surface px-1 py-0.5 text-xs focus:outline-none"
         />
       )}
       {isSaving && (
-        <div className="absolute inset-0 flex items-center justify-center rounded bg-white/70 dark:bg-zinc-900/70">
+        <div className="absolute inset-0 flex items-center justify-center rounded bg-zinc-900/70">
           <div className="size-4 animate-spin rounded-full border-2 border-blue-500 border-t-transparent" />
         </div>
       )}

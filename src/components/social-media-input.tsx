@@ -13,7 +13,7 @@ const SOCIAL_ICONS: Record<string, { icon: string; color: string }> = {
   facebook: { icon: 'f', color: 'bg-blue-600' },
   instagram: { icon: 'ig', color: 'bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400' },
   strava: { icon: 's', color: 'bg-orange-500' },
-  twitter: { icon: 'x', color: 'bg-black dark:bg-white dark:text-black' },
+  twitter: { icon: 'x', color: 'bg-white text-black' },
   youtube: { icon: 'yt', color: 'bg-red-600' },
   tiktok: { icon: 'tt', color: 'bg-black' },
 }
@@ -63,7 +63,7 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
   return (
     <div className="space-y-2">
       {label && (
-        <label className="block text-sm font-medium text-zinc-900 dark:text-zinc-100">
+        <label className="block text-sm font-medium text-white">
           {label}
         </label>
       )}
@@ -78,14 +78,14 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
             return (
               <div
                 key={url}
-                className="group flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 py-1 pl-1 pr-2 text-sm dark:border-zinc-700 dark:bg-zinc-800"
+                className="group flex items-center gap-2 rounded-full border border-dark-border bg-dark-surface py-1 pl-1 pr-2 text-sm"
               >
                 {socialInfo ? (
                   <span className={`flex size-6 items-center justify-center rounded-full text-xs font-bold text-white ${socialInfo.color}`}>
                     {socialInfo.icon}
                   </span>
                 ) : (
-                  <span className="flex size-6 items-center justify-center rounded-full bg-zinc-400 text-xs font-bold text-white">
+                  <span className="flex size-6 items-center justify-center rounded-full bg-gray-400 text-xs font-bold text-white">
                     🔗
                   </span>
                 )}
@@ -93,14 +93,14 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="max-w-[150px] truncate text-zinc-700 hover:text-zinc-900 dark:text-zinc-300"
+                  className="max-w-[150px] truncate text-gray-300"
                 >
                   {url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
                 </a>
                 <button
                   type="button"
                   onClick={() => removeUrl(index)}
-                  className="text-zinc-400 hover:text-red-500"
+                  className="text-gray-400 hover:text-red-500"
                 >
                   <XMarkIcon className="size-4" />
                 </button>
@@ -118,19 +118,19 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
           onChange={(e) => setNewUrl(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="https://facebook.com/..."
-          className="flex-1 rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+          className="flex-1 rounded-lg border border-dark-border bg-dark-surface px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <button
           type="button"
           onClick={addUrl}
           disabled={!newUrl.trim()}
-          className="rounded-lg bg-zinc-100 px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-200 disabled:opacity-50 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
+          className="rounded-lg bg-zinc-700 px-3 py-2 text-sm font-medium text-gray-300 hover:bg-zinc-600 disabled:opacity-50"
         >
           <PlusIcon className="size-5" />
         </button>
       </div>
 
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-gray-400">
         Podržano: Facebook, Instagram, Strava, Twitter/X, YouTube, TikTok
       </p>
     </div>

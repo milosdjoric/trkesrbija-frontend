@@ -115,7 +115,7 @@ export function ReportIssueModal({
       <DialogTitle>Prijavi pogrešnu informaciju</DialogTitle>
 
       <DialogBody>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-gray-400">
           Označite koje informacije su pogrešne za <strong>{entityName}</strong>
         </p>
 
@@ -124,22 +124,22 @@ export function ReportIssueModal({
           {fields.map((field) => (
             <label
               key={field.value}
-              className="flex items-center gap-3 rounded-lg border border-zinc-200 px-3 py-2 cursor-pointer hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
+              className="flex items-center gap-3 rounded-lg border border-dark-border px-3 py-2 cursor-pointer hover:bg-dark-surface-hover"
             >
               <input
                 type="checkbox"
                 checked={selectedFields.has(field.value)}
                 onChange={() => toggleField(field.value)}
-                className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+                className="size-4 rounded border-dark-border text-blue-600 focus:ring-blue-500 bg-dark-surface"
               />
-              <span className="text-sm text-zinc-700 dark:text-zinc-300">{field.label}</span>
+              <span className="text-sm text-gray-300">{field.label}</span>
             </label>
           ))}
         </div>
 
         {/* Message */}
         <div className="mt-4">
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label className="block text-sm font-medium text-gray-300">
             Koja je ispravna informacija? (opciono)
           </label>
           <textarea
@@ -147,13 +147,13 @@ export function ReportIssueModal({
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             placeholder="npr. Datum trke je 15. jun 2026, a ne 14. jun..."
-            className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+            className="mt-1 w-full rounded-lg border border-dark-border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-dark-surface"
           />
         </div>
 
         {/* Email */}
         <div className="mt-3">
-          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+          <label className="block text-sm font-medium text-gray-300">
             Vaš email (opciono, za kontakt)
           </label>
           <input
@@ -161,7 +161,7 @@ export function ReportIssueModal({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email@primer.rs"
-            className="mt-1 w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+            className="mt-1 w-full rounded-lg border border-dark-border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-dark-surface"
           />
         </div>
       </DialogBody>

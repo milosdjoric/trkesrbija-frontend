@@ -47,7 +47,7 @@ export function GpxDownloadButton({ url, filename, className }: GpxDownloadButto
     <button
       onClick={handleDownload}
       disabled={downloading}
-      className={className ?? 'inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300'}
+      className={className ?? 'inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300'}
     >
       <ArrowDownTrayIcon className="size-4" />
       {downloading ? 'Preuzimanje...' : 'Preuzmi GPX'}
