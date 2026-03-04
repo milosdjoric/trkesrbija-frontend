@@ -97,6 +97,7 @@ const ME_QUERY = `
       emailSubMonthly
       emailSubNews
       emailSubNewEvents
+      assignedCheckpointId
     }
   }
 `

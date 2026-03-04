@@ -135,7 +135,7 @@ export function OrganizerSelect({ value, onChange }: OrganizerSelectProps) {
             onChange(val || null)
           }}
           disabled={loadingOrganizers}
-          className="flex-1 rounded-lg border border-dark-border bg-dark-surface px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="min-w-0 flex-1 rounded-lg border border-dark-border bg-dark-surface px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           <option value="">
             {loadingOrganizers ? 'Učitavanje...' : '— Bez organizatora —'}

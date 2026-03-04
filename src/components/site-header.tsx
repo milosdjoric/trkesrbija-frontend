@@ -73,8 +73,8 @@ export function SiteHeader() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                      isActive ? 'bg-dark-surface text-white' : 'text-gray-400 hover:text-gray-300'
+                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                      isActive ? 'text-brand-green' : 'text-brand-green/50 hover:text-brand-green'
                     }`}
                   >
                     {link.label}
