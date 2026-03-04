@@ -38,14 +38,13 @@ export function SiteHeader() {
   const pathname = usePathname()
   const { user, isLoading: authLoading, logout } = useAuth()
 
-  const navLinks = user ? [...publicLinks, ...userLinks] : publicLinks
-
   return (
-    <header className="sticky top-0 z-50 border-b border-zinc-950/10 bg-white dark:border-white/10 dark:bg-zinc-900">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
+    <header className="sticky top-0 z-50 border-b border-dark-border bg-dark-bg/95 backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-6">
         {/* Logo */}
-        <Link href="/" className="text-base font-semibold text-zinc-950 dark:text-white">
-          🏃‍➡️ Trke Srbija
+        <Link href="/" className="flex items-baseline">
+          <span className="text-xl font-extrabold tracking-tight text-brand-green">trke</span>
+          <span className="text-xl font-light tracking-tight text-gray-500">srbija</span>
         </Link>
 
         {/* Desktop nav */}
@@ -57,9 +56,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'text-zinc-950 dark:text-white'
-                    : 'text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white'
+                  isActive ? 'text-white' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 {link.label}
@@ -69,7 +66,7 @@ export function SiteHeader() {
 
           {user && (
             <>
-              <div className="mx-1 h-4 w-px bg-zinc-200 dark:bg-zinc-700" />
+              <div className="mx-1 h-4 w-px bg-dark-border-light" />
               {userLinks.map((link) => {
                 const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
                 return (
@@ -77,9 +74,7 @@ export function SiteHeader() {
                     key={link.href}
                     href={link.href}
                     className={`rounded-lg px-3 py-2 text-xs font-medium transition-colors ${
-                      isActive
-                        ? 'bg-zinc-100 text-zinc-950 dark:bg-zinc-800 dark:text-white'
-                        : 'text-zinc-400 hover:text-zinc-700 dark:text-zinc-500 dark:hover:text-zinc-300'
+                      isActive ? 'bg-dark-surface text-white' : 'text-gray-500 hover:text-gray-300'
                     }`}
                   >
                     {link.label}
@@ -93,12 +88,12 @@ export function SiteHeader() {
         {/* User / Auth */}
         <div className="flex items-center">
           {authLoading ? (
-            <div className="h-5 w-24 animate-pulse rounded bg-zinc-200 dark:bg-zinc-700" />
+            <div className="h-5 w-24 animate-pulse rounded bg-dark-surface" />
           ) : user ? (
             <Dropdown>
-              <DropdownButton as="button" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-950 hover:bg-zinc-950/5 dark:text-white dark:hover:bg-white/5">
+              <DropdownButton as="button" className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-white hover:bg-dark-surface">
                 <span className="max-w-[150px] truncate">{user.name ?? user.email}</span>
-                <ChevronDownIcon className="size-4 text-zinc-500" />
+                <ChevronDownIcon className="size-4 text-gray-500" />
               </DropdownButton>
               <DropdownMenu anchor="bottom end" className="min-w-56">
                 {/* Quick links visible only on mobile (desktop has nav bar) */}
@@ -157,10 +152,9 @@ export function SiteHeader() {
           ) : (
             <Link
               href="/login"
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+              className="rounded-lg bg-brand-green px-4 py-1.5 text-sm font-bold text-black transition-colors hover:bg-brand-green-dark"
             >
-              <ArrowRightStartOnRectangleIcon className="size-4" />
-              <span>Prijavi se</span>
+              Prijavi se
             </Link>
           )}
         </div>

@@ -24,9 +24,9 @@ export function SubNav() {
   if (isLoading || !user || user.role !== 'ADMIN' || !pathname.startsWith('/admin')) return null
 
   return (
-    <nav className="border-b border-zinc-950/5 bg-white dark:border-white/5 dark:bg-zinc-900">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="-mb-px flex justify-center gap-1 overflow-x-auto">
+    <nav className="bg-dark-bg">
+      <div className="mx-auto flex max-w-4xl justify-center px-4 py-2">
+        <div className="flex gap-1 overflow-x-auto rounded-xl bg-dark-surface p-1">
           {adminTabs.map((tab) => {
             const isActive = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
             return (
@@ -34,10 +34,8 @@ export function SubNav() {
                 key={tab.href}
                 href={tab.href}
                 className={clsx(
-                  'shrink-0 border-b-2 px-3 py-2.5 text-sm font-medium whitespace-nowrap transition-colors',
-                  isActive
-                    ? 'border-zinc-950 text-zinc-950 dark:border-white dark:text-white'
-                    : 'border-transparent text-zinc-500 hover:border-zinc-300 hover:text-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-300'
+                  'shrink-0 rounded-lg px-5 py-2 text-sm font-semibold whitespace-nowrap transition-colors',
+                  isActive ? 'bg-dark-border-light text-white' : 'text-gray-500 hover:text-gray-300'
                 )}
               >
                 {tab.label}

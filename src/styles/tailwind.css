@@ -2,6 +2,21 @@
 @source "..";
 
 @theme {
-  --font-sans: Inter, sans-serif;
-  --font-sans--font-feature-settings: 'cv11';
+  --font-sans: 'Urbanist', sans-serif;
+
+  --color-brand-green: #00D084;
+  --color-brand-green-dark: #00A86B;
+  --color-brand-red: #FF4136;
+
+  --color-dark-bg: #0A0A0A;
+  --color-dark-card: #111111;
+  --color-dark-card-hover: #161616;
+  --color-dark-border: #1E1E1E;
+  --color-dark-border-light: #2A2A2A;
+  --color-dark-surface: #141414;
+  --color-dark-surface-hover: #1A1A1A;
+
+  --color-light-bg: #F5F5F0;
+  --color-light-card: #FFFFFF;
+  --color-light-border: #E0E0E0;
 }

@@ -2,8 +2,15 @@ import '@/styles/tailwind.css'
 import { GoogleTagManager, GoogleTagManagerNoScript } from '@/components/google-tag-manager'
 import { OrganizationJsonLd, WebsiteJsonLd, SiteNavigationJsonLd } from '@/components/json-ld'
 import type { Metadata } from 'next'
+import { Urbanist } from 'next/font/google'
 import type React from 'react'
 import Providers from './providers'
+
+const urbanist = Urbanist({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+})
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trkesrbija.rs'
 
@@ -86,11 +93,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="sr"
-      className="text-zinc-950 antialiased bg-white dark:bg-zinc-900 dark:text-white"
+      className={`${urbanist.className} dark bg-dark-bg text-white antialiased`}
     >
       <head>
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <GoogleTagManager />
         <OrganizationJsonLd />
         <WebsiteJsonLd />

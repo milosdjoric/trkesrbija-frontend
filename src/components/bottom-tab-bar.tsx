@@ -37,7 +37,7 @@ export function BottomTabBar() {
 
   return (
     <>
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-zinc-950/10 bg-white lg:hidden dark:border-white/10 dark:bg-zinc-900">
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-dark-border bg-dark-bg/95 backdrop-blur-md lg:hidden">
         <div className="flex items-center justify-around">
           {tabs.map((tab) => {
             const isActive = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
@@ -47,7 +47,7 @@ export function BottomTabBar() {
                 href={tab.href}
                 className={clsx(
                   'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-                  isActive ? 'text-zinc-950 dark:text-white' : 'text-zinc-400 dark:text-zinc-500'
+                  isActive ? 'text-brand-green' : 'text-gray-600'
                 )}
               >
                 <tab.icon className="size-5" />
@@ -61,9 +61,7 @@ export function BottomTabBar() {
             href={profileHref}
             className={clsx(
               'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-              pathname === '/settings' || pathname === '/login'
-                ? 'text-zinc-950 dark:text-white'
-                : 'text-zinc-400 dark:text-zinc-500'
+              pathname === '/settings' || pathname === '/login' ? 'text-brand-green' : 'text-gray-600'
             )}
           >
             <UserCircleIcon className="size-5" />
@@ -75,7 +73,7 @@ export function BottomTabBar() {
             onClick={() => setMoreOpen(true)}
             className={clsx(
               'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
-              moreOpen ? 'text-zinc-950 dark:text-white' : 'text-zinc-400 dark:text-zinc-500'
+              moreOpen ? 'text-brand-green' : 'text-gray-600'
             )}
           >
             <EllipsisHorizontalIcon className="size-5" />
@@ -86,21 +84,21 @@ export function BottomTabBar() {
 
       {/* "Još" bottom sheet */}
       <Headless.Dialog open={moreOpen} onClose={() => setMoreOpen(false)} className="relative z-50 lg:hidden">
-        <Headless.DialogBackdrop className="fixed inset-0 bg-black/30 transition-opacity data-closed:opacity-0" />
+        <Headless.DialogBackdrop className="fixed inset-0 bg-black/50 transition-opacity data-closed:opacity-0" />
         <div className="fixed inset-x-0 bottom-0">
-          <Headless.DialogPanel className="w-full rounded-t-2xl bg-white pb-8 dark:bg-zinc-900">
+          <Headless.DialogPanel className="w-full rounded-t-2xl border-t border-dark-border bg-dark-card pb-8">
             {/* Handle bar */}
             <div className="flex justify-center py-3">
-              <div className="h-1 w-10 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+              <div className="h-1 w-10 rounded-full bg-dark-border-light" />
             </div>
 
             <div className="flex items-center justify-between px-5 pb-3">
-              <Headless.DialogTitle className="text-base font-semibold text-zinc-950 dark:text-white">
+              <Headless.DialogTitle className="text-base font-semibold text-white">
                 Još opcija
               </Headless.DialogTitle>
               <button
                 onClick={() => setMoreOpen(false)}
-                className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
+                className="rounded-lg p-1.5 text-gray-500 hover:text-gray-300"
               >
                 <XMarkIcon className="size-5" />
               </button>
@@ -163,9 +161,9 @@ function SheetLink({
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300 hover:bg-dark-surface"
     >
-      <Icon className="size-5 text-zinc-400 dark:text-zinc-500" />
+      <Icon className="size-5 text-gray-500" />
       {children}
     </Link>
   )
