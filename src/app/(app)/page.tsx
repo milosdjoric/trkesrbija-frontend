@@ -43,7 +43,7 @@ type BackendRaceEvent = {
 
 const UPCOMING_EVENTS_QUERY = `
   query UpcomingEvents($limit: Int!) {
-    raceEvents(limit: $limit, orderBy: CREATED_AT_DESC) {
+    raceEvents(limit: $limit, orderBy: CREATED_AT_DESC, isTraining: false) {
       id
       eventName
       slug
