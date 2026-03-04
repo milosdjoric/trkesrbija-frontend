@@ -252,7 +252,7 @@ export default async function HomePage() {
           <div className="aspect-[16/9] bg-gradient-to-br from-emerald-600 to-emerald-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Trail trke</span>
-            <h3 className="mt-2 text-2xl font-bold text-text-primary">Trail</h3>
+            <h3 className="mt-2 text-2xl font-bold text-white">Trail</h3>
             <p className="text-sm text-emerald-100">Planinske i brdske staze • {trailCount} događaja</p>
           </div>
         </Link>
@@ -264,7 +264,7 @@ export default async function HomePage() {
           <div className="aspect-[16/9] bg-gradient-to-br from-sky-600 to-sky-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Ulične trke</span>
-            <h3 className="mt-2 text-2xl font-bold text-text-primary">Ulična</h3>
+            <h3 className="mt-2 text-2xl font-bold text-white">Ulična</h3>
             <p className="text-sm text-sky-100">Gradske i ulične staze • {roadCount} događaja</p>
           </div>
         </Link>
@@ -276,7 +276,7 @@ export default async function HomePage() {
           <div className="aspect-[16/9] bg-gradient-to-br from-orange-600 to-orange-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">OCR trke</span>
-            <h3 className="mt-2 text-2xl font-bold text-text-primary">OCR</h3>
+            <h3 className="mt-2 text-2xl font-bold text-white">OCR</h3>
             <p className="text-sm text-orange-100">Trke sa preprekama • {ocrCount} događaja</p>
           </div>
         </Link>
