@@ -1,9 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="112" fill="#121212"/>
-  <g transform="translate(59.0, 412.6) scale(0.2434, -0.2434)">
-    <path d="M665 722H485V0H207V722H70V1000H207V1314H485V1000H665Z" fill="#00D084"/>
-  </g>
-  <g transform="translate(235.4, 412.6) scale(0.2434, -0.2434)">
-    <path d="M411 -18Q296 -9 196.5 45.0Q97 99 50 196L284 297Q301 274 340.5 245.5Q380 217 442 217Q488 217 526.5 234.0Q565 251 565 294Q565 326 542.5 343.0Q520 360 487.5 368.0Q455 376 426 382Q334 398 252.5 439.5Q171 481 120.0 547.5Q69 614 69 705Q69 806 121.5 880.0Q174 954 259.5 994.0Q345 1034 444 1034Q561 1034 660.5 985.5Q760 937 822 847L603 717Q583 744 547.0 768.5Q511 793 467 797Q409 802 369.0 783.0Q329 764 329 712Q329 680 357.5 664.5Q386 649 424.0 641.5Q462 634 491 625Q578 597 654.5 553.5Q731 510 777.5 447.0Q824 384 822 298Q822 199 763.0 124.5Q704 50 610.0 11.5Q516 -27 411 -18Z" fill="#9CA3AF"/>
-  </g>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="14" fill="#111"/>
+  <!-- background ring -->
+  <circle cx="32" cy="32" r="18" fill="none" stroke="#222" stroke-width="7"/>
+  <!-- green arc: start top (32,14), 270° clockwise, ends left (14,32) -->
+  <path d="M32 14 A18 18 0 1 1 14 32" fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round"/>
+  <!-- dot at start -->
+  <circle cx="32" cy="14" r="4.5" fill="#22c55e"/>
+  <!-- dot at end -->
+  <circle cx="14" cy="32" r="4.5" fill="#22c55e"/>
 </svg>
