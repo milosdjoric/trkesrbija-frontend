@@ -41,8 +41,8 @@
 /* Light tema */
 :root.light {
   --bg-main: #F0F0EB;
-  --bg-card: #FFFFFF;
-  --bg-card-hover: #F5F5F0;
+  --bg-card: #F7F7F2;
+  --bg-card-hover: #F0F0EB;
   --bg-surface: #E8E8E3;
   --bg-surface-hover: #DEDED9;
   --border-primary: #C8C8C3;

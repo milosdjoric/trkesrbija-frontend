@@ -344,11 +344,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             />
             {/* Content */}
             <div className="relative z-10 px-5 py-8 md:px-6 md:py-10">
-              <div className="text-sm font-medium text-text-primary/80 mb-2">
+              <div className="text-sm font-medium text-white/80 mb-2">
                 {eventDateDisplay}
               </div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-text-primary md:text-2xl">
+                <h1 className="text-xl font-bold text-white md:text-2xl">
                   {event.eventName}
                 </h1>
                 {event.verified && <VerifiedBadge />}
