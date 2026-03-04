@@ -138,7 +138,7 @@ export default function TrainingPage() {
     <>
       <div className="flex items-center justify-between">
         <Heading>Moji treninzi</Heading>
-        <Button href="/training/new" color="blue">
+        <Button href="/training/new" color="brand">
           <PlusIcon className="size-4" />
           Kreiraj trening
         </Button>
@@ -146,11 +146,11 @@ export default function TrainingPage() {
 
       {events.length === 0 ? (
         <div className="mt-12 text-center">
-          <p className="text-lg">🏃 Nemate još nijedan trening.</p>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="text-lg text-white">Nemate još nijedan trening.</p>
+          <p className="mt-2 text-sm text-gray-400">
             Kreirajte svoj prvi trening i podelite ga sa prijateljima.
           </p>
-          <Button href="/training/new" color="blue" className="mt-4">
+          <Button href="/training/new" color="brand" className="mt-4">
             Kreiraj prvi trening
           </Button>
         </div>
@@ -166,12 +166,12 @@ export default function TrainingPage() {
             return (
               <div
                 key={event.id}
-                className="rounded-lg border border-zinc-200 p-5 dark:border-zinc-700"
+                className="rounded-xl border border-dark-border bg-dark-card p-5 transition-colors hover:border-dark-border-light"
               >
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+                      <h3 className="text-lg font-semibold text-white">
                         {event.eventName}
                       </h3>
                       <Badge color={event.type === 'TRAIL' ? 'emerald' : event.type === 'OCR' ? 'orange' : 'sky'}>
@@ -179,9 +179,9 @@ export default function TrainingPage() {
                       </Badge>
                     </div>
                     {event.description && (
-                      <p className="mt-1 text-sm text-zinc-500">{event.description}</p>
+                      <p className="mt-1 text-sm text-gray-400">{event.description}</p>
                     )}
-                    <div className="mt-2 text-sm text-zinc-500">
+                    <div className="mt-2 text-sm text-gray-400">
                       {event.races.length} {event.races.length === 1 ? 'staza' : event.races.length < 5 ? 'staze' : 'staza'}
                       {earliestRace && ` · ${formatDate(earliestRace.startDateTime)}`}
                     </div>
@@ -196,7 +196,7 @@ export default function TrainingPage() {
                     </Button>
                     <button
                       onClick={() => handleDelete(event.id, event.eventName)}
-                      className="rounded-lg p-2 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+                      className="rounded-lg p-2 text-red-400 transition-colors hover:bg-red-900/20"
                       title="Obriši trening"
                     >
                       <TrashIcon className="size-4" />
