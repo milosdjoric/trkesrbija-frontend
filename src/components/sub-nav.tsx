@@ -12,7 +12,7 @@ const adminTabs = [
   { href: '/admin/races', label: 'Trke' },
   { href: '/admin/users', label: 'Korisnici' },
   { href: '/admin/stats', label: 'Statistike' },
-  { href: '/admin/reports', label: 'Prijave' },
+  { href: '/admin/reports', label: 'Prijave grešaka' },
   { href: '/admin/import', label: 'Import' },
   { href: '/admin/trainings', label: 'Treninzi' },
 ]
