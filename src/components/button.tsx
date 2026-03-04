@@ -42,7 +42,7 @@ const styles = {
   ],
   outline: [
     // Base
-    'border-dark-border text-white data-active:bg-dark-surface data-hover:bg-dark-surface hover:bg-dark-surface active:bg-dark-surface',
+    'border-dark-border-light text-white data-active:bg-dark-surface data-hover:bg-dark-surface hover:bg-dark-surface active:bg-dark-surface',
     // Icon
     '[--btn-icon:var(--color-gray-500)] data-active:[--btn-icon:var(--color-gray-400)] data-hover:[--btn-icon:var(--color-gray-400)]',
   ],

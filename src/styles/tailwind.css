@@ -8,13 +8,13 @@
   --color-brand-green-dark: #00A86B;
   --color-brand-red: #FF4136;
 
-  --color-dark-bg: #0A0A0A;
-  --color-dark-card: #111111;
-  --color-dark-card-hover: #161616;
-  --color-dark-border: #1E1E1E;
-  --color-dark-border-light: #2A2A2A;
-  --color-dark-surface: #141414;
-  --color-dark-surface-hover: #1A1A1A;
+  --color-dark-bg: #121212;
+  --color-dark-card: #1A1A1A;
+  --color-dark-card-hover: #1F1F1F;
+  --color-dark-border: #2A2A2A;
+  --color-dark-border-light: #363636;
+  --color-dark-surface: #1E1E1E;
+  --color-dark-surface-hover: #252525;
 
   --color-light-bg: #F5F5F0;
   --color-light-card: #FFFFFF;
