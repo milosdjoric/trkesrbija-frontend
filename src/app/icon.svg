@@ -1,5 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" rx="112" fill="#121212"/>
-  <!-- Letter "t" as path - bold geometric style -->
-  <path d="M152 128 h208 v56 h-76 v200 h-56 v-200 h-76 z" fill="#00D084"/>
+  <g transform="translate(160.9, 426.0) scale(0.2588, -0.2588)">
+    <path d="M665 722H485V0H207V722H70V1000H207V1314H485V1000H665Z" fill="#00D084"/>
+  </g>
 </svg>
