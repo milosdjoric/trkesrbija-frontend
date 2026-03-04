@@ -130,6 +130,8 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return
 
+    let aborted = false
+
     const map = L.map(mapRef.current, {
       scrollWheelZoom: false,
       zoomControl: true,
@@ -163,6 +165,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
         return res.text()
       })
       .then((gpxText) => {
+        if (aborted) return
         const parser = new DOMParser()
         const gpxDoc = parser.parseFromString(gpxText, 'application/xml')
 
@@ -304,6 +307,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
       })
 
     return () => {
+      aborted = true
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove()
         mapInstanceRef.current = null

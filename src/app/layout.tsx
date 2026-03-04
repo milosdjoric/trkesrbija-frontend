@@ -86,7 +86,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="sr"
-      className="text-zinc-950 antialiased lg:bg-zinc-100 dark:bg-zinc-900 dark:text-white dark:lg:bg-zinc-950"
+      className="text-zinc-950 antialiased bg-white dark:bg-zinc-900 dark:text-white"
     >
       <head>
         <link rel="preconnect" href="https://rsms.me/" />

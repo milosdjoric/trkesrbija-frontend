@@ -1,0 +1,172 @@
+'use client'
+
+import * as Headless from '@headlessui/react'
+import {
+  CalendarIcon,
+  HomeIcon,
+  Square2StackIcon,
+  UserCircleIcon,
+  EllipsisHorizontalIcon,
+  MapIcon,
+  ClipboardDocumentListIcon,
+  ClockIcon,
+  WrenchScrewdriverIcon,
+  LightBulbIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
+import clsx from 'clsx'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+
+import { useAuth } from '@/app/auth/auth-context'
+
+const tabs = [
+  { href: '/', label: 'Početna', icon: HomeIcon, exact: true },
+  { href: '/events', label: 'Događaji', icon: Square2StackIcon },
+  { href: '/calendar', label: 'Kalendar', icon: CalendarIcon },
+]
+
+export function BottomTabBar() {
+  const pathname = usePathname()
+  const { user } = useAuth()
+  const [moreOpen, setMoreOpen] = useState(false)
+
+  const profileHref = user ? '/settings' : '/login'
+  const profileLabel = user ? 'Profil' : 'Prijava'
+
+  return (
+    <>
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-zinc-950/10 bg-white lg:hidden dark:border-white/10 dark:bg-zinc-900">
+        <div className="flex items-center justify-around">
+          {tabs.map((tab) => {
+            const isActive = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
+            return (
+              <Link
+                key={tab.href}
+                href={tab.href}
+                className={clsx(
+                  'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
+                  isActive ? 'text-zinc-950 dark:text-white' : 'text-zinc-400 dark:text-zinc-500'
+                )}
+              >
+                <tab.icon className="size-5" />
+                {tab.label}
+              </Link>
+            )
+          })}
+
+          {/* Profile tab */}
+          <Link
+            href={profileHref}
+            className={clsx(
+              'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
+              pathname === '/settings' || pathname === '/login'
+                ? 'text-zinc-950 dark:text-white'
+                : 'text-zinc-400 dark:text-zinc-500'
+            )}
+          >
+            <UserCircleIcon className="size-5" />
+            {profileLabel}
+          </Link>
+
+          {/* More tab */}
+          <button
+            onClick={() => setMoreOpen(true)}
+            className={clsx(
+              'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
+              moreOpen ? 'text-zinc-950 dark:text-white' : 'text-zinc-400 dark:text-zinc-500'
+            )}
+          >
+            <EllipsisHorizontalIcon className="size-5" />
+            Još
+          </button>
+        </div>
+      </nav>
+
+      {/* "Još" bottom sheet */}
+      <Headless.Dialog open={moreOpen} onClose={() => setMoreOpen(false)} className="relative z-50 lg:hidden">
+        <Headless.DialogBackdrop className="fixed inset-0 bg-black/30 transition-opacity data-closed:opacity-0" />
+        <div className="fixed inset-x-0 bottom-0">
+          <Headless.DialogPanel className="w-full rounded-t-2xl bg-white pb-8 dark:bg-zinc-900">
+            {/* Handle bar */}
+            <div className="flex justify-center py-3">
+              <div className="h-1 w-10 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+            </div>
+
+            <div className="flex items-center justify-between px-5 pb-3">
+              <Headless.DialogTitle className="text-base font-semibold text-zinc-950 dark:text-white">
+                Još opcija
+              </Headless.DialogTitle>
+              <button
+                onClick={() => setMoreOpen(false)}
+                className="rounded-lg p-1.5 text-zinc-400 hover:text-zinc-600 dark:text-zinc-500 dark:hover:text-zinc-300"
+              >
+                <XMarkIcon className="size-5" />
+              </button>
+            </div>
+
+            <div className="space-y-1 px-3">
+              <SheetLink href="/gpx-analyzer" icon={MapIcon} onClick={() => setMoreOpen(false)}>
+                GPX Analyzer
+              </SheetLink>
+
+              {user && (
+                <>
+                  <SheetLink href="/favorites" icon={MapIcon} onClick={() => setMoreOpen(false)}>
+                    Omiljene trke
+                  </SheetLink>
+                  <SheetLink href="/my-registrations" icon={ClipboardDocumentListIcon} onClick={() => setMoreOpen(false)}>
+                    Moje prijave
+                  </SheetLink>
+                  <SheetLink href="/training" icon={MapIcon} onClick={() => setMoreOpen(false)}>
+                    Moji treninzi
+                  </SheetLink>
+                </>
+              )}
+
+              {user?.assignedCheckpointId && (
+                <SheetLink href="/judge" icon={ClockIcon} onClick={() => setMoreOpen(false)}>
+                  Sudijska tabla
+                </SheetLink>
+              )}
+
+              {user?.role === 'ADMIN' && (
+                <SheetLink href="/admin" icon={WrenchScrewdriverIcon} onClick={() => setMoreOpen(false)}>
+                  Admin Panel
+                </SheetLink>
+              )}
+
+              <SheetLink href="https://tally.so/r/Y547W6" icon={LightBulbIcon} onClick={() => setMoreOpen(false)}>
+                Pošalji povratne informacije
+              </SheetLink>
+            </div>
+          </Headless.DialogPanel>
+        </div>
+      </Headless.Dialog>
+    </>
+  )
+}
+
+function SheetLink({
+  href,
+  icon: Icon,
+  onClick,
+  children,
+}: {
+  href: string
+  icon: React.ComponentType<{ className?: string }>
+  onClick: () => void
+  children: React.ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+    >
+      <Icon className="size-5 text-zinc-400 dark:text-zinc-500" />
+      {children}
+    </Link>
+  )
+}
