@@ -181,7 +181,7 @@ export default function AdminNewRegistrationPage() {
  if (authLoading || loading) {
   return (
    <div className="flex items-center justify-center py-12">
-    <div className="animate-pulse text-gray-400">Učitavanje...</div>
+    <div className="animate-pulse text-text-secondary">Učitavanje...</div>
    </div>
   )
  }
@@ -203,7 +203,7 @@ export default function AdminNewRegistrationPage() {
    <div className="max-lg:hidden">
     <Link
      href={`/admin/races/${raceId}/registrations`}
-     className="inline-flex items-center gap-2 text-sm/6 text-gray-400"
+     className="inline-flex items-center gap-2 text-sm/6 text-text-secondary"
     >
      <ChevronLeftIcon className="size-4 fill-gray-400" />
      Nazad na prijave
@@ -213,9 +213,9 @@ export default function AdminNewRegistrationPage() {
    <div className="mx-auto mt-6 max-w-2xl">
     <Heading>Nova prijava</Heading>
 
-    <div className="mt-4 rounded-lg border border-dark-border bg-dark-surface p-4">
+    <div className="mt-4 rounded-lg border border-border-primary bg-surface p-4">
      <Subheading>{race.raceName ?? race.raceEvent.eventName}</Subheading>
-     <div className="mt-2 text-sm text-gray-400">
+     <div className="mt-2 text-sm text-text-secondary">
       {formatDate(race.startDateTime)} • {race.length} km
      </div>
     </div>

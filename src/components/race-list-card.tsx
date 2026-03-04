@@ -70,23 +70,23 @@ export function RaceListCard({
   return (
     <Link
       href={`/events/${eventSlug}`}
-      className="flex items-center gap-4 rounded-lg border border-dark-border p-4 transition-colors hover:bg-dark-card-hover"
+      className="flex items-center gap-4 rounded-lg border border-border-primary p-4 transition-colors hover:bg-card-hover"
     >
       {/* Date box */}
-      <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-dark-surface py-2 text-center">
-        <span className="text-xs font-medium uppercase text-gray-400">
+      <div className="flex w-14 shrink-0 flex-col items-center rounded-lg bg-surface py-2 text-center">
+        <span className="text-xs font-medium uppercase text-text-secondary">
           {formatMonth(startDateTime)}
         </span>
-        <span className="text-xl font-bold text-white">{formatDay(startDateTime)}</span>
+        <span className="text-xl font-bold text-text-primary">{formatDay(startDateTime)}</span>
       </div>
 
       {/* Info */}
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="font-medium text-white">{eventName}</span>
+          <span className="font-medium text-text-primary">{eventName}</span>
           <Badge color={badgeColor}>{raceName ?? typeLabel}</Badge>
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-400">
+        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-secondary">
           <IconText icon={<CalendarIcon className="size-3.5" />}>
             {formatDate(startDateTime, 'short')} · {formatTime(startDateTime)}
           </IconText>

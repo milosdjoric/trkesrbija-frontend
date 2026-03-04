@@ -187,7 +187,7 @@ export default function NewRacePage() {
    <div className="mb-4">
     <Link
      href={`/admin/events/${eventId}/edit`}
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      {event.eventName}
@@ -195,18 +195,18 @@ export default function NewRacePage() {
    </div>
 
    <Heading>Nova trka</Heading>
-   <p className="mt-1 text-sm text-gray-400">
+   <p className="mt-1 text-sm text-text-secondary">
     Dodajete trku za događaj: <strong>{event.eventName}</strong>
    </p>
 
    <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Informacije o trci</Subheading>
 
      <div className="mt-4 grid gap-4 sm:grid-cols-2">
       {/* Race name */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Naziv trke *
        </label>
        <input
@@ -214,42 +214,42 @@ export default function NewRacePage() {
         value={raceName}
         onChange={(e) => setRaceName(toTitleCase(e.target.value))}
         placeholder="npr. Avala 18K"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
         required
        />
       </div>
 
       {/* Start date/time */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Datum i vreme starta *
        </label>
        <input
         type="datetime-local"
         value={startDateTime}
         onChange={(e) => setStartDateTime(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
         required
        />
       </div>
 
       {/* End date/time (cut-off) */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Cut-off vreme
        </label>
        <input
         type="datetime-local"
         value={endDateTime}
         onChange={(e) => setEndDateTime(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
-       <p className="mt-1 text-xs text-gray-400">Opciono - krajnje vreme za završetak trke</p>
+       <p className="mt-1 text-xs text-text-secondary">Opciono - krajnje vreme za završetak trke</p>
       </div>
 
       {/* Length */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Dužina (km) *
        </label>
        <input
@@ -259,14 +259,14 @@ export default function NewRacePage() {
         value={length}
         onChange={(e) => setLength(e.target.value)}
         placeholder="18"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
         required
        />
       </div>
 
       {/* Elevation */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Visinska razlika (m)
        </label>
        <input
@@ -275,13 +275,13 @@ export default function NewRacePage() {
         value={elevation}
         onChange={(e) => setElevation(e.target.value)}
         placeholder="520"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
       </div>
 
       {/* Start location */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Startna lokacija
        </label>
        <input
@@ -289,20 +289,20 @@ export default function NewRacePage() {
         value={startLocation}
         onChange={(e) => setStartLocation(e.target.value)}
         placeholder="Adresa ili Google Maps link"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
       </div>
 
       {/* Competition */}
       {competitions.length > 0 && (
        <div className="sm:col-span-2">
-        <label className="block text-sm font-medium text-gray-300">
+        <label className="block text-sm font-medium text-text-secondary">
          Takmičenje / Serija
         </label>
         <select
          value={competitionId}
          onChange={(e) => setCompetitionId(e.target.value)}
-         className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+         className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
         >
          <option value="">Bez takmičenja</option>
          {competitions.map((comp) => (
@@ -311,7 +311,7 @@ export default function NewRacePage() {
           </option>
          ))}
         </select>
-        <p className="mt-1 text-xs text-gray-400">
+        <p className="mt-1 text-xs text-text-secondary">
          Opciono - ako trka pripada nekoj seriji ili ligi
         </p>
        </div>
@@ -324,9 +324,9 @@ export default function NewRacePage() {
          type="checkbox"
          checked={registrationEnabled}
          onChange={(e) => setRegistrationEnabled(e.target.checked)}
-         className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green"
+         className="size-4 rounded border-border-secondary text-brand-green focus:ring-brand-green"
         />
-        <span className="text-sm font-medium text-gray-300">
+        <span className="text-sm font-medium text-text-secondary">
          Omogući prijave za ovu trku
         </span>
        </label>
@@ -334,7 +334,7 @@ export default function NewRacePage() {
 
       {/* Registration site */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Link za registraciju (eksterni)
        </label>
        <input
@@ -342,9 +342,9 @@ export default function NewRacePage() {
         value={registrationSite}
         onChange={(e) => setRegistrationSite(e.target.value)}
         placeholder="https://..."
-        className="mt-1 block w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 block w-full rounded-lg border border-border-secondary px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
-       <p className="mt-1 text-xs text-gray-400">
+       <p className="mt-1 text-xs text-text-secondary">
         Opciono — link ka eksternoj registraciji specifičan za ovu trku
        </p>
       </div>

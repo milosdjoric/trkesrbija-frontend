@@ -146,8 +146,8 @@ export default function TrainingPage() {
 
       {events.length === 0 ? (
         <div className="mt-12 text-center">
-          <p className="text-lg text-white">Nemate još nijedan trening.</p>
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="text-lg text-text-primary">Nemate još nijedan trening.</p>
+          <p className="mt-2 text-sm text-text-secondary">
             Kreirajte svoj prvi trening i podelite ga sa prijateljima.
           </p>
           <Button href="/training/new" color="brand" className="mt-4">
@@ -166,12 +166,12 @@ export default function TrainingPage() {
             return (
               <div
                 key={event.id}
-                className="rounded-xl border border-dark-border bg-dark-card p-5 transition-colors hover:border-dark-border-light"
+                className="rounded-xl border border-border-primary bg-card p-5 transition-colors hover:border-border-secondary"
               >
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-semibold text-white">
+                      <h3 className="text-lg font-semibold text-text-primary">
                         {event.eventName}
                       </h3>
                       <Badge color={event.type === 'TRAIL' ? 'emerald' : event.type === 'OCR' ? 'orange' : 'sky'}>
@@ -179,9 +179,9 @@ export default function TrainingPage() {
                       </Badge>
                     </div>
                     {event.description && (
-                      <p className="mt-1 text-sm text-gray-400">{event.description}</p>
+                      <p className="mt-1 text-sm text-text-secondary">{event.description}</p>
                     )}
-                    <div className="mt-2 text-sm text-gray-400">
+                    <div className="mt-2 text-sm text-text-secondary">
                       {event.races.length} {event.races.length === 1 ? 'staza' : event.races.length < 5 ? 'staze' : 'staza'}
                       {earliestRace && ` · ${formatDate(earliestRace.startDateTime)}`}
                     </div>

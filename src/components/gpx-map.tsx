@@ -350,13 +350,13 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
   return (
     <div
       ref={mapContainerRef}
-      className={`relative ${className} ${isFullscreen ? 'bg-dark-card p-4' : ''}`}
+      className={`relative ${className} ${isFullscreen ? 'bg-card p-4' : ''}`}
     >
       {/* Map container */}
       <div className="relative">
         <div
           ref={mapRef}
-          className={`w-full rounded-lg border border-dark-border ${isFullscreen ? 'h-[60vh]' : 'h-[300px]'}`}
+          className={`w-full rounded-lg border border-border-primary ${isFullscreen ? 'h-[60vh]' : 'h-[300px]'}`}
           style={{ zIndex: 0 }}
         />
 
@@ -368,7 +368,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
               className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
                 activeLayer === 'street'
                   ? 'bg-emerald-500 text-white'
-                  : 'text-gray-300 hover:bg-dark-card-hover'
+                  : 'text-text-secondary hover:bg-card-hover'
               }`}
             >
               Ulice
@@ -378,7 +378,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
               className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
                 activeLayer === 'topo'
                   ? 'bg-emerald-500 text-white'
-                  : 'text-gray-300 hover:bg-dark-card-hover'
+                  : 'text-text-secondary hover:bg-card-hover'
               }`}
             >
               Topo
@@ -388,7 +388,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
               className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
                 activeLayer === 'satellite'
                   ? 'bg-emerald-500 text-white'
-                  : 'text-gray-300 hover:bg-dark-card-hover'
+                  : 'text-text-secondary hover:bg-card-hover'
               }`}
             >
               Satelit
@@ -400,15 +400,15 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
         {!loading && !error && (
           <button
             onClick={toggleFullscreen}
-            className="absolute bottom-2 right-2 z-[1000] cursor-pointer rounded-lg bg-zinc-800/90 p-2 shadow-md backdrop-blur transition-colors hover:bg-dark-surface-hover"
+            className="absolute bottom-2 right-2 z-[1000] cursor-pointer rounded-lg bg-zinc-800/90 p-2 shadow-md backdrop-blur transition-colors hover:bg-surface-hover"
             title={isFullscreen ? 'Izađi iz celog ekrana' : 'Ceo ekran'}
           >
             {isFullscreen ? (
-              <svg className="size-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="size-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             ) : (
-              <svg className="size-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="size-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
               </svg>
             )}
@@ -417,8 +417,8 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
 
         {/* Loading overlay */}
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-dark-surface">
-            <div className="flex items-center gap-2 text-gray-400">
+          <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-surface">
+            <div className="flex items-center gap-2 text-text-secondary">
               <svg className="size-5 animate-spin" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -443,25 +443,25 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
       {elevationData.length > 0 && stats && !loading && !error && (
         <div className="mt-4">
           <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-medium text-gray-400">Visinski profil</span>
+            <span className="text-xs font-medium text-text-secondary">Visinski profil</span>
             {hoveredPoint && (
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-text-secondary">
                 {hoveredPoint.distance.toFixed(1)} km · {Math.round(hoveredPoint.elevation)} m
               </span>
             )}
           </div>
           <div
-            className="relative h-[120px] w-full rounded-lg border border-dark-border bg-dark-card cursor-crosshair"
+            className="relative h-[120px] w-full rounded-lg border border-border-primary bg-card cursor-crosshair"
             onMouseMove={handleProfileHover}
             onMouseLeave={handleProfileLeave}
           >
             {/* Y-axis labels - positioned outside SVG */}
-            <div className="absolute left-2 top-2 text-[10px] text-gray-400 pointer-events-none">{stats.maxElevation}m</div>
-            <div className="absolute left-2 bottom-6 text-[10px] text-gray-400 pointer-events-none">{stats.minElevation}m</div>
+            <div className="absolute left-2 top-2 text-[10px] text-text-secondary pointer-events-none">{stats.maxElevation}m</div>
+            <div className="absolute left-2 bottom-6 text-[10px] text-text-secondary pointer-events-none">{stats.minElevation}m</div>
 
             {/* X-axis labels - positioned outside SVG */}
-            <div className="absolute left-10 bottom-1 text-[10px] text-gray-400 pointer-events-none">0</div>
-            <div className="absolute right-2 bottom-1 text-[10px] text-gray-400 pointer-events-none">{stats.distance.toFixed(1)}km</div>
+            <div className="absolute left-10 bottom-1 text-[10px] text-text-secondary pointer-events-none">0</div>
+            <div className="absolute right-2 bottom-1 text-[10px] text-text-secondary pointer-events-none">{stats.distance.toFixed(1)}km</div>
 
             {/* Hover indicator - HTML elements for perfect circles */}
             {hoveredPoint && (
@@ -491,7 +491,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
               {/* Grid lines */}
               <defs>
                 <pattern id="grid" width="10" height="20" patternUnits="userSpaceOnUse">
-                  <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-gray-300" />
+                  <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-text-secondary" />
                 </pattern>
                 <linearGradient id="elevationGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stopColor="#10b981" />
@@ -538,7 +538,7 @@ export function GpxMap({ gpxUrl, className = '' }: GpxMapProps) {
 
       {/* Stats */}
       {stats && !loading && !error && (
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-secondary">
           <span>
             <span className="inline-block size-2 rounded-full bg-green-500 mr-1"></span>
             Start

@@ -37,7 +37,7 @@ export function BottomTabBar() {
 
   return (
     <>
-      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-dark-border bg-dark-bg/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-border-primary bg-main/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden">
         <div className="flex items-center justify-around px-1">
           {tabs.map((tab) => {
             const isActive = tab.exact ? pathname === tab.href : pathname.startsWith(tab.href)
@@ -47,7 +47,7 @@ export function BottomTabBar() {
                 href={tab.href}
                 className={clsx(
                   'relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] transition-colors',
-                  isActive ? 'font-bold text-brand-green' : 'font-medium text-gray-500'
+                  isActive ? 'font-bold text-brand-green' : 'font-medium text-text-muted'
                 )}
               >
                 <tab.icon className={clsx('size-6', isActive && 'drop-shadow-[0_0_6px_rgba(0,208,132,0.5)]')} />
@@ -67,7 +67,7 @@ export function BottomTabBar() {
                 href={profileHref}
                 className={clsx(
                   'relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] transition-colors',
-                  isActive ? 'font-bold text-brand-green' : 'font-medium text-gray-500'
+                  isActive ? 'font-bold text-brand-green' : 'font-medium text-text-muted'
                 )}
               >
                 <UserCircleIcon className={clsx('size-6', isActive && 'drop-shadow-[0_0_6px_rgba(0,208,132,0.5)]')} />
@@ -84,7 +84,7 @@ export function BottomTabBar() {
             onClick={() => setMoreOpen(true)}
             className={clsx(
               'relative flex flex-1 flex-col items-center gap-1 py-3 text-[11px] transition-colors',
-              moreOpen ? 'font-bold text-brand-green' : 'font-medium text-gray-500'
+              moreOpen ? 'font-bold text-brand-green' : 'font-medium text-text-muted'
             )}
           >
             <EllipsisHorizontalIcon className={clsx('size-6', moreOpen && 'drop-shadow-[0_0_6px_rgba(0,208,132,0.5)]')} />
@@ -100,19 +100,19 @@ export function BottomTabBar() {
       <Headless.Dialog open={moreOpen} onClose={() => setMoreOpen(false)} className="relative z-50 lg:hidden">
         <Headless.DialogBackdrop className="fixed inset-0 bg-black/50 transition-opacity data-closed:opacity-0" />
         <div className="fixed inset-x-0 bottom-0">
-          <Headless.DialogPanel className="w-full rounded-t-2xl border-t border-dark-border bg-dark-card pb-8">
+          <Headless.DialogPanel className="w-full rounded-t-2xl border-t border-border-primary bg-card pb-8">
             {/* Handle bar */}
             <div className="flex justify-center py-3">
-              <div className="h-1 w-10 rounded-full bg-dark-border-light" />
+              <div className="h-1 w-10 rounded-full bg-border-secondary" />
             </div>
 
             <div className="flex items-center justify-between px-5 pb-3">
-              <Headless.DialogTitle className="text-base font-semibold text-white">
+              <Headless.DialogTitle className="text-base font-semibold text-text-primary">
                 Još opcija
               </Headless.DialogTitle>
               <button
                 onClick={() => setMoreOpen(false)}
-                className="rounded-lg p-1.5 text-gray-400 hover:text-gray-300"
+                className="rounded-lg p-1.5 text-text-secondary hover:text-text-primary"
               >
                 <XMarkIcon className="size-5" />
               </button>
@@ -175,9 +175,9 @@ function SheetLink({
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-300 hover:bg-dark-surface"
+      className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-text-secondary hover:bg-surface"
     >
-      <Icon className="size-5 text-gray-400" />
+      <Icon className="size-5 text-text-secondary" />
       {children}
     </Link>
   )

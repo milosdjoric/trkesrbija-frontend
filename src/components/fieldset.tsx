@@ -24,7 +24,7 @@ export function Legend({
       {...props}
       className={clsx(
         className,
-        'text-base/6 font-semibold text-white data-disabled:opacity-50 sm:text-sm/6'
+        'text-base/6 font-semibold text-text-primary data-disabled:opacity-50 sm:text-sm/6'
       )}
     />
   )
@@ -58,7 +58,7 @@ export function Label({ className, ...props }: { className?: string } & Omit<Hea
       {...props}
       className={clsx(
         className,
-        'text-base/6 text-white select-none data-disabled:opacity-50 sm:text-sm/6'
+        'text-base/6 text-text-primary select-none data-disabled:opacity-50 sm:text-sm/6'
       )}
     />
   )
@@ -72,7 +72,7 @@ export function Description({
     <Headless.Description
       data-slot="description"
       {...props}
-      className={clsx(className, 'text-base/6 text-gray-400 data-disabled:opacity-50 sm:text-sm/6')}
+      className={clsx(className, 'text-base/6 text-text-secondary data-disabled:opacity-50 sm:text-sm/6')}
     />
   )
 }

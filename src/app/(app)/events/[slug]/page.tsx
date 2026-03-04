@@ -80,7 +80,7 @@ function getSocialMediaStyles(url: string) {
     case 'tiktok':
       return 'bg-white hover:bg-zinc-200 text-black'
     default:
-      return 'bg-dark-surface hover:bg-dark-surface-hover text-gray-300'
+      return 'bg-surface hover:bg-surface-hover text-text-secondary'
   }
 }
 
@@ -341,11 +341,11 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             />
             {/* Content */}
             <div className="relative z-10 px-5 py-8 md:px-6 md:py-10">
-              <div className="text-sm font-medium text-white/80 mb-2">
+              <div className="text-sm font-medium text-text-primary/80 mb-2">
                 {eventDateDisplay}
               </div>
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-white md:text-2xl">
+                <h1 className="text-xl font-bold text-text-primary md:text-2xl">
                   {event.eventName}
                 </h1>
                 {event.verified && <VerifiedBadge />}
@@ -361,9 +361,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <Subheading>{event.isTraining ? 'Staze' : 'Trke'} ({races.length})</Subheading>
 
             {races.length === 0 ? (
-              <div className="mt-4 rounded-lg border border-dark-border p-6 text-sm/6">
-                <div className="font-medium text-white">Još nema trka</div>
-                <div className="mt-1 text-gray-400">Ovaj događaj još nema konfiguriranih trka.</div>
+              <div className="mt-4 rounded-lg border border-border-primary p-6 text-sm/6">
+                <div className="font-medium text-text-primary">Još nema trka</div>
+                <div className="mt-1 text-text-secondary">Ovaj događaj još nema konfiguriranih trka.</div>
               </div>
             ) : (
               <div className="mt-4 overflow-x-auto">
@@ -383,18 +383,18 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                         <TableCell>
                           <Link
                             href={`/races/${race.slug}`}
-                            className="font-medium text-white hover:text-brand-green"
+                            className="font-medium text-text-primary hover:text-brand-green"
                           >
                             {race.raceName ?? (event.isTraining ? `Staza ${index + 1}` : 'Trka')}
                           </Link>
                           {!allSameLocation && race.startLocation && (
-                            <div className="text-sm text-gray-400">
+                            <div className="text-sm text-text-secondary">
                               {race.startLocation.startsWith('http') ? (
                                 <a
                                   href={race.startLocation}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="underline underline-offset-2 hover:text-gray-300"
+                                  className="underline underline-offset-2 hover:text-text-primary"
                                 >
                                   Lokacija
                                 </a>
@@ -413,7 +413,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                             <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
                             <Link
                               href={`/races/${race.slug}`}
-                              className="inline-flex items-center justify-center rounded-lg p-2 text-gray-400 hover:bg-dark-surface hover:text-white"
+                              className="inline-flex items-center justify-center rounded-lg p-2 text-text-secondary hover:bg-surface hover:text-text-primary"
                               title="Detalji trke"
                             >
                               <ArrowRightIcon className="size-4" />
@@ -431,7 +431,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 3. Social Media Links - clearly labeled with platform colors (hidden for trainings) */}
           {!event.isTraining && event.socialMedia && event.socialMedia.length > 0 && (
             <div>
-              <div className="text-base font-medium underline text-gray-400 mb-3">Pratite nas</div>
+              <div className="text-base font-medium underline text-text-secondary mb-3">Pratite nas</div>
               <div className="flex flex-wrap gap-2">
                 {event.socialMedia.map((url) => (
                   <a
@@ -451,8 +451,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 4. Organizer Info (hidden for trainings) */}
           {!event.isTraining && event.organizer && (
             <div>
-              <div className="text-base font-medium underline text-gray-400 mb-2">Organizator</div>
-              <div className="text-sm/6 text-gray-300 space-y-1">
+              <div className="text-base font-medium underline text-text-secondary mb-2">Organizator</div>
+              <div className="text-sm/6 text-text-secondary space-y-1">
                 <div>{event.organizer.name}</div>
                 {event.organizer.contactPhone && (
                   <div>
@@ -487,7 +487,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 5. Description */}
           {event.description && (
             <div>
-              <div className="text-base font-medium underline text-gray-400 mb-2">
+              <div className="text-base font-medium underline text-text-secondary mb-2">
                 {event.isTraining ? 'O treningu' : 'O događaju'}
               </div>
               <ExpandableText text={event.description} maxLines={5} buttonLabel={event.isTraining ? 'Pogledaj više o treningu' : 'Pogledaj više o događaju'} />
@@ -509,25 +509,25 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <div className="lg:sticky lg:top-8 lg:self-start">
           <div className="space-y-4">
             {/* Summary Card */}
-            <div className="rounded-xl border border-dark-border bg-dark-card p-6">
+            <div className="rounded-xl border border-border-primary bg-card p-6">
               {/* Info redovi sa ikonama */}
               <div className="space-y-3">
                 {/* 1. Datum */}
-                <div className="flex items-center gap-3 text-sm text-gray-400">
-                  <CalendarIcon className="size-5 shrink-0 text-gray-400" />
-                  <span className="font-medium text-white">{eventDateDisplay}</span>
+                <div className="flex items-center gap-3 text-sm text-text-secondary">
+                  <CalendarIcon className="size-5 shrink-0 text-text-secondary" />
+                  <span className="font-medium text-text-primary">{eventDateDisplay}</span>
                 </div>
 
                 {/* 2. Dan u nedelji */}
-                <div className="flex items-center gap-3 text-sm text-gray-400">
-                  <CalendarIcon className="size-5 shrink-0 text-gray-400" />
+                <div className="flex items-center gap-3 text-sm text-text-secondary">
+                  <CalendarIcon className="size-5 shrink-0 text-text-secondary" />
                   <span className="capitalize">{weekdayDisplay}</span>
                 </div>
 
                 {/* 3. Vreme (prva trka) */}
                 {earliestRaceTime && (
-                  <div className="flex items-center gap-3 text-sm text-gray-400">
-                    <ClockIcon className="size-5 shrink-0 text-gray-400" />
+                  <div className="flex items-center gap-3 text-sm text-text-secondary">
+                    <ClockIcon className="size-5 shrink-0 text-text-secondary" />
                     <span>
                       {earliestRaceTime}
                       {races.length > 1 ? (allSameTime ? ' (sve trke)' : ' (prva trka)') : ''}
@@ -536,8 +536,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 )}
 
                 {/* 4. Lokacija */}
-                <div className="flex items-center gap-3 text-sm text-gray-400">
-                  <MapPinIcon className="size-5 shrink-0 text-gray-400" />
+                <div className="flex items-center gap-3 text-sm text-text-secondary">
+                  <MapPinIcon className="size-5 shrink-0 text-text-secondary" />
                   <span>
                     {eventLocation ? (
                       eventLocation.startsWith('http') ? 'Lokacija na mapi' : eventLocation
@@ -606,8 +606,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
             {/* Tags */}
             {event.tags && event.tags.length > 0 && (
-              <div className="rounded-lg border border-dark-border p-4">
-                <div className="text-sm font-medium text-gray-400">Kategorije</div>
+              <div className="rounded-lg border border-border-primary p-4">
+                <div className="text-sm font-medium text-text-secondary">Kategorije</div>
                 <div className="mt-3">
                   <TagList tags={event.tags} />
                 </div>

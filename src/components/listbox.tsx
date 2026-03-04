@@ -43,7 +43,7 @@ export function Listbox<T>({
         <Headless.ListboxSelectedOption
           as="span"
           options={options}
-          placeholder={placeholder && <span className="block truncate text-gray-400">{placeholder}</span>}
+          placeholder={placeholder && <span className="block truncate text-text-secondary">{placeholder}</span>}
           className={clsx([
             // Basic layout
             'relative block w-full appearance-none rounded-lg py-[calc(--spacing(2.5)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
@@ -52,7 +52,7 @@ export function Listbox<T>({
             // Horizontal padding
             'pr-[calc(--spacing(7)-1px)] pl-[calc(--spacing(3.5)-1px)] sm:pl-[calc(--spacing(3)-1px)]',
             // Typography
-            'text-left text-base/6 text-white placeholder:text-gray-400 sm:text-sm/6 forced-colors:text-[CanvasText]',
+            'text-left text-base/6 text-text-primary placeholder:text-text-muted sm:text-sm/6 forced-colors:text-[CanvasText]',
             // Border
             'border border-white/10 group-data-active:border-white/20 group-data-hover:border-white/20',
             // Background color
@@ -114,7 +114,7 @@ export function ListboxOption<T>({
     'flex min-w-0 items-center',
     // Icons
     '*:data-[slot=icon]:size-5 *:data-[slot=icon]:shrink-0 sm:*:data-[slot=icon]:size-4',
-    '*:data-[slot=icon]:text-gray-400 group-data-focus/option:*:data-[slot=icon]:text-white',
+    '*:data-[slot=icon]:text-text-secondary group-data-focus/option:*:data-[slot=icon]:text-white',
     'forced-colors:*:data-[slot=icon]:text-[CanvasText] forced-colors:group-data-focus/option:*:data-[slot=icon]:text-[Canvas]',
     // Avatars
     '*:data-[slot=avatar]:-mx-0.5 *:data-[slot=avatar]:size-6 sm:*:data-[slot=avatar]:size-5'
@@ -133,7 +133,7 @@ export function ListboxOption<T>({
               // Basic layout
               'group/option grid cursor-default grid-cols-[--spacing(5)_1fr] items-baseline gap-x-2 rounded-lg py-2.5 pr-3.5 pl-2 sm:grid-cols-[--spacing(4)_1fr] sm:py-1.5 sm:pr-3 sm:pl-1.5',
               // Typography
-              'text-base/6 text-white sm:text-sm/6 forced-colors:text-[CanvasText]',
+              'text-base/6 text-text-primary sm:text-sm/6 forced-colors:text-[CanvasText]',
               // Focus
               'outline-hidden data-focus:bg-blue-500 data-focus:text-white',
               // Forced colors mode
@@ -168,7 +168,7 @@ export function ListboxDescription({ className, children, ...props }: React.Comp
       {...props}
       className={clsx(
         className,
-        'flex flex-1 overflow-hidden text-gray-400 group-data-focus/option:text-white before:w-2 before:min-w-0 before:shrink'
+        'flex flex-1 overflow-hidden text-text-secondary group-data-focus/option:text-white before:w-2 before:min-w-0 before:shrink'
       )}
     >
       <span className="flex-1 truncate">{children}</span>

@@ -63,7 +63,7 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
   return (
     <div className="space-y-2">
       {label && (
-        <label className="block text-sm font-medium text-white">
+        <label className="block text-sm font-medium text-text-primary">
           {label}
         </label>
       )}
@@ -78,7 +78,7 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
             return (
               <div
                 key={url}
-                className="group flex items-center gap-2 rounded-full border border-dark-border bg-dark-surface py-1 pl-1 pr-2 text-sm"
+                className="group flex items-center gap-2 rounded-full border border-border-primary bg-surface py-1 pl-1 pr-2 text-sm"
               >
                 {socialInfo ? (
                   <span className={`flex size-6 items-center justify-center rounded-full text-xs font-bold text-white ${socialInfo.color}`}>
@@ -93,14 +93,14 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="max-w-[150px] truncate text-gray-300"
+                  className="max-w-[150px] truncate text-text-secondary"
                 >
                   {url.replace(/^https?:\/\/(www\.)?/, '').split('/')[0]}
                 </a>
                 <button
                   type="button"
                   onClick={() => removeUrl(index)}
-                  className="text-gray-400 hover:text-red-500"
+                  className="text-text-secondary hover:text-red-500"
                 >
                   <XMarkIcon className="size-4" />
                 </button>
@@ -118,19 +118,19 @@ export function SocialMediaInput({ value = [], onChange, label = 'Društvene mre
           onChange={(e) => setNewUrl(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="https://facebook.com/..."
-          className="flex-1 rounded-lg border border-dark-border bg-dark-surface px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="flex-1 rounded-lg border border-border-primary bg-surface px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         />
         <button
           type="button"
           onClick={addUrl}
           disabled={!newUrl.trim()}
-          className="rounded-lg bg-zinc-700 px-3 py-2 text-sm font-medium text-gray-300 hover:bg-zinc-600 disabled:opacity-50"
+          className="rounded-lg bg-zinc-700 px-3 py-2 text-sm font-medium text-text-secondary hover:bg-zinc-600 disabled:opacity-50"
         >
           <PlusIcon className="size-5" />
         </button>
       </div>
 
-      <p className="text-xs text-gray-400">
+      <p className="text-xs text-text-secondary">
         Podržano: Facebook, Instagram, Strava, Twitter/X, YouTube, TikTok
       </p>
     </div>

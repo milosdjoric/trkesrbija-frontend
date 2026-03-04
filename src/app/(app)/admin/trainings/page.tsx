@@ -137,7 +137,7 @@ export default function AdminTrainingsPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -147,33 +147,33 @@ export default function AdminTrainingsPage() {
    <Heading>Svi treninzi ({events.length})</Heading>
 
    {events.length === 0 ? (
-    <div className="mt-12 text-center text-sm text-gray-400">Nema kreiranih treninga.</div>
+    <div className="mt-12 text-center text-sm text-text-secondary">Nema kreiranih treninga.</div>
    ) : (
-    <div className="mt-6 overflow-hidden rounded-lg border border-dark-border">
-     <table className="min-w-full divide-y divide-dark-border">
-      <thead className="bg-dark-surface">
+    <div className="mt-6 overflow-hidden rounded-lg border border-border-primary">
+     <table className="min-w-full divide-y divide-border-primary">
+      <thead className="bg-surface">
        <tr>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Trening
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Tip
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Staze
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Sledeća staza
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Kreiran
         </th>
-        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
          Akcije
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-border-primary bg-card">
        {events.map((event) => {
         const now = new Date().getTime()
         const upcomingRaces = event.races
@@ -182,11 +182,11 @@ export default function AdminTrainingsPage() {
         const nextRace = upcomingRaces[0] ?? event.races[0] ?? null
 
         return (
-         <tr key={event.id} className="hover:bg-dark-card-hover">
+         <tr key={event.id} className="hover:bg-card-hover">
           <td className="px-4 py-3">
-           <div className="font-medium text-white">{event.eventName}</div>
+           <div className="font-medium text-text-primary">{event.eventName}</div>
            {event.description && (
-            <div className="max-w-xs truncate text-sm text-gray-400">{event.description}</div>
+            <div className="max-w-xs truncate text-sm text-text-secondary">{event.description}</div>
            )}
           </td>
           <td className="px-4 py-3">
@@ -194,13 +194,13 @@ export default function AdminTrainingsPage() {
             {typeLabel(event.type)}
            </Badge>
           </td>
-          <td className="px-4 py-3 text-sm text-gray-400">
+          <td className="px-4 py-3 text-sm text-text-secondary">
            {event.races.length}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-400">
+          <td className="px-4 py-3 text-sm text-text-secondary">
            {nextRace ? formatDate(nextRace.startDateTime) : '—'}
           </td>
-          <td className="px-4 py-3 text-sm text-gray-400">
+          <td className="px-4 py-3 text-sm text-text-secondary">
            {formatDate(event.createdAt)}
           </td>
           <td className="px-4 py-3 text-right">

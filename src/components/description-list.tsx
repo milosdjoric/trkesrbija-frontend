@@ -18,7 +18,7 @@ export function DescriptionTerm({ className, ...props }: React.ComponentPropsWit
       {...props}
       className={clsx(
         className,
-        'col-start-1 border-t border-white/5 pt-3 text-gray-400 first:border-none sm:border-t sm:border-white/5 sm:py-3'
+        'col-start-1 border-t border-white/5 pt-3 text-text-secondary first:border-none sm:border-t sm:border-white/5 sm:py-3'
       )}
     />
   )
@@ -30,7 +30,7 @@ export function DescriptionDetails({ className, ...props }: React.ComponentProps
       {...props}
       className={clsx(
         className,
-        'pt-1 pb-3 text-white sm:border-t sm:border-white/5 sm:py-3 sm:nth-2:border-none'
+        'pt-1 pb-3 text-text-primary sm:border-t sm:border-white/5 sm:py-3 sm:nth-2:border-none'
       )}
     />
   )

@@ -61,12 +61,12 @@ export default function ForgotPassword() {
           Ako postoji nalog za <Strong>{email}</Strong>, poslali smo link za resetovanje lozinke.
           Molimo proverite inbox i spam folder.
         </Text>
-        <Text className="text-sm text-gray-500">
+        <Text className="text-sm text-text-muted">
           Niste primili email?{' '}
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="font-semibold text-white hover:underline"
+            className="font-semibold text-text-primary hover:underline"
           >
             Pokušaj ponovo
           </button>

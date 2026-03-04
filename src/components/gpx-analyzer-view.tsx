@@ -223,40 +223,40 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
-          <div className="text-2xl font-bold text-white">{stats.distance.toFixed(2)} km</div>
-          <div className="text-sm text-gray-400">Dužina</div>
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
+          <div className="text-2xl font-bold text-text-primary">{stats.distance.toFixed(2)} km</div>
+          <div className="text-sm text-text-secondary">Dužina</div>
         </div>
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
           <div className="text-2xl font-bold text-emerald-400">{stats.elevationGain} m</div>
-          <div className="text-sm text-gray-400">Uspon (D+)</div>
+          <div className="text-sm text-text-secondary">Uspon (D+)</div>
         </div>
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
           <div className="text-2xl font-bold text-red-400">{stats.elevationLoss} m</div>
-          <div className="text-sm text-gray-400">Pad (D-)</div>
+          <div className="text-sm text-text-secondary">Pad (D-)</div>
         </div>
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
-          <div className="text-2xl font-bold text-white">{stats.minElevation} m</div>
-          <div className="text-sm text-gray-400">Min visina</div>
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
+          <div className="text-2xl font-bold text-text-primary">{stats.minElevation} m</div>
+          <div className="text-sm text-text-secondary">Min visina</div>
         </div>
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
-          <div className="text-2xl font-bold text-white">{stats.maxElevation} m</div>
-          <div className="text-sm text-gray-400">Max visina</div>
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
+          <div className="text-2xl font-bold text-text-primary">{stats.maxElevation} m</div>
+          <div className="text-sm text-text-secondary">Max visina</div>
         </div>
       </div>
 
       {/* Map */}
       <div
         ref={mapContainerRef}
-        className={`relative ${isFullscreen ? 'bg-dark-card p-4' : ''}`}
+        className={`relative ${isFullscreen ? 'bg-card p-4' : ''}`}
       >
         <div
           ref={mapRef}
-          className="h-[400px] w-full rounded-lg border border-dark-border"
+          className="h-[400px] w-full rounded-lg border border-border-primary"
         />
 
         {/* Layer switcher */}
-        <div className="absolute right-3 top-3 z-[1000] flex gap-1 rounded-lg bg-dark-surface p-1 shadow-md">
+        <div className="absolute right-3 top-3 z-[1000] flex gap-1 rounded-lg bg-surface p-1 shadow-md">
           {(['street', 'topo', 'satellite'] as const).map((layer) => (
             <button
               key={layer}
@@ -264,7 +264,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               className={`rounded px-2 py-1 text-xs font-medium transition-colors ${
                 activeLayer === layer
                   ? 'bg-white text-zinc-900'
-                  : 'text-gray-300 hover:bg-dark-card-hover'
+                  : 'text-text-secondary hover:bg-card-hover'
               }`}
             >
               {layer === 'street' ? 'Ulice' : layer === 'topo' ? 'Topo' : 'Satelit'}
@@ -275,10 +275,10 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
         {/* Fullscreen button */}
         <button
           onClick={toggleFullscreen}
-          className="absolute bottom-3 right-3 z-[1000] cursor-pointer rounded-lg bg-dark-surface p-2 shadow-md hover:bg-dark-surface-hover"
+          className="absolute bottom-3 right-3 z-[1000] cursor-pointer rounded-lg bg-surface p-2 shadow-md hover:bg-surface-hover"
           title={isFullscreen ? 'Izađi iz celog ekrana' : 'Ceo ekran'}
         >
-          <svg className="size-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="size-5 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isFullscreen ? (
               <path
                 strokeLinecap="round"
@@ -299,9 +299,9 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
       </div>
 
       {/* Advanced Stats */}
-      <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+      <div className="rounded-lg border border-border-primary bg-surface p-4">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-white">Napredne statistike</h3>
+          <h3 className="text-sm font-medium text-text-primary">Napredne statistike</h3>
           <a
             href="https://itra.run/FAQ/ItraScore"
             target="_blank"
@@ -318,11 +318,11 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           {/* ITRA Points */}
           <div>
             <div className="flex min-h-[30px] items-baseline gap-2">
-              <span className="text-lg font-semibold text-white">{stats.itraPoints}</span>
-              <span className="text-xs text-gray-400">km-effort</span>
+              <span className="text-lg font-semibold text-text-primary">{stats.itraPoints}</span>
+              <span className="text-xs text-text-secondary">km-effort</span>
             </div>
-            <div className="text-xs text-gray-400">ITRA bodovi</div>
-            <div className="mt-0.5 text-[10px] text-gray-400">
+            <div className="text-xs text-text-secondary">ITRA bodovi</div>
+            <div className="mt-0.5 text-[10px] text-text-secondary">
               Formula: km + D+ / 100
             </div>
           </div>
@@ -343,10 +343,10 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               >
                 {stats.difficulty}
               </span>
-              <span className="text-sm text-gray-300">{stats.difficultyLabel}</span>
+              <span className="text-sm text-text-secondary">{stats.difficultyLabel}</span>
             </div>
-            <div className="text-xs text-gray-400">ITRA kategorizacija težine staze</div>
-            <div className="mt-0.5 text-[10px] text-gray-400">
+            <div className="text-xs text-text-secondary">ITRA kategorizacija težine staze</div>
+            <div className="mt-0.5 text-[10px] text-text-secondary">
               {stats.difficulty === 'XXS' && '0 ITRA poena (0-24 km-effort)'}
               {stats.difficulty === 'XS' && '1 ITRA poen (25-44 km-effort)'}
               {stats.difficulty === 'S' && '2 ITRA poena (45-74 km-effort)'}
@@ -359,30 +359,30 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
           {/* Effort Distance */}
           <div>
-            <div className="flex min-h-[30px] items-center text-lg font-semibold text-white">{stats.effortDistance} km</div>
-            <div className="text-xs text-gray-400">Effort distanca</div>
-            <div className="mt-0.5 text-[10px] text-gray-400">
+            <div className="flex min-h-[30px] items-center text-lg font-semibold text-text-primary">{stats.effortDistance} km</div>
+            <div className="text-xs text-text-secondary">Effort distanca</div>
+            <div className="mt-0.5 text-[10px] text-text-secondary">
               Švajcarska metoda: km + D+/100 + D-/200
             </div>
           </div>
 
           {/* Average Elevation */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-white">{stats.averageElevation} m</div>
-            <div className="text-xs text-gray-400">Prosečna visina</div>
+            <div className="min-h-[30px] text-lg font-semibold text-text-primary">{stats.averageElevation} m</div>
+            <div className="text-xs text-text-secondary">Prosečna visina</div>
           </div>
 
           {/* Average Grade */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-white">{stats.averageGrade}%</div>
-            <div className="text-xs text-gray-400">Prosečni nagib</div>
+            <div className="min-h-[30px] text-lg font-semibold text-text-primary">{stats.averageGrade}%</div>
+            <div className="text-xs text-text-secondary">Prosečni nagib</div>
           </div>
 
           {/* Max Grade Up */}
           <div>
             <div className="min-h-[30px] text-lg font-semibold text-emerald-400">+{stats.maxGradeUp}%</div>
-            <div className="text-xs text-gray-400">Max uspon</div>
-            <div className="mt-0.5 text-[10px] text-gray-400">
+            <div className="text-xs text-text-secondary">Max uspon</div>
+            <div className="mt-0.5 text-[10px] text-text-secondary">
               Najstrmiji segment (min 300m)
             </div>
           </div>
@@ -390,15 +390,15 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
           {/* Max Grade Down */}
           <div>
             <div className="min-h-[30px] text-lg font-semibold text-red-400">-{stats.maxGradeDown}%</div>
-            <div className="text-xs text-gray-400">Max pad</div>
-            <div className="mt-0.5 text-[10px] text-gray-400">
+            <div className="text-xs text-text-secondary">Max pad</div>
+            <div className="mt-0.5 text-[10px] text-text-secondary">
               Najstrmiji spust (min 100m)
             </div>
           </div>
 
           {/* Loop */}
           <div>
-            <div className="min-h-[30px] text-lg font-semibold text-white">
+            <div className="min-h-[30px] text-lg font-semibold text-text-primary">
               {stats.isLoop ? (
                 <span className="flex items-center gap-1 text-emerald-400">
                   <svg className="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -407,11 +407,11 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
                   Da
                 </span>
               ) : (
-                <span className="text-gray-400">Ne</span>
+                <span className="text-text-secondary">Ne</span>
               )}
             </div>
-            <div className="text-xs text-gray-400">Kružna ruta</div>
-            <div className="mt-0.5 text-[10px] text-gray-400">
+            <div className="text-xs text-text-secondary">Kružna ruta</div>
+            <div className="mt-0.5 text-[10px] text-text-secondary">
               Start i cilj unutar 500m
             </div>
           </div>
@@ -436,27 +436,27 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
       </div>
 
       {/* Elevation Profile */}
-      <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+      <div className="rounded-lg border border-border-primary bg-surface p-4">
         <div className="mb-2 flex items-center justify-between">
-          <span className="text-xs font-medium text-gray-400">Visinski profil</span>
+          <span className="text-xs font-medium text-text-secondary">Visinski profil</span>
           {hoveredPoint && (
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-text-secondary">
               {hoveredPoint.distance.toFixed(1)} km · {Math.round(hoveredPoint.elevation)} m
             </span>
           )}
         </div>
         <div
-          className="relative h-[120px] w-full cursor-crosshair rounded-lg border border-dark-border bg-dark-card"
+          className="relative h-[120px] w-full cursor-crosshair rounded-lg border border-border-primary bg-card"
           onMouseMove={handleProfileHover}
           onMouseLeave={handleProfileLeave}
         >
           {/* Y-axis labels - positioned outside SVG */}
-          <div className="pointer-events-none absolute left-2 top-2 text-[10px] text-gray-400">{stats.maxElevation}m</div>
-          <div className="pointer-events-none absolute bottom-6 left-2 text-[10px] text-gray-400">{stats.minElevation}m</div>
+          <div className="pointer-events-none absolute left-2 top-2 text-[10px] text-text-secondary">{stats.maxElevation}m</div>
+          <div className="pointer-events-none absolute bottom-6 left-2 text-[10px] text-text-secondary">{stats.minElevation}m</div>
 
           {/* X-axis labels - positioned outside SVG */}
-          <div className="pointer-events-none absolute bottom-1 left-10 text-[10px] text-gray-400">0</div>
-          <div className="pointer-events-none absolute bottom-1 right-2 text-[10px] text-gray-400">{stats.distance.toFixed(1)}km</div>
+          <div className="pointer-events-none absolute bottom-1 left-10 text-[10px] text-text-secondary">0</div>
+          <div className="pointer-events-none absolute bottom-1 right-2 text-[10px] text-text-secondary">{stats.distance.toFixed(1)}km</div>
 
           {/* Hover indicator - HTML elements for perfect positioning */}
           {hoveredPoint && (
@@ -486,7 +486,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             {/* Grid lines */}
             <defs>
               <pattern id="grid" width="10" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-gray-300" />
+                <path d="M 10 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.3" className="text-text-secondary" />
               </pattern>
               <linearGradient id="elevationGradient" x1="0%" y1="0%" x2="0%" y2="100%">
                 <stop offset="0%" stopColor="#10b981" />
@@ -532,9 +532,9 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
       {/* Top Climbs */}
       {topClimbs.length > 0 && (
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
           <div className="mb-1 flex items-center justify-between">
-            <h3 className="text-sm font-medium text-white">
+            <h3 className="text-sm font-medium text-text-primary">
               Top {topClimbs.length} uspon{topClimbs.length === 1 ? '' : topClimbs.length < 5 ? 'a' : 'a'}
             </h3>
             <div className="flex gap-1 rounded-lg bg-zinc-700 p-0.5">
@@ -545,7 +545,7 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
                   className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
                     climbSort === sort
                       ? 'bg-zinc-600 text-white shadow-sm'
-                      : 'text-gray-400 hover:text-zinc-200'
+                      : 'text-text-secondary hover:text-zinc-200'
                   }`}
                 >
                   {sort === 'elevation' ? 'D+' : sort === 'position' ? 'km' : '%'}
@@ -553,14 +553,14 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               ))}
             </div>
           </div>
-          <p className="mb-2 text-[10px] text-gray-400">
+          <p className="mb-2 text-[10px] text-text-secondary">
             Kriterijumi: min 50m D+, min 3% nagib, min 200m dužina
           </p>
           <div className="space-y-1">
             {sortedClimbs.map((climb, index) => (
               <div
                 key={index}
-                className="flex items-center gap-3 rounded bg-dark-card px-2 py-1.5"
+                className="flex items-center gap-3 rounded bg-card px-2 py-1.5"
               >
                 {/* Rank */}
                 <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-900/30 text-xs font-bold text-emerald-400">
@@ -569,16 +569,16 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
 
                 {/* Climb info */}
                 <div className="flex flex-1 items-center gap-2">
-                  <span className="text-sm font-medium text-white">
+                  <span className="text-sm font-medium text-text-primary">
                     {climb.startKm} → {climb.endKm} km
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-text-secondary">
                     ({climb.length} km)
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-text-secondary">
                     +{climb.elevationGain}m
                   </span>
-                  <span className="text-xs text-gray-400">
+                  <span className="text-xs text-text-secondary">
                     {Math.round(climb.elevationGain / climb.length)} m/km
                   </span>
                 </div>

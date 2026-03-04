@@ -124,7 +124,7 @@ export default function GpxAnalyzerPage() {
             className={`relative flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors ${
               isDragging
                 ? 'border-brand-green bg-brand-green/10'
-                : 'border-dark-border-light bg-dark-card hover:border-gray-500 hover:bg-dark-card-hover'
+                : 'border-border-secondary bg-card hover:border-gray-500 hover:bg-card-hover'
             }`}
           >
             <input
@@ -142,14 +142,14 @@ export default function GpxAnalyzerPage() {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-4 p-8 text-center">
-                <div className="rounded-full bg-dark-surface p-4">
-                  <MapIcon className="size-10 text-gray-400" />
+                <div className="rounded-full bg-surface p-4">
+                  <MapIcon className="size-10 text-text-secondary" />
                 </div>
                 <div>
                   <Subheading>Prevucite GPX fajl ovde</Subheading>
                   <Text className="mt-1">ili kliknite za izbor fajla</Text>
                 </div>
-                <Text className="text-xs text-gray-500">Podržani format: .gpx</Text>
+                <Text className="text-xs text-text-muted">Podržani format: .gpx</Text>
               </div>
             )}
           </div>
@@ -157,15 +157,15 @@ export default function GpxAnalyzerPage() {
           // Results
           <div className="space-y-6">
             {/* File info */}
-            <div className="flex items-center gap-3 rounded-lg border border-dark-border bg-dark-card p-4">
+            <div className="flex items-center gap-3 rounded-lg border border-border-primary bg-card p-4">
               <div className="rounded-full bg-brand-green/15 p-2">
                 <MapIcon className="size-5 text-brand-green" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate font-medium text-white">
+                <div className="truncate font-medium text-text-primary">
                   {parsedGpx.stats.name || fileName}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2 text-sm text-text-secondary">
                   <span>{parsedGpx.stats.pointCount.toLocaleString()} tačaka</span>
                   {uploadedUrl && (
                     <>
@@ -185,7 +185,7 @@ export default function GpxAnalyzerPage() {
               </div>
               <button
                 onClick={handleReset}
-                className="rounded-full p-1 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
+                className="rounded-full p-1 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
               >
                 <XMarkIcon className="size-5" />
               </button>

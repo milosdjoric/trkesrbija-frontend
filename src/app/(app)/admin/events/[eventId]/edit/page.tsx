@@ -303,7 +303,7 @@ export default function EditEventPage() {
    <div className="mb-4">
     <Link
      href="/admin/events"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Događaji
@@ -314,13 +314,13 @@ export default function EditEventPage() {
 
    <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
     {/* Basic info */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Osnovne informacije</Subheading>
 
      <div className="mt-4 grid gap-4 sm:grid-cols-2">
       {/* Event name */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Naziv događaja *
        </label>
        <input
@@ -328,14 +328,14 @@ export default function EditEventPage() {
         value={eventName}
         onChange={(e) => setEventName(toTitleCase(e.target.value))}
         placeholder="npr. Avala Trail"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
         required
        />
       </div>
 
       {/* Slug */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Slug (URL)
        </label>
        <div className="mt-1 flex items-center gap-2">
@@ -344,7 +344,7 @@ export default function EditEventPage() {
          value={slug}
          onChange={(e) => setSlug(e.target.value)}
          placeholder={generateSlug(eventName) || 'avala-trail-2024'}
-         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+         className="flex-1 rounded-lg border border-border-secondary px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
         />
         <Button
          type="button"
@@ -358,7 +358,7 @@ export default function EditEventPage() {
          Generiši slug
         </Button>
        </div>
-       <p className="mt-1 text-xs text-gray-400">
+       <p className="mt-1 text-xs text-text-secondary">
         URL: /events/{slug || generateSlug(eventName) || 'slug'}
         {!slug && eventName && ' (automatski generisan)'}
        </p>
@@ -366,13 +366,13 @@ export default function EditEventPage() {
 
       {/* Type */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Tip događaja *
        </label>
        <select
         value={eventType}
         onChange={(e) => setEventType(e.target.value as any)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        >
         <option value="TRAIL">Trail</option>
         <option value="ROAD">Ulična</option>
@@ -382,13 +382,13 @@ export default function EditEventPage() {
 
       {/* Country */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Država
        </label>
        <select
         value={country}
         onChange={(e) => setCountry(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        >
         <option value="">Nije definisano</option>
         <option value="ser">Srbija</option>
@@ -400,7 +400,7 @@ export default function EditEventPage() {
 
       {/* Description */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Opis
        </label>
        <textarea
@@ -408,7 +408,7 @@ export default function EditEventPage() {
         onChange={(e) => setDescription(e.target.value)}
         rows={4}
         placeholder="Detaljni opis događaja..."
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
       </div>
 
@@ -424,13 +424,13 @@ export default function EditEventPage() {
          type="checkbox"
          checked={verified}
          onChange={(e) => setVerified(e.target.checked)}
-         className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
+         className="size-4 rounded border-border-secondary text-brand-green focus:ring-brand-green bg-surface"
         />
-        <span className="text-sm font-medium text-gray-300">
+        <span className="text-sm font-medium text-text-secondary">
          Verifikovan događaj
         </span>
        </label>
-       <p className="mt-1 text-xs text-gray-400">
+       <p className="mt-1 text-xs text-text-secondary">
         Označite ako događaj ima sve potrebne informacije (datum, lokacija, opis, itd.)
        </p>
       </div>
@@ -438,7 +438,7 @@ export default function EditEventPage() {
     </div>
 
     {/* Media */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Slike</Subheading>
 
      <div className="mt-4 space-y-6">
@@ -456,9 +456,9 @@ export default function EditEventPage() {
     </div>
 
     {/* Organizer */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Organizator</Subheading>
-     <p className="mt-1 mb-4 text-sm text-gray-400">
+     <p className="mt-1 mb-4 text-sm text-text-secondary">
       Izaberite postojećeg organizatora ili dodajte novog
      </p>
 
@@ -466,13 +466,13 @@ export default function EditEventPage() {
     </div>
 
     {/* Links */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Linkovi i društvene mreže</Subheading>
 
      <div className="mt-4 space-y-4">
       {/* Registration site */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Sajt za prijave
        </label>
        <input
@@ -480,9 +480,9 @@ export default function EditEventPage() {
         value={registrationSite}
         onChange={(e) => setRegistrationSite(e.target.value)}
         placeholder="https://prijave.example.com"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
-       <p className="mt-1 text-xs text-gray-400">
+       <p className="mt-1 text-xs text-text-secondary">
         Eksterni link ako se prijave ne vode preko ovog sistema
        </p>
       </div>
@@ -505,7 +505,7 @@ export default function EditEventPage() {
 
    {/* Races section */}
    <div className="mt-8 max-w-2xl">
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <div className="flex items-center justify-between">
       <Subheading>Trke ({event.races.length})</Subheading>
       <Button href={`/admin/events/${eventId}/races/new`} outline>
@@ -515,7 +515,7 @@ export default function EditEventPage() {
      </div>
 
      {event.races.length === 0 ? (
-      <p className="mt-4 text-center text-sm text-gray-400">
+      <p className="mt-4 text-center text-sm text-text-secondary">
        Nema trka za ovaj događaj.
       </p>
      ) : (
@@ -523,13 +523,13 @@ export default function EditEventPage() {
        {event.races.map((race) => (
         <div
          key={race.id}
-         className="flex items-center justify-between rounded-lg border border-dark-border bg-dark-surface p-4"
+         className="flex items-center justify-between rounded-lg border border-border-primary bg-surface p-4"
         >
          <div>
-          <div className="font-medium text-white">
+          <div className="font-medium text-text-primary">
            {race.raceName || 'Bez naziva'}
           </div>
-          <div className="mt-1 text-sm text-gray-400">
+          <div className="mt-1 text-sm text-text-secondary">
            {race.length} km
            {race.elevation && ` • ${race.elevation}m D+`}
            {' • '}
@@ -549,7 +549,7 @@ export default function EditEventPage() {
              Prijave otvorene
             </span>
            ) : (
-            <span className="inline-flex items-center rounded-full bg-dark-surface px-2 py-0.5 text-xs font-medium text-gray-400">
+            <span className="inline-flex items-center rounded-full bg-surface px-2 py-0.5 text-xs font-medium text-text-secondary">
              Prijave zatvorene
             </span>
            )}

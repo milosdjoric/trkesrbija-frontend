@@ -231,7 +231,7 @@ export default function AdminEventsPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -261,13 +261,13 @@ export default function AdminEventsPage() {
    <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
     {/* Search */}
     <div className="relative">
-     <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+     <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-secondary" />
      <input
       type="text"
       placeholder="Pretraži događaje..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+      className="w-full rounded-lg border border-border-secondary py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
      />
     </div>
 
@@ -275,7 +275,7 @@ export default function AdminEventsPage() {
     <select
      value={filterType}
      onChange={(e) => setFilterType(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+     className="w-full rounded-lg border border-border-secondary px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
     >
      <option value="ALL">Svi tipovi</option>
      <option value="TRAIL">Trail</option>
@@ -286,12 +286,12 @@ export default function AdminEventsPage() {
 
    {/* Show past toggle */}
    <div className="mt-4">
-    <label className="flex items-center gap-2 text-sm text-gray-400">
+    <label className="flex items-center gap-2 text-sm text-text-secondary">
      <input
       type="checkbox"
       checked={showPast}
       onChange={(e) => setShowPast(e.target.checked)}
-      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
+      className="size-4 rounded border-border-secondary text-brand-green focus:ring-brand-green bg-surface"
      />
      Prikaži istekle događaje
     </label>
@@ -303,31 +303,31 @@ export default function AdminEventsPage() {
      <Subheading>Svi događaji ({filteredEvents.length})</Subheading>
     </div>
 
-    <div className="overflow-hidden rounded-lg border border-dark-border">
-     <table className="min-w-full divide-y divide-dark-border">
-      <thead className="bg-dark-surface">
+    <div className="overflow-hidden rounded-lg border border-border-primary">
+     <table className="min-w-full divide-y divide-border-primary">
+      <thead className="bg-surface">
        <tr>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Događaj
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Tip
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Trke
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Kreirano
         </th>
-        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
          Akcije
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-border-primary bg-card">
        {filteredEvents.length === 0 ? (
         <tr>
-         <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
+         <td colSpan={5} className="px-4 py-8 text-center text-sm text-text-secondary">
           {search || filterType !== 'ALL'
            ? 'Nema događaja koji odgovaraju filterima'
            : 'Nema događaja'}
@@ -335,7 +335,7 @@ export default function AdminEventsPage() {
         </tr>
        ) : (
         filteredEvents.map((event) => (
-         <tr key={event.id} className="hover:bg-dark-card-hover">
+         <tr key={event.id} className="hover:bg-card-hover">
           <td className="px-4 py-3">
            <div className="flex items-center gap-3">
             {event.mainImage && (
@@ -348,11 +348,11 @@ export default function AdminEventsPage() {
             <div>
              <Link
               href={`/events/${event.slug}`}
-              className="font-medium text-white hover:text-brand-green"
+              className="font-medium text-text-primary hover:text-brand-green"
              >
               {event.eventName}
              </Link>
-             <div className="text-sm text-gray-400">/{event.slug}</div>
+             <div className="text-sm text-text-secondary">/{event.slug}</div>
             </div>
            </div>
           </td>
@@ -364,21 +364,21 @@ export default function AdminEventsPage() {
           <td className="px-4 py-3">
            <span className="font-medium">{event.races.length}</span>
           </td>
-          <td className="px-4 py-3 text-sm text-gray-400">
+          <td className="px-4 py-3 text-sm text-text-secondary">
            {formatDate(event.createdAt)}
           </td>
           <td className="px-4 py-3 text-right">
            <div className="flex justify-end gap-1">
             <Link
              href={`/admin/events/${event.id}/edit`}
-             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
+             className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
              title="Izmeni"
             >
              <PencilIcon className="size-4" />
             </Link>
             <Link
              href={`/admin/events/${event.id}/races/new`}
-             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-brand-green"
+             className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-surface hover:text-brand-green"
              title="Dodaj trku"
             >
              <PlusIcon className="size-4" />
@@ -386,7 +386,7 @@ export default function AdminEventsPage() {
             <button
              onClick={() => handleDuplicate(event.id)}
              disabled={duplicatingId === event.id}
-             className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white disabled:opacity-50"
+             className="cursor-pointer rounded-lg p-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary disabled:opacity-50"
              title="Dupliraj"
             >
              <DocumentDuplicateIcon className="size-4" />
@@ -394,7 +394,7 @@ export default function AdminEventsPage() {
             <button
              onClick={() => handleDelete(event)}
              disabled={deletingId === event.id}
-             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-900/20 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
+             className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-red-900/20 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
              title="Obriši događaj"
             >
              <TrashIcon className="size-4" />

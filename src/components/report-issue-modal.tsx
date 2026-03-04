@@ -115,7 +115,7 @@ export function ReportIssueModal({
       <DialogTitle>Prijavi pogrešnu informaciju</DialogTitle>
 
       <DialogBody>
-        <p className="text-sm text-gray-400">
+        <p className="text-sm text-text-secondary">
           Označite koje informacije su pogrešne za <strong>{entityName}</strong>
         </p>
 
@@ -124,22 +124,22 @@ export function ReportIssueModal({
           {fields.map((field) => (
             <label
               key={field.value}
-              className="flex items-center gap-3 rounded-lg border border-dark-border px-3 py-2 cursor-pointer hover:bg-dark-surface-hover"
+              className="flex items-center gap-3 rounded-lg border border-border-primary px-3 py-2 cursor-pointer hover:bg-surface-hover"
             >
               <input
                 type="checkbox"
                 checked={selectedFields.has(field.value)}
                 onChange={() => toggleField(field.value)}
-                className="size-4 rounded border-dark-border text-blue-600 focus:ring-blue-500 bg-dark-surface"
+                className="size-4 rounded border-border-primary text-blue-600 focus:ring-blue-500 bg-surface"
               />
-              <span className="text-sm text-gray-300">{field.label}</span>
+              <span className="text-sm text-text-secondary">{field.label}</span>
             </label>
           ))}
         </div>
 
         {/* Message */}
         <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-300">
+          <label className="block text-sm font-medium text-text-secondary">
             Koja je ispravna informacija? (opciono)
           </label>
           <textarea
@@ -147,13 +147,13 @@ export function ReportIssueModal({
             onChange={(e) => setMessage(e.target.value)}
             rows={3}
             placeholder="npr. Datum trke je 15. jun 2026, a ne 14. jun..."
-            className="mt-1 w-full rounded-lg border border-dark-border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-dark-surface"
+            className="mt-1 w-full rounded-lg border border-border-primary px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-surface"
           />
         </div>
 
         {/* Email */}
         <div className="mt-3">
-          <label className="block text-sm font-medium text-gray-300">
+          <label className="block text-sm font-medium text-text-secondary">
             Vaš email (opciono, za kontakt)
           </label>
           <input
@@ -161,7 +161,7 @@ export function ReportIssueModal({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="email@primer.rs"
-            className="mt-1 w-full rounded-lg border border-dark-border px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-dark-surface"
+            className="mt-1 w-full rounded-lg border border-border-primary px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-surface"
           />
         </div>
       </DialogBody>

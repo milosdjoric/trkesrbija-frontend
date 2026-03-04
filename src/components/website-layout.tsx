@@ -8,7 +8,7 @@ import { SiteHeader } from '@/components/site-header'
 
 export function WebsiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-svh flex-col bg-dark-bg">
+    <div className="flex min-h-svh flex-col bg-main">
       <SiteHeader />
       <SubNav />
       <EmailVerificationBanner />

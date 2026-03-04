@@ -10,12 +10,14 @@ import { Input } from '@/components/input'
 import { PasswordStrength, validatePassword } from '@/components/password-strength'
 import { Strong, Text, TextLink } from '@/components/text'
 import { GoogleLogin } from '@react-oauth/google'
+import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Register() {
   const router = useRouter()
   const { register, loginWithGoogle } = useAuth()
+  const { resolvedTheme } = useTheme()
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -130,9 +132,9 @@ export default function Register() {
       </Button>
 
       <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-dark-border-light" />
-        <Text className="text-gray-500">ili</Text>
-        <div className="h-px flex-1 bg-dark-border-light" />
+        <div className="h-px flex-1 bg-border-secondary" />
+        <Text className="text-text-muted">ili</Text>
+        <div className="h-px flex-1 bg-border-secondary" />
       </div>
 
       <div className="flex justify-center">
@@ -142,7 +144,7 @@ export default function Register() {
           useOneTap={false}
           width="368"
           text="signup_with"
-          theme="filled_black"
+          theme={resolvedTheme === 'dark' ? 'filled_black' : 'outline'}
         />
       </div>
 

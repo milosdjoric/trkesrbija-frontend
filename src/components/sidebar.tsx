@@ -67,7 +67,7 @@ export function SidebarSpacer({ className, ...props }: React.ComponentPropsWitho
 
 export function SidebarHeading({ className, ...props }: React.ComponentPropsWithoutRef<'h3'>) {
   return (
-    <h3 {...props} className={clsx(className, 'mb-1 px-2 text-xs/6 font-medium text-gray-400')} />
+    <h3 {...props} className={clsx(className, 'mb-1 px-2 text-xs/6 font-medium text-text-secondary')} />
   )
 }
 
@@ -85,7 +85,7 @@ export const SidebarItem = forwardRef(function SidebarItem(
 ) {
   let classes = clsx(
     // Base
-    'flex flex-wrap w-full items-center gap-x-3 gap-y-1 rounded-lg px-2 py-2.5 text-left text-base/6 font-medium text-white sm:py-2 sm:text-sm/5',
+    'flex flex-wrap w-full items-center gap-x-3 gap-y-1 rounded-lg px-2 py-2.5 text-left text-base/6 font-medium text-text-primary sm:py-2 sm:text-sm/5',
     // Leading icon/icon-only
     '*:data-[slot=icon]:size-6 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:fill-gray-400 sm:*:data-[slot=icon]:size-5',
     // Trailing icon (down chevron or similar)

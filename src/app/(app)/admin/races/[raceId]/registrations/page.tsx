@@ -229,7 +229,7 @@ export default function AdminRegistrationsPage() {
    <div className="max-lg:hidden">
     <Link
      href={`/events/${race.raceEvent.slug}`}
-     className="inline-flex items-center gap-2 text-sm/6 text-gray-400"
+     className="inline-flex items-center gap-2 text-sm/6 text-text-secondary"
     >
      <ChevronLeftIcon className="size-4 fill-gray-400" />
      {race.raceEvent.eventName}
@@ -290,9 +290,9 @@ export default function AdminRegistrationsPage() {
 
    {/* Registrations Table */}
    <div className="mt-6 overflow-x-auto">
-    <table className="min-w-full divide-y divide-dark-border">
+    <table className="min-w-full divide-y divide-border-primary">
      <thead>
-      <tr className="text-left text-sm font-medium text-gray-400">
+      <tr className="text-left text-sm font-medium text-text-secondary">
        <th className="px-4 py-3">#</th>
        <th className="px-4 py-3">Ime i prezime</th>
        <th className="px-4 py-3">Email</th>
@@ -303,22 +303,22 @@ export default function AdminRegistrationsPage() {
        <th className="px-4 py-3">Akcije</th>
       </tr>
      </thead>
-     <tbody className="divide-y divide-dark-border">
+     <tbody className="divide-y divide-border-primary">
       {registrations.length === 0 ? (
        <tr>
-        <td colSpan={8} className="px-4 py-8 text-center text-gray-400">
+        <td colSpan={8} className="px-4 py-8 text-center text-text-secondary">
          Nema prijava za prikaz
         </td>
        </tr>
       ) : (
        registrations.map((reg, index) => (
         <tr key={reg.id} className="text-sm">
-         <td className="px-4 py-3 text-gray-400">{index + 1}</td>
-         <td className="px-4 py-3 font-medium text-white">
+         <td className="px-4 py-3 text-text-secondary">{index + 1}</td>
+         <td className="px-4 py-3 font-medium text-text-primary">
           {reg.firstName} {reg.lastName}
          </td>
-         <td className="px-4 py-3 text-gray-400">{reg.email}</td>
-         <td className="px-4 py-3 text-gray-400">{reg.phone || '-'}</td>
+         <td className="px-4 py-3 text-text-secondary">{reg.email}</td>
+         <td className="px-4 py-3 text-text-secondary">{reg.phone || '-'}</td>
          <td className="px-4 py-3">{getGenderLabel(reg.gender)}</td>
          <td className="px-4 py-3">
           <Select
@@ -363,12 +363,12 @@ export default function AdminRegistrationsPage() {
              setEditingBib(reg.id)
              setNewBibNumber(reg.bibNumber || '')
             }}
-            className="inline-flex items-center gap-1 text-gray-400 hover:text-white"
+            className="inline-flex items-center gap-1 text-text-secondary hover:text-text-primary"
            >
             {reg.bibNumber ? (
              <span className="font-mono">{reg.bibNumber}</span>
             ) : (
-             <span className="text-gray-400">-</span>
+             <span className="text-text-secondary">-</span>
             )}
             <PencilIcon className="size-3" />
            </button>

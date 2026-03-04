@@ -89,8 +89,8 @@ export function GalleryUpload({ value = [], onChange, label = 'Galerija', maxIma
   return (
     <div className="space-y-3">
       {label && (
-        <label className="block text-sm font-medium text-white">
-          {label} <span className="text-gray-400">({value.length}/{maxImages})</span>
+        <label className="block text-sm font-medium text-text-primary">
+          {label} <span className="text-text-secondary">({value.length}/{maxImages})</span>
         </label>
       )}
 
@@ -102,7 +102,7 @@ export function GalleryUpload({ value = [], onChange, label = 'Galerija', maxIma
               <img
                 src={url}
                 alt={`Galerija ${index + 1}`}
-                className="h-full w-full rounded-lg border border-dark-border object-cover"
+                className="h-full w-full rounded-lg border border-border-primary object-cover"
               />
               <button
                 type="button"
@@ -126,7 +126,7 @@ export function GalleryUpload({ value = [], onChange, label = 'Galerija', maxIma
           className={`cursor-pointer rounded-lg border-2 border-dashed transition-colors ${
             dragActive
               ? 'border-zinc-500 bg-zinc-700/50'
-              : 'border-dark-border bg-zinc-800/80 hover:border-zinc-500'
+              : 'border-border-primary bg-zinc-800/80 hover:border-zinc-500'
           }`}
         >
           <input
@@ -142,16 +142,16 @@ export function GalleryUpload({ value = [], onChange, label = 'Galerija', maxIma
           <div className="flex flex-col items-center justify-center p-6">
             {isUploading ? (
               <>
-                <svg className="size-8 animate-spin text-gray-400" viewBox="0 0 24 24">
+                <svg className="size-8 animate-spin text-text-secondary" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                <span className="mt-2 text-sm text-gray-400">Upload u toku...</span>
+                <span className="mt-2 text-sm text-text-secondary">Upload u toku...</span>
               </>
             ) : (
               <>
-                <CloudUploadIcon className="size-12 text-gray-400" />
-                <p className="mt-2 text-sm text-gray-400">
+                <CloudUploadIcon className="size-12 text-text-secondary" />
+                <p className="mt-2 text-sm text-text-secondary">
                   Prevuci slike ovde ili klikni za izbor
                 </p>
               </>

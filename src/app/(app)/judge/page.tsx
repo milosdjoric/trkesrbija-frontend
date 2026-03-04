@@ -147,7 +147,7 @@ export default function JudgePage() {
             {checkpoint.orderIndex}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-lg font-bold text-white">
+            <div className="truncate text-lg font-bold text-text-primary">
               {checkpoint.name}
             </div>
             <div className="truncate text-sm text-emerald-100">

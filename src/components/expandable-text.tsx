@@ -31,7 +31,7 @@ export function ExpandableText({ text, maxLines = 5, buttonLabel = 'Pogledaj vi≈
     <div>
       <p
         ref={textRef}
-        className={`text-sm/6 text-gray-300 whitespace-pre-wrap ${className}`}
+        className={`text-sm/6 text-text-secondary whitespace-pre-wrap ${className}`}
         style={
           !isExpanded && needsTruncation
             ? {

@@ -377,7 +377,7 @@ export default function AdminCheckpointsPage() {
    <div className="max-lg:hidden">
     <Link
      href={`/events/${race.raceEvent.slug}`}
-     className="inline-flex items-center gap-2 text-sm/6 text-gray-400"
+     className="inline-flex items-center gap-2 text-sm/6 text-text-secondary"
     >
      <ChevronLeftIcon className="size-4 fill-gray-400" />
      {race.raceEvent.eventName}
@@ -407,19 +407,19 @@ export default function AdminCheckpointsPage() {
 
     <div className="mt-4 space-y-2">
      {raceCheckpoints.length === 0 ? (
-      <div className="rounded-lg border border-dashed border-dark-border-light p-6 text-center border-dark-border">
+      <div className="rounded-lg border border-dashed border-border-secondary p-6 text-center border-border-primary">
        <Text>Nema checkpoint-a za ovu trku. Dodajte ih iz liste ispod.</Text>
       </div>
      ) : (
       raceCheckpoints.map((rc, idx) => (
        <div
         key={rc.id}
-        className="flex items-center justify-between rounded-lg border border-dark-border bg-dark-card p-3"
+        className="flex items-center justify-between rounded-lg border border-border-primary bg-card p-3"
        >
         <div className="flex items-center gap-3">
          <Badge color="blue">{rc.orderIndex}</Badge>
          <span className="font-medium">{rc.checkpoint.name}</span>
-         {rc.distance && <span className="text-sm text-gray-400">({rc.distance} km)</span>}
+         {rc.distance && <span className="text-sm text-text-secondary">({rc.distance} km)</span>}
         </div>
 
         <div className="flex items-center gap-1">
@@ -450,14 +450,14 @@ export default function AdminCheckpointsPage() {
    {/* Available checkpoints from event */}
    {availableCheckpoints.length > 0 && (
     <div className="mt-6">
-     <Text className="text-sm text-gray-400">Dostupni checkpoint-i (klikni da dodaš):</Text>
+     <Text className="text-sm text-text-secondary">Dostupni checkpoint-i (klikni da dodaš):</Text>
      <div className="mt-2 flex flex-wrap gap-2">
       {availableCheckpoints.map((cp) => (
        <button
         key={cp.id}
         onClick={() => handleAddToRace(cp.id)}
         disabled={saving}
-        className="rounded-full border border-dark-border-light bg-dark-surface px-3 py-1 text-sm hover:border-brand-green hover:bg-dark-card-hover"
+        className="rounded-full border border-border-secondary bg-surface px-3 py-1 text-sm hover:border-brand-green hover:bg-card-hover"
        >
         <PlusIcon className="mr-1 inline size-3" />
         {cp.name}
@@ -477,7 +477,7 @@ export default function AdminCheckpointsPage() {
      </Button>
     </div>
 
-    <Text className="mt-1 text-sm text-gray-400">
+    <Text className="mt-1 text-sm text-text-secondary">
      Ovde su sve checkpoint lokacije za ovaj event. Možete ih dodati/ukloniti iz bilo koje trke ovog eventa.
     </Text>
 
@@ -490,11 +490,11 @@ export default function AdminCheckpointsPage() {
       />
      ) : (
       eventCheckpoints.map((checkpoint) => (
-       <div key={checkpoint.id} className="rounded-lg border border-dark-border p-4">
+       <div key={checkpoint.id} className="rounded-lg border border-border-primary p-4">
         <div className="flex items-start justify-between gap-4">
          <div className="flex-1">
           <div className="flex items-center gap-2">
-           <span className="font-medium text-white">{checkpoint.name}</span>
+           <span className="font-medium text-text-primary">{checkpoint.name}</span>
            {checkpointsInRace.has(checkpoint.id) && (
             <Badge color="green" className="text-xs">
              U ovoj trci
@@ -504,10 +504,10 @@ export default function AdminCheckpointsPage() {
 
           {/* Assigned Judges */}
           <div className="mt-3">
-           <div className="text-xs font-medium text-gray-400">Dodeljeni sudije:</div>
+           <div className="text-xs font-medium text-text-secondary">Dodeljeni sudije:</div>
            <div className="mt-1 flex flex-wrap gap-2">
             {checkpoint.assignedJudges.length === 0 ? (
-             <span className="text-sm text-gray-400">Nema dodeljenih sudija</span>
+             <span className="text-sm text-text-secondary">Nema dodeljenih sudija</span>
             ) : (
              checkpoint.assignedJudges.map((judge) => (
               <Badge key={judge.id} color="blue" className="flex items-center gap-1">
@@ -523,7 +523,7 @@ export default function AdminCheckpointsPage() {
             )}
             <button
              onClick={() => setAssigningCheckpoint(checkpoint)}
-             className="inline-flex items-center gap-1 rounded border border-dashed border-dark-border-light px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-gray-300"
+             className="inline-flex items-center gap-1 rounded border border-dashed border-border-secondary px-2 py-0.5 text-xs text-text-secondary hover:border-border-secondary hover:text-text-primary"
             >
              <UserPlusIcon className="size-3" />
              Dodaj

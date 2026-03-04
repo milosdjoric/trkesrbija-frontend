@@ -93,11 +93,11 @@ export function PasswordStrength({ password, showRequirements = true, className 
                 {passed ? (
                   <CheckCircleIcon className="size-3.5 text-green-500" />
                 ) : (
-                  <XCircleIcon className="size-3.5 text-gray-400" />
+                  <XCircleIcon className="size-3.5 text-text-secondary" />
                 )}
                 <span
                   className={clsx(
-                    passed ? 'text-green-400' : 'text-gray-400'
+                    passed ? 'text-green-400' : 'text-text-secondary'
                   )}
                 >
                   {req.label}

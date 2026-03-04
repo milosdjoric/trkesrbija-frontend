@@ -11,7 +11,7 @@ export function InputGroup({ children }: React.ComponentPropsWithoutRef<'span'>)
         'has-[[data-slot=icon]:first-child]:[&_input]:pl-10 has-[[data-slot=icon]:last-child]:[&_input]:pr-10 sm:has-[[data-slot=icon]:first-child]:[&_input]:pl-8 sm:has-[[data-slot=icon]:last-child]:[&_input]:pr-8',
         '*:data-[slot=icon]:pointer-events-none *:data-[slot=icon]:absolute *:data-[slot=icon]:top-3 *:data-[slot=icon]:z-10 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:top-2.5 sm:*:data-[slot=icon]:size-4',
         '[&>[data-slot=icon]:first-child]:left-3 sm:[&>[data-slot=icon]:first-child]:left-2.5 [&>[data-slot=icon]:last-child]:right-3 sm:[&>[data-slot=icon]:last-child]:right-2.5',
-        '*:data-[slot=icon]:text-gray-400'
+        '*:data-[slot=icon]:text-text-secondary'
       )}
     >
       {children}
@@ -40,7 +40,7 @@ export const Input = forwardRef(function Input(
         // Basic layout
         'relative block w-full',
         // Background - dark surface
-        'before:absolute before:inset-px before:rounded-[calc(var(--radius-lg)-1px)] before:bg-dark-surface',
+        'before:absolute before:inset-px before:rounded-[calc(var(--radius-lg)-1px)] before:bg-surface',
         // Focus ring
         'after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:ring-transparent after:ring-inset sm:focus-within:after:ring-2 sm:focus-within:after:ring-brand-green',
         // Disabled state
@@ -70,17 +70,17 @@ export const Input = forwardRef(function Input(
           // Basic layout
           'relative block w-full appearance-none rounded-lg px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
           // Typography
-          'text-base/6 text-white placeholder:text-gray-400 sm:text-sm/6',
+          'text-base/6 text-text-primary placeholder:text-text-muted sm:text-sm/6',
           // Border
-          'border border-dark-border data-hover:border-dark-border-light',
+          'border border-border-primary data-hover:border-border-secondary',
           // Background color
-          'bg-dark-surface',
+          'bg-surface',
           // Hide default focus styles
           'focus:outline-hidden',
           // Invalid state
           'data-invalid:border-red-500 data-invalid:data-hover:border-red-500',
           // Disabled state
-          'data-disabled:border-dark-border data-disabled:opacity-50',
+          'data-disabled:border-border-primary data-disabled:opacity-50',
           // System icons
           'scheme-dark',
         ])}

@@ -137,10 +137,10 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
       {/* Active tag filter */}
       {activeTag && (
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-400">Filtriranje po tagu:</span>
+          <span className="text-sm text-text-secondary">Filtriranje po tagu:</span>
           <NextLink
             href="/events"
-            className="inline-flex items-center gap-1 rounded-full bg-dark-surface px-3 py-1 text-sm font-medium text-gray-300 transition-colors hover:bg-dark-surface-hover"
+            className="inline-flex items-center gap-1 rounded-full bg-surface px-3 py-1 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-hover"
           >
             {activeTag}
             <XMarkIcon className="size-4" />
@@ -159,7 +159,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         <button
           type="button"
           onClick={() => setFiltersOpen(!filtersOpen)}
-          className="relative flex items-center gap-1.5 rounded-lg border border-dark-border-light bg-dark-surface px-3 py-2 text-sm text-gray-400 transition-colors hover:border-gray-500 hover:text-white md:hidden"
+          className="relative flex items-center gap-1.5 rounded-lg border border-border-secondary bg-surface px-3 py-2 text-sm text-text-secondary transition-colors hover:border-gray-500 hover:text-text-primary md:hidden"
         >
           <AdjustmentsHorizontalIcon className="size-4" />
           Filteri
@@ -294,12 +294,12 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
               </Link>
             ) : null}
           </div>
-          <label className="flex items-center gap-2 text-sm text-gray-400">
+          <label className="flex items-center gap-2 text-sm text-text-secondary">
             <input
               type="checkbox"
               checked={showPast}
               onChange={(e) => setShowPast(e.target.checked)}
-              className="size-4 rounded border-dark-border bg-dark-surface text-brand-green focus:ring-brand-green"
+              className="size-4 rounded border-border-primary bg-surface text-brand-green focus:ring-brand-green"
             />
             Prikaži istekle događaje
           </label>

@@ -30,17 +30,17 @@ export const Textarea = forwardRef(function Textarea(
           // Basic layout
           'relative block h-full w-full appearance-none rounded-lg px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
           // Typography
-          'text-base/6 text-white placeholder:text-gray-400 sm:text-sm/6',
+          'text-base/6 text-text-primary placeholder:text-text-muted sm:text-sm/6',
           // Border
-          'border border-dark-border data-hover:border-dark-border-light',
+          'border border-border-primary data-hover:border-border-secondary',
           // Background color
-          'bg-dark-surface',
+          'bg-surface',
           // Hide default focus styles
           'focus:outline-hidden',
           // Invalid state
           'data-invalid:border-red-500 data-invalid:data-hover:border-red-500',
           // Disabled state
-          'disabled:border-dark-border disabled:opacity-50',
+          'disabled:border-border-primary disabled:opacity-50',
           // Resizable
           resizable ? 'resize-y' : 'resize-none',
         ])}

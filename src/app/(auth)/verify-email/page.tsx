@@ -66,7 +66,7 @@ function VerifyEmailContent() {
         <AuthLogo className="mx-auto" />
         <Heading>Verifikacija emaila…</Heading>
         <div className="flex justify-center">
-          <div className="size-8 animate-spin rounded-full border-4 border-dark-border-light border-t-white" />
+          <div className="size-8 animate-spin rounded-full border-4 border-border-secondary border-t-white" />
         </div>
       </div>
     )

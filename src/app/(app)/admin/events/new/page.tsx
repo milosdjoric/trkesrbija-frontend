@@ -245,7 +245,7 @@ export default function NewEventPage() {
    <div className="mb-4">
     <Link
      href="/admin/events"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Događaji
@@ -256,13 +256,13 @@ export default function NewEventPage() {
 
    <form onSubmit={handleSubmit} className="mt-6 max-w-2xl space-y-6">
     {/* Event details */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Osnovne informacije</Subheading>
 
      <div className="mt-4 grid gap-4 sm:grid-cols-2">
       {/* Event name */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Naziv događaja *
        </label>
        <input
@@ -270,14 +270,14 @@ export default function NewEventPage() {
         value={eventName}
         onChange={(e) => setEventName(toTitleCase(e.target.value))}
         placeholder="npr. Avala Trail"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
         required
        />
       </div>
 
       {/* Slug */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Slug (URL) *
        </label>
        <div className="mt-1 flex gap-2">
@@ -289,7 +289,7 @@ export default function NewEventPage() {
           setAutoSlug(false)
          }}
          placeholder="avala-trail-2024"
-         className="flex-1 rounded-lg border border-dark-border-light px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+         className="flex-1 rounded-lg border border-border-secondary px-3 py-2 font-mono text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
          required
         />
         {!autoSlug && (
@@ -300,26 +300,26 @@ export default function NewEventPage() {
            const year = new Date().getFullYear()
            setSlug(generateSlug(eventName, year))
           }}
-          className="rounded-lg border border-dark-border-light px-3 py-2 text-sm hover:bg-dark-card-hover"
+          className="rounded-lg border border-border-secondary px-3 py-2 text-sm hover:bg-card-hover"
          >
           Auto
          </button>
         )}
        </div>
-       <p className="mt-1 text-xs text-gray-400">
+       <p className="mt-1 text-xs text-text-secondary">
         URL: /events/{slug || 'slug'}
        </p>
       </div>
 
       {/* Type */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Tip događaja *
        </label>
        <select
         value={eventType}
         onChange={(e) => setEventType(e.target.value as any)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        >
         <option value="TRAIL">Trail</option>
         <option value="ROAD">Ulična</option>
@@ -329,13 +329,13 @@ export default function NewEventPage() {
 
       {/* Country */}
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Država
        </label>
        <select
         value={country}
         onChange={(e) => setCountry(e.target.value)}
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        >
         <option value="">Nije definisano</option>
         <option value="ser">Srbija</option>
@@ -347,7 +347,7 @@ export default function NewEventPage() {
 
       {/* Description */}
       <div className="sm:col-span-2">
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Opis
        </label>
        <textarea
@@ -355,7 +355,7 @@ export default function NewEventPage() {
         onChange={(e) => setDescription(e.target.value)}
         rows={3}
         placeholder="Kratki opis događaja..."
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
       </div>
 
@@ -367,7 +367,7 @@ export default function NewEventPage() {
     </div>
 
     {/* Media */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Slike</Subheading>
 
      <div className="mt-4 space-y-6">
@@ -383,9 +383,9 @@ export default function NewEventPage() {
     </div>
 
     {/* Organizer */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Organizator</Subheading>
-     <p className="mt-1 mb-4 text-sm text-gray-400">
+     <p className="mt-1 mb-4 text-sm text-text-secondary">
       Izaberite postojećeg organizatora ili dodajte novog
      </p>
 
@@ -393,12 +393,12 @@ export default function NewEventPage() {
     </div>
 
     {/* Links */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <Subheading>Linkovi i društvene mreže</Subheading>
 
      <div className="mt-4 space-y-4">
       <div>
-       <label className="block text-sm font-medium text-gray-300">
+       <label className="block text-sm font-medium text-text-secondary">
         Sajt za prijave
        </label>
        <input
@@ -406,9 +406,9 @@ export default function NewEventPage() {
         value={registrationSite}
         onChange={(e) => setRegistrationSite(e.target.value)}
         placeholder="https://prijave.example.com"
-        className="mt-1 w-full rounded-lg border border-dark-border-light px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
        />
-       <p className="mt-1 text-xs text-gray-400">
+       <p className="mt-1 text-xs text-text-secondary">
         Eksterni link ako se prijave ne vode preko ovog sistema
        </p>
       </div>
@@ -418,7 +418,7 @@ export default function NewEventPage() {
     </div>
 
     {/* Races */}
-    <div className="rounded-lg border border-dark-border p-6">
+    <div className="rounded-lg border border-border-primary p-6">
      <div className="flex items-center justify-between">
       <Subheading>Trke ({races.length})</Subheading>
       <button
@@ -432,7 +432,7 @@ export default function NewEventPage() {
      </div>
 
      {races.length === 0 ? (
-      <p className="mt-4 text-center text-sm text-gray-400">
+      <p className="mt-4 text-center text-sm text-text-secondary">
        Nema trka. Kliknite &quot;Dodaj trku&quot; da dodate prvu trku.
       </p>
      ) : (
@@ -440,7 +440,7 @@ export default function NewEventPage() {
        {races.map((race, index) => (
         <div
          key={race.tempId}
-         className="rounded-lg border border-dark-border bg-dark-surface p-4"
+         className="rounded-lg border border-border-primary bg-surface p-4"
         >
          <div className="mb-3 flex items-center justify-between">
           <span className="font-medium">Trka #{index + 1}</span>
@@ -455,7 +455,7 @@ export default function NewEventPage() {
 
          <div className="grid gap-4 sm:grid-cols-2">
           <div>
-           <label className="block text-xs font-medium text-gray-400">
+           <label className="block text-xs font-medium text-text-secondary">
             Naziv trke *
            </label>
            <input
@@ -463,36 +463,36 @@ export default function NewEventPage() {
             value={race.raceName}
             onChange={(e) => updateRace(race.tempId, 'raceName', toTitleCase(e.target.value))}
             placeholder="npr. Avala 18K"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+            className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
            />
           </div>
 
           <div>
-           <label className="block text-xs font-medium text-gray-400">
+           <label className="block text-xs font-medium text-text-secondary">
             Datum i vreme *
            </label>
            <input
             type="datetime-local"
             value={race.startDateTime}
             onChange={(e) => updateRace(race.tempId, 'startDateTime', e.target.value)}
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+            className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
            />
           </div>
 
           <div>
-           <label className="block text-xs font-medium text-gray-400">
+           <label className="block text-xs font-medium text-text-secondary">
             Cut-off vreme
            </label>
            <input
             type="datetime-local"
             value={race.endDateTime}
             onChange={(e) => updateRace(race.tempId, 'endDateTime', e.target.value)}
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+            className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
            />
           </div>
 
           <div>
-           <label className="block text-xs font-medium text-gray-400">
+           <label className="block text-xs font-medium text-text-secondary">
             Dužina (km) *
            </label>
            <input
@@ -501,12 +501,12 @@ export default function NewEventPage() {
             value={race.length}
             onChange={(e) => updateRace(race.tempId, 'length', e.target.value)}
             placeholder="18"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+            className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
            />
           </div>
 
           <div>
-           <label className="block text-xs font-medium text-gray-400">
+           <label className="block text-xs font-medium text-text-secondary">
             Visinska razlika (m)
            </label>
            <input
@@ -514,12 +514,12 @@ export default function NewEventPage() {
             value={race.elevation}
             onChange={(e) => updateRace(race.tempId, 'elevation', e.target.value)}
             placeholder="520"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+            className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
            />
           </div>
 
           <div className="sm:col-span-2">
-           <label className="block text-xs font-medium text-gray-400">
+           <label className="block text-xs font-medium text-text-secondary">
             Startna lokacija
            </label>
            <input
@@ -527,20 +527,20 @@ export default function NewEventPage() {
             value={race.startLocation}
             onChange={(e) => updateRace(race.tempId, 'startLocation', e.target.value)}
             placeholder="Adresa ili Google Maps link"
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+            className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
            />
           </div>
 
           {/* Competition */}
           {competitions.length > 0 && (
            <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-gray-400">
+            <label className="block text-xs font-medium text-text-secondary">
              Takmičenje / Serija
             </label>
             <select
              value={race.competitionId}
              onChange={(e) => updateRace(race.tempId, 'competitionId', e.target.value)}
-             className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+             className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
             >
              <option value="">Bez takmičenja</option>
              {competitions.map((comp) => (
@@ -559,16 +559,16 @@ export default function NewEventPage() {
              type="checkbox"
              checked={race.registrationEnabled}
              onChange={(e) => updateRace(race.tempId, 'registrationEnabled', e.target.checked)}
-             className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green"
+             className="size-4 rounded border-border-secondary text-brand-green focus:ring-brand-green"
             />
-            <span className="text-xs font-medium text-gray-400">
+            <span className="text-xs font-medium text-text-secondary">
              Omogući prijave za ovu trku
             </span>
            </label>
           </div>
 
           <div className="sm:col-span-2">
-           <label className="block text-xs font-medium text-gray-400">
+           <label className="block text-xs font-medium text-text-secondary">
             Link za registraciju (eksterni)
            </label>
            <input
@@ -576,7 +576,7 @@ export default function NewEventPage() {
             value={race.registrationSite}
             onChange={(e) => updateRace(race.tempId, 'registrationSite', e.target.value)}
             placeholder="https://..."
-            className="mt-1 w-full rounded border border-dark-border-light px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-dark-surface"
+            className="mt-1 w-full rounded border border-border-secondary px-2 py-1.5 text-sm focus:border-brand-green focus:outline-none bg-surface"
            />
           </div>
 

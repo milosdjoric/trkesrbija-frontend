@@ -74,7 +74,7 @@ export function RaceResults({ raceId, raceName }: Props) {
     return (
       <div className="mt-8">
         <Subheading>Rezultati{raceName && ` - ${raceName}`}</Subheading>
-        <div className="mt-4 animate-pulse text-gray-400">Učitavanje rezultata...</div>
+        <div className="mt-4 animate-pulse text-text-secondary">Učitavanje rezultata...</div>
       </div>
     )
   }
@@ -88,7 +88,7 @@ export function RaceResults({ raceId, raceName }: Props) {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <Subheading>Rezultati{raceName && ` - ${raceName}`}</Subheading>
         <div className="flex items-center gap-4">
-          <Text className="text-sm text-gray-400">
+          <Text className="text-sm text-text-secondary">
             {finishedCount} od {totalCount} završilo
           </Text>
           <Select
@@ -105,9 +105,9 @@ export function RaceResults({ raceId, raceName }: Props) {
 
       {/* Results table */}
       <div className="mt-4 overflow-x-auto">
-        <table className="min-w-full divide-y divide-dark-border">
+        <table className="min-w-full divide-y divide-border-primary">
           <thead>
-            <tr className="text-left text-sm font-medium text-gray-400">
+            <tr className="text-left text-sm font-medium text-text-secondary">
               <th className="px-3 py-2">#</th>
               <th className="px-3 py-2">Broj</th>
               <th className="px-3 py-2">Učesnik</th>
@@ -141,7 +141,7 @@ export function RaceResults({ raceId, raceName }: Props) {
                   {checkpoints.map((cp) => {
                     const cpTime = result.checkpointTimes.find((ct) => ct.checkpointId === cp.id)
                     return (
-                      <td key={cp.id} className="whitespace-nowrap px-3 py-2 text-center font-mono text-gray-400">
+                      <td key={cp.id} className="whitespace-nowrap px-3 py-2 text-center font-mono text-text-secondary">
                         {cpTime ? formatTime(cpTime.timestamp) : '-'}
                       </td>
                     )

@@ -12,14 +12,14 @@ const GpxAnalyzerView = dynamic(() => import('./gpx-analyzer-view').then((mod) =
         {[...Array(5)].map((_, i) => (
           <div
             key={i}
-            className="h-20 animate-pulse rounded-lg border border-dark-border bg-dark-surface"
+            className="h-20 animate-pulse rounded-lg border border-border-primary bg-surface"
           />
         ))}
       </div>
       {/* Map skeleton */}
-      <div className="h-[400px] animate-pulse rounded-lg border border-dark-border bg-dark-surface" />
+      <div className="h-[400px] animate-pulse rounded-lg border border-border-primary bg-surface" />
       {/* Profile skeleton */}
-      <div className="h-40 animate-pulse rounded-lg border border-dark-border bg-dark-surface" />
+      <div className="h-40 animate-pulse rounded-lg border border-border-primary bg-surface" />
     </div>
   ),
 })

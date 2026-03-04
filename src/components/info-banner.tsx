@@ -26,12 +26,12 @@ export function InfoBanner() {
   }
 
   return (
-    <div className="mb-6 flex items-center gap-3 rounded-lg border border-dark-border bg-dark-surface px-4 py-3 text-sm text-gray-300">
+    <div className="mb-6 flex items-center gap-3 rounded-lg border border-border-primary bg-surface px-4 py-3 text-sm text-text-secondary">
       <InformationCircleIcon className="size-5 shrink-0 text-brand-green" />
       <span className="flex-1">{MESSAGES[info]}</span>
       <button
         onClick={handleDismiss}
-        className="shrink-0 cursor-pointer rounded p-1 hover:bg-dark-surface-hover"
+        className="shrink-0 cursor-pointer rounded p-1 hover:bg-surface-hover"
         aria-label="Zatvori"
       >
         <XMarkIcon className="size-4" />

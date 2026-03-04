@@ -271,7 +271,7 @@ export default function AdminRacesPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -282,7 +282,7 @@ export default function AdminRacesPage() {
     <Heading>Upravljanje trkama</Heading>
     <Link
      href="/admin/races/mass-edit"
-     className="rounded-lg border border-dark-border-light px-4 py-2 text-sm font-medium text-gray-300 hover:bg-dark-card-hover"
+     className="rounded-lg border border-border-secondary px-4 py-2 text-sm font-medium text-text-secondary hover:bg-card-hover"
     >
      Masovna izmena
     </Link>
@@ -295,13 +295,13 @@ export default function AdminRacesPage() {
    <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-4">
     {/* Search */}
     <div className="relative">
-     <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+     <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-secondary" />
      <input
       type="text"
       placeholder="Pretraži trke..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+      className="w-full rounded-lg border border-border-secondary py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
      />
     </div>
 
@@ -309,7 +309,7 @@ export default function AdminRacesPage() {
     <select
      value={filterType}
      onChange={(e) => setFilterType(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+     className="w-full rounded-lg border border-border-secondary px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
     >
      <option value="ALL">Svi tipovi</option>
      <option value="TRAIL">Trail</option>
@@ -321,7 +321,7 @@ export default function AdminRacesPage() {
     <select
      value={filterStatus}
      onChange={(e) => setFilterStatus(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+     className="w-full rounded-lg border border-border-secondary px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
     >
      <option value="ALL">Svi statusi</option>
      <option value="OPEN">Otvorene prijave</option>
@@ -332,7 +332,7 @@ export default function AdminRacesPage() {
     <select
      value={filterGpx}
      onChange={(e) => setFilterGpx(e.target.value as any)}
-     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+     className="w-full rounded-lg border border-border-secondary px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
     >
      <option value="ALL">GPX: svi</option>
      <option value="HAS_GPX">Ima GPX</option>
@@ -342,12 +342,12 @@ export default function AdminRacesPage() {
 
    {/* Show past toggle */}
    <div className="mt-4">
-    <label className="flex items-center gap-2 text-sm text-gray-400">
+    <label className="flex items-center gap-2 text-sm text-text-secondary">
      <input
       type="checkbox"
       checked={showPast}
       onChange={(e) => setShowPast(e.target.checked)}
-      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
+      className="size-4 rounded border-border-secondary text-brand-green focus:ring-brand-green bg-surface"
      />
      Prikaži istekle trke
     </label>
@@ -359,34 +359,34 @@ export default function AdminRacesPage() {
      <Subheading>Sve trke ({filteredRaces.length})</Subheading>
     </div>
 
-    <div className="overflow-hidden rounded-lg border border-dark-border">
-     <table className="min-w-full divide-y divide-dark-border">
-      <thead className="bg-dark-surface">
+    <div className="overflow-hidden rounded-lg border border-border-primary">
+     <table className="min-w-full divide-y divide-border-primary">
+      <thead className="bg-surface">
        <tr>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Trka
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Datum
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          GPX
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Prijave
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Status
         </th>
-        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
          Akcije
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-border-primary bg-card">
        {filteredRaces.length === 0 ? (
         <tr>
-         <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-400">
+         <td colSpan={6} className="px-4 py-8 text-center text-sm text-text-secondary">
           {search || filterType !== 'ALL' || filterStatus !== 'ALL'
            ? 'Nema trka koje odgovaraju filterima'
            : 'Nema trka'}
@@ -394,19 +394,19 @@ export default function AdminRacesPage() {
         </tr>
        ) : (
         filteredRaces.map((race) => (
-         <tr key={race.id} className="hover:bg-dark-card-hover">
+         <tr key={race.id} className="hover:bg-card-hover">
           <td className="px-4 py-3">
            <div>
             <Link
              href={`/races/${race.slug}`}
-             className="font-medium text-white hover:text-brand-green"
+             className="font-medium text-text-primary hover:text-brand-green"
             >
              {race.raceName ?? 'Neimenovana'}
             </Link>
-            <div className="text-sm text-gray-400">{race.raceEvent.eventName}</div>
+            <div className="text-sm text-text-secondary">{race.raceEvent.eventName}</div>
            </div>
           </td>
-          <td className="px-4 py-3 text-sm text-gray-400">
+          <td className="px-4 py-3 text-sm text-text-secondary">
            {formatDate(race.startDateTime)}
           </td>
           <td className="px-4 py-3">
@@ -436,14 +436,14 @@ export default function AdminRacesPage() {
            <div className="flex items-center justify-end gap-1">
             <Link
              href={`/admin/races/${race.id}/registrations`}
-             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
+             className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
              title="Prijave"
             >
              <UserGroupIcon className="size-4" />
             </Link>
             <Link
              href={`/admin/races/${race.id}/checkpoints`}
-             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
+             className="rounded-lg p-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary"
              title="Checkpoint-i"
             >
              <MapIcon className="size-4" />
@@ -451,7 +451,7 @@ export default function AdminRacesPage() {
             <button
              onClick={() => handleDuplicateRace(race.id)}
              disabled={duplicatingId === race.id}
-             className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white disabled:opacity-50"
+             className="cursor-pointer rounded-lg p-2 text-text-secondary transition-colors hover:bg-surface hover:text-text-primary disabled:opacity-50"
              title="Dupliraj"
             >
              <DocumentDuplicateIcon className="size-4" />
@@ -467,7 +467,7 @@ export default function AdminRacesPage() {
               </button>
               <button
                onClick={() => setConfirmDeleteId(null)}
-               className="cursor-pointer rounded bg-dark-surface px-2 py-1 text-xs font-medium text-gray-300 hover:bg-dark-card-hover"
+               className="cursor-pointer rounded bg-surface px-2 py-1 text-xs font-medium text-text-secondary hover:bg-card-hover"
               >
                Ne
               </button>
@@ -475,7 +475,7 @@ export default function AdminRacesPage() {
             ) : (
              <button
               onClick={() => setConfirmDeleteId(race.id)}
-              className="cursor-pointer rounded p-1 text-gray-400 hover:bg-red-900/20 hover:text-red-400"
+              className="cursor-pointer rounded p-1 text-text-secondary hover:bg-red-900/20 hover:text-red-400"
               title="Obriši trku"
              >
               <TrashIcon className="size-4" />

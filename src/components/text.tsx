@@ -6,7 +6,7 @@ export function Text({ className, ...props }: React.ComponentPropsWithoutRef<'p'
     <p
       data-slot="text"
       {...props}
-      className={clsx(className, 'text-base/6 text-gray-400 sm:text-sm/6')}
+      className={clsx(className, 'text-base/6 text-text-secondary sm:text-sm/6')}
     />
   )
 }
@@ -24,7 +24,7 @@ export function TextLink({ className, ...props }: React.ComponentPropsWithoutRef
 }
 
 export function Strong({ className, ...props }: React.ComponentPropsWithoutRef<'strong'>) {
-  return <strong {...props} className={clsx(className, 'font-medium text-white')} />
+  return <strong {...props} className={clsx(className, 'font-medium text-text-primary')} />
 }
 
 export function Code({ className, ...props }: React.ComponentPropsWithoutRef<'code'>) {
@@ -33,7 +33,7 @@ export function Code({ className, ...props }: React.ComponentPropsWithoutRef<'co
       {...props}
       className={clsx(
         className,
-        'rounded-sm border border-dark-border bg-dark-surface px-0.5 text-sm font-medium text-white sm:text-[0.8125rem]'
+        'rounded-sm border border-border-primary bg-surface px-0.5 text-sm font-medium text-text-primary sm:text-[0.8125rem]'
       )}
     />
   )

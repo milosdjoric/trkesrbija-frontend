@@ -80,13 +80,13 @@ export function EventCard({
           <Link href={url}>{name}</Link>
           {verified && <VerifiedBadge />}
           {competitionTags.map((tag) => (
-            <span key={tag} className="text-sm font-medium text-gray-400">({tag})</span>
+            <span key={tag} className="text-sm font-medium text-text-secondary">({tag})</span>
           ))}
         </div>
 
         <div className="flex flex-col flex-wrap gap-2 md:flex-row">
           {/* Date/Time/Location info */}
-          <div className="flex flex-wrap items-center gap-1 text-sm/6 text-gray-400">
+          <div className="flex flex-wrap items-center gap-1 text-sm/6 text-text-secondary">
             {hasSharedStart && date && time ? (
               <>
                 {date} u {time}
@@ -103,7 +103,7 @@ export function EventCard({
                   href={location}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-gray-300"
+                  className="underline underline-offset-2 hover:text-text-primary"
                 >
                   Startna lokacija
                 </a>
@@ -151,7 +151,7 @@ export function EventCard({
                 )
               })
             ) : (
-              <span className="text-xs text-gray-400">Još nema trka</span>
+              <span className="text-xs text-text-secondary">Još nema trka</span>
             )}
           </div>
         </div>

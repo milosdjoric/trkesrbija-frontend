@@ -24,7 +24,7 @@ export function RouteError({
       </div>
       <div className="space-y-2">
         <Heading level={2}>{title}</Heading>
-        <Text className="text-gray-400">{description}</Text>
+        <Text className="text-text-secondary">{description}</Text>
       </div>
       <Button onClick={reset}>Pokušaj ponovo</Button>
     </div>

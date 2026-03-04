@@ -57,7 +57,7 @@ function CountCell({ count, uniqueCount }: { count: number; uniqueCount: number 
  return (
   <TableCell className="text-right tabular-nums">
    <span className="font-medium">{count}</span>
-   <span className="ml-1 text-xs text-gray-400">/ {uniqueCount}</span>
+   <span className="ml-1 text-xs text-text-secondary">/ {uniqueCount}</span>
   </TableCell>
  )
 }
@@ -108,7 +108,7 @@ export default function AdminStatsPage() {
     <select
      value={days}
      onChange={(e) => setDays(Number(e.target.value))}
-     className="rounded-md border border-dark-border-light bg-dark-card px-3 py-1.5 text-sm bg-dark-surface text-white"
+     className="rounded-md border border-border-secondary bg-card px-3 py-1.5 text-sm bg-surface text-text-primary"
     >
      {DAY_OPTIONS.map((o) => (
       <option key={o.value} value={o.value}>{o.label}</option>
@@ -119,7 +119,7 @@ export default function AdminStatsPage() {
    {loading ? (
     <LoadingState />
    ) : !stats ? (
-    <p className="text-sm text-gray-400">Nema podataka.</p>
+    <p className="text-sm text-text-secondary">Nema podataka.</p>
    ) : (
     <>
      {/* ═══════════ PERIOD-DEPENDENT SECTION ═══════════ */}
@@ -128,7 +128,7 @@ export default function AdminStatsPage() {
       <section>
        <Subheading>Top događaji</Subheading>
        {stats.topEvents.length === 0 ? (
-        <p className="mt-1 text-sm text-gray-400">Nema podataka.</p>
+        <p className="mt-1 text-sm text-text-secondary">Nema podataka.</p>
        ) : (
         <div className="mt-1 overflow-x-auto">
          <Table dense striped>
@@ -158,7 +158,7 @@ export default function AdminStatsPage() {
       <section>
        <Subheading>Top trke</Subheading>
        {stats.topRaces.length === 0 ? (
-        <p className="mt-1 text-sm text-gray-400">Nema podataka.</p>
+        <p className="mt-1 text-sm text-text-secondary">Nema podataka.</p>
        ) : (
         <div className="mt-1 overflow-x-auto">
          <Table dense striped>
@@ -188,7 +188,7 @@ export default function AdminStatsPage() {
       <section>
        <Subheading>Pregledi po danu</Subheading>
        {stats.viewsPerDay.length === 0 ? (
-        <p className="mt-1 text-sm text-gray-400">Nema pregleda.</p>
+        <p className="mt-1 text-sm text-text-secondary">Nema pregleda.</p>
        ) : (
         <div className="mt-1 overflow-x-auto">
          <Table dense striped>
@@ -271,8 +271,8 @@ export default function AdminStatsPage() {
      )}
 
      {/* ═══════════ ALL-TIME SECTION ═══════════ */}
-     <div className="border-t border-dark-border pt-6">
-      <Subheading className="mb-4 text-base text-gray-400">Sve vreme</Subheading>
+     <div className="border-t border-border-primary pt-6">
+      <Subheading className="mb-4 text-base text-text-secondary">Sve vreme</Subheading>
      </div>
 
      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
@@ -280,7 +280,7 @@ export default function AdminStatsPage() {
       <section>
        <Subheading>Top pretrage</Subheading>
        {stats.topSearches.length === 0 ? (
-        <p className="mt-1 text-sm text-gray-400">Nema pretraga.</p>
+        <p className="mt-1 text-sm text-text-secondary">Nema pretraga.</p>
        ) : (
         <div className="mt-1 overflow-x-auto">
          <Table dense striped>
@@ -306,7 +306,7 @@ export default function AdminStatsPage() {
       <section>
        <Subheading>Top omiljene</Subheading>
        {stats.topFavorites.length === 0 ? (
-        <p className="mt-1 text-sm text-gray-400">Nema omiljenih.</p>
+        <p className="mt-1 text-sm text-text-secondary">Nema omiljenih.</p>
        ) : (
         <div className="mt-1 overflow-x-auto">
          <Table dense striped>
@@ -349,7 +349,7 @@ export default function AdminStatsPage() {
             <TableRow key={u.userId}>
              <TableCell>
               <span className="font-medium">{u.name ?? u.email}</span>
-              {u.name && <span className="ml-1 text-xs text-gray-400">{u.email}</span>}
+              {u.name && <span className="ml-1 text-xs text-text-secondary">{u.email}</span>}
              </TableCell>
              <TableCell className="text-right font-medium tabular-nums">{u.count}</TableCell>
             </TableRow>
@@ -365,8 +365,8 @@ export default function AdminStatsPage() {
      {/* ═══════════ TODAY'S LOGINS SECTION ═══════════ */}
      {stats.recentLogins.length > 0 && (
       <>
-       <div className="border-t border-dark-border pt-6">
-        <Subheading className="mb-4 text-base text-gray-400">Danas</Subheading>
+       <div className="border-t border-border-primary pt-6">
+        <Subheading className="mb-4 text-base text-text-secondary">Danas</Subheading>
        </div>
 
        <section>
@@ -385,7 +385,7 @@ export default function AdminStatsPage() {
             <TableRow key={l.email}>
              <TableCell>
               <span className="font-medium">{l.name ?? l.email}</span>
-              {l.name && <span className="ml-1 text-xs text-gray-400">{l.email}</span>}
+              {l.name && <span className="ml-1 text-xs text-text-secondary">{l.email}</span>}
              </TableCell>
              <TableCell className="text-right tabular-nums text-sm">{formatTime(l.lastLogin)}</TableCell>
              <TableCell className="text-right font-medium tabular-nums">{l.loginCount}</TableCell>

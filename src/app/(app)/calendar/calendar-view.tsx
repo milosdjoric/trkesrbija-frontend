@@ -107,18 +107,18 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
         <button
           type="button"
           onClick={goToPreviousMonth}
-          className="rounded-lg border border-dark-border p-2 text-gray-400 transition-colors hover:border-dark-border-light hover:bg-dark-surface hover:text-white"
+          className="rounded-lg border border-border-primary p-2 text-text-secondary transition-colors hover:border-border-secondary hover:bg-surface hover:text-text-primary"
         >
           <span className="sr-only">Prethodni mesec</span>
           <ChevronLeftIcon className="size-5" />
         </button>
 
-        <h2 className="text-lg font-bold text-white">{formatMonthYear(currentMonth)}</h2>
+        <h2 className="text-lg font-bold text-text-primary">{formatMonthYear(currentMonth)}</h2>
 
         <button
           type="button"
           onClick={goToNextMonth}
-          className="rounded-lg border border-dark-border p-2 text-gray-400 transition-colors hover:border-dark-border-light hover:bg-dark-surface hover:text-white"
+          className="rounded-lg border border-border-primary p-2 text-text-secondary transition-colors hover:border-border-secondary hover:bg-surface hover:text-text-primary"
         >
           <span className="sr-only">Sledeći mesec</span>
           <ChevronRightIcon className="size-5" />
@@ -127,11 +127,11 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
 
       {/* Desktop Calendar Grid */}
       <div className="hidden md:block">
-        <div className="overflow-hidden rounded-xl border border-dark-border">
+        <div className="overflow-hidden rounded-xl border border-border-primary">
           {/* Weekday Headers */}
-          <div className="grid grid-cols-7 border-b border-dark-border bg-dark-surface">
+          <div className="grid grid-cols-7 border-b border-border-primary bg-surface">
             {SERBIAN_WEEKDAYS_SHORT.map((day) => (
-              <div key={day} className="px-2 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-gray-400">
+              <div key={day} className="px-2 py-2.5 text-center text-xs font-semibold uppercase tracking-wider text-text-secondary">
                 {day}
               </div>
             ))}
@@ -139,7 +139,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
 
           {/* Weeks */}
           {weeks.map((week, weekIndex) => (
-            <div key={weekIndex} className={clsx('grid grid-cols-7', weekIndex > 0 && 'border-t border-dark-border')}>
+            <div key={weekIndex} className={clsx('grid grid-cols-7', weekIndex > 0 && 'border-t border-border-primary')}>
               {week.map((day, dayIndex) => {
                 const events = eventsByDate[day.dateKey] ?? []
                 const hasEvents = events.length > 0
@@ -149,9 +149,9 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                     key={day.dateKey}
                     className={clsx(
                       'min-h-[100px] p-1.5',
-                      dayIndex > 0 && 'border-l border-dark-border',
-                      !day.isCurrentMonth && 'bg-dark-bg/50',
-                      day.isCurrentMonth && 'bg-dark-card',
+                      dayIndex > 0 && 'border-l border-border-primary',
+                      !day.isCurrentMonth && 'bg-main/50',
+                      day.isCurrentMonth && 'bg-card',
                     )}
                   >
                     {/* Date number */}
@@ -160,7 +160,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                         className={clsx(
                           'inline-flex size-6 items-center justify-center rounded-full text-xs font-medium',
                           day.isToday && 'bg-brand-green text-black font-bold',
-                          !day.isToday && day.isCurrentMonth && 'text-gray-300',
+                          !day.isToday && day.isCurrentMonth && 'text-text-secondary',
                           !day.isToday && !day.isCurrentMonth && 'text-gray-600'
                         )}
                       >
@@ -210,11 +210,11 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
 
       {/* Mobile Calendar Grid */}
       <div className="md:hidden">
-        <div className="overflow-hidden rounded-xl border border-dark-border">
+        <div className="overflow-hidden rounded-xl border border-border-primary">
           {/* Weekday Headers */}
-          <div className="grid grid-cols-7 border-b border-dark-border bg-dark-surface">
+          <div className="grid grid-cols-7 border-b border-border-primary bg-surface">
             {SERBIAN_WEEKDAYS_SHORT.map((day) => (
-              <div key={day} className="py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+              <div key={day} className="py-2 text-center text-[10px] font-semibold uppercase tracking-wider text-text-secondary">
                 {day}
               </div>
             ))}
@@ -223,7 +223,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
           {/* Weeks */}
           {weeks.map((week, weekIndex) => (
             <div key={weekIndex}>
-              <div className={clsx('grid grid-cols-7', weekIndex > 0 && 'border-t border-dark-border')}>
+              <div className={clsx('grid grid-cols-7', weekIndex > 0 && 'border-t border-border-primary')}>
                 {week.map((day, dayIndex) => {
                   const events = eventsByDate[day.dateKey] ?? []
                   const hasEvents = events.length > 0
@@ -240,10 +240,10 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                       }}
                       className={clsx(
                         'flex min-h-[52px] flex-col items-center py-2',
-                        dayIndex > 0 && 'border-l border-dark-border',
-                        !day.isCurrentMonth && 'bg-dark-bg/50',
-                        day.isCurrentMonth && 'bg-dark-card',
-                        isExpanded && 'bg-dark-surface',
+                        dayIndex > 0 && 'border-l border-border-primary',
+                        !day.isCurrentMonth && 'bg-main/50',
+                        day.isCurrentMonth && 'bg-card',
+                        isExpanded && 'bg-surface',
                         hasEvents && 'cursor-pointer'
                       )}
                     >
@@ -251,7 +251,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                         className={clsx(
                           'inline-flex size-7 items-center justify-center rounded-full text-sm',
                           day.isToday && 'bg-brand-green text-black font-bold',
-                          !day.isToday && day.isCurrentMonth && 'text-gray-300',
+                          !day.isToday && day.isCurrentMonth && 'text-text-secondary',
                           !day.isToday && !day.isCurrentMonth && 'text-gray-600'
                         )}
                       >
@@ -267,7 +267,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                           ) : (
                             <>
                               <span className={clsx('size-1.5 rounded-full', TYPE_DOTS[events[0].event.type])} />
-                              <span className="text-[9px] text-gray-400">+{events.length - 1}</span>
+                              <span className="text-[9px] text-text-secondary">+{events.length - 1}</span>
                             </>
                           )}
                         </div>
@@ -279,7 +279,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
 
               {/* Expanded event list for mobile */}
               {week.some((d) => expandedDate === d.dateKey) && (
-                <div className="border-t border-dark-border bg-dark-surface px-3 py-2">
+                <div className="border-t border-border-primary bg-surface px-3 py-2">
                   {(() => {
                     const day = week.find((d) => expandedDate === d.dateKey)!
                     const events = eventsByDate[day.dateKey] ?? []
@@ -295,15 +295,15 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                             <Link
                               key={item.event.id}
                               href={`/events/${item.event.slug}`}
-                              className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-dark-card-hover"
+                              className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-card-hover"
                             >
                               <span className={clsx('size-2 shrink-0 rounded-full', TYPE_DOTS[item.event.type])} />
                               <div className="min-w-0">
-                                <div className="truncate text-sm font-medium text-white">
+                                <div className="truncate text-sm font-medium text-text-primary">
                                   {toTitleCase(item.event.eventName)}
                                 </div>
                                 {distances && (
-                                  <div className="truncate text-xs text-gray-500">{distances}</div>
+                                  <div className="truncate text-xs text-text-muted">{distances}</div>
                                 )}
                               </div>
                             </Link>
@@ -320,7 +320,7 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-gray-400">
+      <div className="mt-4 flex flex-wrap items-center gap-4 text-xs text-text-secondary">
         <div className="flex items-center gap-1.5">
           <span className="size-2 rounded-full bg-emerald-500" />
           <span>Trail</span>

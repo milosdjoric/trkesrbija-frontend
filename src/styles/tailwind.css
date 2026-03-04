@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 @source "..";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Urbanist', sans-serif;
 
@@ -8,19 +10,6 @@
   --color-brand-green: #00D084;
   --color-brand-green-dark: #00A86B;
   --color-brand-red: #FF4136;
-
-  /* Stare dark-* boje (zadržane za kompatibilnost tokom migracije) */
-  --color-dark-bg: #121212;
-  --color-dark-card: #1A1A1A;
-  --color-dark-card-hover: #1F1F1F;
-  --color-dark-border: #2A2A2A;
-  --color-dark-border-light: #363636;
-  --color-dark-surface: #1E1E1E;
-  --color-dark-surface-hover: #252525;
-
-  --color-light-bg: #F5F5F0;
-  --color-light-card: #FFFFFF;
-  --color-light-border: #E0E0E0;
 
   /* Semantic tokeni — čitaju CSS varijable iz :root */
   --color-main: var(--bg-main);
@@ -51,14 +40,14 @@
 
 /* Light tema */
 :root.light {
-  --bg-main: #F5F5F0;
+  --bg-main: #F0F0EB;
   --bg-card: #FFFFFF;
-  --bg-card-hover: #F9F9F6;
-  --bg-surface: #EEEEEA;
-  --bg-surface-hover: #E5E5E0;
-  --border-primary: #E0E0E0;
-  --border-secondary: #D0D0D0;
-  --text-primary: #111111;
-  --text-secondary: #4B5563;
-  --text-muted: #9CA3AF;
+  --bg-card-hover: #F5F5F0;
+  --bg-surface: #E8E8E3;
+  --bg-surface-hover: #DEDED9;
+  --border-primary: #C8C8C3;
+  --border-secondary: #B0B0AB;
+  --text-primary: #0A0A0A;
+  --text-secondary: #3F3F46;
+  --text-muted: #71717A;
 }

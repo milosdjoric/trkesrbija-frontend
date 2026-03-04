@@ -67,7 +67,7 @@ export function RaceCard({
             href={startLocation}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-white"
+            className="inline-flex items-center gap-1 rounded border border-border-primary px-2 py-0.5 text-xs text-text-secondary hover:border-border-secondary hover:text-text-primary"
             title="Prikaži lokaciju"
           >
             <MapPinIcon className="size-3" />
@@ -75,7 +75,7 @@ export function RaceCard({
           </a>
         ) : (
           <span
-            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400"
+            className="inline-flex items-center gap-1 rounded border border-border-primary px-2 py-0.5 text-xs text-text-secondary"
             title={startLocation}
           >
             <MapPinIcon className="size-3" />
@@ -88,7 +88,7 @@ export function RaceCard({
         <>
           <NextLink
             href={`/admin/races/${raceId}/registrations`}
-            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-white"
+            className="inline-flex items-center gap-1 rounded border border-border-primary px-2 py-0.5 text-xs text-text-secondary hover:border-border-secondary hover:text-text-primary"
             title="Prijave"
           >
             <ClipboardDocumentListIcon className="size-3" />
@@ -96,7 +96,7 @@ export function RaceCard({
           </NextLink>
           <NextLink
             href={`/admin/races/${raceId}/checkpoints`}
-            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-white"
+            className="inline-flex items-center gap-1 rounded border border-border-primary px-2 py-0.5 text-xs text-text-secondary hover:border-border-secondary hover:text-text-primary"
             title="Checkpoint-i"
           >
             <FlagIcon className="size-3" />

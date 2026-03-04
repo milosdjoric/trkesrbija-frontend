@@ -418,7 +418,7 @@ export default async function Events({
         </div>
       </div>
       {events.length === 0 ? (
-        <div className="mt-10 rounded-lg border border-dark-border p-6 text-sm/6 text-gray-400">
+        <div className="mt-10 rounded-lg border border-border-primary p-6 text-sm/6 text-text-secondary">
           {anyFilterActive ? (
             <>
               <div className="font-medium">Nema rezultata za izabrane filtere.</div>
@@ -468,7 +468,7 @@ export default async function Events({
             {groups.map((g, gi) => (
               <details key={`${g.month}-${gi}`} className="rounded-xl" open>
                 <summary className="cursor-pointer px-4 py-3 text-sm font-normal select-none">
-                  {g.month} <span className="font-normal text-gray-400">({g.items.length})</span>
+                  {g.month} <span className="font-normal text-text-secondary">({g.items.length})</span>
                 </summary>
 
                 <ul className="px-4 pb-2">

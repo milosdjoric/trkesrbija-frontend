@@ -157,7 +157,7 @@ export default function AdminUsersPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -182,7 +182,7 @@ export default function AdminUsersPage() {
       placeholder="Pretraži po email ili imenu..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+      className="w-full rounded-lg border border-border-secondary py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
      />
     </div>
 
@@ -190,7 +190,7 @@ export default function AdminUsersPage() {
     <select
      value={filterRole}
      onChange={(e) => setFilterRole(e.target.value as any)}
-     className="rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+     className="rounded-lg border border-border-secondary px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
     >
      <option value="ALL">Sve uloge</option>
      <option value="ADMIN">Admini</option>
@@ -200,31 +200,31 @@ export default function AdminUsersPage() {
    </div>
 
    {/* Users table */}
-   <div className="mt-6 overflow-hidden rounded-lg border border-dark-border">
-    <table className="min-w-full divide-y divide-dark-border">
-     <thead className="bg-dark-surface">
+   <div className="mt-6 overflow-hidden rounded-lg border border-border-primary">
+    <table className="min-w-full divide-y divide-border-primary">
+     <thead className="bg-surface">
       <tr>
-       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
         Korisnik
        </th>
-       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
         Uloga
        </th>
-       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
         Status
        </th>
-       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+       <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
         Registrovan
        </th>
-       <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400">
+       <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
         Akcije
        </th>
       </tr>
      </thead>
-     <tbody className="divide-y divide-dark-border bg-dark-card">
+     <tbody className="divide-y divide-border-primary bg-card">
       {filteredUsers.length === 0 ? (
        <tr>
-        <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
+        <td colSpan={5} className="px-4 py-8 text-center text-sm text-text-secondary">
          {search || filterRole !== 'ALL'
           ? 'Nema korisnika koji odgovaraju filterima'
           : 'Nema korisnika'}
@@ -232,12 +232,12 @@ export default function AdminUsersPage() {
        </tr>
       ) : (
        filteredUsers.map((u) => (
-        <tr key={u.id} className="hover:bg-dark-card-hover">
+        <tr key={u.id} className="hover:bg-card-hover">
          <td className="px-4 py-3">
-          <div className="font-medium text-white">
+          <div className="font-medium text-text-primary">
            {u.name ?? '-'}
           </div>
-          <div className="text-sm text-gray-400">{u.email}</div>
+          <div className="text-sm text-text-secondary">{u.email}</div>
          </td>
          <td className="px-4 py-3">
           <div className="flex flex-wrap gap-1">
@@ -255,7 +255,7 @@ export default function AdminUsersPage() {
            <Badge color="red">Nije verifikovan</Badge>
           )}
          </td>
-         <td className="px-4 py-3 text-sm text-gray-400">
+         <td className="px-4 py-3 text-sm text-text-secondary">
           {formatDate(u.createdAt)}
          </td>
          <td className="px-4 py-3 text-right">
@@ -277,7 +277,7 @@ export default function AdminUsersPage() {
            </button>
           )}
           {u.id === user.id && (
-           <span className="text-xs text-gray-400">Ti</span>
+           <span className="text-xs text-text-secondary">Ti</span>
           )}
          </td>
         </tr>

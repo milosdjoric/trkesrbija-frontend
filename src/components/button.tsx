@@ -42,13 +42,13 @@ const styles = {
   ],
   outline: [
     // Base
-    'border-dark-border-light text-white data-active:bg-dark-surface data-hover:bg-dark-surface hover:bg-dark-surface active:bg-dark-surface',
+    'border-border-secondary text-text-primary data-active:bg-surface data-hover:bg-surface hover:bg-surface active:bg-surface',
     // Icon
     '[--btn-icon:var(--color-gray-500)] data-active:[--btn-icon:var(--color-gray-400)] data-hover:[--btn-icon:var(--color-gray-400)]',
   ],
   plain: [
     // Base
-    'border-transparent text-gray-400 data-active:bg-dark-surface data-hover:bg-dark-surface hover:bg-dark-surface active:bg-dark-surface data-hover:text-white hover:text-white',
+    'border-transparent text-text-secondary data-active:bg-surface data-hover:bg-surface hover:bg-surface active:bg-surface data-hover:text-text-primary hover:text-text-primary',
     // Icon
     '[--btn-icon:var(--color-gray-500)] data-active:[--btn-icon:var(--color-gray-400)] data-hover:[--btn-icon:var(--color-gray-400)]',
   ],

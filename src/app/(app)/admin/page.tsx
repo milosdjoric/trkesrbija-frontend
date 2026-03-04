@@ -154,67 +154,67 @@ export default function AdminDashboardPage() {
    <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
     <Link
      href="/admin/events"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
      <CalendarIcon className="size-8 text-blue-500" />
      <div>
       <div className="font-medium">Događaji</div>
-      <div className="text-sm text-gray-400">Upravljaj događajima</div>
+      <div className="text-sm text-text-secondary">Upravljaj događajima</div>
      </div>
     </Link>
 
     <Link
      href="/admin/races"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
      <FlagIcon className="size-8 text-emerald-500" />
      <div>
       <div className="font-medium">Trke</div>
-      <div className="text-sm text-gray-400">Registracije & checkpoint-i</div>
+      <div className="text-sm text-text-secondary">Registracije & checkpoint-i</div>
      </div>
     </Link>
 
     <Link
      href="/admin/trainings"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
      <BoltIcon className="size-8 text-indigo-500" />
      <div>
       <div className="font-medium">Treninzi</div>
-      <div className="text-sm text-gray-400">Svi treninzi korisnika</div>
+      <div className="text-sm text-text-secondary">Svi treninzi korisnika</div>
      </div>
     </Link>
 
     <Link
      href="/admin/users"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
      <UserGroupIcon className="size-8 text-purple-500" />
      <div>
       <div className="font-medium">Korisnici</div>
-      <div className="text-sm text-gray-400">Upravljaj korisnicima</div>
+      <div className="text-sm text-text-secondary">Upravljaj korisnicima</div>
      </div>
     </Link>
 
     <Link
      href="/admin/import"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
      <ArrowUpTrayIcon className="size-8 text-amber-500" />
      <div>
       <div className="font-medium">Import</div>
-      <div className="text-sm text-gray-400">CSV import podataka</div>
+      <div className="text-sm text-text-secondary">CSV import podataka</div>
      </div>
     </Link>
 
     <Link
      href="/admin/reports"
-     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:border-dark-border-light hover:bg-dark-card-hover"
+     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
      <ExclamationTriangleIcon className="size-8 text-red-500" />
      <div>
       <div className="font-medium">Prijave grešaka</div>
-      <div className="text-sm text-gray-400">Korisničke prijave pogrešnih podataka</div>
+      <div className="text-sm text-text-secondary">Korisničke prijave pogrešnih podataka</div>
      </div>
     </Link>
 
@@ -244,39 +244,39 @@ export default function AdminDashboardPage() {
 
     {/* Show past toggle */}
     <div className="mt-4">
-     <label className="flex items-center gap-2 text-sm text-gray-400">
+     <label className="flex items-center gap-2 text-sm text-text-secondary">
       <input
        type="checkbox"
        checked={showPast}
        onChange={(e) => setShowPast(e.target.checked)}
-       className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
+       className="size-4 rounded border-border-secondary text-brand-green focus:ring-brand-green bg-surface"
       />
       Prikaži istekle trke
      </label>
     </div>
 
-    <div className="mt-4 overflow-hidden rounded-lg border border-dark-border">
-     <table className="min-w-full divide-y divide-dark-border">
-      <thead className="bg-dark-surface">
+    <div className="mt-4 overflow-hidden rounded-lg border border-border-primary">
+     <table className="min-w-full divide-y divide-border-primary">
+      <thead className="bg-surface">
        <tr>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Trka
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Datum
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Prijave
         </th>
-        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-text-secondary">
          Status
         </th>
-        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400">
+        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-text-secondary">
          Akcije
         </th>
        </tr>
       </thead>
-      <tbody className="divide-y divide-dark-border bg-dark-card">
+      <tbody className="divide-y divide-border-primary bg-card">
        {(() => {
         const now = new Date().getTime()
         const filteredRaces = recentRaces.filter((race) => {
@@ -288,7 +288,7 @@ export default function AdminDashboardPage() {
         if (filteredRaces.length === 0) {
          return (
           <tr>
-           <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
+           <td colSpan={5} className="px-4 py-8 text-center text-sm text-text-secondary">
             {showPast ? 'Nema trka' : 'Nema predstojećih trka'}
            </td>
           </tr>
@@ -296,14 +296,14 @@ export default function AdminDashboardPage() {
         }
 
         return filteredRaces.map((race) => (
-         <tr key={race.id} className="hover:bg-dark-card-hover">
+         <tr key={race.id} className="hover:bg-card-hover">
           <td className="px-4 py-3">
-           <div className="font-medium text-white">
+           <div className="font-medium text-text-primary">
             {race.raceName ?? race.raceEvent.eventName}
            </div>
-           <div className="text-sm text-gray-400">{race.raceEvent.eventName}</div>
+           <div className="text-sm text-text-secondary">{race.raceEvent.eventName}</div>
           </td>
-          <td className="px-4 py-3 text-sm text-gray-400">
+          <td className="px-4 py-3 text-sm text-text-secondary">
            {formatDate(race.startDateTime)}
           </td>
           <td className="px-4 py-3">

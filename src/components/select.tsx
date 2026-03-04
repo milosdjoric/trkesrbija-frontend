@@ -33,17 +33,17 @@ export const Select = forwardRef(function Select(
           // Options (multi-select)
           '[&_optgroup]:font-semibold',
           // Typography
-          'text-base/6 text-white placeholder:text-gray-400 sm:text-sm/6 *:text-white',
+          'text-base/6 text-text-primary placeholder:text-text-muted sm:text-sm/6 *:text-white',
           // Border
-          'border border-dark-border data-hover:border-dark-border-light',
+          'border border-border-primary data-hover:border-border-secondary',
           // Background color
-          'bg-dark-surface *:bg-dark-surface',
+          'bg-surface *:bg-surface',
           // Hide default focus styles
           'focus:outline-hidden',
           // Invalid state
           'data-invalid:border-red-500 data-invalid:data-hover:border-red-500',
           // Disabled state
-          'data-disabled:border-dark-border data-disabled:opacity-100',
+          'data-disabled:border-border-primary data-disabled:opacity-100',
         ])}
       />
       {!multiple && (

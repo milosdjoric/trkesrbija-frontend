@@ -189,7 +189,7 @@ export default function AdminDuplicatesPage() {
    <div className="mb-4">
     <Link
      href="/admin/events"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Događaji
@@ -199,7 +199,7 @@ export default function AdminDuplicatesPage() {
    <div className="flex flex-wrap items-center justify-between gap-4">
     <div>
      <Heading>Potencijalni duplikati</Heading>
-     <p className="mt-1 text-sm text-gray-400">
+     <p className="mt-1 text-sm text-text-secondary">
       Pronađeni događaji sa sličnim imenom, datumom ili lokacijom
      </p>
     </div>
@@ -207,7 +207,7 @@ export default function AdminDuplicatesPage() {
 
    {/* Threshold filter */}
    <div className="mt-6 flex items-center gap-4">
-    <label className="text-sm font-medium text-gray-300">
+    <label className="text-sm font-medium text-text-secondary">
      Minimalna sličnost:
     </label>
     <Select
@@ -221,7 +221,7 @@ export default function AdminDuplicatesPage() {
      <option value="80">80%</option>
      <option value="90">90%</option>
     </Select>
-    <span className="text-sm text-gray-400">
+    <span className="text-sm text-text-secondary">
      ({duplicates.length} pronađeno)
     </span>
    </div>
@@ -229,9 +229,9 @@ export default function AdminDuplicatesPage() {
    {/* Results */}
    <div className="mt-8 space-y-4">
     {duplicates.length === 0 ? (
-     <div className="rounded-lg border border-dark-border p-8 text-center">
-      <ExclamationTriangleIcon className="mx-auto size-12 text-gray-400" />
-      <p className="mt-4 text-gray-400">
+     <div className="rounded-lg border border-border-primary p-8 text-center">
+      <ExclamationTriangleIcon className="mx-auto size-12 text-text-secondary" />
+      <p className="mt-4 text-text-secondary">
        Nema pronađenih duplikata sa sličnošću {'>='} {threshold}%
       </p>
      </div>
@@ -239,14 +239,14 @@ export default function AdminDuplicatesPage() {
      duplicates.map((dup, index) => (
       <div
        key={`${dup.eventA.id}-${dup.eventB.id}`}
-       className="rounded-lg border border-dark-border bg-dark-card p-4"
+       className="rounded-lg border border-border-primary bg-card p-4"
       >
        {/* Header with similarity score */}
        <div className="mb-4 flex items-center justify-between">
         <Badge color={getSimilarityColor(dup.similarity.total)} className="text-sm">
          {dup.similarity.total}% sličnost
         </Badge>
-        <div className="flex gap-4 text-xs text-gray-400">
+        <div className="flex gap-4 text-xs text-text-secondary">
          <span>Ime: {dup.similarity.name}%</span>
          <span>Datum: {dup.similarity.date}%</span>
          <span>Lokacija: {dup.similarity.location}%</span>
@@ -256,19 +256,19 @@ export default function AdminDuplicatesPage() {
        {/* Two events side by side */}
        <div className="grid gap-4 md:grid-cols-2">
         {/* Event A */}
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
          <div className="flex items-start justify-between">
           <div>
-           <h3 className="font-medium text-white">
+           <h3 className="font-medium text-text-primary">
             {dup.eventA.eventName}
            </h3>
-           <p className="mt-1 text-sm text-gray-400">/{dup.eventA.slug}</p>
+           <p className="mt-1 text-sm text-text-secondary">/{dup.eventA.slug}</p>
           </div>
           <Badge color={getTypeColor(dup.eventA.type)}>
            {getTypeLabel(dup.eventA.type)}
           </Badge>
          </div>
-         <div className="mt-3 space-y-1 text-sm text-gray-400">
+         <div className="mt-3 space-y-1 text-sm text-text-secondary">
           <div>
            <span className="font-medium">Datum:</span> {formatDate(dup.eventA.earliestDate)}
           </div>
@@ -285,7 +285,7 @@ export default function AdminDuplicatesPage() {
           </Link>
           <Link
            href={`/events/${dup.eventA.slug}`}
-           className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+           className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
           >
            Pogledaj
            <ArrowTopRightOnSquareIcon className="size-3" />
@@ -301,19 +301,19 @@ export default function AdminDuplicatesPage() {
         </div>
 
         {/* Event B */}
-        <div className="rounded-lg border border-dark-border bg-dark-surface p-4">
+        <div className="rounded-lg border border-border-primary bg-surface p-4">
          <div className="flex items-start justify-between">
           <div>
-           <h3 className="font-medium text-white">
+           <h3 className="font-medium text-text-primary">
             {dup.eventB.eventName}
            </h3>
-           <p className="mt-1 text-sm text-gray-400">/{dup.eventB.slug}</p>
+           <p className="mt-1 text-sm text-text-secondary">/{dup.eventB.slug}</p>
           </div>
           <Badge color={getTypeColor(dup.eventB.type)}>
            {getTypeLabel(dup.eventB.type)}
           </Badge>
          </div>
-         <div className="mt-3 space-y-1 text-sm text-gray-400">
+         <div className="mt-3 space-y-1 text-sm text-text-secondary">
           <div>
            <span className="font-medium">Datum:</span> {formatDate(dup.eventB.earliestDate)}
           </div>
@@ -330,7 +330,7 @@ export default function AdminDuplicatesPage() {
           </Link>
           <Link
            href={`/events/${dup.eventB.slug}`}
-           className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+           className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
           >
            Pogledaj
            <ArrowTopRightOnSquareIcon className="size-3" />

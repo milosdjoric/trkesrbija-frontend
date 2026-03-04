@@ -66,13 +66,13 @@ export function TagsInput({
   return (
     <div className="space-y-2">
       {label && (
-        <label className="block text-sm font-medium text-white">
+        <label className="block text-sm font-medium text-text-primary">
           {label}
         </label>
       )}
 
       {/* Tags display and input */}
-      <div className="flex flex-wrap gap-2 rounded-lg border border-dark-border bg-dark-surface p-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
+      <div className="flex flex-wrap gap-2 rounded-lg border border-border-primary bg-surface p-2 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500">
         {value.map((tag, index) => (
           <span
             key={tag}
@@ -101,13 +101,13 @@ export function TagsInput({
       {/* Suggestions */}
       {availableSuggestions.length > 0 && (
         <div className="flex flex-wrap gap-1">
-          <span className="text-xs text-gray-400">Predlozi:</span>
+          <span className="text-xs text-text-secondary">Predlozi:</span>
           {availableSuggestions.slice(0, 8).map((suggestion) => (
             <button
               key={suggestion}
               type="button"
               onClick={() => addTag(suggestion)}
-              className="rounded-full bg-zinc-700 px-2 py-0.5 text-xs text-gray-400 hover:bg-zinc-600"
+              className="rounded-full bg-zinc-700 px-2 py-0.5 text-xs text-text-secondary hover:bg-zinc-600"
             >
               #{suggestion}
             </button>

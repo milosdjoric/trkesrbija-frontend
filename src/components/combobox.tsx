@@ -68,7 +68,7 @@ export function Combobox<T>({
             // Horizontal padding
             'pr-[calc(--spacing(10)-1px)] pl-[calc(--spacing(3.5)-1px)] sm:pr-[calc(--spacing(9)-1px)] sm:pl-[calc(--spacing(3)-1px)]',
             // Typography
-            'text-base/6 text-white placeholder:text-gray-400 sm:text-sm/6',
+            'text-base/6 text-text-primary placeholder:text-text-muted sm:text-sm/6',
             // Border
             'border border-white/10 data-hover:border-white/20',
             // Background color
@@ -134,7 +134,7 @@ export function ComboboxOption<T>({
     'flex min-w-0 items-center',
     // Icons
     '*:data-[slot=icon]:size-5 *:data-[slot=icon]:shrink-0 sm:*:data-[slot=icon]:size-4',
-    '*:data-[slot=icon]:text-gray-400 group-data-focus/option:*:data-[slot=icon]:text-white',
+    '*:data-[slot=icon]:text-text-secondary group-data-focus/option:*:data-[slot=icon]:text-white',
     'forced-colors:*:data-[slot=icon]:text-[CanvasText] forced-colors:group-data-focus/option:*:data-[slot=icon]:text-[Canvas]',
     // Avatars
     '*:data-[slot=avatar]:-mx-0.5 *:data-[slot=avatar]:size-6 sm:*:data-[slot=avatar]:size-5'
@@ -147,7 +147,7 @@ export function ComboboxOption<T>({
         // Basic layout
         'group/option grid w-full cursor-default grid-cols-[1fr_--spacing(5)] items-baseline gap-x-2 rounded-lg py-2.5 pr-2 pl-3.5 sm:grid-cols-[1fr_--spacing(4)] sm:py-1.5 sm:pr-2 sm:pl-3',
         // Typography
-        'text-base/6 text-white sm:text-sm/6 forced-colors:text-[CanvasText]',
+        'text-base/6 text-text-primary sm:text-sm/6 forced-colors:text-[CanvasText]',
         // Focus
         'outline-hidden data-focus:bg-blue-500 data-focus:text-white',
         // Forced colors mode
@@ -179,7 +179,7 @@ export function ComboboxDescription({ className, children, ...props }: React.Com
       {...props}
       className={clsx(
         className,
-        'flex flex-1 overflow-hidden text-gray-400 group-data-focus/option:text-white before:w-2 before:min-w-0 before:shrink'
+        'flex flex-1 overflow-hidden text-text-secondary group-data-focus/option:text-white before:w-2 before:min-w-0 before:shrink'
       )}
     >
       <span className="flex-1 truncate">{children}</span>

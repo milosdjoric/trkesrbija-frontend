@@ -128,7 +128,7 @@ export default function AdminReportsPage() {
    <div className="mb-4">
     <Link
      href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Admin Panel
@@ -136,7 +136,7 @@ export default function AdminReportsPage() {
    </div>
 
    <Heading>Prijave grešaka</Heading>
-   <p className="mt-1 text-sm text-gray-400">
+   <p className="mt-1 text-sm text-text-secondary">
     {pendingCount > 0 ? `${pendingCount} neobrađenih prijava` : 'Nema neobrađenih prijava'}
    </p>
 
@@ -148,7 +148,7 @@ export default function AdminReportsPage() {
       setFilterStatus(e.target.value)
       setLoading(true)
      }}
-     className="rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+     className="rounded-lg border border-border-secondary px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
     >
      <option value="">Sve prijave</option>
      <option value="PENDING">Neobrađene</option>
@@ -160,17 +160,17 @@ export default function AdminReportsPage() {
    {/* Reports list */}
    <div className="mt-6 space-y-4">
     {reports.length === 0 ? (
-     <p className="py-8 text-center text-sm text-gray-400">Nema prijava</p>
+     <p className="py-8 text-center text-sm text-text-secondary">Nema prijava</p>
     ) : (
      reports.map((report) => (
       <div
        key={report.id}
-       className="rounded-lg border border-dark-border p-4"
+       className="rounded-lg border border-border-primary p-4"
       >
        <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
          <div className="flex items-center gap-2 flex-wrap">
-          <span className="font-medium text-white">
+          <span className="font-medium text-text-primary">
            {report.entityName}
           </span>
           <Badge color={report.entityType === 'EVENT' ? 'blue' : 'purple'}>
@@ -209,13 +209,13 @@ export default function AdminReportsPage() {
 
          {/* Message */}
          {report.message && (
-          <p className="mt-2 text-sm text-gray-400 whitespace-pre-wrap">
+          <p className="mt-2 text-sm text-text-secondary whitespace-pre-wrap">
            {report.message}
           </p>
          )}
 
          {/* Meta */}
-         <div className="mt-2 text-xs text-gray-400">
+         <div className="mt-2 text-xs text-text-secondary">
           {formatDate(report.createdAt)}
           {report.reporterEmail && (
            <>
@@ -244,7 +244,7 @@ export default function AdminReportsPage() {
           <button
            onClick={() => handleUpdateStatus(report.id, 'DISMISSED')}
            disabled={updatingId === report.id}
-           className="cursor-pointer rounded-lg bg-dark-surface px-3 py-1.5 text-xs font-medium text-gray-300 hover:bg-dark-card-hover disabled:opacity-50"
+           className="cursor-pointer rounded-lg bg-surface px-3 py-1.5 text-xs font-medium text-text-secondary hover:bg-card-hover disabled:opacity-50"
           >
            Odbaci
           </button>

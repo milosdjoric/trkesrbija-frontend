@@ -205,19 +205,19 @@ export default async function HomePage() {
     <>
       {/* Hero sekcija sa pretragom */}
       <div className="mb-12 pt-8 text-center">
-        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-dark-border bg-dark-surface px-4 py-1.5 text-sm font-medium text-brand-green">
+        <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border-primary bg-surface px-4 py-1.5 text-sm font-medium text-brand-green">
           <span>🏃</span>
           <span>Sezona 2026 je počela</span>
         </div>
 
-        <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+        <h1 className="text-4xl font-extrabold tracking-tight text-text-primary sm:text-5xl md:text-6xl">
           Sve trke u Srbiji.
         </h1>
-        <h2 className="mt-2 text-4xl font-extrabold tracking-tight text-gray-400 sm:text-5xl md:text-6xl">
+        <h2 className="mt-2 text-4xl font-extrabold tracking-tight text-text-secondary sm:text-5xl md:text-6xl">
           Na jednom mestu.
         </h2>
 
-        <p className="mx-auto mt-6 max-w-xl text-base text-gray-400">
+        <p className="mx-auto mt-6 max-w-xl text-base text-text-secondary">
           Pronađi trku, prijavi se online, prati rezultate uživo. Od 5k fun run-ova do ultramaratona.
         </p>
 
@@ -225,12 +225,12 @@ export default async function HomePage() {
         <form action="/events" className="mx-auto mt-10 max-w-2xl">
           <div className="flex gap-3">
             <div className="relative flex-1">
-              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-gray-400" />
+              <MagnifyingGlassIcon className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-text-secondary" />
               <input
                 type="text"
                 name="q"
                 placeholder="Pretraži trke, gradove..."
-                className="w-full rounded-xl border border-dark-border bg-dark-surface py-4 pl-12 pr-4 text-base text-white placeholder:text-gray-400 focus:border-dark-border-light focus:outline-none focus:ring-2 focus:ring-brand-green"
+                className="w-full rounded-xl border border-border-primary bg-surface py-4 pl-12 pr-4 text-base text-text-primary placeholder:text-text-muted focus:border-border-secondary focus:outline-none focus:ring-2 focus:ring-brand-green"
               />
             </div>
             <button
@@ -252,7 +252,7 @@ export default async function HomePage() {
           <div className="aspect-[16/9] bg-gradient-to-br from-emerald-600 to-emerald-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Trail trke</span>
-            <h3 className="mt-2 text-2xl font-bold text-white">Trail</h3>
+            <h3 className="mt-2 text-2xl font-bold text-text-primary">Trail</h3>
             <p className="text-sm text-emerald-100">Planinske i brdske staze • {trailCount} događaja</p>
           </div>
         </Link>
@@ -264,7 +264,7 @@ export default async function HomePage() {
           <div className="aspect-[16/9] bg-gradient-to-br from-sky-600 to-sky-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Ulične trke</span>
-            <h3 className="mt-2 text-2xl font-bold text-white">Ulična</h3>
+            <h3 className="mt-2 text-2xl font-bold text-text-primary">Ulična</h3>
             <p className="text-sm text-sky-100">Gradske i ulične staze • {roadCount} događaja</p>
           </div>
         </Link>
@@ -276,7 +276,7 @@ export default async function HomePage() {
           <div className="aspect-[16/9] bg-gradient-to-br from-orange-600 to-orange-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">OCR trke</span>
-            <h3 className="mt-2 text-2xl font-bold text-white">OCR</h3>
+            <h3 className="mt-2 text-2xl font-bold text-text-primary">OCR</h3>
             <p className="text-sm text-orange-100">Trke sa preprekama • {ocrCount} događaja</p>
           </div>
         </Link>
@@ -288,7 +288,7 @@ export default async function HomePage() {
           <Subheading>Nadolazeći događaji</Subheading>
           <Link
             href="/events"
-            className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+            className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
           >
             Svi događaji
             <ArrowRightIcon className="size-3" />
@@ -296,7 +296,7 @@ export default async function HomePage() {
         </div>
 
         {processedEvents.length === 0 ? (
-          <div className="mt-4 rounded-lg border border-dark-border p-6 text-center text-sm text-gray-400">
+          <div className="mt-4 rounded-lg border border-border-primary p-6 text-center text-sm text-text-secondary">
             Nema nadolazećih događaja
           </div>
         ) : (
@@ -305,8 +305,8 @@ export default async function HomePage() {
             {thisWeekEvents.length > 0 && (
               <div>
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="rounded-full bg-dark-surface px-3 py-1 text-xs font-semibold text-gray-300">Ove nedelje</span>
-                  <div className="h-px flex-1 bg-dark-border" />
+                  <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-text-secondary">Ove nedelje</span>
+                  <div className="h-px flex-1 bg-border-primary" />
                 </div>
                 <ul>
                   {thisWeekEvents.map((event, index) => (
@@ -334,8 +334,8 @@ export default async function HomePage() {
             {nextWeekEvents.length > 0 && (
               <div>
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="rounded-full bg-dark-surface px-3 py-1 text-xs font-semibold text-gray-300">Sledeće nedelje</span>
-                  <div className="h-px flex-1 bg-dark-border" />
+                  <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-text-secondary">Sledeće nedelje</span>
+                  <div className="h-px flex-1 bg-border-primary" />
                 </div>
                 <ul>
                   {nextWeekEvents.map((event, index) => (
@@ -363,8 +363,8 @@ export default async function HomePage() {
             {laterEvents.length > 0 && (
               <div>
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="rounded-full bg-dark-surface px-3 py-1 text-xs font-semibold text-gray-300">Kasnije</span>
-                  <div className="h-px flex-1 bg-dark-border" />
+                  <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-text-secondary">Kasnije</span>
+                  <div className="h-px flex-1 bg-border-primary" />
                 </div>
                 <ul>
                   {laterEvents.map((event, index) => (
@@ -397,19 +397,19 @@ export default async function HomePage() {
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
           <QuickLinkCard
             href="/events"
-            icon={<CalendarIcon className="size-5 text-gray-400" />}
+            icon={<CalendarIcon className="size-5 text-text-secondary" />}
             title="Svi događaji"
             description="Pregledaj kalendar trka"
           />
           <QuickLinkCard
             href="/favorites"
-            icon={<TrophyIcon className="size-5 text-gray-400" />}
+            icon={<TrophyIcon className="size-5 text-text-secondary" />}
             title="Omiljene trke"
             description="Tvoje sačuvane trke"
           />
           <QuickLinkCard
             href="/my-registrations"
-            icon={<UserGroupIcon className="size-5 text-gray-400" />}
+            icon={<UserGroupIcon className="size-5 text-text-secondary" />}
             title="Moje prijave"
             description="Tvoje registracije"
           />

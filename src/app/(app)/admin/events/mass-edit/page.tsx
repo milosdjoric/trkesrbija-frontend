@@ -255,7 +255,7 @@ export default function EventsMassEditPage() {
    <div className="mb-4">
     <Link
      href="/admin/events"
-     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300"
+     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
     >
      <ChevronLeftIcon className="size-4" />
      Nazad na dogadjaje
@@ -265,7 +265,7 @@ export default function EventsMassEditPage() {
    <div className="flex items-center justify-between">
     <div>
      <Heading>Masovna izmena dogadjaja</Heading>
-     <p className="mt-1 text-sm text-gray-400">
+     <p className="mt-1 text-sm text-text-secondary">
       Dupli klik na celiju za izmenu. Enter za cuvanje, Escape za otkaz.
      </p>
     </div>
@@ -281,28 +281,28 @@ export default function EventsMassEditPage() {
    {/* Filters */}
    <div className="mt-6 flex flex-wrap gap-4">
     <div className="relative flex-1">
-     <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+     <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-secondary" />
      <input
       type="text"
       placeholder="Pretrazi po nazivu ili slug-u..."
       value={search}
       onChange={(e) => setSearch(e.target.value)}
-      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-dark-surface"
+      className="w-full rounded-lg border border-border-secondary py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
      />
     </div>
-    <label className="flex items-center gap-2 text-sm text-gray-400">
+    <label className="flex items-center gap-2 text-sm text-text-secondary">
      <input
       type="checkbox"
       checked={showPast}
       onChange={(e) => setShowPast(e.target.checked)}
-      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green bg-dark-surface"
+      className="size-4 rounded border-border-secondary text-brand-green focus:ring-brand-green bg-surface"
      />
      Prikazi istekle
     </label>
    </div>
 
    {/* Results count */}
-   <p className="mt-4 text-sm text-gray-400">
+   <p className="mt-4 text-sm text-text-secondary">
     Prikazano {filteredEvents.length} od {events.length} dogadjaja
     {selectedIds.size > 0 && ` • Selektovano: ${selectedIds.size}`}
    </p>
@@ -319,7 +319,7 @@ export default function EventsMassEditPage() {
        setBulkField(e.target.value)
        setBulkValue('')
       }}
-      className="rounded border border-dark-border-light bg-dark-surface px-2 py-1 text-sm"
+      className="rounded border border-border-secondary bg-surface px-2 py-1 text-sm"
      >
       <option value="">Izaberi polje...</option>
       <option value="type">Tip</option>
@@ -331,7 +331,7 @@ export default function EventsMassEditPage() {
       <select
        value={bulkValue}
        onChange={(e) => setBulkValue(e.target.value)}
-       className="rounded border border-dark-border-light bg-dark-surface px-2 py-1 text-sm"
+       className="rounded border border-border-secondary bg-surface px-2 py-1 text-sm"
       >
        <option value="">Izaberi...</option>
        {TYPE_OPTIONS.map((opt) => (
@@ -348,7 +348,7 @@ export default function EventsMassEditPage() {
        value={bulkValue}
        onChange={(e) => setBulkValue(e.target.value)}
        placeholder="tag1, tag2, tag3..."
-       className="rounded border border-dark-border-light bg-dark-surface px-2 py-1 text-sm"
+       className="rounded border border-border-secondary bg-surface px-2 py-1 text-sm"
       />
      )}
 
@@ -358,7 +358,7 @@ export default function EventsMassEditPage() {
        value={bulkValue}
        onChange={(e) => setBulkValue(e.target.value)}
        placeholder="https://..."
-       className="rounded border border-dark-border-light bg-dark-surface px-2 py-1 text-sm"
+       className="rounded border border-border-secondary bg-surface px-2 py-1 text-sm"
       />
      )}
 
@@ -381,44 +381,44 @@ export default function EventsMassEditPage() {
 
    {/* Table */}
    <div className="mt-4 overflow-x-auto">
-    <table className="min-w-full divide-y divide-dark-border">
-     <thead className="bg-dark-surface">
+    <table className="min-w-full divide-y divide-border-primary">
+     <thead className="bg-surface">
       <tr>
        <th className="w-[30px] px-1 py-2">
         <input
          type="checkbox"
          checked={filteredEvents.length > 0 && filteredEvents.every((e) => selectedIds.has(e.id))}
          onChange={() => toggleSelectAll(filteredEvents.map((e) => e.id))}
-         className="size-3 rounded border-dark-border-light text-brand-green focus:ring-brand-green"
+         className="size-3 rounded border-border-secondary text-brand-green focus:ring-brand-green"
         />
        </th>
-       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-gray-400">
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Naziv
        </th>
-       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-gray-400">
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Slug
        </th>
-       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-gray-400">
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Tip
        </th>
-       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-gray-400">
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Opis
        </th>
-       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-gray-400">
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Slika
        </th>
-       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-gray-400">
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Prijave
        </th>
-       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-gray-400">
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Tagovi
        </th>
       </tr>
      </thead>
-     <tbody className="divide-y divide-dark-border bg-dark-card">
+     <tbody className="divide-y divide-border-primary bg-card">
       {filteredEvents.length === 0 ? (
        <tr>
-        <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">
+        <td colSpan={8} className="px-4 py-8 text-center text-sm text-text-secondary">
          {search ? 'Nema rezultata pretrage' : 'Nema dogadjaja'}
         </td>
        </tr>
@@ -426,14 +426,14 @@ export default function EventsMassEditPage() {
        filteredEvents.map((event) => (
         <tr
          key={event.id}
-         className={`hover:bg-dark-card-hover ${selectedIds.has(event.id) ? 'bg-blue-900/20' : ''}`}
+         className={`hover:bg-card-hover ${selectedIds.has(event.id) ? 'bg-blue-900/20' : ''}`}
         >
          <td className="w-[30px] px-1 py-1">
           <input
            type="checkbox"
            checked={selectedIds.has(event.id)}
            onChange={() => toggleSelect(event.id)}
-           className="size-3 rounded border-dark-border-light text-brand-green focus:ring-brand-green"
+           className="size-3 rounded border-border-secondary text-brand-green focus:ring-brand-green"
           />
          </td>
          <td className="w-[140px] overflow-hidden px-1 py-1">
