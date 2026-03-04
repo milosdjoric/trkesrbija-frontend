@@ -5,7 +5,7 @@ import { Button } from '@/components/button'
 import { Input, InputGroup } from '@/components/input'
 import { Link } from '@/components/link'
 import { Select } from '@/components/select'
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/16/solid'
+import { AdjustmentsHorizontalIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/16/solid'
 import NextLink from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -44,8 +44,23 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   const [verified, setVerified] = useState(initial.verified ?? '')
   const activeTag = initial.tag ?? ''
 
+  const [filtersOpen, setFiltersOpen] = useState(false)
+
+  // Count active advanced filters (excluding search query)
+  const advancedFilterCount = [
+    initial.lenMin,
+    initial.lenMax,
+    initial.elevMin,
+    initial.elevMax,
+    initial.competitionId,
+    initial.eventType,
+    initial.country,
+    initial.sortBy,
+    initial.verified,
+    initial.showPast === 'true' ? 'true' : '',
+  ].filter((v) => Boolean((v ?? '').trim())).length
+
   // Ako se user vrati nazad/forward ili ručno menja URL, uskladi state sa URL-om.
-  // (Ovo rešava “ne filtrira ništa” situacije kad URL i UI odlutaju.)
   const lastUrlRef = useRef<string>('')
   useEffect(() => {
     const url = sp.toString()
@@ -133,144 +148,162 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         </div>
       )}
 
-      {/* Row 1: Search input */}
-      <div className="w-full">
-        <InputGroup>
-          <MagnifyingGlassIcon />
-          <Input name="q" placeholder="Pretraži događaje ili trke…" value={q} onChange={(e) => setQ(e.target.value)} />
-        </InputGroup>
+      {/* Search + mobile filter toggle */}
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <InputGroup>
+            <MagnifyingGlassIcon />
+            <Input name="q" placeholder="Pretraži događaje ili trke…" value={q} onChange={(e) => setQ(e.target.value)} />
+          </InputGroup>
+        </div>
+        <button
+          type="button"
+          onClick={() => setFiltersOpen(!filtersOpen)}
+          className="relative flex items-center gap-1.5 rounded-lg border border-dark-border-light bg-dark-surface px-3 py-2 text-sm text-gray-400 transition-colors hover:border-gray-500 hover:text-white md:hidden"
+        >
+          <AdjustmentsHorizontalIcon className="size-4" />
+          Filteri
+          {advancedFilterCount > 0 && (
+            <span className="absolute -right-1.5 -top-1.5 flex size-5 items-center justify-center rounded-full bg-brand-green text-[10px] font-bold text-black">
+              {advancedFilterCount}
+            </span>
+          )}
+        </button>
       </div>
 
-      {/* Row 2: Input filters (distance, elevation) */}
-      <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-        <div className="flex grow items-center gap-1">
-          <Input
-            name="lenMin"
-            placeholder="Dužina od (km)"
-            inputMode="decimal"
-            value={lenMin}
-            onChange={(e) => setLenMin(e.target.value)}
-            aria-label="Minimalna dužina (km)"
-          />
-          <Input
-            name="lenMax"
-            placeholder="Dužina do (km)"
-            inputMode="decimal"
-            value={lenMax}
-            onChange={(e) => setLenMax(e.target.value)}
-            aria-label="Maksimalna dužina (km)"
-          />
+      {/* Advanced filters — always visible on desktop, collapsible on mobile */}
+      <div className={`flex flex-col gap-4 ${filtersOpen ? '' : 'hidden md:flex'}`}>
+        {/* Distance & elevation inputs */}
+        <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+          <div className="flex grow items-center gap-1">
+            <Input
+              name="lenMin"
+              placeholder="Dužina od (km)"
+              inputMode="decimal"
+              value={lenMin}
+              onChange={(e) => setLenMin(e.target.value)}
+              aria-label="Minimalna dužina (km)"
+            />
+            <Input
+              name="lenMax"
+              placeholder="Dužina do (km)"
+              inputMode="decimal"
+              value={lenMax}
+              onChange={(e) => setLenMax(e.target.value)}
+              aria-label="Maksimalna dužina (km)"
+            />
+          </div>
+          <div className="flex grow items-center gap-1">
+            <Input
+              name="elevMin"
+              placeholder="Vis. razlika od (m)"
+              inputMode="decimal"
+              value={elevMin}
+              onChange={(e) => setElevMin(e.target.value)}
+              aria-label="Minimalna visinska razlika (m)"
+            />
+            <Input
+              name="elevMax"
+              placeholder="Vis. razlika do (m)"
+              inputMode="decimal"
+              value={elevMax}
+              onChange={(e) => setElevMax(e.target.value)}
+              aria-label="Maksimalna visinska razlika (m)"
+            />
+          </div>
         </div>
-        <div className="flex grow items-center gap-1">
-          <Input
-            name="elevMin"
-            placeholder="Vis. razlika od (m)"
-            inputMode="decimal"
-            value={elevMin}
-            onChange={(e) => setElevMin(e.target.value)}
-            aria-label="Minimalna visinska razlika (m)"
-          />
-          <Input
-            name="elevMax"
-            placeholder="Vis. razlika do (m)"
-            inputMode="decimal"
-            value={elevMax}
-            onChange={(e) => setElevMax(e.target.value)}
-            aria-label="Maksimalna visinska razlika (m)"
-          />
-        </div>
-      </div>
 
-      {/* Row 3: Dropdowns (competition, type, sort, verified) */}
-      <div className="flex flex-col gap-2 md:flex-row md:gap-4">
-        <div className="flex-1">
-          <Select
-            aria-label="Takmičenje"
-            value={competitionId}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCompetitionId(e.target.value)}
-          >
-            <option value="">Sva takmičenja</option>
-            {competitions.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </Select>
+        {/* Dropdowns */}
+        <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+          <div className="flex-1">
+            <Select
+              aria-label="Takmičenje"
+              value={competitionId}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCompetitionId(e.target.value)}
+            >
+              <option value="">Sva takmičenja</option>
+              {competitions.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="flex-1">
+            <Select
+              aria-label="Tip događaja"
+              value={eventType}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEventType(e.target.value)}
+            >
+              <option value="">Svi tipovi</option>
+              <option value="TRAIL">Trail</option>
+              <option value="ROAD">Ulična</option>
+              <option value="OCR">OCR</option>
+            </Select>
+          </div>
+          <div className="flex-1">
+            <Select
+              aria-label="Država"
+              value={country}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCountry(e.target.value)}
+            >
+              <option value="">Sve države</option>
+              <option value="ser">Srbija</option>
+              <option value="cro">Hrvatska</option>
+              <option value="bih">BiH</option>
+              <option value="reg">Region</option>
+            </Select>
+          </div>
+          <div className="flex-1">
+            <Select
+              aria-label="Verifikacija"
+              value={verified}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVerified(e.target.value)}
+            >
+              <option value="">Svi (verifikovani i ne)</option>
+              <option value="true">Samo verifikovani</option>
+              <option value="false">Samo neverifikovani</option>
+            </Select>
+          </div>
+          <div className="flex-1">
+            <Select
+              aria-label="Sortiraj po"
+              value={sortBy}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value)}
+            >
+              <option value="">Sortiraj po datumu</option>
+              <option value="distance_asc">Dužina (najkraće prvo)</option>
+              <option value="distance_desc">Dužina (najduže prvo)</option>
+              <option value="elevation_asc">Vis. razlika (najniže prvo)</option>
+              <option value="elevation_desc">Vis. razlika (najviše prvo)</option>
+              <option value="name">Naziv (A-Ž)</option>
+            </Select>
+          </div>
         </div>
-        <div className="flex-1">
-          <Select
-            aria-label="Tip događaja"
-            value={eventType}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEventType(e.target.value)}
-          >
-            <option value="">Svi tipovi</option>
-            <option value="TRAIL">Trail</option>
-            <option value="ROAD">Ulična</option>
-            <option value="OCR">OCR</option>
-          </Select>
-        </div>
-        <div className="flex-1">
-          <Select
-            aria-label="Država"
-            value={country}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setCountry(e.target.value)}
-          >
-            <option value="">Sve države</option>
-            <option value="ser">Srbija</option>
-            <option value="cro">Hrvatska</option>
-            <option value="bih">BiH</option>
-            <option value="reg">Region</option>
-          </Select>
-        </div>
-        <div className="flex-1">
-          <Select
-            aria-label="Verifikacija"
-            value={verified}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setVerified(e.target.value)}
-          >
-            <option value="">Svi (verifikovani i ne)</option>
-            <option value="true">Samo verifikovani</option>
-            <option value="false">Samo neverifikovani</option>
-          </Select>
-        </div>
-        <div className="flex-1">
-          <Select
-            aria-label="Sortiraj po"
-            value={sortBy}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value)}
-          >
-            <option value="">Sortiraj po datumu</option>
-            <option value="distance_asc">Dužina (najkraće prvo)</option>
-            <option value="distance_desc">Dužina (najduže prvo)</option>
-            <option value="elevation_asc">Vis. razlika (najniže prvo)</option>
-            <option value="elevation_desc">Vis. razlika (najviše prvo)</option>
-            <option value="name">Naziv (A-Ž)</option>
-          </Select>
-        </div>
-      </div>
 
-      {/* Row 4: Buttons and toggle */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Button id="applyBtn" type="submit">
-            {dirty ? 'Primeni izmene' : 'Primeni'}
-          </Button>
-          <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Izmene nisu primenjene</span>
-          {clearVisible ? (
-            <Link href="/events" className="text-sm">
-              Očisti
-            </Link>
-          ) : null}
+        {/* Buttons and toggle */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Button id="applyBtn" type="submit">
+              {dirty ? 'Primeni izmene' : 'Primeni'}
+            </Button>
+            <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Izmene nisu primenjene</span>
+            {clearVisible ? (
+              <Link href="/events" className="text-sm">
+                Očisti
+              </Link>
+            ) : null}
+          </div>
+          <label className="flex items-center gap-2 text-sm text-gray-400">
+            <input
+              type="checkbox"
+              checked={showPast}
+              onChange={(e) => setShowPast(e.target.checked)}
+              className="size-4 rounded border-dark-border bg-dark-surface text-brand-green focus:ring-brand-green"
+            />
+            Prikaži istekle događaje
+          </label>
         </div>
-        <label className="flex items-center gap-2 text-sm text-gray-400">
-          <input
-            type="checkbox"
-            checked={showPast}
-            onChange={(e) => setShowPast(e.target.checked)}
-            className="size-4 rounded border-dark-border bg-dark-surface text-brand-green focus:ring-brand-green"
-          />
-          Prikaži istekle događaje
-        </label>
       </div>
     </form>
   )
