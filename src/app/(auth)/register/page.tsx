@@ -72,7 +72,7 @@ export default function Register() {
       <AuthLogo />
       <Heading>Kreiraj svoj nalog</Heading>
 
-      {error && <Text className="!dark:text-red-500 !text-red-600 capitalize">{error}</Text>}
+      {error && <Text className="text-red-400 capitalize">{error}</Text>}
 
       <Field>
         <Label>Email</Label>
@@ -130,9 +130,9 @@ export default function Register() {
       </Button>
 
       <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
-        <Text className="text-zinc-500">ili</Text>
-        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-px flex-1 bg-dark-border-light" />
+        <Text className="text-gray-500">ili</Text>
+        <div className="h-px flex-1 bg-dark-border-light" />
       </div>
 
       <div className="flex justify-center">

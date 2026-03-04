@@ -61,12 +61,12 @@ export default function ResendVerification() {
           Ako postoji nalog za <Strong>{email}</Strong> koji još nije verifikovan, poslali smo novi verifikacioni
           link.
         </Text>
-        <Text className="text-sm text-zinc-500">
+        <Text className="text-sm text-gray-500">
           Niste primili email? Proverite spam folder ili{' '}
           <button
             type="button"
             onClick={() => setSubmitted(false)}
-            className="font-semibold text-zinc-950 hover:underline dark:text-white"
+            className="font-semibold text-white hover:underline"
           >
             pokušajte ponovo
           </button>
@@ -88,7 +88,7 @@ export default function ResendVerification() {
         <Text className="mt-2">Unesi svoju email adresu i poslaćemo ti novi verifikacioni link.</Text>
       </div>
 
-      {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}
+      {error && <Text className="text-red-400">{error}</Text>}
 
       <Field>
         <Label>Email</Label>

@@ -61,7 +61,7 @@ export default function Login() {
       <AuthLogo />
       <Heading>Prijavi se na svoj nalog</Heading>
 
-      {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}
+      {error && <Text className="text-red-400">{error}</Text>}
 
       <Field>
         <Label>Email</Label>
@@ -104,9 +104,9 @@ export default function Login() {
       </Button>
 
       <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
-        <Text className="text-zinc-500">ili</Text>
-        <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+        <div className="h-px flex-1 bg-dark-border-light" />
+        <Text className="text-gray-500">ili</Text>
+        <div className="h-px flex-1 bg-dark-border-light" />
       </div>
 
       <div className="flex justify-center">

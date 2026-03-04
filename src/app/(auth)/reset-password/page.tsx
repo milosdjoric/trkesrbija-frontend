@@ -115,7 +115,7 @@ function ResetPasswordForm() {
         <Text className="mt-2">Unesi svoju novu lozinku ispod.</Text>
       </div>
 
-      {error && <Text className="text-red-600 dark:text-red-500">{error}</Text>}
+      {error && <Text className="text-red-400">{error}</Text>}
 
       <Field>
         <Label>Nova lozinka</Label>
@@ -149,7 +149,7 @@ function ResetPasswordForm() {
           disabled={loading}
         />
         {confirmPassword && password !== confirmPassword && (
-          <Text className="mt-1 text-sm text-red-600 dark:text-red-500">Lozinke se ne poklapaju</Text>
+          <Text className="mt-1 text-sm text-red-400">Lozinke se ne poklapaju</Text>
         )}
       </Field>
 

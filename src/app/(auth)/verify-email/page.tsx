@@ -66,7 +66,7 @@ function VerifyEmailContent() {
         <AuthLogo className="mx-auto" />
         <Heading>Verifikacija emaila…</Heading>
         <div className="flex justify-center">
-          <div className="size-8 animate-spin rounded-full border-4 border-zinc-200 border-t-zinc-900 dark:border-zinc-700 dark:border-t-white" />
+          <div className="size-8 animate-spin rounded-full border-4 border-dark-border-light border-t-white" />
         </div>
       </div>
     )
@@ -95,7 +95,7 @@ function VerifyEmailContent() {
         <AuthLogo className="mx-auto" />
         <XCircleIcon className="mx-auto size-16 text-red-500" />
         <Heading>Verifikacija nije uspela</Heading>
-        <Text className="text-red-600 dark:text-red-400">{errorMessage}</Text>
+        <Text className="text-red-400">{errorMessage}</Text>
         <Text>Link za verifikaciju je možda istekao ili je već korišćen.</Text>
         <div className="space-y-3">
           <Button onClick={() => router.push('/login')} className="w-full">
@@ -116,7 +116,7 @@ function VerifyEmailContent() {
   return (
     <div className="grid w-full max-w-sm grid-cols-1 gap-8 text-center">
       <AuthLogo className="mx-auto" />
-      <CheckCircleIcon className="mx-auto size-16 text-green-500" />
+      <CheckCircleIcon className="mx-auto size-16 text-brand-green" />
       <Heading>Email verifikovan!</Heading>
       <Text>Vaš email je uspešno verifikovan. Sada možete pristupiti svim funkcijama vašeg naloga.</Text>
       <Button onClick={() => router.push('/')} className="w-full">
