@@ -4,10 +4,12 @@
 @theme {
   --font-sans: 'Urbanist', sans-serif;
 
+  /* Brand boje (ne menjaju se po temi) */
   --color-brand-green: #00D084;
   --color-brand-green-dark: #00A86B;
   --color-brand-red: #FF4136;
 
+  /* Stare dark-* boje (zadržane za kompatibilnost tokom migracije) */
   --color-dark-bg: #121212;
   --color-dark-card: #1A1A1A;
   --color-dark-card-hover: #1F1F1F;
@@ -19,4 +21,44 @@
   --color-light-bg: #F5F5F0;
   --color-light-card: #FFFFFF;
   --color-light-border: #E0E0E0;
+
+  /* Semantic tokeni — čitaju CSS varijable iz :root */
+  --color-main: var(--bg-main);
+  --color-card: var(--bg-card);
+  --color-card-hover: var(--bg-card-hover);
+  --color-surface: var(--bg-surface);
+  --color-surface-hover: var(--bg-surface-hover);
+  --color-border-primary: var(--border-primary);
+  --color-border-secondary: var(--border-secondary);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+}
+
+/* Dark tema (default) */
+:root {
+  --bg-main: #121212;
+  --bg-card: #1A1A1A;
+  --bg-card-hover: #1F1F1F;
+  --bg-surface: #1E1E1E;
+  --bg-surface-hover: #252525;
+  --border-primary: #2A2A2A;
+  --border-secondary: #363636;
+  --text-primary: #FFFFFF;
+  --text-secondary: #9CA3AF;
+  --text-muted: #6B7280;
+}
+
+/* Light tema */
+:root.light {
+  --bg-main: #F5F5F0;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F9F9F6;
+  --bg-surface: #EEEEEA;
+  --bg-surface-hover: #E5E5E0;
+  --border-primary: #E0E0E0;
+  --border-secondary: #D0D0D0;
+  --text-primary: #111111;
+  --text-secondary: #4B5563;
+  --text-muted: #9CA3AF;
 }

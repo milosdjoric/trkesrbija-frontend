@@ -93,7 +93,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang="sr"
-      className={`${urbanist.className} dark bg-dark-bg text-white antialiased`}
+      suppressHydrationWarning
+      className={`${urbanist.className} bg-main text-text-primary antialiased`}
     >
       <head>
         <GoogleTagManager />
