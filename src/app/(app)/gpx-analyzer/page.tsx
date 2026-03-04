@@ -123,8 +123,8 @@ export default function GpxAnalyzerPage() {
             onDragLeave={handleDragLeave}
             className={`relative flex min-h-[300px] cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed transition-colors ${
               isDragging
-                ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20'
-                : 'border-zinc-300 bg-zinc-50 hover:border-zinc-400 hover:bg-zinc-100 dark:border-zinc-600 dark:bg-zinc-800/50 dark:hover:border-zinc-500 dark:hover:bg-zinc-800'
+                ? 'border-brand-green bg-brand-green/10'
+                : 'border-dark-border-light bg-dark-card hover:border-gray-500 hover:bg-dark-card-hover'
             }`}
           >
             <input
@@ -137,19 +137,19 @@ export default function GpxAnalyzerPage() {
 
             {isLoading ? (
               <div className="flex flex-col items-center gap-3">
-                <div className="size-12 animate-spin rounded-full border-4 border-emerald-500 border-t-transparent" />
+                <div className="size-12 animate-spin rounded-full border-4 border-brand-green border-t-transparent" />
                 <Text>Učitavanje...</Text>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-4 p-8 text-center">
-                <div className="rounded-full bg-zinc-200 p-4 dark:bg-zinc-700">
-                  <MapIcon className="size-10 text-zinc-500 dark:text-zinc-400" />
+                <div className="rounded-full bg-dark-surface p-4">
+                  <MapIcon className="size-10 text-gray-400" />
                 </div>
                 <div>
                   <Subheading>Prevucite GPX fajl ovde</Subheading>
                   <Text className="mt-1">ili kliknite za izbor fajla</Text>
                 </div>
-                <Text className="text-xs text-zinc-400">Podržani format: .gpx</Text>
+                <Text className="text-xs text-gray-500">Podržani format: .gpx</Text>
               </div>
             )}
           </div>
@@ -157,15 +157,15 @@ export default function GpxAnalyzerPage() {
           // Results
           <div className="space-y-6">
             {/* File info */}
-            <div className="flex items-center gap-3 rounded-lg border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-              <div className="rounded-full bg-emerald-100 p-2 dark:bg-emerald-900/30">
-                <MapIcon className="size-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="flex items-center gap-3 rounded-lg border border-dark-border bg-dark-card p-4">
+              <div className="rounded-full bg-brand-green/15 p-2">
+                <MapIcon className="size-5 text-brand-green" />
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate font-medium text-zinc-900 dark:text-white">
+                <div className="truncate font-medium text-white">
                   {parsedGpx.stats.name || fileName}
                 </div>
-                <div className="flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-400">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
                   <span>{parsedGpx.stats.pointCount.toLocaleString()} tačaka</span>
                   {uploadedUrl && (
                     <>
@@ -174,7 +174,7 @@ export default function GpxAnalyzerPage() {
                         href={uploadedUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+                        className="inline-flex items-center gap-1 text-brand-green hover:text-brand-green-dark"
                       >
                         <ArrowDownTrayIcon className="size-3" />
                         Preuzmi
@@ -185,7 +185,7 @@ export default function GpxAnalyzerPage() {
               </div>
               <button
                 onClick={handleReset}
-                className="rounded-full p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+                className="rounded-full p-1 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
               >
                 <XMarkIcon className="size-5" />
               </button>
@@ -198,7 +198,7 @@ export default function GpxAnalyzerPage() {
 
         {/* Error message */}
         {error && (
-          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+          <div className="mt-4 rounded-lg border border-red-800 bg-red-900/20 p-4 text-red-400">
             {error}
           </div>
         )}
