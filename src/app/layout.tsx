@@ -58,7 +58,7 @@ export const metadata: Metadata = {
       'Kalendar trail i uličnih trka u Srbiji. Pronađite trke, prijavite se online, pratite rezultate i GPX rute. Maratoni, ultramaratoni, OCR trke.',
     images: [
       {
-        url: `${siteUrl}/og-image.png`,
+        url: `${siteUrl}/og-image-v2.png`,
         width: 1200,
         height: 630,
         alt: 'Trke Srbija - Trail i ulične trke',
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     title: 'Trke Srbija - Trail i ulične trke u Srbiji',
     description:
       'Kalendar trail i uličnih trka u Srbiji. Pronađite trke, prijavite se online i pratite rezultate.',
-    images: [`${siteUrl}/og-image.png`],
+    images: [`${siteUrl}/og-image-v2.png`],
   },
   robots: {
     index: true,
