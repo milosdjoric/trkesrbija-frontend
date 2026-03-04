@@ -175,9 +175,11 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                     {hasEvents && (
                       <div className="space-y-0.5">
                         {events.slice(0, 2).map((item) => {
-                          const loc = item.races[0]?.startLocation
-                          const raceCount = item.races.length
-                          const subtitle = [loc, raceCount > 1 ? `${raceCount} trke` : null].filter(Boolean).join(' · ')
+                          const distances = item.races
+                            .map((r) => r.length)
+                            .filter((l) => l > 0)
+                            .map((l) => `${l}km`)
+                            .join(' · ')
                           return (
                             <Link
                               key={item.event.id}
@@ -191,9 +193,9 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                               <div className="truncate text-[11px] font-medium leading-tight">
                                 {toTitleCase(item.event.eventName)}
                               </div>
-                              {subtitle && (
+                              {distances && (
                                 <div className="truncate text-[9px] leading-tight opacity-70">
-                                  {subtitle}
+                                  {distances}
                                 </div>
                               )}
                             </Link>
@@ -287,9 +289,11 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                     return (
                       <div className="space-y-1.5">
                         {events.map((item) => {
-                          const loc = item.races[0]?.startLocation
-                          const raceCount = item.races.length
-                          const subtitle = [loc, raceCount > 1 ? `${raceCount} trke` : null].filter(Boolean).join(' · ')
+                          const distances = item.races
+                            .map((r) => r.length)
+                            .filter((l) => l > 0)
+                            .map((l) => `${l}km`)
+                            .join(' · ')
                           return (
                             <Link
                               key={item.event.id}
@@ -301,8 +305,8 @@ export function CalendarView({ eventsByDate }: CalendarViewProps) {
                                 <div className="truncate text-sm font-medium text-white">
                                   {toTitleCase(item.event.eventName)}
                                 </div>
-                                {subtitle && (
-                                  <div className="truncate text-xs text-gray-500">{subtitle}</div>
+                                {distances && (
+                                  <div className="truncate text-xs text-gray-500">{distances}</div>
                                 )}
                               </div>
                             </Link>
