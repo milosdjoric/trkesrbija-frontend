@@ -74,13 +74,13 @@ function getSocialMediaStyles(url: string) {
     case 'strava':
       return 'bg-[#FC4C02] hover:bg-[#E34402] text-white'
     case 'twitter':
-      return 'bg-black hover:bg-zinc-800 text-white dark:bg-white dark:text-black dark:hover:bg-zinc-200'
+      return 'bg-white hover:bg-zinc-200 text-black'
     case 'youtube':
       return 'bg-[#FF0000] hover:bg-[#CC0000] text-white'
     case 'tiktok':
-      return 'bg-black hover:bg-zinc-800 text-white'
+      return 'bg-white hover:bg-zinc-200 text-black'
     default:
-      return 'bg-white hover:bg-zinc-50 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
+      return 'bg-dark-surface hover:bg-dark-surface-hover text-gray-300'
   }
 }
 
@@ -361,9 +361,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             <Subheading>{event.isTraining ? 'Staze' : 'Trke'} ({races.length})</Subheading>
 
             {races.length === 0 ? (
-              <div className="mt-4 rounded-lg border border-zinc-200 p-6 text-sm/6 dark:border-zinc-700">
-                <div className="font-medium">Još nema trka</div>
-                <div className="mt-1 text-zinc-500">Ovaj događaj još nema konfiguriranih trka.</div>
+              <div className="mt-4 rounded-lg border border-dark-border p-6 text-sm/6">
+                <div className="font-medium text-white">Još nema trka</div>
+                <div className="mt-1 text-gray-500">Ovaj događaj još nema konfiguriranih trka.</div>
               </div>
             ) : (
               <div className="mt-4 overflow-x-auto">
@@ -383,18 +383,18 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                         <TableCell>
                           <Link
                             href={`/races/${race.slug}`}
-                            className="font-medium text-zinc-900 hover:text-emerald-600 dark:text-zinc-100 dark:hover:text-emerald-400"
+                            className="font-medium text-white hover:text-brand-green"
                           >
                             {race.raceName ?? (event.isTraining ? `Staza ${index + 1}` : 'Trka')}
                           </Link>
                           {!allSameLocation && race.startLocation && (
-                            <div className="text-sm text-zinc-500">
+                            <div className="text-sm text-gray-500">
                               {race.startLocation.startsWith('http') ? (
                                 <a
                                   href={race.startLocation}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="underline underline-offset-2 hover:text-zinc-700 dark:hover:text-zinc-300"
+                                  className="underline underline-offset-2 hover:text-gray-300"
                                 >
                                   Lokacija
                                 </a>
@@ -413,7 +413,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                             <FavoriteButton raceId={race.id} initialIsFavorite={false} size="sm" />
                             <Link
                               href={`/races/${race.slug}`}
-                              className="inline-flex items-center justify-center rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+                              className="inline-flex items-center justify-center rounded-lg p-2 text-gray-500 hover:bg-dark-surface hover:text-white"
                               title="Detalji trke"
                             >
                               <ArrowRightIcon className="size-4" />
@@ -431,7 +431,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 3. Social Media Links - clearly labeled with platform colors (hidden for trainings) */}
           {!event.isTraining && event.socialMedia && event.socialMedia.length > 0 && (
             <div>
-              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-3">Pratite nas</div>
+              <div className="text-base font-medium underline text-gray-500 mb-3">Pratite nas</div>
               <div className="flex flex-wrap gap-2">
                 {event.socialMedia.map((url) => (
                   <a
@@ -451,8 +451,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 4. Organizer Info (hidden for trainings) */}
           {!event.isTraining && event.organizer && (
             <div>
-              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">Organizator</div>
-              <div className="text-sm/6 text-zinc-700 dark:text-zinc-300 space-y-1">
+              <div className="text-base font-medium underline text-gray-500 mb-2">Organizator</div>
+              <div className="text-sm/6 text-gray-300 space-y-1">
                 <div>{event.organizer.name}</div>
                 {event.organizer.contactPhone && (
                   <div>
@@ -487,7 +487,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           {/* 5. Description */}
           {event.description && (
             <div>
-              <div className="text-base font-medium underline text-zinc-500 dark:text-zinc-400 mb-2">
+              <div className="text-base font-medium underline text-gray-500 mb-2">
                 {event.isTraining ? 'O treningu' : 'O događaju'}
               </div>
               <ExpandableText text={event.description} maxLines={5} buttonLabel={event.isTraining ? 'Pogledaj više o treningu' : 'Pogledaj više o događaju'} />
@@ -509,25 +509,25 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <div className="lg:sticky lg:top-8 lg:self-start">
           <div className="space-y-4">
             {/* Summary Card */}
-            <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800/50">
+            <div className="rounded-xl border border-dark-border bg-dark-card p-6">
               {/* Info redovi sa ikonama */}
               <div className="space-y-3">
                 {/* 1. Datum */}
-                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <CalendarIcon className="size-5 shrink-0 text-zinc-400" />
-                  <span className="font-medium text-zinc-950 dark:text-white">{eventDateDisplay}</span>
+                <div className="flex items-center gap-3 text-sm text-gray-400">
+                  <CalendarIcon className="size-5 shrink-0 text-gray-500" />
+                  <span className="font-medium text-white">{eventDateDisplay}</span>
                 </div>
 
                 {/* 2. Dan u nedelji */}
-                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <CalendarIcon className="size-5 shrink-0 text-zinc-400" />
+                <div className="flex items-center gap-3 text-sm text-gray-400">
+                  <CalendarIcon className="size-5 shrink-0 text-gray-500" />
                   <span className="capitalize">{weekdayDisplay}</span>
                 </div>
 
                 {/* 3. Vreme (prva trka) */}
                 {earliestRaceTime && (
-                  <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                    <ClockIcon className="size-5 shrink-0 text-zinc-400" />
+                  <div className="flex items-center gap-3 text-sm text-gray-400">
+                    <ClockIcon className="size-5 shrink-0 text-gray-500" />
                     <span>
                       {earliestRaceTime}
                       {races.length > 1 ? (allSameTime ? ' (sve trke)' : ' (prva trka)') : ''}
@@ -536,8 +536,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 )}
 
                 {/* 4. Lokacija */}
-                <div className="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                  <MapPinIcon className="size-5 shrink-0 text-zinc-400" />
+                <div className="flex items-center gap-3 text-sm text-gray-400">
+                  <MapPinIcon className="size-5 shrink-0 text-gray-500" />
                   <span>
                     {eventLocation ? (
                       eventLocation.startsWith('http') ? 'Lokacija na mapi' : eventLocation
@@ -606,8 +606,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
             {/* Tags */}
             {event.tags && event.tags.length > 0 && (
-              <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
-                <div className="text-sm font-medium text-zinc-500 dark:text-zinc-400">Kategorije</div>
+              <div className="rounded-lg border border-dark-border p-4">
+                <div className="text-sm font-medium text-gray-500">Kategorije</div>
                 <div className="mt-3">
                   <TagList tags={event.tags} />
                 </div>

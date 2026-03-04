@@ -67,7 +67,7 @@ export function RaceCard({
             href={startLocation}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200"
+            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-white"
             title="Prikaži lokaciju"
           >
             <MapPinIcon className="size-3" />
@@ -75,7 +75,7 @@ export function RaceCard({
           </a>
         ) : (
           <span
-            className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-500 dark:border-zinc-600 dark:text-zinc-400"
+            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-500"
             title={startLocation}
           >
             <MapPinIcon className="size-3" />
@@ -88,7 +88,7 @@ export function RaceCard({
         <>
           <NextLink
             href={`/admin/races/${raceId}/registrations`}
-            className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200"
+            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-white"
             title="Prijave"
           >
             <ClipboardDocumentListIcon className="size-3" />
@@ -96,7 +96,7 @@ export function RaceCard({
           </NextLink>
           <NextLink
             href={`/admin/races/${raceId}/checkpoints`}
-            className="inline-flex items-center gap-1 rounded border border-zinc-300 px-2 py-0.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-600 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-zinc-200"
+            className="inline-flex items-center gap-1 rounded border border-dark-border px-2 py-0.5 text-xs text-gray-400 hover:border-dark-border-light hover:text-white"
             title="Checkpoint-i"
           >
             <FlagIcon className="size-3" />

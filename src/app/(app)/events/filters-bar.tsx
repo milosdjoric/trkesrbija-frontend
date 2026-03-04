@@ -122,10 +122,10 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
       {/* Active tag filter */}
       {activeTag && (
         <div className="flex items-center gap-2">
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">Filtriranje po tagu:</span>
+          <span className="text-sm text-gray-500">Filtriranje po tagu:</span>
           <NextLink
             href="/events"
-            className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
+            className="inline-flex items-center gap-1 rounded-full bg-dark-surface px-3 py-1 text-sm font-medium text-gray-300 transition-colors hover:bg-dark-surface-hover"
           >
             {activeTag}
             <XMarkIcon className="size-4" />
@@ -262,12 +262,12 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
             </Link>
           ) : null}
         </div>
-        <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <label className="flex items-center gap-2 text-sm text-gray-400">
           <input
             type="checkbox"
             checked={showPast}
             onChange={(e) => setShowPast(e.target.checked)}
-            className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
+            className="size-4 rounded border-dark-border bg-dark-surface text-brand-green focus:ring-brand-green"
           />
           Prikaži istekle događaje
         </label>

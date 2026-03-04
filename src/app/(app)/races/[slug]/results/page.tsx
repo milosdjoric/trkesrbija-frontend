@@ -136,7 +136,7 @@ export default function RaceResultsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-zinc-500">Učitavanje...</div>
+        <div className="animate-pulse text-gray-500">Učitavanje...</div>
       </div>
     )
   }
@@ -157,9 +157,9 @@ export default function RaceResultsPage() {
       <div className="max-lg:hidden">
         <Link
           href={`/events/${race.raceEvent.slug}`}
-          className="inline-flex items-center gap-2 text-sm/6 text-zinc-500 dark:text-zinc-400"
+          className="inline-flex items-center gap-2 text-sm/6 text-gray-500 hover:text-gray-300"
         >
-          <ChevronLeftIcon className="size-4 fill-zinc-400 dark:fill-zinc-500" />
+          <ChevronLeftIcon className="size-4 fill-gray-500" />
           {race.raceEvent.eventName}
         </Link>
       </div>
@@ -186,36 +186,36 @@ export default function RaceResultsPage() {
 
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+        <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold">{results.length}</div>
-          <div className="text-sm text-zinc-500">Učesnika</div>
+          <div className="text-sm text-gray-500">Učesnika</div>
         </div>
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+        <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold text-green-600">{finishers}</div>
-          <div className="text-sm text-zinc-500">Završilo</div>
+          <div className="text-sm text-gray-500">Završilo</div>
         </div>
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+        <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold">{checkpoints.length}</div>
-          <div className="text-sm text-zinc-500">Checkpoint-a</div>
+          <div className="text-sm text-gray-500">Checkpoint-a</div>
         </div>
-        <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+        <div className="rounded-lg border border-dark-border bg-dark-card p-4">
           <div className="text-2xl font-semibold text-amber-600">
             {results.length - finishers}
           </div>
-          <div className="text-sm text-zinc-500">Nije završilo</div>
+          <div className="text-sm text-gray-500">Nije završilo</div>
         </div>
       </div>
 
       {/* Results Table */}
       <div className="mt-6 overflow-x-auto">
         {results.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-zinc-300 p-8 text-center dark:border-zinc-600">
+          <div className="rounded-lg border border-dashed border-dark-border p-8 text-center">
             <Text>Nema rezultata za prikaz.</Text>
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+          <table className="min-w-full divide-y divide-dark-border">
             <thead>
-              <tr className="text-left text-sm font-medium text-zinc-500 dark:text-zinc-400">
+              <tr className="text-left text-sm font-medium text-gray-500">
                 <th className="px-4 py-3">Poz.</th>
                 <th className="px-4 py-3">#</th>
                 <th className="px-4 py-3">Učesnik</th>
@@ -228,7 +228,7 @@ export default function RaceResultsPage() {
                 <th className="px-4 py-3 text-right">Ukupno</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-200 dark:divide-zinc-700">
+            <tbody className="divide-y divide-dark-border">
               {results.map((result, index) => {
                 const position = result.totalTime != null ? index + 1 : null
                 const medalColor = position ? getMedalColor(position) : null
@@ -243,16 +243,16 @@ export default function RaceResultsPage() {
                             {position}
                           </Badge>
                         ) : (
-                          <span className="text-zinc-600 dark:text-zinc-400">{position}</span>
+                          <span className="text-gray-400">{position}</span>
                         )
                       ) : (
-                        <span className="text-zinc-400">-</span>
+                        <span className="text-gray-500">-</span>
                       )}
                     </td>
                     <td className="px-4 py-3 font-mono font-bold">
                       {result.registration.bibNumber || '-'}
                     </td>
-                    <td className="px-4 py-3 font-medium text-zinc-900 dark:text-zinc-100">
+                    <td className="px-4 py-3 font-medium text-white">
                       {result.registration.firstName} {result.registration.lastName}
                     </td>
                     <td className="px-4 py-3">
@@ -270,11 +270,11 @@ export default function RaceResultsPage() {
                     })}
                     <td className="px-4 py-3 text-right font-mono font-bold">
                       {result.totalTime != null ? (
-                        <span className="text-green-600 dark:text-green-400">
+                        <span className="text-brand-green">
                           {formatDuration(result.totalTime)}
                         </span>
                       ) : (
-                        <span className="text-zinc-400">DNF</span>
+                        <span className="text-gray-500">DNF</span>
                       )}
                     </td>
                   </tr>

@@ -250,7 +250,7 @@ export default async function HomePage() {
           href="/events?eventType=TRAIL"
           className="group relative overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
         >
-          <div className="aspect-[16/9] bg-gradient-to-br from-emerald-500 to-emerald-700 dark:from-emerald-600 dark:to-emerald-900" />
+          <div className="aspect-[16/9] bg-gradient-to-br from-emerald-600 to-emerald-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Trail trke</span>
             <h3 className="mt-2 text-2xl font-bold text-white">Trail</h3>
@@ -262,7 +262,7 @@ export default async function HomePage() {
           href="/events?eventType=ROAD"
           className="group relative overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
         >
-          <div className="aspect-[16/9] bg-gradient-to-br from-sky-500 to-sky-700 dark:from-sky-600 dark:to-sky-900" />
+          <div className="aspect-[16/9] bg-gradient-to-br from-sky-600 to-sky-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">Ulične trke</span>
             <h3 className="mt-2 text-2xl font-bold text-white">Ulična</h3>
@@ -274,7 +274,7 @@ export default async function HomePage() {
           href="/events?eventType=OCR"
           className="group relative overflow-hidden rounded-xl transition-transform hover:scale-[1.02]"
         >
-          <div className="aspect-[16/9] bg-gradient-to-br from-orange-500 to-orange-700 dark:from-orange-600 dark:to-orange-900" />
+          <div className="aspect-[16/9] bg-gradient-to-br from-orange-600 to-orange-900" />
           <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/60 to-transparent p-6">
             <span className="inline-flex w-fit items-center rounded-md bg-white/20 px-1.5 py-0.5 text-sm/5 font-medium text-white sm:text-xs/5">OCR trke</span>
             <h3 className="mt-2 text-2xl font-bold text-white">OCR</h3>
@@ -289,7 +289,7 @@ export default async function HomePage() {
           <Subheading>Nadolazeći događaji</Subheading>
           <Link
             href="/events"
-            className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-300"
+            className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-300"
           >
             Svi događaji
             <ArrowRightIcon className="size-3" />
@@ -297,7 +297,7 @@ export default async function HomePage() {
         </div>
 
         {processedEvents.length === 0 ? (
-          <div className="mt-4 rounded-lg border border-zinc-200 p-6 text-center text-sm text-zinc-500 dark:border-zinc-700">
+          <div className="mt-4 rounded-lg border border-dark-border p-6 text-center text-sm text-gray-500">
             Nema nadolazećih događaja
           </div>
         ) : (
@@ -306,8 +306,8 @@ export default async function HomePage() {
             {thisWeekEvents.length > 0 && (
               <div>
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Ove nedelje</span>
-                  <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                  <span className="rounded-full bg-dark-surface px-3 py-1 text-xs font-semibold text-gray-300">Ove nedelje</span>
+                  <div className="h-px flex-1 bg-dark-border" />
                 </div>
                 <ul>
                   {thisWeekEvents.map((event, index) => (
@@ -335,8 +335,8 @@ export default async function HomePage() {
             {nextWeekEvents.length > 0 && (
               <div>
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Sledeće nedelje</span>
-                  <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                  <span className="rounded-full bg-dark-surface px-3 py-1 text-xs font-semibold text-gray-300">Sledeće nedelje</span>
+                  <div className="h-px flex-1 bg-dark-border" />
                 </div>
                 <ul>
                   {nextWeekEvents.map((event, index) => (
@@ -364,8 +364,8 @@ export default async function HomePage() {
             {laterEvents.length > 0 && (
               <div>
                 <div className="mb-3 flex items-center gap-3">
-                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">Kasnije</span>
-                  <div className="h-px flex-1 bg-zinc-200 dark:bg-zinc-700" />
+                  <span className="rounded-full bg-dark-surface px-3 py-1 text-xs font-semibold text-gray-300">Kasnije</span>
+                  <div className="h-px flex-1 bg-dark-border" />
                 </div>
                 <ul>
                   {laterEvents.map((event, index) => (
@@ -398,19 +398,19 @@ export default async function HomePage() {
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
           <QuickLinkCard
             href="/events"
-            icon={<CalendarIcon className="size-5 text-zinc-600 dark:text-zinc-400" />}
+            icon={<CalendarIcon className="size-5 text-gray-400" />}
             title="Svi događaji"
             description="Pregledaj kalendar trka"
           />
           <QuickLinkCard
             href="/favorites"
-            icon={<TrophyIcon className="size-5 text-zinc-600 dark:text-zinc-400" />}
+            icon={<TrophyIcon className="size-5 text-gray-400" />}
             title="Omiljene trke"
             description="Tvoje sačuvane trke"
           />
           <QuickLinkCard
             href="/my-registrations"
-            icon={<UserGroupIcon className="size-5 text-zinc-600 dark:text-zinc-400" />}
+            icon={<UserGroupIcon className="size-5 text-gray-400" />}
             title="Moje prijave"
             description="Tvoje registracije"
           />
