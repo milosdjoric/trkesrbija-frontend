@@ -104,9 +104,7 @@ export default async function CalendarPage() {
   return (
     <>
       <Heading>Kalendar trka</Heading>
-      <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
-        Izaberite datum da vidite zakazane trke.
-      </p>
+      <p className="mt-2 text-sm text-gray-400">Pregledajte sve zakazane događaje po datumu.</p>
       <div className="mt-8">
         <CalendarView eventsByDate={eventsByDate} />
       </div>
