@@ -64,7 +64,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
+                  isActive ? 'text-text-primary font-semibold' : 'text-text-primary/70 hover:text-text-primary'
                 }`}
               >
                 {link.label}
@@ -82,7 +82,7 @@ export function SiteHeader() {
                     key={link.href}
                     href={link.href}
                     className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive ? 'text-brand-green' : 'text-brand-green/50 hover:text-brand-green'
+                      isActive ? 'text-brand-green font-semibold' : 'text-brand-green/70 hover:text-brand-green'
                     }`}
                   >
                     {link.label}
