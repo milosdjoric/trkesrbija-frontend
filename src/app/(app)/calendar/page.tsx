@@ -92,9 +92,13 @@ export default async function CalendarPage() {
     }
   }
 
-  // Sort events within each date by earliest race start time
+  // Sort events within each date: ROAD first, then TRAIL, then OCR
+  const typeOrder: Record<string, number> = { ROAD: 0, TRAIL: 1, OCR: 2 }
   for (const dateKey of Object.keys(eventsByDate)) {
     eventsByDate[dateKey].sort((a, b) => {
+      const orderA = typeOrder[a.event.type] ?? 3
+      const orderB = typeOrder[b.event.type] ?? 3
+      if (orderA !== orderB) return orderA - orderB
       const minA = Math.min(...a.races.map((r) => new Date(r.startDateTime).getTime()))
       const minB = Math.min(...b.races.map((r) => new Date(r.startDateTime).getTime()))
       return minA - minB
