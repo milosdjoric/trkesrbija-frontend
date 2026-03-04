@@ -11,399 +11,399 @@ import { StatsGrid, type StatItem } from '@/components/stats-grid'
 import { useConfirm } from '@/components/confirm-dialog'
 import { useToast } from '@/components/toast'
 import {
-  ChevronLeftIcon,
-  MagnifyingGlassIcon,
-  PlusIcon,
-  TrashIcon,
-  PencilIcon,
-  CalendarIcon,
-  FlagIcon,
-  MapIcon,
+ ChevronLeftIcon,
+ MagnifyingGlassIcon,
+ PlusIcon,
+ TrashIcon,
+ PencilIcon,
+ CalendarIcon,
+ FlagIcon,
+ MapIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 type RaceEvent = {
+ id: string
+ eventName: string
+ slug: string
+ type: 'TRAIL' | 'ROAD' | 'OCR'
+ description: string | null
+ mainImage: string | null
+ races: Array<{
   id: string
-  eventName: string
-  slug: string
-  type: 'TRAIL' | 'ROAD' | 'OCR'
-  description: string | null
-  mainImage: string | null
-  races: Array<{
-    id: string
-    raceName: string | null
-    length: number
-    startDateTime: string
-  }>
-  createdAt: string
+  raceName: string | null
+  length: number
+  startDateTime: string
+ }>
+ createdAt: string
 }
 
 const EVENTS_QUERY = `
-  query AdminEvents {
-    raceEvents(limit: 1000) {
-      id
-      eventName
-      slug
-      type
-      description
-      mainImage
-      races {
-        id
-        raceName
-        length
-        startDateTime
-      }
-      createdAt
-    }
+ query AdminEvents {
+  raceEvents(limit: 1000) {
+   id
+   eventName
+   slug
+   type
+   description
+   mainImage
+   races {
+    id
+    raceName
+    length
+    startDateTime
+   }
+   createdAt
   }
+ }
 `
 
 const DELETE_EVENT_MUTATION = `
-  mutation DeleteRaceEvent($eventId: ID!) {
-    deleteRaceEvent(eventId: $eventId)
-  }
+ mutation DeleteRaceEvent($eventId: ID!) {
+  deleteRaceEvent(eventId: $eventId)
+ }
 `
 
 const DUPLICATE_EVENT_MUTATION = `
-  mutation DuplicateRaceEvent($eventId: ID!) {
-    duplicateRaceEvent(eventId: $eventId) {
-      id
-    }
+ mutation DuplicateRaceEvent($eventId: ID!) {
+  duplicateRaceEvent(eventId: $eventId) {
+   id
   }
+ }
 `
 
 export default function AdminEventsPage() {
-  const router = useRouter()
-  const { user, accessToken, isLoading: authLoading } = useAuth()
-  const { toast } = useToast()
-  const { confirm } = useConfirm()
+ const router = useRouter()
+ const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { toast } = useToast()
+ const { confirm } = useConfirm()
 
-  const [loading, setLoading] = useState(true)
-  const [events, setEvents] = useState<RaceEvent[]>([])
-  const [search, setSearch] = useState('')
-  const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD' | 'OCR'>('ALL')
-  const [showPast, setShowPast] = useState(false)
-  const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
+ const [loading, setLoading] = useState(true)
+ const [events, setEvents] = useState<RaceEvent[]>([])
+ const [search, setSearch] = useState('')
+ const [filterType, setFilterType] = useState<'ALL' | 'TRAIL' | 'ROAD' | 'OCR'>('ALL')
+ const [showPast, setShowPast] = useState(false)
+ const [deletingId, setDeletingId] = useState<string | null>(null)
+ const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
 
-  const loadData = useCallback(async () => {
-    if (!accessToken) return
+ const loadData = useCallback(async () => {
+  if (!accessToken) return
 
-    try {
-      const data = await gql<{ raceEvents: RaceEvent[] }>(EVENTS_QUERY, {}, { accessToken })
-      // Sort by creation date, newest first
-      const sorted = [...(data.raceEvents ?? [])].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
-      setEvents(sorted)
-    } catch (err) {
-      console.error('Failed to load events:', err)
-    } finally {
-      setLoading(false)
-    }
-  }, [accessToken])
+  try {
+   const data = await gql<{ raceEvents: RaceEvent[] }>(EVENTS_QUERY, {}, { accessToken })
+   // Sort by creation date, newest first
+   const sorted = [...(data.raceEvents ?? [])].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+   )
+   setEvents(sorted)
+  } catch (err) {
+   console.error('Failed to load events:', err)
+  } finally {
+   setLoading(false)
+  }
+ }, [accessToken])
 
-  useEffect(() => {
-    if (!authLoading && (!user || user.role !== 'ADMIN')) {
-      router.push('/')
-      return
-    }
-
-    if (accessToken) {
-      loadData()
-    }
-  }, [authLoading, user, accessToken, router, loadData])
-
-  async function handleDelete(event: RaceEvent) {
-    const hasRaces = event.races.length > 0
-    const message = hasRaces
-      ? `Da li ste sigurni da želite da obrišete događaj "${event.eventName}" i sve njegove trke (${event.races.length})? Ova akcija se ne može poništiti.`
-      : `Da li ste sigurni da želite da obrišete događaj "${event.eventName}"? Ova akcija se ne može poništiti.`
-
-    const confirmed = await confirm({
-      title: 'Obriši događaj',
-      message,
-      confirmText: 'Obriši',
-      variant: 'danger',
-    })
-
-    if (!confirmed) return
-
-    setDeletingId(event.id)
-    try {
-      await gql(DELETE_EVENT_MUTATION, { eventId: event.id }, { accessToken })
-      setEvents((prev) => prev.filter((e) => e.id !== event.id))
-      toast('Događaj obrisan', 'success')
-    } catch (err: any) {
-      toast(err?.message ?? 'Greška pri brisanju', 'error')
-    } finally {
-      setDeletingId(null)
-    }
+ useEffect(() => {
+  if (!authLoading && (!user || user.role !== 'ADMIN')) {
+   router.push('/')
+   return
   }
 
-  async function handleDuplicate(eventId: string) {
-    setDuplicatingId(eventId)
-    try {
-      const data = await gql<{ duplicateRaceEvent: { id: string } }>(
-        DUPLICATE_EVENT_MUTATION,
-        { eventId },
-        { accessToken }
-      )
-      toast('Događaj dupliran', 'success')
-      router.push(`/admin/events/${data.duplicateRaceEvent.id}/edit`)
-    } catch (err: any) {
-      toast(err?.message ?? 'Greška pri dupliciranju', 'error')
-    } finally {
-      setDuplicatingId(null)
-    }
+  if (accessToken) {
+   loadData()
   }
+ }, [authLoading, user, accessToken, router, loadData])
 
-  if (authLoading || loading) {
-    return <LoadingState />
-  }
+ async function handleDelete(event: RaceEvent) {
+  const hasRaces = event.races.length > 0
+  const message = hasRaces
+   ? `Da li ste sigurni da želite da obrišete događaj "${event.eventName}" i sve njegove trke (${event.races.length})? Ova akcija se ne može poništiti.`
+   : `Da li ste sigurni da želite da obrišete događaj "${event.eventName}"? Ova akcija se ne može poništiti.`
 
-  if (!user || user.role !== 'ADMIN') {
-    return null
-  }
-
-  // Filter events
-  const now = new Date().getTime()
-  const filteredEvents = events.filter((event) => {
-    const searchLower = search.toLowerCase()
-    const matchesSearch =
-      !search ||
-      event.eventName.toLowerCase().includes(searchLower) ||
-      event.slug.toLowerCase().includes(searchLower)
-
-    const matchesType = filterType === 'ALL' || event.type === filterType
-
-    // Check if event has any future races
-    const earliestRaceTs = event.races.length > 0
-      ? Math.min(...event.races.map(r => new Date(r.startDateTime).getTime()))
-      : Infinity
-    const isPast = earliestRaceTs < now
-    const matchesPast = showPast || !isPast
-
-    return matchesSearch && matchesType && matchesPast
+  const confirmed = await confirm({
+   title: 'Obriši događaj',
+   message,
+   confirmText: 'Obriši',
+   variant: 'danger',
   })
 
-  function formatDate(iso: string) {
-    const d = new Date(iso)
-    if (Number.isNaN(d.getTime())) return '-'
-    const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
-    const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short', timeZone: 'Europe/Belgrade' }).replace('.', '')
-    const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
-    return `${day}. ${month} ${year}.`
+  if (!confirmed) return
+
+  setDeletingId(event.id)
+  try {
+   await gql(DELETE_EVENT_MUTATION, { eventId: event.id }, { accessToken })
+   setEvents((prev) => prev.filter((e) => e.id !== event.id))
+   toast('Događaj obrisan', 'success')
+  } catch (err: any) {
+   toast(err?.message ?? 'Greška pri brisanju', 'error')
+  } finally {
+   setDeletingId(null)
   }
+ }
 
-  const trailCount = events.filter((e) => e.type === 'TRAIL').length
-  const roadCount = events.filter((e) => e.type === 'ROAD').length
-  const totalRaces = events.reduce((sum, e) => sum + e.races.length, 0)
+ async function handleDuplicate(eventId: string) {
+  setDuplicatingId(eventId)
+  try {
+   const data = await gql<{ duplicateRaceEvent: { id: string } }>(
+    DUPLICATE_EVENT_MUTATION,
+    { eventId },
+    { accessToken }
+   )
+   toast('Događaj dupliran', 'success')
+   router.push(`/admin/events/${data.duplicateRaceEvent.id}/edit`)
+  } catch (err: any) {
+   toast(err?.message ?? 'Greška pri dupliciranju', 'error')
+  } finally {
+   setDuplicatingId(null)
+  }
+ }
 
-  const statItems: StatItem[] = [
-    {
-      label: 'Događaji',
-      value: events.length,
-      icon: <CalendarIcon className="size-5" />,
-    },
-    {
-      label: 'Trail',
-      value: trailCount,
-      icon: <MapIcon className="size-5" />,
-    },
-    {
-      label: 'Ulične',
-      value: roadCount,
-      icon: <FlagIcon className="size-5" />,
-    },
-    {
-      label: 'Trke ukupno',
-      value: totalRaces,
-      icon: <FlagIcon className="size-5" />,
-    },
-  ]
+ if (authLoading || loading) {
+  return <LoadingState />
+ }
 
-  return (
-    <>
-      {/* Back link */}
-      <div className="mb-4">
-        <Link
-          href="/admin"
-          className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-700 dark:text-zinc-400"
-        >
-          <ChevronLeftIcon className="size-4" />
-          Admin Panel
-        </Link>
-      </div>
+ if (!user || user.role !== 'ADMIN') {
+  return null
+ }
 
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <Heading>Upravljanje događajima</Heading>
-        <div className="flex gap-2">
-          <Button href="/admin/events/duplicates" outline>
-            Duplikati
-          </Button>
-          <Button href="/admin/events/mass-edit" outline>
-            Masovna izmena
-          </Button>
-          <Button href="/admin/events/new" color="blue">
-            <PlusIcon className="size-4" />
-            Novi događaj
-          </Button>
-        </div>
-      </div>
+ // Filter events
+ const now = new Date().getTime()
+ const filteredEvents = events.filter((event) => {
+  const searchLower = search.toLowerCase()
+  const matchesSearch =
+   !search ||
+   event.eventName.toLowerCase().includes(searchLower) ||
+   event.slug.toLowerCase().includes(searchLower)
 
-      {/* Stats */}
-      <StatsGrid items={statItems} className="mt-6" />
+  const matchesType = filterType === 'ALL' || event.type === filterType
 
-      {/* Filters - Full Width */}
-      <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {/* Search */}
-        <div className="relative">
-          <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-zinc-400" />
-          <input
-            type="text"
-            placeholder="Pretraži događaje..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-zinc-300 py-2 pl-9 pr-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-          />
-        </div>
+  // Check if event has any future races
+  const earliestRaceTs = event.races.length > 0
+   ? Math.min(...event.races.map(r => new Date(r.startDateTime).getTime()))
+   : Infinity
+  const isPast = earliestRaceTs < now
+  const matchesPast = showPast || !isPast
 
-        {/* Type filter */}
-        <select
-          value={filterType}
-          onChange={(e) => setFilterType(e.target.value as any)}
-          className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-        >
-          <option value="ALL">Svi tipovi</option>
-          <option value="TRAIL">Trail</option>
-          <option value="OCR">OCR</option>
-          <option value="ROAD">Asfalt</option>
-        </select>
-      </div>
+  return matchesSearch && matchesType && matchesPast
+ })
 
-      {/* Show past toggle */}
-      <div className="mt-4">
-        <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-          <input
-            type="checkbox"
-            checked={showPast}
-            onChange={(e) => setShowPast(e.target.checked)}
-            className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-          />
-          Prikaži istekle događaje
-        </label>
-      </div>
+ function formatDate(iso: string) {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return '-'
+  const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
+  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short', timeZone: 'Europe/Belgrade' }).replace('.', '')
+  const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
+  return `${day}. ${month} ${year}.`
+ }
 
-      {/* Events Table */}
-      <div className="mt-6">
-        <div className="flex items-center justify-between mb-4">
-          <Subheading>Svi događaji ({filteredEvents.length})</Subheading>
-        </div>
+ const trailCount = events.filter((e) => e.type === 'TRAIL').length
+ const roadCount = events.filter((e) => e.type === 'ROAD').length
+ const totalRaces = events.reduce((sum, e) => sum + e.races.length, 0)
 
-        <div className="overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
-          <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-            <thead className="bg-zinc-50 dark:bg-zinc-800">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Događaj
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Tip
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Trke
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Kreirano
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Akcije
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-              {filteredEvents.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-8 text-center text-sm text-zinc-500">
-                    {search || filterType !== 'ALL'
-                      ? 'Nema događaja koji odgovaraju filterima'
-                      : 'Nema događaja'}
-                  </td>
-                </tr>
-              ) : (
-                filteredEvents.map((event) => (
-                  <tr key={event.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        {event.mainImage && (
-                          <img
-                            src={event.mainImage}
-                            alt={event.eventName}
-                            className="size-10 rounded-lg object-cover"
-                          />
-                        )}
-                        <div>
-                          <Link
-                            href={`/events/${event.slug}`}
-                            className="font-medium text-zinc-900 hover:text-blue-600 dark:text-zinc-100 dark:hover:text-blue-400"
-                          >
-                            {event.eventName}
-                          </Link>
-                          <div className="text-sm text-zinc-500">/{event.slug}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Badge color={event.type === 'TRAIL' ? 'emerald' : event.type === 'OCR' ? 'orange' : 'sky'}>
-                        {event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'}
-                      </Badge>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="font-medium">{event.races.length}</span>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                      {formatDate(event.createdAt)}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        <Link
-                          href={`/admin/events/${event.id}/edit`}
-                          className="text-sm text-blue-600 hover:text-blue-700"
-                        >
-                          Izmeni
-                        </Link>
-                        <Link
-                          href={`/admin/events/${event.id}/races/new`}
-                          className="text-sm text-blue-600 hover:text-blue-700"
-                        >
-                          Dodaj trku
-                        </Link>
-                        <button
-                          onClick={() => handleDuplicate(event.id)}
-                          disabled={duplicatingId === event.id}
-                          className="cursor-pointer text-sm text-blue-600 hover:text-blue-700 disabled:opacity-50"
-                        >
-                          {duplicatingId === event.id ? '...' : 'Dupliraj'}
-                        </button>
-                        <button
-                          onClick={() => handleDelete(event)}
-                          disabled={deletingId === event.id}
-                          className="text-sm text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
-                          title="Obriši događaj"
-                        >
-                          Obriši
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </>
-  )
+ const statItems: StatItem[] = [
+  {
+   label: 'Događaji',
+   value: events.length,
+   icon: <CalendarIcon className="size-5" />,
+  },
+  {
+   label: 'Trail',
+   value: trailCount,
+   icon: <MapIcon className="size-5" />,
+  },
+  {
+   label: 'Ulične',
+   value: roadCount,
+   icon: <FlagIcon className="size-5" />,
+  },
+  {
+   label: 'Trke ukupno',
+   value: totalRaces,
+   icon: <FlagIcon className="size-5" />,
+  },
+ ]
+
+ return (
+  <>
+   {/* Back link */}
+   <div className="mb-4">
+    <Link
+     href="/admin"
+     className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-300 text-gray-400"
+    >
+     <ChevronLeftIcon className="size-4" />
+     Admin Panel
+    </Link>
+   </div>
+
+   <div className="flex flex-wrap items-center justify-between gap-4">
+    <Heading>Upravljanje događajima</Heading>
+    <div className="flex gap-2">
+     <Button href="/admin/events/duplicates" outline>
+      Duplikati
+     </Button>
+     <Button href="/admin/events/mass-edit" outline>
+      Masovna izmena
+     </Button>
+     <Button href="/admin/events/new" color="blue">
+      <PlusIcon className="size-4" />
+      Novi događaj
+     </Button>
+    </div>
+   </div>
+
+   {/* Stats */}
+   <StatsGrid items={statItems} className="mt-6" />
+
+   {/* Filters - Full Width */}
+   <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+    {/* Search */}
+    <div className="relative">
+     <MagnifyingGlassIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+     <input
+      type="text"
+      placeholder="Pretraži događaje..."
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      className="w-full rounded-lg border border-dark-border-light py-2 pl-9 pr-3 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     />
+    </div>
+
+    {/* Type filter */}
+    <select
+     value={filterType}
+     onChange={(e) => setFilterType(e.target.value as any)}
+     className="w-full rounded-lg border border-dark-border-light px-3 py-2 text-sm focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green border-dark-border-light bg-dark-surface"
+    >
+     <option value="ALL">Svi tipovi</option>
+     <option value="TRAIL">Trail</option>
+     <option value="OCR">OCR</option>
+     <option value="ROAD">Asfalt</option>
+    </select>
+   </div>
+
+   {/* Show past toggle */}
+   <div className="mt-4">
+    <label className="flex items-center gap-2 text-sm text-gray-400">
+     <input
+      type="checkbox"
+      checked={showPast}
+      onChange={(e) => setShowPast(e.target.checked)}
+      className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
+     />
+     Prikaži istekle događaje
+    </label>
+   </div>
+
+   {/* Events Table */}
+   <div className="mt-6">
+    <div className="flex items-center justify-between mb-4">
+     <Subheading>Svi događaji ({filteredEvents.length})</Subheading>
+    </div>
+
+    <div className="overflow-hidden rounded-lg border border-dark-border">
+     <table className="min-w-full divide-y divide-dark-border">
+      <thead className="bg-dark-surface">
+       <tr>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Događaj
+        </th>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Tip
+        </th>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Trke
+        </th>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Kreirano
+        </th>
+        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400">
+         Akcije
+        </th>
+       </tr>
+      </thead>
+      <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+       {filteredEvents.length === 0 ? (
+        <tr>
+         <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
+          {search || filterType !== 'ALL'
+           ? 'Nema događaja koji odgovaraju filterima'
+           : 'Nema događaja'}
+         </td>
+        </tr>
+       ) : (
+        filteredEvents.map((event) => (
+         <tr key={event.id} className="hover:bg-dark-card-hover">
+          <td className="px-4 py-3">
+           <div className="flex items-center gap-3">
+            {event.mainImage && (
+             <img
+              src={event.mainImage}
+              alt={event.eventName}
+              className="size-10 rounded-lg object-cover"
+             />
+            )}
+            <div>
+             <Link
+              href={`/events/${event.slug}`}
+              className="font-medium text-white hover:text-blue-600 text-white hover:text-brand-green"
+             >
+              {event.eventName}
+             </Link>
+             <div className="text-sm text-gray-400">/{event.slug}</div>
+            </div>
+           </div>
+          </td>
+          <td className="px-4 py-3">
+           <Badge color={event.type === 'TRAIL' ? 'emerald' : event.type === 'OCR' ? 'orange' : 'sky'}>
+            {event.type === 'TRAIL' ? 'Trail' : event.type === 'OCR' ? 'OCR' : 'Ulična'}
+           </Badge>
+          </td>
+          <td className="px-4 py-3">
+           <span className="font-medium">{event.races.length}</span>
+          </td>
+          <td className="px-4 py-3 text-sm text-gray-400">
+           {formatDate(event.createdAt)}
+          </td>
+          <td className="px-4 py-3 text-right">
+           <div className="flex justify-end gap-2">
+            <Link
+             href={`/admin/events/${event.id}/edit`}
+             className="text-sm text-brand-green hover:text-brand-green-dark"
+            >
+             Izmeni
+            </Link>
+            <Link
+             href={`/admin/events/${event.id}/races/new`}
+             className="text-sm text-brand-green hover:text-brand-green-dark"
+            >
+             Dodaj trku
+            </Link>
+            <button
+             onClick={() => handleDuplicate(event.id)}
+             disabled={duplicatingId === event.id}
+             className="cursor-pointer text-sm text-brand-green hover:text-brand-green-dark disabled:opacity-50"
+            >
+             {duplicatingId === event.id ? '...' : 'Dupliraj'}
+            </button>
+            <button
+             onClick={() => handleDelete(event)}
+             disabled={deletingId === event.id}
+             className="text-sm text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+             title="Obriši događaj"
+            >
+             Obriši
+            </button>
+           </div>
+          </td>
+         </tr>
+        ))
+       )}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </>
+ )
 }

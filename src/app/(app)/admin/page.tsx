@@ -8,337 +8,337 @@ import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { StatsGrid } from '@/components/stats-grid'
 import {
-  CalendarIcon,
-  ClipboardDocumentListIcon,
-  ExclamationTriangleIcon,
-  FlagIcon,
-  UserGroupIcon,
-  ArrowUpTrayIcon,
-  BoltIcon,
+ CalendarIcon,
+ ClipboardDocumentListIcon,
+ ExclamationTriangleIcon,
+ FlagIcon,
+ UserGroupIcon,
+ ArrowUpTrayIcon,
+ BoltIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 type DashboardStats = {
-  totalEvents: number
-  totalRaces: number
-  totalTrainings: number
-  totalTrainingRaces: number
-  totalRegistrations: number
-  pendingRegistrations: number
-  confirmedRegistrations: number
-  totalUsers: number
+ totalEvents: number
+ totalRaces: number
+ totalTrainings: number
+ totalTrainingRaces: number
+ totalRegistrations: number
+ pendingRegistrations: number
+ confirmedRegistrations: number
+ totalUsers: number
 }
 
 type RecentRace = {
+ id: string
+ raceName: string | null
+ startDateTime: string
+ registrationEnabled: boolean
+ registrationCount: number
+ raceEvent: {
   id: string
-  raceName: string | null
-  startDateTime: string
-  registrationEnabled: boolean
-  registrationCount: number
-  raceEvent: {
-    id: string
-    eventName: string
-    slug: string
-    isTraining: boolean
-  }
+  eventName: string
+  slug: string
+  isTraining: boolean
+ }
 }
 
 const DASHBOARD_STATS_QUERY = `
-  query DashboardStats {
-    raceEvents(limit: 1000) {
-      id
-      isTraining
-    }
-    races(limit: 1000) {
-      id
-      raceName
-      startDateTime
-      registrationEnabled
-      registrationCount
-      raceEvent {
-        id
-        eventName
-        slug
-        isTraining
-      }
-    }
-    users(limit: 1000) {
-      id
-    }
+ query DashboardStats {
+  raceEvents(limit: 1000) {
+   id
+   isTraining
   }
+  races(limit: 1000) {
+   id
+   raceName
+   startDateTime
+   registrationEnabled
+   registrationCount
+   raceEvent {
+    id
+    eventName
+    slug
+    isTraining
+   }
+  }
+  users(limit: 1000) {
+   id
+  }
+ }
 `
 
 export default function AdminDashboardPage() {
-  const router = useRouter()
-  const { user, accessToken, isLoading: authLoading } = useAuth()
+ const router = useRouter()
+ const { user, accessToken, isLoading: authLoading } = useAuth()
 
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [recentRaces, setRecentRaces] = useState<RecentRace[]>([])
-  const [showPast, setShowPast] = useState(false)
+ const [loading, setLoading] = useState(true)
+ const [stats, setStats] = useState<DashboardStats | null>(null)
+ const [recentRaces, setRecentRaces] = useState<RecentRace[]>([])
+ const [showPast, setShowPast] = useState(false)
 
-  const loadData = useCallback(async () => {
-    if (!accessToken) return
+ const loadData = useCallback(async () => {
+  if (!accessToken) return
 
-    try {
-      const data = await gql<{
-        raceEvents: Array<{ id: string; isTraining: boolean }>
-        races: RecentRace[]
-        users: Array<{ id: string }>
-      }>(DASHBOARD_STATS_QUERY, {}, { accessToken })
+  try {
+   const data = await gql<{
+    raceEvents: Array<{ id: string; isTraining: boolean }>
+    races: RecentRace[]
+    users: Array<{ id: string }>
+   }>(DASHBOARD_STATS_QUERY, {}, { accessToken })
 
-      // Calculate stats
-      const races = data.races ?? []
-      const allEvents = data.raceEvents ?? []
-      const trainingRaces = races.filter((r) => r.raceEvent.isTraining)
-      const nonTrainingRaces = races.filter((r) => !r.raceEvent.isTraining)
-      const totalRegistrations = nonTrainingRaces.reduce((sum, r) => sum + (r.registrationCount ?? 0), 0)
+   // Calculate stats
+   const races = data.races ?? []
+   const allEvents = data.raceEvents ?? []
+   const trainingRaces = races.filter((r) => r.raceEvent.isTraining)
+   const nonTrainingRaces = races.filter((r) => !r.raceEvent.isTraining)
+   const totalRegistrations = nonTrainingRaces.reduce((sum, r) => sum + (r.registrationCount ?? 0), 0)
 
-      setStats({
-        totalEvents: allEvents.filter((e) => !e.isTraining).length,
-        totalRaces: nonTrainingRaces.length,
-        totalTrainings: allEvents.filter((e) => e.isTraining).length,
-        totalTrainingRaces: trainingRaces.length,
-        totalRegistrations,
-        pendingRegistrations: 0,
-        confirmedRegistrations: 0,
-        totalUsers: data.users?.length ?? 0,
-      })
+   setStats({
+    totalEvents: allEvents.filter((e) => !e.isTraining).length,
+    totalRaces: nonTrainingRaces.length,
+    totalTrainings: allEvents.filter((e) => e.isTraining).length,
+    totalTrainingRaces: trainingRaces.length,
+    totalRegistrations,
+    pendingRegistrations: 0,
+    confirmedRegistrations: 0,
+    totalUsers: data.users?.length ?? 0,
+   })
 
-      // Sort races by date
-      const sortedRaces = [...races].sort(
-        (a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime()
-      )
-      setRecentRaces(sortedRaces)
-    } catch (err) {
-      console.error('Failed to load dashboard:', err)
-    } finally {
-      setLoading(false)
-    }
-  }, [accessToken])
+   // Sort races by date
+   const sortedRaces = [...races].sort(
+    (a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime()
+   )
+   setRecentRaces(sortedRaces)
+  } catch (err) {
+   console.error('Failed to load dashboard:', err)
+  } finally {
+   setLoading(false)
+  }
+ }, [accessToken])
 
-  useEffect(() => {
-    if (!authLoading && (!user || user.role !== 'ADMIN')) {
-      router.push('/')
-      return
-    }
-
-    if (accessToken) {
-      loadData()
-    }
-  }, [authLoading, user, accessToken, router, loadData])
-
-  if (authLoading || loading) {
-    return <LoadingState />
+ useEffect(() => {
+  if (!authLoading && (!user || user.role !== 'ADMIN')) {
+   router.push('/')
+   return
   }
 
-  if (!user || user.role !== 'ADMIN') {
-    return null
+  if (accessToken) {
+   loadData()
   }
+ }, [authLoading, user, accessToken, router, loadData])
 
-  function formatDate(iso: string) {
-    const d = new Date(iso)
-    if (Number.isNaN(d.getTime())) return 'TBD'
-    const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
-    const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short', timeZone: 'Europe/Belgrade' }).replace('.', '')
-    const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
-    return `${day}. ${month} ${year}.`
-  }
+ if (authLoading || loading) {
+  return <LoadingState />
+ }
 
-  return (
-    <>
-      <Heading>Admin Panel</Heading>
+ if (!user || user.role !== 'ADMIN') {
+  return null
+ }
 
-      {/* Quick Links */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
-        <Link
-          href="/admin/events"
-          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <CalendarIcon className="size-8 text-blue-500" />
-          <div>
-            <div className="font-medium">Događaji</div>
-            <div className="text-sm text-zinc-500">Upravljaj događajima</div>
-          </div>
-        </Link>
+ function formatDate(iso: string) {
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return 'TBD'
+  const day = parseInt(d.toLocaleDateString('sr-Latn-RS', { day: 'numeric', timeZone: 'Europe/Belgrade' }))
+  const month = d.toLocaleDateString('sr-Latn-RS', { month: 'short', timeZone: 'Europe/Belgrade' }).replace('.', '')
+  const year = parseInt(d.toLocaleDateString('sr-Latn-RS', { year: 'numeric', timeZone: 'Europe/Belgrade' }))
+  return `${day}. ${month} ${year}.`
+ }
 
-        <Link
-          href="/admin/races"
-          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <FlagIcon className="size-8 text-emerald-500" />
-          <div>
-            <div className="font-medium">Trke</div>
-            <div className="text-sm text-zinc-500">Registracije & checkpoint-i</div>
-          </div>
-        </Link>
+ return (
+  <>
+   <Heading>Admin Panel</Heading>
 
-        <Link
-          href="/admin/trainings"
-          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <BoltIcon className="size-8 text-indigo-500" />
-          <div>
-            <div className="font-medium">Treninzi</div>
-            <div className="text-sm text-zinc-500">Svi treninzi korisnika</div>
-          </div>
-        </Link>
+   {/* Quick Links */}
+   <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
+    <Link
+     href="/admin/events"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+    >
+     <CalendarIcon className="size-8 text-blue-500" />
+     <div>
+      <div className="font-medium">Događaji</div>
+      <div className="text-sm text-gray-400">Upravljaj događajima</div>
+     </div>
+    </Link>
 
-        <Link
-          href="/admin/users"
-          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <UserGroupIcon className="size-8 text-purple-500" />
-          <div>
-            <div className="font-medium">Korisnici</div>
-            <div className="text-sm text-zinc-500">Upravljaj korisnicima</div>
-          </div>
-        </Link>
+    <Link
+     href="/admin/races"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+    >
+     <FlagIcon className="size-8 text-emerald-500" />
+     <div>
+      <div className="font-medium">Trke</div>
+      <div className="text-sm text-gray-400">Registracije & checkpoint-i</div>
+     </div>
+    </Link>
 
-        <Link
-          href="/admin/import"
-          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <ArrowUpTrayIcon className="size-8 text-amber-500" />
-          <div>
-            <div className="font-medium">Import</div>
-            <div className="text-sm text-zinc-500">CSV import podataka</div>
-          </div>
-        </Link>
+    <Link
+     href="/admin/trainings"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+    >
+     <BoltIcon className="size-8 text-indigo-500" />
+     <div>
+      <div className="font-medium">Treninzi</div>
+      <div className="text-sm text-gray-400">Svi treninzi korisnika</div>
+     </div>
+    </Link>
 
-        <Link
-          href="/admin/reports"
-          className="flex flex-col items-center gap-2 rounded-lg border border-zinc-200 p-4 text-center transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:hover:bg-zinc-800"
-        >
-          <ExclamationTriangleIcon className="size-8 text-red-500" />
-          <div>
-            <div className="font-medium">Prijave grešaka</div>
-            <div className="text-sm text-zinc-500">Korisničke prijave pogrešnih podataka</div>
-          </div>
-        </Link>
+    <Link
+     href="/admin/users"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+    >
+     <UserGroupIcon className="size-8 text-purple-500" />
+     <div>
+      <div className="font-medium">Korisnici</div>
+      <div className="text-sm text-gray-400">Upravljaj korisnicima</div>
+     </div>
+    </Link>
 
-      </div>
+    <Link
+     href="/admin/import"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+    >
+     <ArrowUpTrayIcon className="size-8 text-amber-500" />
+     <div>
+      <div className="font-medium">Import</div>
+      <div className="text-sm text-gray-400">CSV import podataka</div>
+     </div>
+    </Link>
 
-      {/* Stats */}
-      <StatsGrid
-        items={[
-          { label: 'Događaji', value: stats?.totalEvents ?? 0, icon: <CalendarIcon className="size-4" /> },
-          { label: 'Trke', value: stats?.totalRaces ?? 0, icon: <FlagIcon className="size-4" /> },
-          { label: 'Treninzi', value: stats?.totalTrainings ?? 0, icon: <BoltIcon className="size-4" /> },
-          { label: 'Korisnici', value: stats?.totalUsers ?? 0, icon: <UserGroupIcon className="size-4" /> },
-          { label: 'Prijave', value: stats?.totalRegistrations ?? 0, icon: <ClipboardDocumentListIcon className="size-4" /> },
-        ]}
-        columns={5}
-        className="mt-6"
+    <Link
+     href="/admin/reports"
+     className="flex flex-col items-center gap-2 rounded-lg border border-dark-border p-4 text-center transition-colors hover:bg-dark-card-hover border-dark-border hover:bg-dark-card-hover"
+    >
+     <ExclamationTriangleIcon className="size-8 text-red-500" />
+     <div>
+      <div className="font-medium">Prijave grešaka</div>
+      <div className="text-sm text-gray-400">Korisničke prijave pogrešnih podataka</div>
+     </div>
+    </Link>
+
+   </div>
+
+   {/* Stats */}
+   <StatsGrid
+    items={[
+     { label: 'Događaji', value: stats?.totalEvents ?? 0, icon: <CalendarIcon className="size-4" /> },
+     { label: 'Trke', value: stats?.totalRaces ?? 0, icon: <FlagIcon className="size-4" /> },
+     { label: 'Treninzi', value: stats?.totalTrainings ?? 0, icon: <BoltIcon className="size-4" /> },
+     { label: 'Korisnici', value: stats?.totalUsers ?? 0, icon: <UserGroupIcon className="size-4" /> },
+     { label: 'Prijave', value: stats?.totalRegistrations ?? 0, icon: <ClipboardDocumentListIcon className="size-4" /> },
+    ]}
+    columns={5}
+    className="mt-6"
+   />
+
+   {/* Recent Races */}
+   <div className="mt-10">
+    <div className="flex items-center justify-between">
+     <Subheading>Predstojeće trke</Subheading>
+     <Link href="/admin/races" className="text-sm text-brand-green hover:text-brand-green-dark">
+      Pogledaj sve →
+     </Link>
+    </div>
+
+    {/* Show past toggle */}
+    <div className="mt-4">
+     <label className="flex items-center gap-2 text-sm text-gray-400">
+      <input
+       type="checkbox"
+       checked={showPast}
+       onChange={(e) => setShowPast(e.target.checked)}
+       className="size-4 rounded border-dark-border-light text-brand-green focus:ring-brand-green border-dark-border-light bg-dark-surface"
       />
+      Prikaži istekle trke
+     </label>
+    </div>
 
-      {/* Recent Races */}
-      <div className="mt-10">
-        <div className="flex items-center justify-between">
-          <Subheading>Predstojeće trke</Subheading>
-          <Link href="/admin/races" className="text-sm text-blue-600 hover:text-blue-700">
-            Pogledaj sve →
-          </Link>
-        </div>
+    <div className="mt-4 overflow-hidden rounded-lg border border-dark-border">
+     <table className="min-w-full divide-y divide-dark-border">
+      <thead className="bg-dark-surface">
+       <tr>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Trka
+        </th>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Datum
+        </th>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Prijave
+        </th>
+        <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400">
+         Status
+        </th>
+        <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400">
+         Akcije
+        </th>
+       </tr>
+      </thead>
+      <tbody className="divide-y divide-dark-border bg-dark-card divide-dark-border bg-dark-card">
+       {(() => {
+        const now = new Date().getTime()
+        const filteredRaces = recentRaces.filter((race) => {
+         const raceTs = new Date(race.startDateTime).getTime()
+         const isPast = raceTs < now
+         return showPast || !isPast
+        }).slice(0, 10)
 
-        {/* Show past toggle */}
-        <div className="mt-4">
-          <label className="flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400">
-            <input
-              type="checkbox"
-              checked={showPast}
-              onChange={(e) => setShowPast(e.target.checked)}
-              className="size-4 rounded border-zinc-300 text-blue-600 focus:ring-blue-500 dark:border-zinc-600 dark:bg-zinc-800"
-            />
-            Prikaži istekle trke
-          </label>
-        </div>
+        if (filteredRaces.length === 0) {
+         return (
+          <tr>
+           <td colSpan={5} className="px-4 py-8 text-center text-sm text-gray-400">
+            {showPast ? 'Nema trka' : 'Nema predstojećih trka'}
+           </td>
+          </tr>
+         )
+        }
 
-        <div className="mt-4 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700">
-          <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
-            <thead className="bg-zinc-50 dark:bg-zinc-800">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Trka
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Datum
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Prijave
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Status
-                </th>
-                <th className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-zinc-500">
-                  Akcije
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-900">
-              {(() => {
-                const now = new Date().getTime()
-                const filteredRaces = recentRaces.filter((race) => {
-                  const raceTs = new Date(race.startDateTime).getTime()
-                  const isPast = raceTs < now
-                  return showPast || !isPast
-                }).slice(0, 10)
-
-                if (filteredRaces.length === 0) {
-                  return (
-                    <tr>
-                      <td colSpan={5} className="px-4 py-8 text-center text-sm text-zinc-500">
-                        {showPast ? 'Nema trka' : 'Nema predstojećih trka'}
-                      </td>
-                    </tr>
-                  )
-                }
-
-                return filteredRaces.map((race) => (
-                  <tr key={race.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-zinc-900 dark:text-zinc-100">
-                        {race.raceName ?? race.raceEvent.eventName}
-                      </div>
-                      <div className="text-sm text-zinc-500">{race.raceEvent.eventName}</div>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-400">
-                      {formatDate(race.startDateTime)}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="font-medium">{race.registrationCount}</span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {race.registrationEnabled ? (
-                        <Badge color="green">Otvoreno</Badge>
-                      ) : (
-                        <Badge color="zinc">Zatvoreno</Badge>
-                      )}
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <div className="flex justify-end gap-2">
-                        <Link
-                          href={`/admin/races/${race.id}/registrations`}
-                          className="text-sm text-blue-600 hover:text-blue-700"
-                        >
-                          Prijave
-                        </Link>
-                        <Link
-                          href={`/admin/races/${race.id}/checkpoints`}
-                          className="text-sm text-blue-600 hover:text-blue-700"
-                        >
-                          CP
-                        </Link>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              })()}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </>
-  )
+        return filteredRaces.map((race) => (
+         <tr key={race.id} className="hover:bg-dark-card-hover">
+          <td className="px-4 py-3">
+           <div className="font-medium text-white">
+            {race.raceName ?? race.raceEvent.eventName}
+           </div>
+           <div className="text-sm text-gray-400">{race.raceEvent.eventName}</div>
+          </td>
+          <td className="px-4 py-3 text-sm text-gray-400">
+           {formatDate(race.startDateTime)}
+          </td>
+          <td className="px-4 py-3">
+           <span className="font-medium">{race.registrationCount}</span>
+          </td>
+          <td className="px-4 py-3">
+           {race.registrationEnabled ? (
+            <Badge color="green">Otvoreno</Badge>
+           ) : (
+            <Badge color="zinc">Zatvoreno</Badge>
+           )}
+          </td>
+          <td className="px-4 py-3 text-right">
+           <div className="flex justify-end gap-2">
+            <Link
+             href={`/admin/races/${race.id}/registrations`}
+             className="text-sm text-brand-green hover:text-brand-green-dark"
+            >
+             Prijave
+            </Link>
+            <Link
+             href={`/admin/races/${race.id}/checkpoints`}
+             className="text-sm text-brand-green hover:text-brand-green-dark"
+            >
+             CP
+            </Link>
+           </div>
+          </td>
+         </tr>
+        ))
+       })()}
+      </tbody>
+     </table>
+    </div>
+   </div>
+  </>
+ )
 }
