@@ -42,21 +42,21 @@ const styles = {
   ],
   outline: [
     // Base
-    'border-zinc-950/10 text-zinc-950 data-active:bg-zinc-950/2.5 data-hover:bg-zinc-950/2.5 hover:bg-zinc-950/2.5 active:bg-zinc-950/2.5',
-    // Dark mode
-    'dark:border-white/15 dark:text-white dark:[--btn-bg:transparent] dark:data-active:bg-white/5 dark:data-hover:bg-white/5 dark:hover:bg-white/5 dark:active:bg-white/5',
+    'border-dark-border text-white data-active:bg-dark-surface data-hover:bg-dark-surface hover:bg-dark-surface active:bg-dark-surface',
     // Icon
-    '[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]',
+    '[--btn-icon:var(--color-gray-500)] data-active:[--btn-icon:var(--color-gray-400)] data-hover:[--btn-icon:var(--color-gray-400)]',
   ],
   plain: [
     // Base
-    'border-transparent text-zinc-950 data-active:bg-zinc-950/2.5 data-hover:bg-zinc-950/2.5 hover:bg-zinc-950/2.5 active:bg-zinc-950/2.5',
-    // Dark mode
-    'dark:text-white dark:data-active:bg-white/5 dark:data-hover:bg-white/5 dark:hover:bg-white/5 dark:active:bg-white/5',
+    'border-transparent text-gray-400 data-active:bg-dark-surface data-hover:bg-dark-surface hover:bg-dark-surface active:bg-dark-surface data-hover:text-white hover:text-white',
     // Icon
-    '[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:[--btn-icon:var(--color-zinc-500)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]',
+    '[--btn-icon:var(--color-gray-500)] data-active:[--btn-icon:var(--color-gray-400)] data-hover:[--btn-icon:var(--color-gray-400)]',
   ],
   colors: {
+    brand: [
+      'text-black font-bold [--btn-bg:var(--color-brand-green)] [--btn-border:var(--color-brand-green-dark)] [--btn-hover-overlay:var(--color-black)]/10',
+      '[--btn-icon:var(--color-black)]/70 data-active:[--btn-icon:var(--color-black)] data-hover:[--btn-icon:var(--color-black)]',
+    ],
     'dark/zinc': [
       'text-white [--btn-bg:var(--color-zinc-900)] [--btn-border:var(--color-zinc-950)]/90 [--btn-hover-overlay:var(--color-white)]/10',
       'dark:text-white dark:[--btn-bg:var(--color-zinc-600)] dark:[--btn-hover-overlay:var(--color-white)]/5',
