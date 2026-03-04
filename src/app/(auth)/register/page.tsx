@@ -142,6 +142,7 @@ export default function Register() {
           useOneTap={false}
           width="368"
           text="signup_with"
+          theme="filled_black"
         />
       </div>
 

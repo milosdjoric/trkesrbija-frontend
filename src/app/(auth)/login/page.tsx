@@ -3,7 +3,6 @@
 import { useAuth } from '@/app/auth/auth-context'
 import { AuthLogo } from '@/components/auth-logo'
 import { Button } from '@/components/button'
-import { Checkbox, CheckboxField } from '@/components/checkbox'
 import { Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
@@ -115,6 +114,7 @@ export default function Login() {
           onError={() => setError('Google prijava nije uspela')}
           useOneTap={false}
           width="368"
+          theme="filled_black"
         />
       </div>
 
