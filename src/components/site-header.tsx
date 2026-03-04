@@ -95,16 +95,6 @@ export function SiteHeader() {
 
         {/* User / Auth */}
         <div className="flex items-center gap-1">
-          {mounted && (
-            <button
-              type="button"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="rounded-lg p-2 text-text-secondary transition-colors hover:text-text-primary"
-              title={theme === 'dark' ? 'Svetla tema' : 'Tamna tema'}
-            >
-              {theme === 'dark' ? <SunIcon className="size-4" /> : <MoonIcon className="size-4" />}
-            </button>
-          )}
           {authLoading ? (
             <div className="h-5 w-24 animate-pulse rounded bg-surface" />
           ) : user ? (
@@ -148,6 +138,19 @@ export function SiteHeader() {
                   </DropdownItem>
                 )}
 
+                {mounted && (
+                  <DropdownItem
+                    href="#"
+                    onClick={(e: React.MouseEvent) => {
+                      e.preventDefault()
+                      setTheme(theme === 'dark' ? 'light' : 'dark')
+                    }}
+                  >
+                    {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+                    <DropdownLabel>{theme === 'dark' ? 'Svetla tema' : 'Tamna tema'}</DropdownLabel>
+                  </DropdownItem>
+                )}
+
                 <DropdownDivider />
 
                 <DropdownItem href="https://tally.so/r/Y547W6">
@@ -168,12 +171,24 @@ export function SiteHeader() {
               </DropdownMenu>
             </Dropdown>
           ) : (
-            <Link
-              href="/login"
-              className="rounded-lg bg-brand-green px-4 py-1.5 text-sm font-bold text-black transition-colors hover:bg-brand-green-dark"
-            >
-              Prijavi se
-            </Link>
+            <>
+              {mounted && (
+                <button
+                  type="button"
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  className="rounded-lg p-2 text-text-secondary transition-colors hover:text-text-primary"
+                  title={theme === 'dark' ? 'Svetla tema' : 'Tamna tema'}
+                >
+                  {theme === 'dark' ? <SunIcon className="size-4" /> : <MoonIcon className="size-4" />}
+                </button>
+              )}
+              <Link
+                href="/login"
+                className="rounded-lg bg-brand-green px-4 py-1.5 text-sm font-bold text-black transition-colors hover:bg-brand-green-dark"
+              >
+                Prijavi se
+              </Link>
+            </>
           )}
         </div>
       </div>

@@ -6,7 +6,15 @@ import { Badge } from '@/components/badge'
 import { Divider } from '@/components/divider'
 import { Heading, Subheading } from '@/components/heading'
 import { Text } from '@/components/text'
-import { CheckCircleIcon, ExclamationTriangleIcon, UserCircleIcon } from '@heroicons/react/16/solid'
+import {
+  CheckCircleIcon,
+  ComputerDesktopIcon,
+  ExclamationTriangleIcon,
+  MoonIcon,
+  SunIcon,
+  UserCircleIcon,
+} from '@heroicons/react/16/solid'
+import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
@@ -41,9 +49,19 @@ const PREFS: { key: Pref; label: string; description: string }[] = [
   },
 ]
 
+const THEME_OPTIONS = [
+  { value: 'dark', label: 'Tamna', icon: MoonIcon },
+  { value: 'light', label: 'Svetla', icon: SunIcon },
+  { value: 'system', label: 'Sistem', icon: ComputerDesktopIcon },
+] as const
+
 export default function Settings() {
   const { user, isLoading, refreshSession } = useAuth()
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   const [prefs, setPrefs] = useState<Record<Pref, boolean>>({
     emailSubMonthly: false,
@@ -99,7 +117,7 @@ export default function Settings() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-pulse text-zinc-500">Ucitavanje...</div>
+        <div className="animate-pulse text-text-secondary">Ucitavanje...</div>
       </div>
     )
   }
@@ -116,16 +134,16 @@ export default function Settings() {
       <Divider className="my-6" />
 
       {/* Profile info */}
-      <section className="rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+      <section className="rounded-lg border border-border-primary p-6">
         <div className="flex items-center gap-4">
-          <div className="flex size-16 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
-            <UserCircleIcon className="size-10 text-zinc-400" />
+          <div className="flex size-16 items-center justify-center rounded-full bg-surface">
+            <UserCircleIcon className="size-10 text-text-muted" />
           </div>
           <div>
-            <div className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
+            <div className="text-lg font-semibold text-text-primary">
               {user.name || 'Korisnik'}
             </div>
-            <div className="text-sm text-zinc-500">{user.email}</div>
+            <div className="text-sm text-text-secondary">{user.email}</div>
           </div>
         </div>
 
@@ -135,8 +153,8 @@ export default function Settings() {
           {/* Email status */}
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email verifikacija</div>
-              <div className="text-xs text-zinc-500">{user.email}</div>
+              <div className="text-sm font-medium text-text-primary">Email verifikacija</div>
+              <div className="text-xs text-text-secondary">{user.email}</div>
             </div>
             {user.emailVerified ? (
               <Badge color="green" className="flex items-center gap-1">
@@ -154,8 +172,8 @@ export default function Settings() {
           {/* Role */}
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Uloga</div>
-              <div className="text-xs text-zinc-500">Vasa uloga u sistemu</div>
+              <div className="text-sm font-medium text-text-primary">Uloga</div>
+              <div className="text-xs text-text-secondary">Vasa uloga u sistemu</div>
             </div>
             <Badge color={user.role === 'ADMIN' ? 'purple' : 'zinc'}>
               {user.role === 'ADMIN' ? 'Administrator' : 'Korisnik'}
@@ -166,8 +184,8 @@ export default function Settings() {
           {user.assignedCheckpointId && (
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Sudija</div>
-                <div className="text-xs text-zinc-500">Imate dodeljen checkpoint</div>
+                <div className="text-sm font-medium text-text-primary">Sudija</div>
+                <div className="text-xs text-text-secondary">Imate dodeljen checkpoint</div>
               </div>
               <Badge color="blue">Aktivan sudija</Badge>
             </div>
@@ -176,9 +194,9 @@ export default function Settings() {
       </section>
 
       {/* Email subscriptions */}
-      <section className="mt-6 rounded-lg border border-zinc-200 p-6 dark:border-zinc-700">
+      <section className="mt-6 rounded-lg border border-border-primary p-6">
         <Subheading>Email obaveštenja</Subheading>
-        <Text className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+        <Text className="mt-1 text-sm text-text-secondary">
           Odaberite koje emailove želite da primate.
         </Text>
 
@@ -187,13 +205,13 @@ export default function Settings() {
             <label key={key} className="flex cursor-pointer items-start gap-3">
               <input
                 type="checkbox"
-                className="mt-0.5 size-4 rounded border-zinc-300 text-zinc-900 accent-zinc-900 dark:border-zinc-600"
+                className="mt-0.5 size-4 rounded border-border-secondary accent-brand-green"
                 checked={prefs[key]}
                 onChange={(e) => handlePrefChange(key, e.target.checked)}
               />
               <div>
-                <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{label}</div>
-                <div className="text-xs text-zinc-500">{description}</div>
+                <div className="text-sm font-medium text-text-primary">{label}</div>
+                <div className="text-xs text-text-secondary">{description}</div>
               </div>
             </label>
           ))}
@@ -203,23 +221,49 @@ export default function Settings() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+            className="rounded-md bg-brand-green px-4 py-2 text-sm font-medium text-black hover:bg-brand-green-dark disabled:opacity-50"
           >
             {saving ? 'Čuvanje...' : 'Sačuvaj'}
           </button>
           {saveSuccess && (
-            <span className="text-sm text-green-600 dark:text-green-400">Podešavanja su sačuvana.</span>
+            <span className="text-sm text-green-600">Podešavanja su sačuvana.</span>
           )}
           {saveError && (
-            <span className="text-sm text-red-600 dark:text-red-400">{saveError}</span>
+            <span className="text-sm text-red-600">{saveError}</span>
           )}
         </div>
       </section>
 
+      {/* Theme preference */}
+      <section className="mt-6 rounded-lg border border-border-primary p-6">
+        <Subheading>Tema</Subheading>
+        <Text className="mt-1 text-sm text-text-secondary">Izaberite željeni izgled aplikacije.</Text>
+
+        {mounted && (
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            {THEME_OPTIONS.map(({ value, label, icon: Icon }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setTheme(value)}
+                className={`flex flex-col items-center gap-2 rounded-lg border p-4 transition-colors ${
+                  theme === value
+                    ? 'border-brand-green bg-brand-green/10 text-brand-green'
+                    : 'border-border-primary text-text-secondary hover:border-border-secondary hover:text-text-primary'
+                }`}
+              >
+                <Icon className="size-5" />
+                <span className="text-sm font-medium">{label}</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+
       {/* Info section */}
-      <section className="mt-6 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-900">
+      <section className="mt-6 rounded-lg border border-dashed border-border-primary bg-surface p-6">
         <Subheading>Izmena profila</Subheading>
-        <Text className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <Text className="mt-2 text-sm text-text-secondary">
           Opcije za izmenu imena, lozinke i drugih podesavanja ce biti dostupne uskoro.
         </Text>
       </section>
