@@ -333,12 +333,12 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
               <span
                 className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
                   stats.difficulty === 'XXS' || stats.difficulty === 'XS'
-                    ? 'bg-green-900/30 text-green-400'
+                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                     : stats.difficulty === 'S'
-                      ? 'bg-yellow-900/30 text-yellow-400'
+                      ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
                       : stats.difficulty === 'M'
-                        ? 'bg-orange-900/30 text-orange-400'
-                        : 'bg-red-900/30 text-red-400'
+                        ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                        : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                 }`}
               >
                 {stats.difficulty}
@@ -418,8 +418,8 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
         </div>
 
         {/* ITRA Info Note */}
-        <div className="mt-4 rounded-lg bg-blue-900/20 p-3">
-          <p className="text-[11px] leading-relaxed text-blue-300">
+        <div className="mt-4 rounded-lg bg-blue-100 p-3 dark:bg-blue-900/20">
+          <p className="text-[11px] leading-relaxed text-blue-700 dark:text-blue-300">
             <strong>Napomena:</strong> Svi prikazani rezultati su okvirni i služe kao orijentacija. Za tačne podatke o
             stazi proverite sa organizatorom trke. Zvanični ITRA bodovi mogu biti umanjeni za trke sa više identičnih
             krugova ili previše okrepnih stanica.{' '}
@@ -537,15 +537,15 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             <h3 className="text-sm font-medium text-text-primary">
               Top {topClimbs.length} uspon{topClimbs.length === 1 ? '' : topClimbs.length < 5 ? 'a' : 'a'}
             </h3>
-            <div className="flex gap-1 rounded-lg bg-zinc-700 p-0.5">
+            <div className="flex gap-1 rounded-lg bg-surface p-0.5">
               {(['elevation', 'position', 'grade'] as const).map((sort) => (
                 <button
                   key={sort}
                   onClick={() => setClimbSort(sort)}
                   className={`rounded px-2 py-0.5 text-[10px] font-medium transition-colors ${
                     climbSort === sort
-                      ? 'bg-zinc-600 text-white shadow-sm'
-                      : 'text-text-secondary hover:text-zinc-200'
+                      ? 'bg-surface-hover text-text-primary shadow-sm'
+                      : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   {sort === 'elevation' ? 'D+' : sort === 'position' ? 'km' : '%'}
@@ -560,10 +560,10 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
             {sortedClimbs.map((climb, index) => (
               <div
                 key={index}
-                className="flex items-center gap-3 rounded bg-card px-2 py-1.5"
+                className="flex items-center gap-3 rounded border border-border-primary bg-card px-2 py-1.5"
               >
                 {/* Rank */}
-                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-900/30 text-xs font-bold text-emerald-400">
+                <div className="flex size-6 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-xs font-bold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                   {index + 1}
                 </div>
 
@@ -587,12 +587,12 @@ export function GpxAnalyzerView({ stats, points, topClimbs }: GpxAnalyzerViewPro
                 <div
                   className={`shrink-0 rounded-full px-1.5 py-0.5 text-xs font-medium ${
                     climb.averageGrade < 5
-                      ? 'bg-green-900/30 text-green-400'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
                       : climb.averageGrade < 10
-                        ? 'bg-yellow-900/30 text-yellow-400'
+                        ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
                         : climb.averageGrade < 15
-                          ? 'bg-orange-900/30 text-orange-400'
-                          : 'bg-red-900/30 text-red-400'
+                          ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400'
+                          : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                   }`}
                 >
                   {climb.averageGrade}%
