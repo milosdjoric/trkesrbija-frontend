@@ -19,6 +19,7 @@ import {
  CalendarIcon,
  FlagIcon,
  MapIcon,
+ DocumentDuplicateIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
@@ -367,33 +368,36 @@ export default function AdminEventsPage() {
            {formatDate(event.createdAt)}
           </td>
           <td className="px-4 py-3 text-right">
-           <div className="flex justify-end gap-2">
+           <div className="flex justify-end gap-1">
             <Link
              href={`/admin/events/${event.id}/edit`}
-             className="text-sm text-brand-green hover:text-brand-green-dark"
+             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white"
+             title="Izmeni"
             >
-             Izmeni
+             <PencilIcon className="size-4" />
             </Link>
             <Link
              href={`/admin/events/${event.id}/races/new`}
-             className="text-sm text-brand-green hover:text-brand-green-dark"
+             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-brand-green"
+             title="Dodaj trku"
             >
-             Dodaj trku
+             <PlusIcon className="size-4" />
             </Link>
             <button
              onClick={() => handleDuplicate(event.id)}
              disabled={duplicatingId === event.id}
-             className="cursor-pointer text-sm text-brand-green hover:text-brand-green-dark disabled:opacity-50"
+             className="cursor-pointer rounded-lg p-2 text-gray-400 transition-colors hover:bg-dark-surface hover:text-white disabled:opacity-50"
+             title="Dupliraj"
             >
-             {duplicatingId === event.id ? '...' : 'Dupliraj'}
+             <DocumentDuplicateIcon className="size-4" />
             </button>
             <button
              onClick={() => handleDelete(event)}
              disabled={deletingId === event.id}
-             className="text-sm text-red-600 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+             className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-900/20 hover:text-red-400 disabled:cursor-not-allowed disabled:opacity-50"
              title="Obriši događaj"
             >
-             Obriši
+             <TrashIcon className="size-4" />
             </button>
            </div>
           </td>
