@@ -8,7 +8,6 @@ import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 type Report = {
@@ -63,8 +62,7 @@ const FIELD_LABELS: Record<string, string> = {
 }
 
 export default function AdminReportsPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
 
  const [reports, setReports] = useState<Report[]>([])
@@ -89,12 +87,8 @@ export default function AdminReportsPage() {
  }, [accessToken, filterStatus])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
   if (accessToken) loadReports()
- }, [authLoading, user, accessToken, router, loadReports])
+ }, [accessToken, loadReports])
 
  async function handleUpdateStatus(id: string, status: string) {
   setUpdatingId(id)
@@ -118,8 +112,7 @@ export default function AdminReportsPage() {
   return `${day}. ${month} ${year}. ${time}`
  }
 
- if (authLoading || loading) return <LoadingState />
- if (!user || user.role !== 'ADMIN') return null
+ if (loading) return <LoadingState />
 
  const pendingCount = reports.filter((r) => r.status === 'PENDING').length
 

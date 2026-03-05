@@ -16,7 +16,6 @@ import {
  ArrowTopRightOnSquareIcon,
  TrashIcon,
 } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 type SimilarityScore = {
@@ -77,8 +76,7 @@ const DELETE_EVENT_MUTATION = `
 `
 
 export default function AdminDuplicatesPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
  const { confirm } = useConfirm()
 
@@ -106,22 +104,13 @@ export default function AdminDuplicatesPage() {
  }, [accessToken, threshold])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadData()
   }
- }, [authLoading, user, accessToken, router, loadData])
+ }, [accessToken, loadData])
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  function formatDate(iso: string | null) {

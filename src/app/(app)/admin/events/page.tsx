@@ -76,7 +76,7 @@ const DUPLICATE_EVENT_MUTATION = `
 
 export default function AdminEventsPage() {
  const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
  const { confirm } = useConfirm()
 
@@ -106,15 +106,10 @@ export default function AdminEventsPage() {
  }, [accessToken])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadData()
   }
- }, [authLoading, user, accessToken, router, loadData])
+ }, [accessToken, loadData])
 
  async function handleDelete(event: RaceEvent) {
   const hasRaces = event.races.length > 0
@@ -160,12 +155,8 @@ export default function AdminEventsPage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  // Filter events

@@ -9,7 +9,6 @@ import { LoadingState } from '@/components/loading-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type Competition = {
@@ -42,8 +41,7 @@ const DELETE_COMPETITION_MUTATION = `
 `
 
 export default function CompetitionsPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { user, accessToken } = useAuth()
  const { toast } = useToast()
 
  const [competitions, setCompetitions] = useState<Competition[]>([])
@@ -67,16 +65,11 @@ export default function CompetitionsPage() {
  }, [accessToken, toast])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken && !loadedRef.current) {
    loadedRef.current = true
    loadCompetitions()
   }
- }, [authLoading, user, accessToken, loadCompetitions, router])
+ }, [accessToken, loadCompetitions])
 
  async function handleCreate(e: React.FormEvent) {
   e.preventDefault()
@@ -118,12 +111,8 @@ export default function CompetitionsPage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  return (

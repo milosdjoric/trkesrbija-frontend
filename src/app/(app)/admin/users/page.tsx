@@ -9,7 +9,6 @@ import { LoadingState } from '@/components/loading-state'
 import { useConfirm } from '@/components/confirm-dialog'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 type User = {
@@ -52,8 +51,7 @@ const DELETE_USER_MUTATION = `
 `
 
 export default function AdminUsersPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { user, accessToken } = useAuth()
  const { toast } = useToast()
  const { confirm } = useConfirm()
 
@@ -78,15 +76,10 @@ export default function AdminUsersPage() {
  }, [accessToken])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadData()
   }
- }, [authLoading, user, accessToken, router, loadData])
+ }, [accessToken, loadData])
 
  async function handleToggleAdmin(targetUser: User) {
   const newRole = targetUser.role === 'ADMIN' ? 'STANDARD' : 'ADMIN'
@@ -142,12 +135,8 @@ export default function AdminUsersPage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  // Filter users
@@ -288,7 +277,7 @@ export default function AdminUsersPage() {
           {formatDate(u.createdAt)}
          </td>
          <td className="px-4 py-3 text-right">
-          {u.id !== user.id ? (
+          {u.id !== user?.id ? (
            <div className="flex items-center justify-end gap-2">
             <button
              onClick={() => handleToggleAdmin(u)}

@@ -9,7 +9,6 @@ import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import { ChevronLeftIcon, TrashIcon } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type TrainingEvent = {
@@ -55,8 +54,7 @@ const DELETE_TRAINING_EVENT_MUTATION = `
 `
 
 export default function AdminTrainingsPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { user, accessToken } = useAuth()
  const { toast } = useToast()
  const { confirm } = useConfirm()
 
@@ -81,16 +79,11 @@ export default function AdminTrainingsPage() {
  }, [accessToken])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken && !loadedRef.current) {
    loadedRef.current = true
    loadData()
   }
- }, [authLoading, user, accessToken, router, loadData])
+ }, [accessToken, loadData])
 
  async function handleDelete(eventId: string, eventName: string) {
   const confirmed = await confirm({
@@ -112,12 +105,8 @@ export default function AdminTrainingsPage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  function formatDate(iso: string) {

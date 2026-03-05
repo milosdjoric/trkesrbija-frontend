@@ -7,7 +7,6 @@ import { LoadingState } from '@/components/loading-state'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 // ── Types ────────────────────────────────────────────────────────────────────
@@ -225,17 +224,10 @@ function LoginRow({
 // ── Main Page ────────────────────────────────────────────────────────────────
 
 export default function AdminStatsPage() {
-  const router = useRouter()
-  const { user, accessToken, isLoading } = useAuth()
+  const { user, accessToken } = useAuth()
   const [stats, setStats] = useState<AnalyticsStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [days, setDays] = useState(30)
-
-  useEffect(() => {
-    if (!isLoading && (!user || user.role !== 'ADMIN')) {
-      router.push('/')
-    }
-  }, [user, isLoading, router])
 
   const fetchStats = useCallback(async () => {
     setLoading(true)
@@ -253,7 +245,7 @@ export default function AdminStatsPage() {
     if (user?.role === 'ADMIN') fetchStats()
   }, [user, fetchStats])
 
-  if (isLoading || !user) return <LoadingState />
+  if (!user || loading) return <LoadingState />
 
   const totalViews = stats?.viewsPerDay.reduce((sum, d) => sum + d.count, 0) ?? 0
 

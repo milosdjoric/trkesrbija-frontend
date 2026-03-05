@@ -6,7 +6,6 @@ import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
-import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import {
  ChevronLeftIcon,
@@ -16,8 +15,7 @@ import {
  ExclamationTriangleIcon,
  XCircleIcon,
 } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 type ImportType = 'events' | 'races' | 'combined'
 
@@ -408,8 +406,7 @@ function parseCombined(rows: string[][]): ParsedCombinedRow[] {
 }
 
 export default function ImportPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { user, accessToken } = useAuth()
  const { toast } = useToast()
  const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -424,12 +421,6 @@ export default function ImportPage() {
   failed: number
   errors: string[]
  } | null>(null)
-
- useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-  }
- }, [authLoading, user, router])
 
  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
   const file = e.target.files?.[0]
@@ -619,14 +610,6 @@ export default function ImportPage() {
   if (fileInputRef.current) {
    fileInputRef.current.value = ''
   }
- }
-
- if (authLoading) {
-  return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  const hasData = parsedEvents.length > 0 || parsedRaces.length > 0 || parsedCombined.length > 0

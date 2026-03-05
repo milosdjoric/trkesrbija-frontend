@@ -41,7 +41,7 @@ import {
  XMarkIcon,
 } from '@heroicons/react/16/solid'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type RaceInfo = {
@@ -74,8 +74,7 @@ const RACE_QUERY = `
 
 export default function AdminCheckpointsPage() {
  const params = useParams()
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
  const { confirm } = useConfirm()
 
@@ -138,16 +137,11 @@ export default function AdminCheckpointsPage() {
  }, [accessToken, raceId, toast])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken && !loadedRef.current) {
    loadedRef.current = true
    loadData()
   }
- }, [authLoading, user, accessToken, loadData, router])
+ }, [accessToken, loadData])
 
  // Create checkpoint for event
  async function handleCreate() {
@@ -356,12 +350,8 @@ export default function AdminCheckpointsPage() {
  const assignedUserIds = new Set(eventCheckpoints.flatMap((cp) => cp.assignedJudges.map((j) => j.id)))
  const availableUsers = users.filter((u) => !assignedUserIds.has(u.id))
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  if (!race) {

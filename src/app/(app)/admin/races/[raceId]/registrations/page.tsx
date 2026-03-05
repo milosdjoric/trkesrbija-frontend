@@ -30,7 +30,7 @@ import {
  UserPlusIcon,
 } from '@heroicons/react/16/solid'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
 type RaceInfo = {
@@ -63,8 +63,7 @@ const RACE_WITH_EVENT_QUERY = `
 
 export default function AdminRegistrationsPage() {
  const params = useParams()
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
  const { confirm } = useConfirm()
 
@@ -126,15 +125,10 @@ export default function AdminRegistrationsPage() {
  }, [accessToken, raceId, statusFilter, search])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadData()
   }
- }, [authLoading, user, accessToken, loadData, router])
+ }, [accessToken, loadData])
 
  async function handleStatusChange(registrationId: string, newStatus: RegistrationStatus) {
   try {
@@ -201,12 +195,8 @@ export default function AdminRegistrationsPage() {
   link.click()
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  if (!race) {

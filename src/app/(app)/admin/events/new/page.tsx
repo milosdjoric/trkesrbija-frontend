@@ -5,7 +5,6 @@ import { gql } from '@/app/lib/api'
 import { Button } from '@/components/button'
 import { Heading, Subheading } from '@/components/heading'
 import { Link } from '@/components/link'
-import { LoadingState } from '@/components/loading-state'
 import { OrganizerSelect } from '@/components/organizer-select'
 import { useToast } from '@/components/toast'
 import { GalleryUpload } from '@/components/gallery-upload'
@@ -78,7 +77,7 @@ function generateSlug(name: string, year: number): string {
 
 export default function NewEventPage() {
  const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
 
  const [loading, setLoading] = useState(false)
@@ -106,11 +105,6 @@ export default function NewEventPage() {
  const [races, setRaces] = useState<RaceInput[]>([])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    gql<{ competitions: Competition[] }>(COMPETITIONS_QUERY, {}, { accessToken })
     .then((data) => {
@@ -118,7 +112,7 @@ export default function NewEventPage() {
     })
     .catch(() => {})
   }
- }, [authLoading, user, accessToken, router])
+ }, [accessToken])
 
  // Auto-generate slug when name changes
  useEffect(() => {
@@ -229,14 +223,6 @@ export default function NewEventPage() {
   } finally {
    setLoading(false)
   }
- }
-
- if (authLoading) {
-  return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  return (

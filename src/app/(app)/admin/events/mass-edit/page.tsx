@@ -9,7 +9,6 @@ import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import { toTitleCase } from '@/lib/formatters'
 import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type EventRow = {
@@ -65,8 +64,7 @@ const TYPE_OPTIONS = [
 ]
 
 export default function EventsMassEditPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
 
  const [events, setEvents] = useState<EventRow[]>([])
@@ -95,15 +93,10 @@ export default function EventsMassEditPage() {
  }, [accessToken])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadData()
   }
- }, [authLoading, user, accessToken, router, loadData])
+ }, [accessToken, loadData])
 
  async function handleUpdateField(
   eventId: string,
@@ -228,8 +221,7 @@ export default function EventsMassEditPage() {
   }
  }
 
- if (authLoading || loading) return <LoadingState />
- if (!user || user.role !== 'ADMIN') return null
+ if (loading) return <LoadingState />
 
  // Filter events
  const now = Date.now()

@@ -61,7 +61,7 @@ function formatDate(iso: string) {
 export default function AdminNewRegistrationPage() {
  const params = useParams()
  const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
 
  const raceId = params.raceId as string
 
@@ -117,15 +117,10 @@ export default function AdminNewRegistrationPage() {
    }
   }
 
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadRace()
   }
- }, [authLoading, user, accessToken, raceId, router])
+ }, [accessToken, raceId])
 
  // Calculate max date for 16 years old
  const today = new Date()
@@ -178,16 +173,12 @@ export default function AdminNewRegistrationPage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return (
    <div className="flex items-center justify-center py-12">
     <div className="animate-pulse text-text-secondary">Učitavanje...</div>
    </div>
   )
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  if (!race) {
