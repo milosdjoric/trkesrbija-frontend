@@ -5,7 +5,7 @@ import {
   ChevronDownIcon,
   Cog8ToothIcon,
   LightBulbIcon,
-  MapIcon,
+
   ClockIcon,
   MoonIcon,
   SunIcon,
@@ -104,21 +104,6 @@ export function SiteHeader() {
                 <ChevronDownIcon className="size-4 text-text-secondary" />
               </DropdownButton>
               <DropdownMenu anchor="bottom end" className="min-w-56">
-                {/* Quick links visible only on mobile (desktop has nav bar) */}
-                <div className="lg:hidden">
-                  <DropdownItem href="/events">
-                    <DropdownLabel>Događaji</DropdownLabel>
-                  </DropdownItem>
-                  <DropdownItem href="/calendar">
-                    <DropdownLabel>Kalendar</DropdownLabel>
-                  </DropdownItem>
-                  <DropdownItem href="/gpx-analyzer">
-                    <MapIcon />
-                    <DropdownLabel>GPX Analyzer</DropdownLabel>
-                  </DropdownItem>
-                  <DropdownDivider />
-                </div>
-
                 <DropdownItem href="/settings">
                   <Cog8ToothIcon />
                   <DropdownLabel>Podešavanja</DropdownLabel>
