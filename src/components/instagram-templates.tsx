@@ -4,7 +4,7 @@ const GREEN_BRAND = '#22c55e'
 function LogoBadge({ sub }: { sub: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <svg width="48" height="48" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
         <rect width="64" height="64" rx="14" fill="#111" />
         <circle cx="32" cy="32" r="18" fill="none" stroke="#222" strokeWidth="7" />
         <path d="M32 14 A18 18 0 1 1 14 32" fill="none" stroke={GREEN_BRAND} strokeWidth="7" strokeLinecap="round" />
@@ -12,8 +12,8 @@ function LogoBadge({ sub }: { sub: string }) {
         <circle cx="14" cy="32" r="4.5" fill={GREEN_BRAND} />
       </svg>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-        <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.01em', color: GREEN }}>trke</span>
-        <span style={{ fontSize: 20, fontWeight: 300, color: sub }}>srbija</span>
+        <span style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.01em', color: GREEN }}>trke</span>
+        <span style={{ fontSize: 24, fontWeight: 300, color: sub }}>srbija</span>
       </div>
     </div>
   )
@@ -582,7 +582,7 @@ export function PostNajave({
         {data.naslov}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, justifyContent: 'center', overflow: 'hidden' }}>
         {events.map((ev, i) => (
           <div
             key={i}
@@ -621,7 +621,7 @@ export function PostNajave({
         )}
       </div>
 
-      <div style={{ marginTop: 12, background: GREEN, borderRadius: 10, padding: '10px 16px', textAlign: 'center' }}>
+      <div style={{ marginTop: 6, background: GREEN, borderRadius: 10, padding: '10px 16px', textAlign: 'center' }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: '#0a0a0a', letterSpacing: '0.02em' }}>{data.cta}</div>
       </div>
 
