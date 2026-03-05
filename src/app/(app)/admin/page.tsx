@@ -9,6 +9,7 @@ import { LoadingState } from '@/components/loading-state'
 import { StatsGrid } from '@/components/stats-grid'
 import {
  CalendarIcon,
+ CameraIcon,
  ClipboardDocumentListIcon,
  ExclamationTriangleIcon,
  FlagIcon,
@@ -205,6 +206,17 @@ export default function AdminDashboardPage() {
       <div className="text-sm text-text-secondary">Korisničke prijave pogrešnih podataka</div>
      </div>
      <ExclamationTriangleIcon className="size-8 text-red-500" />
+    </Link>
+
+    <Link
+     href="/admin/instagram"
+     className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
+    >
+     <div>
+      <div className="font-medium">Instagram</div>
+      <div className="text-sm text-text-secondary">Sabloni za objave</div>
+     </div>
+     <CameraIcon className="size-8 text-pink-500" />
     </Link>
 
    </div>
