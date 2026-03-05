@@ -284,8 +284,8 @@ export default function AdminUsersPage() {
              disabled={updatingId === u.id || deletingId === u.id}
              className={`rounded px-2 py-1 text-xs ${
               u.role === 'ADMIN'
-               ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
-               : 'bg-purple-900/30 text-purple-400 hover:bg-purple-900/50'
+               ? 'bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50'
+               : 'bg-purple-100 text-purple-700 hover:bg-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:hover:bg-purple-900/50'
              } ${updatingId === u.id ? 'opacity-50' : ''}`}
             >
              {updatingId === u.id
@@ -297,7 +297,7 @@ export default function AdminUsersPage() {
             <button
              onClick={() => handleDeleteUser(u)}
              disabled={updatingId === u.id || deletingId === u.id}
-             className={`rounded px-2 py-1 text-xs bg-red-900/30 text-red-400 hover:bg-red-900/50 ${deletingId === u.id ? 'opacity-50' : ''}`}
+             className={`rounded px-2 py-1 text-xs bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 ${deletingId === u.id ? 'opacity-50' : ''}`}
             >
              {deletingId === u.id ? '...' : 'Obriši'}
             </button>

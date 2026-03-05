@@ -143,68 +143,68 @@ export default function AdminDashboardPage() {
    <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
     <Link
      href="/admin/events"
-     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
+     className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
-     <CalendarIcon className="size-8 text-blue-500" />
      <div>
       <div className="font-medium">Događaji</div>
       <div className="text-sm text-text-secondary">Upravljaj događajima</div>
      </div>
+     <CalendarIcon className="size-8 text-blue-500" />
     </Link>
 
     <Link
      href="/admin/races"
-     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
+     className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
-     <FlagIcon className="size-8 text-emerald-500" />
      <div>
       <div className="font-medium">Trke</div>
       <div className="text-sm text-text-secondary">Registracije & checkpoint-i</div>
      </div>
+     <FlagIcon className="size-8 text-emerald-500" />
     </Link>
 
     <Link
      href="/admin/trainings"
-     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
+     className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
-     <BoltIcon className="size-8 text-indigo-500" />
      <div>
       <div className="font-medium">Treninzi</div>
       <div className="text-sm text-text-secondary">Svi treninzi korisnika</div>
      </div>
+     <BoltIcon className="size-8 text-indigo-500" />
     </Link>
 
     <Link
      href="/admin/users"
-     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
+     className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
-     <UserGroupIcon className="size-8 text-purple-500" />
      <div>
       <div className="font-medium">Korisnici</div>
       <div className="text-sm text-text-secondary">Upravljaj korisnicima</div>
      </div>
+     <UserGroupIcon className="size-8 text-purple-500" />
     </Link>
 
     <Link
      href="/admin/import"
-     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
+     className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
-     <ArrowUpTrayIcon className="size-8 text-amber-500" />
      <div>
       <div className="font-medium">Import</div>
       <div className="text-sm text-text-secondary">CSV import podataka</div>
      </div>
+     <ArrowUpTrayIcon className="size-8 text-amber-500" />
     </Link>
 
     <Link
      href="/admin/reports"
-     className="flex flex-col items-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
+     className="flex h-full flex-col items-center justify-center gap-2 rounded-lg border border-border-primary p-4 text-center transition-colors hover:border-border-secondary hover:bg-card-hover"
     >
-     <ExclamationTriangleIcon className="size-8 text-red-500" />
      <div>
       <div className="font-medium">Prijave grešaka</div>
       <div className="text-sm text-text-secondary">Korisničke prijave pogrešnih podataka</div>
      </div>
+     <ExclamationTriangleIcon className="size-8 text-red-500" />
     </Link>
 
    </div>
