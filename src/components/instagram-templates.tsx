@@ -519,7 +519,7 @@ export function PostNajave({
         fontFamily: 'Urbanist, sans-serif',
         display: 'flex',
         flexDirection: 'column',
-        padding: 36,
+        padding: 28,
         boxSizing: 'border-box',
         position: 'relative',
         overflow: 'hidden',
@@ -538,7 +538,7 @@ export function PostNajave({
         }}
       />
 
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 12 }}>
         <LogoBadge sub={sub} />
       </div>
 
@@ -550,15 +550,15 @@ export function PostNajave({
           background: `${GREEN}18`,
           border: `1px solid ${GREEN}40`,
           borderRadius: 20,
-          padding: '4px 12px',
-          marginBottom: 14,
+          padding: '3px 10px',
+          marginBottom: 8,
           width: 'fit-content',
         }}
       >
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: GREEN }} />
+        <div style={{ width: 5, height: 5, borderRadius: '50%', background: GREEN }} />
         <span
           style={{
-            fontSize: 10,
+            fontSize: 9,
             fontWeight: 700,
             color: GREEN,
             letterSpacing: '0.1em',
@@ -571,29 +571,29 @@ export function PostNajave({
 
       <div
         style={{
-          fontSize: 28,
+          fontSize: 24,
           fontWeight: 900,
           color: text,
           lineHeight: 1.1,
-          marginBottom: 16,
+          marginBottom: 10,
           letterSpacing: '-0.02em',
         }}
       >
         {data.naslov}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, minHeight: 0, overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1, minHeight: 0, overflow: 'hidden' }}>
         {events.map((ev, i) => (
           <div
             key={i}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 10,
+              gap: 8,
               background: cardBg,
               border: `1px solid ${border}`,
-              borderRadius: 10,
-              padding: '8px 12px',
+              borderRadius: 8,
+              padding: '6px 10px',
             }}
           >
             <div
@@ -606,23 +606,23 @@ export function PostNajave({
               }}
             />
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: text, lineHeight: 1.2 }}>{ev.naziv}</div>
-              <div style={{ display: 'flex', gap: 8, marginTop: 2 }}>
-                <span style={{ fontSize: 10, color: sub }}>{ev.datum}</span>
-                <span style={{ fontSize: 10, color: GREEN, fontWeight: 600 }}>{ev.distance}</span>
+              <div style={{ fontSize: 12, fontWeight: 700, color: text, lineHeight: 1.2 }}>{ev.naziv}</div>
+              <div style={{ display: 'flex', gap: 6, marginTop: 1 }}>
+                <span style={{ fontSize: 9, color: sub }}>{ev.datum}</span>
+                <span style={{ fontSize: 9, color: GREEN, fontWeight: 600 }}>{ev.distance}</span>
               </div>
             </div>
           </div>
         ))}
         {events.length === 0 && (
-          <div style={{ fontSize: 13, color: sub, fontStyle: 'italic', padding: '8px 0' }}>
+          <div style={{ fontSize: 12, color: sub, fontStyle: 'italic', padding: '6px 0' }}>
             Izaberi dogadjaje sa leve strane
           </div>
         )}
       </div>
 
-      <div style={{ marginTop: 12, flexShrink: 0, background: GREEN, borderRadius: 10, padding: '10px 16px', textAlign: 'center' }}>
-        <div style={{ fontSize: 12, fontWeight: 800, color: '#0a0a0a', letterSpacing: '0.02em' }}>{data.cta}</div>
+      <div style={{ marginTop: 10, flexShrink: 0, background: GREEN, borderRadius: 8, padding: '8px 14px', textAlign: 'center' }}>
+        <div style={{ fontSize: 11, fontWeight: 800, color: '#0a0a0a', letterSpacing: '0.02em' }}>{data.cta}</div>
       </div>
 
     </div>
