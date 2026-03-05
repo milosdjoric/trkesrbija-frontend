@@ -45,6 +45,12 @@ const UPDATE_USER_ROLE_MUTATION = `
  }
 `
 
+const DELETE_USER_MUTATION = `
+ mutation DeleteUser($userId: ID!) {
+  deleteUser(userId: $userId)
+ }
+`
+
 export default function AdminUsersPage() {
  const router = useRouter()
  const { user, accessToken, isLoading: authLoading } = useAuth()
@@ -56,6 +62,7 @@ export default function AdminUsersPage() {
  const [search, setSearch] = useState('')
  const [filterRole, setFilterRole] = useState<'ALL' | 'ADMIN' | 'STANDARD' | 'JUDGE'>('ALL')
  const [updatingId, setUpdatingId] = useState<string | null>(null)
+ const [deletingId, setDeletingId] = useState<string | null>(null)
 
  const loadData = useCallback(async () => {
   if (!accessToken) return
@@ -110,6 +117,28 @@ export default function AdminUsersPage() {
    toast(err?.message ?? 'Greška pri promeni uloge', 'error')
   } finally {
    setUpdatingId(null)
+  }
+ }
+
+ async function handleDeleteUser(targetUser: User) {
+  const confirmed = await confirm({
+   title: 'Obriši korisnika',
+   message: `Da li ste sigurni da želite da obrišete korisnika ${targetUser.email}? Ova akcija je nepovratna i briše sve podatke korisnika.`,
+   confirmText: 'Obriši',
+   variant: 'danger',
+  })
+
+  if (!confirmed) return
+
+  setDeletingId(targetUser.id)
+  try {
+   await gql(DELETE_USER_MUTATION, { userId: targetUser.id }, { accessToken })
+   setUsers((prev) => prev.filter((u) => u.id !== targetUser.id))
+   toast('Korisnik je obrisan', 'success')
+  } catch (err: any) {
+   toast(err?.message ?? 'Greška pri brisanju korisnika', 'error')
+  } finally {
+   setDeletingId(null)
   }
  }
 
@@ -259,24 +288,32 @@ export default function AdminUsersPage() {
           {formatDate(u.createdAt)}
          </td>
          <td className="px-4 py-3 text-right">
-          {u.id !== user.id && (
-           <button
-            onClick={() => handleToggleAdmin(u)}
-            disabled={updatingId === u.id}
-            className={`rounded px-2 py-1 text-xs ${
-             u.role === 'ADMIN'
-              ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
-              : 'bg-purple-900/30 text-purple-400 hover:bg-purple-900/50'
-            } ${updatingId === u.id ? 'opacity-50' : ''}`}
-           >
-            {updatingId === u.id
-             ? '...'
-             : u.role === 'ADMIN'
-              ? 'Ukloni admin'
-              : 'Dodeli admin'}
-           </button>
-          )}
-          {u.id === user.id && (
+          {u.id !== user.id ? (
+           <div className="flex items-center justify-end gap-2">
+            <button
+             onClick={() => handleToggleAdmin(u)}
+             disabled={updatingId === u.id || deletingId === u.id}
+             className={`rounded px-2 py-1 text-xs ${
+              u.role === 'ADMIN'
+               ? 'bg-red-900/30 text-red-400 hover:bg-red-900/50'
+               : 'bg-purple-900/30 text-purple-400 hover:bg-purple-900/50'
+             } ${updatingId === u.id ? 'opacity-50' : ''}`}
+            >
+             {updatingId === u.id
+              ? '...'
+              : u.role === 'ADMIN'
+               ? 'Ukloni admin'
+               : 'Dodeli admin'}
+            </button>
+            <button
+             onClick={() => handleDeleteUser(u)}
+             disabled={updatingId === u.id || deletingId === u.id}
+             className={`rounded px-2 py-1 text-xs bg-red-900/30 text-red-400 hover:bg-red-900/50 ${deletingId === u.id ? 'opacity-50' : ''}`}
+            >
+             {deletingId === u.id ? '...' : 'Obriši'}
+            </button>
+           </div>
+          ) : (
            <span className="text-xs text-text-secondary">Ti</span>
           )}
          </td>
