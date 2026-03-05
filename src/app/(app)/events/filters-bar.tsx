@@ -8,7 +8,7 @@ import { Select } from '@/components/select'
 import { AdjustmentsHorizontalIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/16/solid'
 import NextLink from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 
 type Competition = { id: string; name: string }
 
@@ -30,6 +30,7 @@ type Initial = {
 export function FiltersBar({ initial, competitions }: { initial: Initial; competitions: Competition[] }) {
   const router = useRouter()
   const sp = useSearchParams()
+  const [isPending, startTransition] = useTransition()
 
   const [q, setQ] = useState(initial.q ?? '')
   const [lenMin, setLenMin] = useState(initial.lenMin ?? '')
@@ -129,7 +130,9 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     if (q.trim()) {
       trackEvent({ type: 'SEARCH', metadata: { query: q.trim(), eventType } })
     }
-    router.push(`/events${buildQueryString()}`)
+    startTransition(() => {
+      router.push(`/events${buildQueryString()}`)
+    })
   }
 
   return (
@@ -284,8 +287,8 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
         {/* Buttons and toggle */}
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex items-center gap-2">
-            <Button id="applyBtn" type="submit">
-              {dirty ? 'Primeni izmene' : 'Primeni'}
+            <Button id="applyBtn" type="submit" disabled={isPending}>
+              {isPending ? 'Učitavanje...' : dirty ? 'Primeni izmene' : 'Primeni'}
             </Button>
             <span className={`text-sm/6 ${dirty ? '' : 'hidden'}`}>Izmene nisu primenjene</span>
             {clearVisible ? (
