@@ -11,10 +11,23 @@ import {
   type TemplateMode,
 } from '@/components/instagram-templates'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
+
+const DESIGN_SIZE = 420
 
 function Preview() {
   const sp = useSearchParams()
+  const [scale, setScale] = useState(1)
+
+  useEffect(() => {
+    function calcScale() {
+      const size = Math.min(window.innerWidth, window.innerHeight)
+      setScale(size / DESIGN_SIZE)
+    }
+    calcScale()
+    window.addEventListener('resize', calcScale)
+    return () => window.removeEventListener('resize', calcScale)
+  }, [])
 
   let mode: TemplateMode = 'najava'
   let dark = true
@@ -43,12 +56,16 @@ function Preview() {
         alignItems: 'center',
         justifyContent: 'center',
         background: '#000',
+        overflow: 'hidden',
       }}
     >
       <div
         style={{
-          width: '100vmin',
-          height: '100vmin',
+          width: DESIGN_SIZE,
+          height: DESIGN_SIZE,
+          transform: `scale(${scale})`,
+          transformOrigin: 'center center',
+          flexShrink: 0,
         }}
       >
         {mode === 'najava' && <PostNajava data={data.najava} dark={dark} />}
