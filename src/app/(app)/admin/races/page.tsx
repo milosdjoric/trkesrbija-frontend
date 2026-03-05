@@ -88,7 +88,7 @@ const DUPLICATE_RACE_MUTATION = `
 
 export default function AdminRacesPage() {
  const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
 
  const [loading, setLoading] = useState(true)
@@ -121,15 +121,10 @@ export default function AdminRacesPage() {
  }, [accessToken])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadData()
   }
- }, [authLoading, user, accessToken, router, loadData])
+ }, [accessToken, loadData])
 
  async function handleToggleRegistration(raceId: string, currentEnabled: boolean) {
   setTogglingId(raceId)
@@ -187,12 +182,8 @@ export default function AdminRacesPage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  // Filter races

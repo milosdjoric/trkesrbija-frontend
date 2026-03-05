@@ -126,7 +126,7 @@ const UPDATE_RACE_MUTATION = `
 export default function EditRacePage() {
  const params = useParams()
  const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
 
  const raceId = params.raceId as string
@@ -200,16 +200,11 @@ export default function EditRacePage() {
  }, [accessToken, raceId, toast])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken && !loadedRef.current) {
    loadedRef.current = true
    loadRace()
   }
- }, [authLoading, user, accessToken, loadRace, router])
+ }, [accessToken, loadRace])
 
  async function handleSubmit(e: React.FormEvent) {
   e.preventDefault()
@@ -265,12 +260,8 @@ export default function EditRacePage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  if (!race) {

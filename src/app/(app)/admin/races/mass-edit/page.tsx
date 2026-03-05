@@ -9,7 +9,6 @@ import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
 import { toTitleCase } from '@/lib/formatters'
 import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type Competition = {
@@ -84,8 +83,7 @@ const UPDATE_RACE_MUTATION = `
 `
 
 export default function RacesMassEditPage() {
- const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
 
  const [races, setRaces] = useState<RaceRow[]>([])
@@ -119,15 +117,10 @@ export default function RacesMassEditPage() {
  }, [accessToken])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken) {
    loadData()
   }
- }, [authLoading, user, accessToken, router, loadData])
+ }, [accessToken, loadData])
 
  async function handleUpdateField(
   raceId: string,
@@ -260,8 +253,7 @@ export default function RacesMassEditPage() {
   }
  }
 
- if (authLoading || loading) return <LoadingState />
- if (!user || user.role !== 'ADMIN') return null
+ if (loading) return <LoadingState />
 
  // Build competition options
  const competitionOptions = competitions.map((c) => ({ value: c.id, label: c.name }))

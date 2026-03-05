@@ -128,7 +128,7 @@ const DUPLICATE_RACE_MUTATION = `
 export default function EditEventPage() {
  const params = useParams()
  const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
  const { confirm } = useConfirm()
 
@@ -190,16 +190,11 @@ export default function EditEventPage() {
  }, [accessToken, eventId, toast])
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken && !loadedRef.current) {
    loadedRef.current = true
    loadEvent()
   }
- }, [authLoading, user, accessToken, loadEvent, router])
+ }, [accessToken, loadEvent])
 
  async function handleSubmit(e: React.FormEvent) {
   e.preventDefault()
@@ -281,12 +276,8 @@ export default function EditEventPage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  if (!event) {

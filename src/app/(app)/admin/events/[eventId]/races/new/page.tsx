@@ -55,7 +55,7 @@ const CREATE_RACE_MUTATION = `
 export default function NewRacePage() {
  const params = useParams()
  const router = useRouter()
- const { user, accessToken, isLoading: authLoading } = useAuth()
+ const { accessToken } = useAuth()
  const { toast } = useToast()
 
  const eventId = params.eventId as string
@@ -79,11 +79,6 @@ export default function NewRacePage() {
  const [gpsFile, setGpsFile] = useState('')
 
  useEffect(() => {
-  if (!authLoading && (!user || user.role !== 'ADMIN')) {
-   router.push('/')
-   return
-  }
-
   if (accessToken && !loadedRef.current) {
    loadedRef.current = true
 
@@ -114,7 +109,7 @@ export default function NewRacePage() {
      setLoading(false)
     })
   }
- }, [authLoading, user, accessToken, eventId, router, toast])
+ }, [accessToken, eventId, toast])
 
  async function handleSubmit(e: React.FormEvent) {
   e.preventDefault()
@@ -165,12 +160,8 @@ export default function NewRacePage() {
   }
  }
 
- if (authLoading || loading) {
+ if (loading) {
   return <LoadingState />
- }
-
- if (!user || user.role !== 'ADMIN') {
-  return null
  }
 
  if (!event) {
