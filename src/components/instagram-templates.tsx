@@ -582,7 +582,7 @@ export function PostNajave({
         {data.naslov}
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, justifyContent: 'center', overflow: 'hidden' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, overflow: 'hidden' }}>
         {events.map((ev, i) => (
           <div
             key={i}
@@ -621,7 +621,7 @@ export function PostNajave({
         )}
       </div>
 
-      <div style={{ marginTop: 6, background: GREEN, borderRadius: 10, padding: '10px 16px', textAlign: 'center' }}>
+      <div style={{ marginTop: 'auto', background: GREEN, borderRadius: 10, padding: '10px 16px', textAlign: 'center' }}>
         <div style={{ fontSize: 12, fontWeight: 800, color: '#0a0a0a', letterSpacing: '0.02em' }}>{data.cta}</div>
       </div>
 
