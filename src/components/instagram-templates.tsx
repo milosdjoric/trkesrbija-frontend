@@ -4,7 +4,7 @@ const GREEN_BRAND = '#22c55e'
 function LogoBadge({ sub }: { sub: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <svg width="28" height="28" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
         <rect width="64" height="64" rx="14" fill="#111" />
         <circle cx="32" cy="32" r="18" fill="none" stroke="#222" strokeWidth="7" />
         <path d="M32 14 A18 18 0 1 1 14 32" fill="none" stroke={GREEN_BRAND} strokeWidth="7" strokeLinecap="round" />
@@ -12,8 +12,8 @@ function LogoBadge({ sub }: { sub: string }) {
         <circle cx="14" cy="32" r="4.5" fill={GREEN_BRAND} />
       </svg>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 1 }}>
-        <span style={{ fontSize: 15, fontWeight: 800, letterSpacing: '-0.01em', color: GREEN }}>trke</span>
-        <span style={{ fontSize: 15, fontWeight: 300, color: sub }}>srbija</span>
+        <span style={{ fontSize: 20, fontWeight: 800, letterSpacing: '-0.01em', color: GREEN }}>trke</span>
+        <span style={{ fontSize: 20, fontWeight: 300, color: sub }}>srbija</span>
       </div>
     </div>
   )
@@ -34,12 +34,10 @@ export const defaultData = {
     mesto: 'Nis, Srbija',
     distanca: '21.1 km',
     cta: 'Prijavi se na trkesrbija.rs',
-    hashtag: '#NiskiPolumaraton #TrkeSrbija',
   },
   najave: {
     naslov: 'Predstojeće trke',
     cta: 'Više informacija na trkesrbija.rs',
-    hashtag: '#TrkeSrbija',
   },
   info: {
     naziv: 'Fruska Gora Trail',
@@ -47,7 +45,6 @@ export const defaultData = {
     visina: '1.200 m D+',
     start: '07:00h — Centar Iriga',
     rok: 'Prijave do 10. maja',
-    hashtag: '#FruskaGoraTrail #TrkeSrbija',
   },
   rezultati: {
     naziv: 'Beogradski Maraton',
@@ -56,7 +53,6 @@ export const defaultData = {
     vreme: '2:28:14',
     top2: 'Jovan Petrovic — 2:31:05',
     top3: 'Stefan Djordic — 2:33:44',
-    hashtag: '#BeogradskiMaraton #TrkeSrbija',
   },
 }
 
@@ -69,12 +65,10 @@ export const fieldConfig: Record<TemplateMode, Array<{ key: string; label: strin
     { key: 'mesto', label: 'Mesto' },
     { key: 'distanca', label: 'Distanca' },
     { key: 'cta', label: 'Poziv na akciju (CTA)' },
-    { key: 'hashtag', label: 'Hashtag' },
   ],
   najave: [
     { key: 'naslov', label: 'Naslov' },
     { key: 'cta', label: 'Poziv na akciju (CTA)' },
-    { key: 'hashtag', label: 'Hashtag' },
   ],
   info: [
     { key: 'naziv', label: 'Naziv trke' },
@@ -82,7 +76,6 @@ export const fieldConfig: Record<TemplateMode, Array<{ key: string; label: strin
     { key: 'visina', label: 'Visinska razlika' },
     { key: 'start', label: 'Start' },
     { key: 'rok', label: 'Rok za prijave' },
-    { key: 'hashtag', label: 'Hashtag' },
   ],
   rezultati: [
     { key: 'naziv', label: 'Naziv trke' },
@@ -91,7 +84,6 @@ export const fieldConfig: Record<TemplateMode, Array<{ key: string; label: strin
     { key: 'vreme', label: 'Vreme pobednika' },
     { key: 'top2', label: '2. mesto' },
     { key: 'top3', label: '3. mesto' },
-    { key: 'hashtag', label: 'Hashtag' },
   ],
 }
 
@@ -231,7 +223,6 @@ export function PostNajava({ data, dark }: { data: TemplateData['najava']; dark:
         <div style={{ fontSize: 13, fontWeight: 800, color: '#0a0a0a', letterSpacing: '0.02em' }}>{data.cta}</div>
       </div>
 
-      <div style={{ marginTop: 12, fontSize: 11, color: sub, fontWeight: 500 }}>{data.hashtag}</div>
     </div>
   )
 }
@@ -373,9 +364,6 @@ export function PostInfo({ data, dark }: { data: TemplateData['info']; dark: boo
         ))}
       </div>
 
-      <div style={{ marginTop: 'auto', paddingTop: 16, fontSize: 11, color: sub, fontWeight: 500 }}>
-        {data.hashtag}
-      </div>
     </div>
   )
 }
@@ -503,9 +491,6 @@ export function PostRezultati({ data, dark }: { data: TemplateData['rezultati'];
         ))}
       </div>
 
-      <div style={{ marginTop: 'auto', paddingTop: 14, fontSize: 11, color: sub, fontWeight: 500 }}>
-        {data.hashtag}
-      </div>
     </div>
   )
 }
@@ -640,7 +625,6 @@ export function PostNajave({
         <div style={{ fontSize: 12, fontWeight: 800, color: '#0a0a0a', letterSpacing: '0.02em' }}>{data.cta}</div>
       </div>
 
-      <div style={{ marginTop: 8, fontSize: 10, color: sub, fontWeight: 500 }}>{data.hashtag}</div>
     </div>
   )
 }
