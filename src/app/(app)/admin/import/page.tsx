@@ -13,6 +13,7 @@ import {
  ExclamationTriangleIcon,
  XCircleIcon,
 } from '@heroicons/react/16/solid'
+import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'
 import { useRef, useState } from 'react'
 
 type ImportType = 'events' | 'races' | 'combined'
@@ -413,12 +414,33 @@ export default function ImportPage() {
  const [parsedRaces, setParsedRaces] = useState<ParsedRace[]>([])
  const [parsedCombined, setParsedCombined] = useState<ParsedCombinedRow[]>([])
  const [importing, setImporting] = useState(false)
+ const [pasteText, setPasteText] = useState('')
+ const [inputMode, setInputMode] = useState<'file' | 'paste'>('file')
  const [importResult, setImportResult] = useState<{
   success: boolean
   imported: number
   failed: number
   errors: string[]
  } | null>(null)
+
+ function processCSVText(text: string) {
+  const rows = parseCSV(text)
+
+  if (importType === 'events') {
+   setParsedEvents(parseEvents(rows))
+   setParsedRaces([])
+   setParsedCombined([])
+  } else if (importType === 'races') {
+   setParsedRaces(parseRaces(rows))
+   setParsedEvents([])
+   setParsedCombined([])
+  } else {
+   setParsedCombined(parseCombined(rows))
+   setParsedEvents([])
+   setParsedRaces([])
+  }
+  setImportResult(null)
+ }
 
  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
   const file = e.target.files?.[0]
@@ -427,24 +449,17 @@ export default function ImportPage() {
   const reader = new FileReader()
   reader.onload = (event) => {
    const text = event.target?.result as string
-   const rows = parseCSV(text)
-
-   if (importType === 'events') {
-    setParsedEvents(parseEvents(rows))
-    setParsedRaces([])
-    setParsedCombined([])
-   } else if (importType === 'races') {
-    setParsedRaces(parseRaces(rows))
-    setParsedEvents([])
-    setParsedCombined([])
-   } else {
-    setParsedCombined(parseCombined(rows))
-    setParsedEvents([])
-    setParsedRaces([])
-   }
-   setImportResult(null)
+   processCSVText(text)
   }
   reader.readAsText(file)
+ }
+
+ function handlePaste() {
+  if (!pasteText.trim()) {
+   toast('Nalepite CSV sadržaj u polje', 'error')
+   return
+  }
+  processCSVText(pasteText)
  }
 
  async function handleImport() {
@@ -605,6 +620,7 @@ export default function ImportPage() {
   setParsedRaces([])
   setParsedCombined([])
   setImportResult(null)
+  setPasteText('')
   if (fileInputRef.current) {
    fileInputRef.current.value = ''
   }
@@ -712,27 +728,68 @@ export default function ImportPage() {
     )}
    </div>
 
-   {/* File Upload */}
-   <div className="mt-6">
-    <label
-     htmlFor="csv-file"
-     className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border-secondary bg-surface p-8 transition-colors hover:border-brand-green hover:bg-card-hover"
+   {/* Input Mode Toggle */}
+   <div className="mt-6 flex gap-2">
+    <button
+     onClick={() => setInputMode('file')}
+     className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+      inputMode === 'file'
+       ? 'bg-border-secondary text-text-primary'
+       : 'text-text-secondary hover:bg-surface hover:text-text-primary'
+     }`}
     >
-     <ArrowUpTrayIcon className="size-10 text-text-secondary" />
-     <span className="mt-2 font-medium text-text-secondary">
-      Kliknite za upload CSV fajla
-     </span>
-     <span className="mt-1 text-sm text-text-secondary">ili prevucite fajl ovde</span>
-     <input
-      id="csv-file"
-      ref={fileInputRef}
-      type="file"
-      accept=".csv,text/csv"
-      onChange={handleFileSelect}
-      className="hidden"
-     />
-    </label>
+     <ArrowUpTrayIcon className="size-4" />
+     Upload fajla
+    </button>
+    <button
+     onClick={() => setInputMode('paste')}
+     className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+      inputMode === 'paste'
+       ? 'bg-border-secondary text-text-primary'
+       : 'text-text-secondary hover:bg-surface hover:text-text-primary'
+     }`}
+    >
+     <ClipboardDocumentIcon className="size-4" />
+     Nalepi tekst
+    </button>
    </div>
+
+   {/* File Upload */}
+   {inputMode === 'file' ? (
+    <div className="mt-4">
+     <label
+      htmlFor="csv-file"
+      className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-border-secondary bg-surface p-8 transition-colors hover:border-brand-green hover:bg-card-hover"
+     >
+      <ArrowUpTrayIcon className="size-10 text-text-secondary" />
+      <span className="mt-2 font-medium text-text-secondary">
+       Kliknite za upload CSV fajla
+      </span>
+      <span className="mt-1 text-sm text-text-secondary">ili prevucite fajl ovde</span>
+      <input
+       id="csv-file"
+       ref={fileInputRef}
+       type="file"
+       accept=".csv,text/csv"
+       onChange={handleFileSelect}
+       className="hidden"
+      />
+     </label>
+    </div>
+   ) : (
+    <div className="mt-4">
+     <textarea
+      value={pasteText}
+      onChange={(e) => setPasteText(e.target.value)}
+      placeholder={'tip_reda,naziv_dogadjaja,tip_dogadjaja,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje\ndogadjaj,Fruska Gora Trail,TRAIL,,,,,,\ntrka,,,,42,1200,2025-06-15 07:00,Irig,da,'}
+      className="w-full rounded-lg border border-border-secondary bg-surface px-4 py-3 font-mono text-sm text-text-primary outline-none placeholder:text-text-secondary/40 focus:border-brand-green focus:ring-1 focus:ring-brand-green"
+      rows={8}
+     />
+     <Button onClick={handlePaste} className="mt-3" disabled={!pasteText.trim()}>
+      Parsiraj CSV
+     </Button>
+    </div>
+   )}
 
    {/* Preview */}
    {hasData && (
