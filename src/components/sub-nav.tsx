@@ -21,7 +21,7 @@ export function SubNav() {
   const pathname = usePathname()
   const { user, isLoading } = useAuth()
 
-  if (isLoading || !user || user.role !== 'ADMIN' || !pathname.startsWith('/admin')) return null
+  if (isLoading || !user || user.role !== 'ADMIN') return null
 
   return (
     <nav className="border-b border-border-primary">
