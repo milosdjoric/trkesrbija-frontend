@@ -140,7 +140,7 @@ export default function AdminInstagramPage() {
       const location = firstRace?.startLocation || ''
       const country = countryLabel(event.country)
       const mesto = [location, country].filter(Boolean).join(', ')
-      const distances = selectedRaces.map((r) => `${r.length} km`).join(' / ')
+      const distances = [...selectedRaces].sort((a, b) => a.length - b.length).map((r) => `${r.length} km`).join(' / ')
       const maxElevation = Math.max(...selectedRaces.map((r) => r.elevation ?? 0), 0)
       const visina = maxElevation > 0 ? `${maxElevation} m D+` : ''
       const hashtag = `#${name.replace(/\s+/g, '')} #TrkeSrbija`
@@ -234,7 +234,7 @@ export default function AdminInstagramPage() {
           .map((e) => ({
             naziv: e.eventName,
             datum: e.races[0] ? formatDateShort(e.races[0].startDateTime) : 'TBD',
-            distance: e.races.map((r) => `${r.length}km`).join(' / '),
+            distance: [...e.races].sort((a, b) => a.length - b.length).map((r) => `${r.length}km`).join(' / '),
           }))
         setNajaveEvents(list)
 
@@ -335,7 +335,7 @@ export default function AdminInstagramPage() {
                 <div className="flex max-h-64 flex-col gap-1 overflow-y-auto rounded-lg border border-border-secondary p-2">
                   {events.map((ev) => {
                     const date = ev.races[0] ? formatDateShort(ev.races[0].startDateTime) : ''
-                    const distances = ev.races.map((r) => `${r.length}km`).join(', ')
+                    const distances = [...ev.races].sort((a, b) => a.length - b.length).map((r) => `${r.length}km`).join(', ')
                     return (
                       <label
                         key={ev.id}
