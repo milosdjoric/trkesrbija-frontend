@@ -484,19 +484,19 @@ function StoryLogoBadge({ sub, dark }: { sub: string; dark: boolean }) {
 
 function StoryHeader({ badge, sub, dark }: { badge: string; sub: string; dark: boolean }) {
   return (
-    <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+    <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
       <StoryLogoBadge sub={sub} dark={dark} />
       <div
         style={{
           display: 'inline-flex',
           alignItems: 'center',
+          alignSelf: 'flex-start',
           gap: 8,
           background: `${GREEN}18`,
           border: `1px solid ${GREEN}40`,
           borderRadius: 24,
           padding: '6px 16px',
           whiteSpace: 'nowrap',
-          flexShrink: 0,
         }}
       >
         <div style={{ width: 8, height: 8, borderRadius: '50%', background: GREEN, flexShrink: 0 }} />
@@ -510,18 +510,18 @@ function StoryHeader({ badge, sub, dark }: { badge: string; sub: string; dark: b
 
 function StoryTitle({ title, subtitle, text, sub }: { title: string; text: string; sub: string; subtitle?: string }) {
   return (
-    <div style={{ flexShrink: 0, marginBottom: subtitle ? 12 : 0 }}>
+    <div style={{ flexShrink: 0, marginBottom: 12, display: 'flex', flexDirection: 'column', gap: 6 }}>
       <div style={{ fontSize: 38, fontWeight: 900, color: text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
         {title}
       </div>
-      {subtitle && <div style={{ fontSize: 16, color: sub, marginTop: 8 }}>{subtitle}</div>}
+      {subtitle && <div style={{ fontSize: 16, color: sub }}>{subtitle}</div>}
     </div>
   )
 }
 
 function StoryContent({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, justifyContent: 'center', minHeight: 0 }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 14, justifyContent: 'space-evenly', minHeight: 0 }}>
       {children}
     </div>
   )

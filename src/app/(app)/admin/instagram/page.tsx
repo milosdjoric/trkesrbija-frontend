@@ -441,7 +441,11 @@ export default function AdminInstagramPage() {
           <div
             ref={previewRef}
             className="overflow-hidden rounded-2xl shadow-xl transition-all duration-300"
-            style={{ width: format === 'post' ? 420 : 236, height: format === 'post' ? 420 : 420 }}
+            style={
+              format === 'post'
+                ? { width: 420, height: 420 }
+                : { width: 420, height: 747, transform: 'scale(0.75)', transformOrigin: 'top center', marginBottom: 747 * (0.75 - 1) }
+            }
           >
             {format === 'post' ? (
               <>
