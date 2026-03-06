@@ -195,7 +195,7 @@ function TemplateGlow() {
 export function PostNajava({ data, dark }: { data: TemplateData['najava']; dark: boolean }) {
   const bg = dark ? '#0a0a0a' : '#f8f9f4'
   const text = dark ? '#f0f0f0' : '#111'
-  const sub = dark ? '#aaa' : '#555'
+  const sub = dark ? '#888' : '#666'
   const cardBg = dark ? '#141414' : '#fff'
   const border = dark ? '#1f1f1f' : '#e8ede0'
 
@@ -559,7 +559,7 @@ function StoryGlow() {
 export function StoryNajava({ data, dark }: { data: TemplateData['najava']; dark: boolean }) {
   const bg = dark ? '#0a0a0a' : '#f8f9f4'
   const text = dark ? '#f0f0f0' : '#111'
-  const sub = dark ? '#aaa' : '#555'
+  const sub = dark ? '#888' : '#666'
   const cardBg = dark ? '#141414' : '#fff'
   const border = dark ? '#1f1f1f' : '#e8ede0'
 
