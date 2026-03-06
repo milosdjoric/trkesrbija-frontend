@@ -49,6 +49,7 @@ export const defaultData = {
   rezultati: {
     naziv: 'Beogradski Maraton',
     datum: '4. april 2025.',
+    kategorija: 'Maraton — Muski',
     prvak: 'Marko Nikolic',
     vreme: '2:28:14',
     top2: 'Jovan Petrovic — 2:31:05',
@@ -80,6 +81,7 @@ export const fieldConfig: Record<TemplateMode, Array<{ key: string; label: strin
   rezultati: [
     { key: 'naziv', label: 'Naziv trke' },
     { key: 'datum', label: 'Datum trke' },
+    { key: 'kategorija', label: 'Kategorija' },
     { key: 'prvak', label: 'Pobednik' },
     { key: 'vreme', label: 'Vreme pobednika' },
     { key: 'top2', label: '2. mesto' },
@@ -325,7 +327,7 @@ export function PostRezultati({ data, dark }: { data: TemplateData['rezultati'];
       <TemplateGlow />
 
       <TemplateHeader badge="Rezultati trke" sub={sub} dark={dark} />
-      <TemplateTitle title={data.naziv} subtitle={data.datum} text={text} sub={sub} />
+      <TemplateTitle title={data.naziv} subtitle={`${data.datum}  ·  ${data.kategorija}`} text={text} sub={sub} />
 
       <TemplateContent>
         <div
@@ -333,7 +335,7 @@ export function PostRezultati({ data, dark }: { data: TemplateData['rezultati'];
             background: `linear-gradient(135deg, ${GREEN}22, ${GREEN}08)`,
             border: `1px solid ${GREEN}50`,
             borderRadius: 10,
-            padding: '14px 14px',
+            padding: '12px 14px',
             position: 'relative',
             overflow: 'hidden',
           }}
@@ -348,13 +350,13 @@ export function PostRezultati({ data, dark }: { data: TemplateData['rezultati'];
               fontWeight: 700,
               letterSpacing: '0.15em',
               textTransform: 'uppercase',
-              marginBottom: 4,
+              marginBottom: 3,
             }}
           >
             🥇 Pobednik
           </div>
-          <div style={{ fontSize: 20, fontWeight: 900, color: text, marginBottom: 2 }}>{data.prvak}</div>
-          <div style={{ fontSize: 26, fontWeight: 900, color: GREEN, letterSpacing: '-0.02em' }}>{data.vreme}</div>
+          <div style={{ fontSize: 18, fontWeight: 900, color: text, marginBottom: 1 }}>{data.prvak}</div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: GREEN, letterSpacing: '-0.02em' }}>{data.vreme}</div>
         </div>
 
         {[
@@ -366,15 +368,15 @@ export function PostRezultati({ data, dark }: { data: TemplateData['rezultati'];
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
+              gap: 10,
               background: cardBg,
               border: `1px solid ${border}`,
               borderRadius: 10,
-              padding: '12px 14px',
+              padding: '9px 14px',
             }}
           >
-            <span style={{ fontSize: 18 }}>{item.medal}</span>
-            <div style={{ fontSize: 14, fontWeight: 600, color: text }}>{item.val}</div>
+            <span style={{ fontSize: 16 }}>{item.medal}</span>
+            <div style={{ fontSize: 13, fontWeight: 600, color: text }}>{item.val}</div>
           </div>
         ))}
       </TemplateContent>
