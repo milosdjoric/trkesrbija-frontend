@@ -9,7 +9,6 @@ import { LoadingState } from '@/components/loading-state'
 import { StatsGrid, type StatItem } from '@/components/stats-grid'
 import { useToast } from '@/components/toast'
 import {
- ChevronLeftIcon,
  MagnifyingGlassIcon,
  FlagIcon,
  ClipboardDocumentListIcon,
@@ -258,17 +257,6 @@ export default function AdminRacesPage() {
 
  return (
   <>
-   {/* Back link */}
-   <div className="mb-4">
-    <Link
-     href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
-    >
-     <ChevronLeftIcon className="size-4" />
-     Admin Panel
-    </Link>
-   </div>
-
    <div className="flex flex-wrap items-center justify-between gap-4">
     <Heading>Upravljanje trkama</Heading>
     <Link

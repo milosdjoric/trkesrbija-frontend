@@ -5,10 +5,8 @@ import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
 import { Heading, Subheading } from '@/components/heading'
-import { Link } from '@/components/link'
 import { useToast } from '@/components/toast'
 import {
- ChevronLeftIcon,
  ArrowUpTrayIcon,
  DocumentTextIcon,
  CheckCircleIcon,
@@ -631,16 +629,6 @@ export default function ImportPage() {
  return (
   <>
    {/* Back link */}
-   <div className="mb-4">
-    <Link
-     href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
-    >
-     <ChevronLeftIcon className="size-4" />
-     Admin Panel
-    </Link>
-   </div>
-
    <Heading>Import podataka</Heading>
    <p className="mt-2 text-sm text-text-secondary">
     Importujte događaje i trke iz CSV fajla

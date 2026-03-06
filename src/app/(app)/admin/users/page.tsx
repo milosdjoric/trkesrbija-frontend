@@ -4,11 +4,9 @@ import { useAuth } from '@/app/auth/auth-context'
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Heading } from '@/components/heading'
-import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useConfirm } from '@/components/confirm-dialog'
 import { useToast } from '@/components/toast'
-import { ChevronLeftIcon, MagnifyingGlassIcon } from '@heroicons/react/16/solid'
 import { useCallback, useEffect, useState } from 'react'
 
 type User = {
@@ -171,17 +169,6 @@ export default function AdminUsersPage() {
 
  return (
   <>
-   {/* Back link */}
-   <div className="mb-4">
-    <Link
-     href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
-    >
-     <ChevronLeftIcon className="size-4" />
-     Admin Panel
-    </Link>
-   </div>
-
    <div className="flex flex-wrap items-center justify-between gap-4">
     <Heading>Upravljanje korisnicima</Heading>
     <div className="flex gap-2 text-sm">

@@ -4,10 +4,8 @@ import { useAuth } from '@/app/auth/auth-context'
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Heading, Subheading } from '@/components/heading'
-import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
-import { ChevronLeftIcon } from '@heroicons/react/16/solid'
 import { useCallback, useEffect, useState } from 'react'
 
 type Report = {
@@ -118,16 +116,6 @@ export default function AdminReportsPage() {
 
  return (
   <>
-   <div className="mb-4">
-    <Link
-     href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
-    >
-     <ChevronLeftIcon className="size-4" />
-     Admin Panel
-    </Link>
-   </div>
-
    <Heading>Prijave grešaka</Heading>
    <p className="mt-1 text-sm text-text-secondary">
     {pendingCount > 0 ? `${pendingCount} neobrađenih prijava` : 'Nema neobrađenih prijava'}

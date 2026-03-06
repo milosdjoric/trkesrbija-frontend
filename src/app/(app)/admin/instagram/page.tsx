@@ -19,9 +19,8 @@ import {
   type TemplateFormat,
   type TemplateMode,
 } from '@/components/instagram-templates'
-import { Link } from '@/components/link'
 import { Select } from '@/components/select'
-import { ArrowTopRightOnSquareIcon, ChevronLeftIcon, ClipboardDocumentIcon } from '@heroicons/react/16/solid'
+import { ArrowTopRightOnSquareIcon, ClipboardDocumentIcon } from '@heroicons/react/16/solid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type RaceInfo = {
@@ -292,13 +291,6 @@ export default function AdminInstagramPage() {
         href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet"
       />
-
-      <div className="mb-4">
-        <Link href="/admin" className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary">
-          <ChevronLeftIcon className="size-4" />
-          Admin Panel
-        </Link>
-      </div>
 
       <div className="flex items-center justify-between">
         <Heading>Instagram sablon</Heading>

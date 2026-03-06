@@ -8,7 +8,7 @@ import { Heading } from '@/components/heading'
 import { Link } from '@/components/link'
 import { LoadingState } from '@/components/loading-state'
 import { useToast } from '@/components/toast'
-import { ChevronLeftIcon, TrashIcon } from '@heroicons/react/16/solid'
+import { TrashIcon } from '@heroicons/react/16/solid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type TrainingEvent = {
@@ -123,16 +123,6 @@ export default function AdminTrainingsPage() {
 
  return (
   <>
-   <div className="mb-4">
-    <Link
-     href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
-    >
-     <ChevronLeftIcon className="size-4" />
-     Admin Panel
-    </Link>
-   </div>
-
    <Heading>Svi treninzi ({events.length})</Heading>
 
    {events.length === 0 ? (

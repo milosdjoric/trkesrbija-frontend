@@ -11,7 +11,6 @@ import { StatsGrid, type StatItem } from '@/components/stats-grid'
 import { useConfirm } from '@/components/confirm-dialog'
 import { useToast } from '@/components/toast'
 import {
- ChevronLeftIcon,
  MagnifyingGlassIcon,
  PlusIcon,
  TrashIcon,
@@ -218,17 +217,6 @@ export default function AdminEventsPage() {
 
  return (
   <>
-   {/* Back link */}
-   <div className="mb-4">
-    <Link
-     href="/admin"
-     className="inline-flex items-center gap-1 text-sm text-text-secondary hover:text-text-primary"
-    >
-     <ChevronLeftIcon className="size-4" />
-     Admin Panel
-    </Link>
-   </div>
-
    <div className="flex flex-wrap items-center justify-between gap-4">
     <Heading>Upravljanje događajima</Heading>
     <div className="flex gap-2">
