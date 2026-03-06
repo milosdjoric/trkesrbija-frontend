@@ -41,6 +41,7 @@ export const defaultData = {
   },
   info: {
     naziv: 'Fruska Gora Trail',
+    podnaslov: 'Sve sto trebas da znas',
     distanca: '42 km',
     visina: '1.200 m D+',
     start: '07:00h — Centar Iriga',
@@ -73,6 +74,7 @@ export const fieldConfig: Record<TemplateMode, Array<{ key: string; label: strin
   ],
   info: [
     { key: 'naziv', label: 'Naziv trke' },
+    { key: 'podnaslov', label: 'Podnaslov' },
     { key: 'distanca', label: 'Distanca' },
     { key: 'visina', label: 'Visinska razlika' },
     { key: 'start', label: 'Start' },
@@ -134,18 +136,27 @@ function TemplateHeader({ badge, sub, dark }: { badge: string; sub: string; dark
 
 function TemplateTitle({ title, subtitle, text, sub }: { title: string; text: string; sub: string; subtitle?: string }) {
   return (
-    <div style={{ flexShrink: 0 }}>
+    <div style={{ flexShrink: 0, marginBottom: subtitle ? 8 : 0 }}>
       <div style={{ fontSize: 28, fontWeight: 900, color: text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
         {title}
       </div>
-      {subtitle && <div style={{ fontSize: 12, color: sub, marginTop: 3 }}>{subtitle}</div>}
+      {subtitle && <div style={{ fontSize: 12, color: sub, marginTop: 6 }}>{subtitle}</div>}
     </div>
   )
 }
 
-function TemplateContent({ children }: { children: React.ReactNode }) {
+function TemplateContent({ children, stretch }: { children: React.ReactNode; stretch?: boolean }) {
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10, justifyContent: 'center', minHeight: 0 }}>
+    <div
+      style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 10,
+        justifyContent: stretch ? 'space-between' : 'flex-start',
+        minHeight: 0,
+      }}
+    >
       {children}
     </div>
   )
@@ -250,29 +261,29 @@ export function PostInfo({ data, dark }: { data: TemplateData['info']; dark: boo
       <TemplateGlow />
 
       <TemplateHeader badge="Info trke" sub={sub} dark={dark} />
-      <TemplateTitle title={data.naziv} subtitle="Sve sto trebas da znas" text={text} sub={sub} />
+      <TemplateTitle title={data.naziv} subtitle={data.podnaslov} text={text} sub={sub} />
 
-      <TemplateContent>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+      <TemplateContent stretch>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {[
             { icon: '📏', label: 'Distanca', val: data.distanca },
             { icon: '⛰️', label: 'Visinska razlika', val: data.visina },
           ].map((item, i) => (
-            <div key={i} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 10, padding: '12px 14px' }}>
-              <div style={{ fontSize: 20, marginBottom: 4 }}>{item.icon}</div>
+            <div key={i} style={{ background: cardBg, border: `1px solid ${border}`, borderRadius: 10, padding: '10px 12px' }}>
+              <div style={{ fontSize: 18, marginBottom: 2 }}>{item.icon}</div>
               <div
                 style={{
-                  fontSize: 10,
+                  fontSize: 9,
                   color: GREEN,
                   fontWeight: 700,
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  marginBottom: 2,
+                  marginBottom: 1,
                 }}
               >
                 {item.label}
               </div>
-              <div style={{ fontSize: 16, fontWeight: 800, color: text }}>{item.val}</div>
+              <div style={{ fontSize: 15, fontWeight: 800, color: text }}>{item.val}</div>
             </div>
           ))}
         </div>
@@ -286,18 +297,18 @@ export function PostInfo({ data, dark }: { data: TemplateData['info']; dark: boo
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: 12,
+              gap: 10,
               background: cardBg,
               border: `1px solid ${border}`,
               borderRadius: 10,
-              padding: '12px 14px',
+              padding: '8px 12px',
             }}
           >
-            <span style={{ fontSize: 16 }}>{item.icon}</span>
+            <span style={{ fontSize: 15 }}>{item.icon}</span>
             <div>
               <div
                 style={{
-                  fontSize: 10,
+                  fontSize: 9,
                   color: GREEN,
                   fontWeight: 700,
                   textTransform: 'uppercase',
@@ -306,7 +317,7 @@ export function PostInfo({ data, dark }: { data: TemplateData['info']; dark: boo
               >
                 {item.label}
               </div>
-              <div style={{ fontSize: 14, fontWeight: 600, color: text }}>{item.val}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: text }}>{item.val}</div>
             </div>
           </div>
         ))}
@@ -329,7 +340,7 @@ export function PostRezultati({ data, dark }: { data: TemplateData['rezultati'];
       <TemplateHeader badge="Rezultati trke" sub={sub} dark={dark} />
       <TemplateTitle title={data.naziv} subtitle={`${data.datum}  ·  ${data.kategorija}`} text={text} sub={sub} />
 
-      <TemplateContent>
+      <TemplateContent stretch>
         <div
           style={{
             background: `linear-gradient(135deg, ${GREEN}22, ${GREEN}08)`,
