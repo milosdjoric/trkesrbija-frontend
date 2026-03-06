@@ -148,12 +148,11 @@ export default function AdminInstagramPage() {
       const distances = [...selectedRaces].sort((a, b) => a.length - b.length).map((r) => `${r.length} km`).join(' / ')
       const maxElevation = Math.max(...selectedRaces.map((r) => r.elevation ?? 0), 0)
       const visina = maxElevation > 0 ? `${maxElevation} m D+` : ''
-      const hashtag = `#${name.replace(/\s+/g, '')} #TrkeSrbija`
 
       if (mode === 'najava') {
         setData((prev) => ({
           ...prev,
-          najava: { naziv: name, datum, mesto, distanca: distances, cta: 'Prijavi se na trkesrbija.rs', hashtag },
+          najava: { naziv: name, datum, mesto, distanca: distances, cta: 'Prijavi se na trkesrbija.rs' },
         }))
       } else if (mode === 'info') {
         const startTime = firstRace
@@ -167,17 +166,17 @@ export default function AdminInstagramPage() {
           ...prev,
           info: {
             naziv: name,
+            podnaslov: prev.info.podnaslov,
             distanca: distances,
             visina,
             start: startTime ? `${startTime}h — ${mesto}` : mesto,
             rok: 'Prijave otvorene',
-            hashtag,
           },
         }))
       } else if (mode === 'rezultati') {
         setData((prev) => ({
           ...prev,
-          rezultati: { ...prev.rezultati, naziv: name, datum, hashtag },
+          rezultati: { ...prev.rezultati, naziv: name, datum },
         }))
       }
     },
