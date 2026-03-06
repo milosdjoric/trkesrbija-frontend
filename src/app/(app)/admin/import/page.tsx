@@ -98,6 +98,15 @@ const IMPORT_RACES_MUTATION = `
  }
 `
 
+const CHECK_DUPLICATES_QUERY = `
+ query CheckImportDuplicates($eventSlugs: [String!]!, $raceSlugs: [String!]!) {
+  checkImportDuplicates(eventSlugs: $eventSlugs, raceSlugs: $raceSlugs) {
+   existingEventSlugs
+   existingRaceSlugs
+  }
+ }
+`
+
 // Helper to generate slug from text
 function generateSlug(text: string): string {
  return text
@@ -424,6 +433,9 @@ export default function ImportPage() {
  const [pasteText, setPasteText] = useState('')
  const [inputMode, setInputMode] = useState<'file' | 'paste'>('file')
  const [override, setOverride] = useState(false)
+ const [existingEventSlugs, setExistingEventSlugs] = useState<Set<string>>(new Set())
+ const [existingRaceSlugs, setExistingRaceSlugs] = useState<Set<string>>(new Set())
+ const [checkingDuplicates, setCheckingDuplicates] = useState(false)
  const [importResult, setImportResult] = useState<{
   success: boolean
   imported: number
@@ -432,23 +444,58 @@ export default function ImportPage() {
   errors: string[]
  } | null>(null)
 
- function processCSVText(text: string) {
+ async function processCSVText(text: string) {
   const rows = parseCSV(text)
 
+  let eventSlugs: string[] = []
+  let raceSlugs: string[] = []
+
   if (importType === 'events') {
-   setParsedEvents(parseEvents(rows))
+   const events = parseEvents(rows)
+   setParsedEvents(events)
    setParsedRaces([])
    setParsedCombined([])
+   eventSlugs = events.map(e => e.slug)
   } else if (importType === 'races') {
-   setParsedRaces(parseRaces(rows))
+   const races = parseRaces(rows)
+   setParsedRaces(races)
    setParsedEvents([])
    setParsedCombined([])
+   raceSlugs = races.map(r => r.slug)
   } else {
-   setParsedCombined(parseCombined(rows))
+   const combined = parseCombined(rows)
+   setParsedCombined(combined)
    setParsedEvents([])
    setParsedRaces([])
+   eventSlugs = combined.filter(r => r.rowType === 'event').map(r => r.eventSlug!)
+   raceSlugs = combined.filter(r => r.rowType === 'race').map(r => r.raceSlug!)
   }
   setImportResult(null)
+
+  // Check for duplicates in DB
+  if (eventSlugs.length > 0 || raceSlugs.length > 0) {
+   setCheckingDuplicates(true)
+   try {
+    const result = await gql<{
+     checkImportDuplicates: { existingEventSlugs: string[]; existingRaceSlugs: string[] }
+    }>(
+     CHECK_DUPLICATES_QUERY,
+     { eventSlugs, raceSlugs },
+     { accessToken }
+    )
+    setExistingEventSlugs(new Set(result.checkImportDuplicates.existingEventSlugs))
+    setExistingRaceSlugs(new Set(result.checkImportDuplicates.existingRaceSlugs))
+   } catch {
+    // Silently fail — duplicates just won't be shown
+    setExistingEventSlugs(new Set())
+    setExistingRaceSlugs(new Set())
+   } finally {
+    setCheckingDuplicates(false)
+   }
+  } else {
+   setExistingEventSlugs(new Set())
+   setExistingRaceSlugs(new Set())
+  }
  }
 
  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
@@ -456,19 +503,19 @@ export default function ImportPage() {
   if (!file) return
 
   const reader = new FileReader()
-  reader.onload = (event) => {
+  reader.onload = async (event) => {
    const text = event.target?.result as string
-   processCSVText(text)
+   await processCSVText(text)
   }
   reader.readAsText(file)
  }
 
- function handlePaste() {
+ async function handlePaste() {
   if (!pasteText.trim()) {
    toast('Nalepite CSV sadržaj u polje', 'error')
    return
   }
-  processCSVText(pasteText)
+  await processCSVText(pasteText)
  }
 
  async function handleImport() {
@@ -652,6 +699,8 @@ export default function ImportPage() {
   setParsedCombined([])
   setImportResult(null)
   setPasteText('')
+  setExistingEventSlugs(new Set())
+  setExistingRaceSlugs(new Set())
   if (fileInputRef.current) {
    fileInputRef.current.value = ''
   }
@@ -834,6 +883,10 @@ export default function ImportPage() {
        <div className="flex items-center gap-2">
         <Badge color="green">{validCount} validno</Badge>
         {invalidCount > 0 && <Badge color="red">{invalidCount} sa greškama</Badge>}
+        {checkingDuplicates && <Badge color="zinc">Proveravam duplikate...</Badge>}
+        {!checkingDuplicates && (existingEventSlugs.size > 0 || existingRaceSlugs.size > 0) && (
+         <Badge color="amber">{existingEventSlugs.size + existingRaceSlugs.size} već postoji</Badge>
+        )}
        </div>
        <Button onClick={handleReset} outline>
         Poništi
@@ -875,14 +928,26 @@ export default function ImportPage() {
        </thead>
        <tbody className="divide-y divide-border-primary bg-card">
         {importType === 'combined' ? (
-         parsedCombined.map((row, idx) => (
+         parsedCombined.map((row, idx) => {
+          const slug = row.rowType === 'event' ? row.eventSlug : row.raceSlug
+          const isDuplicate = row.rowType === 'event'
+           ? existingEventSlugs.has(slug || '')
+           : existingRaceSlugs.has(slug || '')
+          return (
           <tr key={idx} className={`${row.valid ? '' : 'bg-red-900/10'} ${row.rowType === 'event' ? 'bg-blue-900/10' : ''}`}>
            <td className="px-4 py-3">
-            {row.valid ? (
-             <CheckCircleIcon className="size-5 text-green-500" />
-            ) : (
-             <XCircleIcon className="size-5 text-red-500" />
-            )}
+            <div className="flex items-center gap-1.5">
+             {row.valid ? (
+              <CheckCircleIcon className="size-5 text-green-500" />
+             ) : (
+              <XCircleIcon className="size-5 text-red-500" />
+             )}
+             {!checkingDuplicates && (
+              <Badge color={isDuplicate ? 'amber' : 'green'} className="text-[10px]">
+               {isDuplicate ? 'Postoji' : 'Novi'}
+              </Badge>
+             )}
+            </div>
            </td>
            <td className="px-4 py-3">
             <Badge color={row.rowType === 'event' ? 'blue' : 'emerald'}>
@@ -906,16 +971,24 @@ export default function ImportPage() {
            </td>
            <td className="px-4 py-3 text-sm text-red-600">{row.errors.join(', ') || '-'}</td>
           </tr>
-         ))
+          )
+         })
         ) : importType === 'events' ? (
          parsedEvents.map((event, idx) => (
           <tr key={idx} className={event.valid ? '' : 'bg-red-900/10'}>
            <td className="px-4 py-3">
-            {event.valid ? (
-             <CheckCircleIcon className="size-5 text-green-500" />
-            ) : (
-             <XCircleIcon className="size-5 text-red-500" />
-            )}
+            <div className="flex items-center gap-1.5">
+             {event.valid ? (
+              <CheckCircleIcon className="size-5 text-green-500" />
+             ) : (
+              <XCircleIcon className="size-5 text-red-500" />
+             )}
+             {!checkingDuplicates && (
+              <Badge color={existingEventSlugs.has(event.slug) ? 'amber' : 'green'} className="text-[10px]">
+               {existingEventSlugs.has(event.slug) ? 'Postoji' : 'Novi'}
+              </Badge>
+             )}
+            </div>
            </td>
            <td className="px-4 py-3 font-medium">{event.eventName}</td>
            <td className="px-4 py-3 text-sm text-text-secondary">{event.slug}</td>
@@ -930,11 +1003,18 @@ export default function ImportPage() {
          parsedRaces.map((race, idx) => (
           <tr key={idx} className={race.valid ? '' : 'bg-red-900/10'}>
            <td className="px-4 py-3">
-            {race.valid ? (
-             <CheckCircleIcon className="size-5 text-green-500" />
-            ) : (
-             <XCircleIcon className="size-5 text-red-500" />
-            )}
+            <div className="flex items-center gap-1.5">
+             {race.valid ? (
+              <CheckCircleIcon className="size-5 text-green-500" />
+             ) : (
+              <XCircleIcon className="size-5 text-red-500" />
+             )}
+             {!checkingDuplicates && (
+              <Badge color={existingRaceSlugs.has(race.slug) ? 'amber' : 'green'} className="text-[10px]">
+               {existingRaceSlugs.has(race.slug) ? 'Postoji' : 'Novi'}
+              </Badge>
+             )}
+            </div>
            </td>
            <td className="px-4 py-3 text-sm text-text-secondary">{race.eventSlug}</td>
            <td className="px-4 py-3 font-medium">{race.raceName}</td>
