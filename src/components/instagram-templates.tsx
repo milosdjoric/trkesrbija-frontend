@@ -137,11 +137,11 @@ function TemplateHeader({ badge, sub, dark }: { badge: string; sub: string; dark
 
 function TemplateTitle({ title, subtitle, text, sub }: { title: string; text: string; sub: string; subtitle?: string }) {
   return (
-    <div style={{ flexShrink: 0, marginBottom: subtitle ? 8 : 0 }}>
+    <div style={{ flexShrink: 0, marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 4}}>
       <div style={{ fontSize: 28, fontWeight: 900, color: text, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
         {title}
       </div>
-      {subtitle && <div style={{ fontSize: 12, color: sub, marginTop: 6 }}>{subtitle}</div>}
+      {subtitle && <div style={{ fontSize: 12, color: sub}}>{subtitle}</div>}
     </div>
   )
 }
@@ -154,7 +154,7 @@ function TemplateContent({ children, stretch }: { children: React.ReactNode; str
         display: 'flex',
         flexDirection: 'column',
         gap: 10,
-        justifyContent: stretch ? 'space-between' : 'flex-start',
+        justifyContent: stretch ? 'space-between' : 'space-evenly',
         minHeight: 0,
       }}
     >
