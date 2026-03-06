@@ -107,7 +107,10 @@ export default function RacesMassEditPage() {
     gql<{ races: RaceRow[] }>(RACES_QUERY, {}, { accessToken }),
     gql<{ competitions: Competition[] }>(COMPETITIONS_QUERY, {}, { accessToken }),
    ])
-   setRaces(racesData.races ?? [])
+   const sortedRaces = [...(racesData.races ?? [])].sort(
+    (a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime()
+   )
+   setRaces(sortedRaces)
    setCompetitions(competitionsData.competitions ?? [])
   } catch (err) {
    console.error('Failed to load data:', err)

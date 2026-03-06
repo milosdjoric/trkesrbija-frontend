@@ -96,7 +96,12 @@ export default function EventsMassEditPage() {
   loadedRef.current = true
   try {
    const data = await gql<{ raceEvents: EventRow[] }>(EVENTS_QUERY, {}, { accessToken })
-   setEvents(data.raceEvents ?? [])
+   const sorted = [...(data.raceEvents ?? [])].sort((a, b) => {
+    const aMin = a.races.length > 0 ? Math.min(...a.races.map(r => new Date(r.startDateTime).getTime())) : Infinity
+    const bMin = b.races.length > 0 ? Math.min(...b.races.map(r => new Date(r.startDateTime).getTime())) : Infinity
+    return aMin - bMin
+   })
+   setEvents(sorted)
   } catch (err) {
    console.error('Failed to load events:', err)
   } finally {

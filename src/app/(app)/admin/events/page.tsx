@@ -92,10 +92,12 @@ export default function AdminEventsPage() {
 
   try {
    const data = await gql<{ raceEvents: RaceEvent[] }>(EVENTS_QUERY, {}, { accessToken })
-   // Sort by creation date, newest first
-   const sorted = [...(data.raceEvents ?? [])].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-   )
+   // Sort by earliest race startDateTime, soonest first
+   const sorted = [...(data.raceEvents ?? [])].sort((a, b) => {
+    const aMin = a.races.length > 0 ? Math.min(...a.races.map(r => new Date(r.startDateTime).getTime())) : Infinity
+    const bMin = b.races.length > 0 ? Math.min(...b.races.map(r => new Date(r.startDateTime).getTime())) : Infinity
+    return aMin - bMin
+   })
    setEvents(sorted)
   } catch (err) {
    console.error('Failed to load events:', err)
