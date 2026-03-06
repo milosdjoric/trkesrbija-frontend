@@ -12,6 +12,7 @@ import {
   PostRezultati,
   type NajaveEvent,
   type TemplateData,
+  type TemplateFormat,
   type TemplateMode,
 } from '@/components/instagram-templates'
 import { Link } from '@/components/link'
@@ -97,6 +98,7 @@ function Field({ label, value, onChange }: { label: string; value: string; onCha
 export default function AdminInstagramPage() {
   const { accessToken } = useAuth()
   const [mode, setMode] = useState<TemplateMode>('najava')
+  const [format, setFormat] = useState<TemplateFormat>('post')
   const [dark, setDark] = useState(true)
   const [data, setData] = useState<TemplateData>(defaultData)
   const [copied, setCopied] = useState(false)
@@ -249,11 +251,11 @@ export default function AdminInstagramPage() {
   }, [])
 
   const buildPreviewUrl = useCallback(() => {
-    const payload = { mode, dark, data, najaveEvents: mode === 'najave' ? najaveEvents : undefined }
+    const payload = { mode, format, dark, data, najaveEvents: mode === 'najave' ? najaveEvents : undefined }
     const json = JSON.stringify(payload)
     const encoded = btoa(unescape(encodeURIComponent(json)))
     return `${window.location.origin}/instagram-preview?d=${encodeURIComponent(encoded)}`
-  }, [mode, dark, data, najaveEvents])
+  }, [mode, format, dark, data, najaveEvents])
 
   const openPreview = useCallback(() => {
     window.open(buildPreviewUrl(), '_blank')
@@ -296,12 +298,20 @@ export default function AdminInstagramPage() {
 
       <div className="flex items-center justify-between">
         <Heading>Instagram sablon</Heading>
-        <button
-          onClick={() => setDark(!dark)}
-          className="rounded-lg border border-border-secondary bg-surface px-3 py-1.5 text-sm font-medium text-text-primary transition-colors hover:bg-card-hover"
-        >
-          {dark ? 'Light mod' : 'Dark mod'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setFormat(format === 'post' ? 'story' : 'post')}
+            className="rounded-lg border border-border-secondary bg-surface px-3 py-1.5 text-sm font-medium text-text-primary transition-colors hover:bg-card-hover"
+          >
+            {format === 'post' ? 'Story 9:16' : 'Post 1:1'}
+          </button>
+          <button
+            onClick={() => setDark(!dark)}
+            className="rounded-lg border border-border-secondary bg-surface px-3 py-1.5 text-sm font-medium text-text-primary transition-colors hover:bg-card-hover"
+          >
+            {dark ? 'Light mod' : 'Dark mod'}
+          </button>
+        </div>
       </div>
 
       {/* Type switcher */}
@@ -420,12 +430,14 @@ export default function AdminInstagramPage() {
 
         {/* Preview */}
         <div className="flex flex-1 flex-col items-center gap-4">
-          <div className="text-xs font-semibold uppercase tracking-widest text-text-secondary">Preview — 1080 x 1080</div>
+          <div className="text-xs font-semibold uppercase tracking-widest text-text-secondary">
+            Preview — {format === 'post' ? '1080 x 1080' : '1080 x 1920'}
+          </div>
 
           <div
             ref={previewRef}
-            className="overflow-hidden rounded-2xl shadow-xl"
-            style={{ width: 420, height: 420 }}
+            className="overflow-hidden rounded-2xl shadow-xl transition-all duration-300"
+            style={{ width: format === 'post' ? 420 : 236, height: format === 'post' ? 420 : 420 }}
           >
             {mode === 'najava' && <PostNajava data={data.najava} dark={dark} />}
             {mode === 'najave' && <PostNajave data={data.najave} events={najaveEvents} dark={dark} />}
@@ -451,7 +463,7 @@ export default function AdminInstagramPage() {
           </div>
 
           <p className="max-w-sm text-center text-xs text-text-secondary">
-            Otvori preview na telefonu i napravi screenshot za Instagram post (1:1 format)
+            Otvori preview na telefonu i napravi screenshot za Instagram {format === 'post' ? 'post (1:1)' : 'story (9:16)'}
           </p>
         </div>
       </div>

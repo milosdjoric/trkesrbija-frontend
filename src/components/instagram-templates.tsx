@@ -20,6 +20,7 @@ function LogoBadge({ sub, dark }: { sub: string; dark: boolean }) {
 }
 
 export type TemplateMode = 'najava' | 'najave' | 'info' | 'rezultati'
+export type TemplateFormat = 'post' | 'story'
 
 export type NajaveEvent = {
   naziv: string
