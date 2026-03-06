@@ -418,7 +418,7 @@ export default function AdminInstagramPage() {
             <Field
               key={f.key}
               label={f.label}
-              value={(data[mode] as Record<string, string>)[f.key]}
+              value={(data[mode] as Record<string, string>)[f.key] ?? ''}
               onChange={(v) => update(mode, f.key, v)}
             />
           ))}
