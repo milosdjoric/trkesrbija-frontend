@@ -110,13 +110,14 @@ export default function Login() {
         <div className="h-px flex-1 bg-border-secondary" />
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-hidden rounded-lg">
         <GoogleLogin
           onSuccess={(res) => handleGoogleLogin(res.credential)}
           onError={() => setError('Google prijava nije uspela')}
           useOneTap={false}
           width="368"
           theme={resolvedTheme === 'dark' ? 'filled_black' : 'outline'}
+          shape="pill"
         />
       </div>
 

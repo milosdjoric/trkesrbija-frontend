@@ -20,6 +20,7 @@ type EventRow = {
  mainImage: string | null
  registrationSite: string | null
  tags: string[]
+ country: string | null
  races: { id: string; startDateTime: string }[]
 }
 
@@ -34,6 +35,7 @@ const EVENTS_QUERY = `
    mainImage
    registrationSite
    tags
+   country
    races {
     id
     startDateTime
@@ -53,6 +55,7 @@ const UPDATE_EVENT_MUTATION = `
    mainImage
    registrationSite
    tags
+   country
   }
  }
 `
@@ -61,6 +64,15 @@ const TYPE_OPTIONS = [
  { value: 'TRAIL', label: 'Trail' },
  { value: 'ROAD', label: 'Ulicna' },
  { value: 'OCR', label: 'OCR' },
+]
+
+const COUNTRY_OPTIONS = [
+ { value: 'ser', label: 'Srbija' },
+ { value: 'cro', label: 'Hrvatska' },
+ { value: 'bih', label: 'BiH' },
+ { value: 'mne', label: 'Crna Gora' },
+ { value: 'mkd', label: 'Severna Makedonija' },
+ { value: 'reg', label: 'Region' },
 ]
 
 export default function EventsMassEditPage() {
@@ -317,6 +329,7 @@ export default function EventsMassEditPage() {
       <option value="type">Tip</option>
       <option value="tags">Tagovi</option>
       <option value="registrationSite">Sajt za prijave</option>
+      <option value="country">Zemlja</option>
      </select>
 
      {bulkField === 'type' && (
@@ -352,6 +365,21 @@ export default function EventsMassEditPage() {
        placeholder="https://..."
        className="rounded border border-border-secondary bg-surface px-2 py-1 text-sm"
       />
+     )}
+
+     {bulkField === 'country' && (
+      <select
+       value={bulkValue}
+       onChange={(e) => setBulkValue(e.target.value)}
+       className="rounded border border-border-secondary bg-surface px-2 py-1 text-sm"
+      >
+       <option value="">Izaberi...</option>
+       {COUNTRY_OPTIONS.map((opt) => (
+        <option key={opt.value} value={opt.value}>
+         {opt.label}
+        </option>
+       ))}
+      </select>
      )}
 
      <button
@@ -405,12 +433,15 @@ export default function EventsMassEditPage() {
        <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
         Tagovi
        </th>
+       <th className="px-1 py-2 text-left text-[10px] font-medium uppercase text-text-secondary">
+        Zemlja
+       </th>
       </tr>
      </thead>
      <tbody className="divide-y divide-border-primary bg-card">
       {filteredEvents.length === 0 ? (
        <tr>
-        <td colSpan={8} className="px-4 py-8 text-center text-sm text-text-secondary">
+        <td colSpan={9} className="px-4 py-8 text-center text-sm text-text-secondary">
          {search ? 'Nema rezultata pretrage' : 'Nema dogadjaja'}
         </td>
        </tr>
@@ -488,6 +519,15 @@ export default function EventsMassEditPage() {
               : []
             return handleUpdateField(event.id, 'tags', tags)
            }}
+           placeholder="-"
+          />
+         </td>
+         <td className="w-[80px] overflow-hidden px-1 py-1">
+          <EditableCell
+           value={event.country}
+           type="select"
+           options={COUNTRY_OPTIONS}
+           onSave={(v) => handleUpdateField(event.id, 'country', v || null)}
            placeholder="-"
           />
          </td>

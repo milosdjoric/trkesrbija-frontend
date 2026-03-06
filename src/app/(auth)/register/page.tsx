@@ -137,7 +137,7 @@ export default function Register() {
         <div className="h-px flex-1 bg-border-secondary" />
       </div>
 
-      <div className="flex justify-center">
+      <div className="flex justify-center overflow-hidden rounded-lg">
         <GoogleLogin
           onSuccess={(res) => handleGoogleLogin(res.credential)}
           onError={() => setError('Google prijava nije uspela')}
@@ -145,6 +145,7 @@ export default function Register() {
           width="368"
           text="signup_with"
           theme={resolvedTheme === 'dark' ? 'filled_black' : 'outline'}
+          shape="pill"
         />
       </div>
 
