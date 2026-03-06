@@ -197,8 +197,8 @@ function parseRaces(rows: string[][]): ParsedRace[] {
  const slugIdx = header.findIndex(h => h.toLowerCase() === 'slug' || h.toLowerCase() === 'race_slug')
  const lengthIdx = header.findIndex(h => h.toLowerCase().includes('dužina') || h.toLowerCase().includes('duzina') || h.toLowerCase() === 'length' || h.toLowerCase().includes('km'))
  const elevationIdx = header.findIndex(h => h.toLowerCase().includes('visinska') || h.toLowerCase() === 'elevation' || h.toLowerCase().includes('d+'))
- const startIdx = header.findIndex(h => h.toLowerCase().includes('start') || h.toLowerCase().includes('datum'))
- const endIdx = header.findIndex(h => h.toLowerCase().includes('end') || h.toLowerCase().includes('cutoff') || h.toLowerCase().includes('cut-off'))
+ const startIdx = header.findIndex(h => h.toLowerCase().includes('start') || h.toLowerCase() === 'datum')
+ const endIdx = header.findIndex(h => h.toLowerCase().includes('end') || h.toLowerCase().includes('cutoff') || h.toLowerCase().includes('cut-off') || h.toLowerCase() === 'datum_zavrsetka')
  const locationIdx = header.findIndex(h => h.toLowerCase().includes('lokacija') || h.toLowerCase() === 'location')
  const regIdx = header.findIndex(h => h.toLowerCase().includes('prijav') || h.toLowerCase().includes('registration'))
  const competitionIdx = header.findIndex(h => h.toLowerCase().includes('takmičenj') || h.toLowerCase().includes('takmicenj') || h.toLowerCase() === 'competition' || h.toLowerCase() === 'serija')
@@ -275,6 +275,7 @@ function parseCombined(rows: string[][]): ParsedCombinedRow[] {
  const regSiteIdx = header.findIndex(h => h.toLowerCase() === 'sajt_prijava' || h.toLowerCase() === 'registration_site')
  const tagsIdx = header.findIndex(h => h.toLowerCase().includes('tag') || h.toLowerCase().includes('kategorij'))
  const socialIdx = header.findIndex(h => h.toLowerCase().includes('social') || h.toLowerCase().includes('mrež'))
+ const countryIdx = header.findIndex(h => h.toLowerCase().includes('država') || h.toLowerCase().includes('drzava') || h.toLowerCase() === 'country')
 
  // Race columns
  const raceNameIdx = header.findIndex(h =>
@@ -298,7 +299,7 @@ function parseCombined(rows: string[][]): ParsedCombinedRow[] {
   h.toLowerCase() === 'start_date' ||
   h.toLowerCase() === 'datum'
  )
- const endIdx = header.findIndex(h => h.toLowerCase().includes('end') || h.toLowerCase().includes('cutoff'))
+ const endIdx = header.findIndex(h => h.toLowerCase().includes('end') || h.toLowerCase().includes('cutoff') || h.toLowerCase() === 'datum_zavrsetka')
  const locationIdx = header.findIndex(h => h.toLowerCase().includes('lokacija') || h.toLowerCase() === 'location')
  const regIdx = header.findIndex(h => h.toLowerCase() === 'prijave' || h.toLowerCase() === 'registration')
  const competitionIdx = header.findIndex(h =>
@@ -341,6 +342,7 @@ function parseCombined(rows: string[][]): ParsedCombinedRow[] {
    const tags = tagsRaw ? tagsRaw.split(';').map(t => t.trim()).filter(Boolean) : undefined
    const socialRaw = row[socialIdx]?.trim() || ''
    const socialMedia = socialRaw ? socialRaw.split(';').map(s => s.trim()).filter(Boolean) : undefined
+   const country = countryIdx >= 0 ? row[countryIdx]?.trim() || undefined : undefined
 
    result.push({
     rowType: 'event',
@@ -351,6 +353,7 @@ function parseCombined(rows: string[][]): ParsedCombinedRow[] {
     registrationSite,
     tags,
     socialMedia,
+    country,
     valid: errors.length === 0,
     errors,
    })
@@ -697,32 +700,33 @@ export default function ImportPage() {
      <div className="mt-2 text-sm text-text-secondary">
       <p className="mb-2">Kolone (header u prvom redu):</p>
       <code className="block rounded bg-surface p-2 text-xs">
-       tip_reda,naziv_dogadjaja,tip_dogadjaja,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje
+       tip_reda,naziv_dogadjaja,tip_dogadjaja,opis,sajt_prijava,tagovi,social_media,drzava,naziv_trke,duzina,visinska,datum_start,datum_zavrsetka,lokacija,prijave,takmicenje
       </code>
       <div className="mt-3 space-y-1 text-xs">
        <p><strong>tip_reda:</strong> &quot;dogadjaj&quot; ili &quot;trka&quot;</p>
-       <p><strong>Za događaj:</strong> popuni naziv_dogadjaja, tip_dogadjaja (TRAIL/ROAD)</p>
-       <p><strong>Za trku:</strong> popuni naziv_trke, duzina, datum_start, lokacija... (automatski se vezuje za prethodni događaj)</p>
+       <p><strong>Za događaj:</strong> naziv_dogadjaja, tip_dogadjaja (TRAIL/ROAD/OCR), opis, sajt_prijava, tagovi (;), social_media (;), drzava (ser/cro/bih/reg)</p>
+       <p><strong>Za trku:</strong> naziv_trke, duzina, visinska, datum_start, datum_zavrsetka, lokacija, prijave (da/ne), takmicenje</p>
+       <p>Trke se automatski vezuju za prethodni događaj u CSV-u.</p>
       </div>
      </div>
     ) : importType === 'events' ? (
      <div className="mt-2 text-sm text-text-secondary">
       <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
       <code className="block rounded bg-surface p-2 text-xs">
-       naziv,tip,opis,sajt_prijava,tagovi,social_media
+       naziv,tip,opis,sajt_prijava,tagovi,social_media,drzava
       </code>
       <p className="mt-2 text-xs">
-       <strong>tip:</strong> TRAIL ili ROAD | <strong>tagovi:</strong> razdvojeni sa ; | <strong>social_media:</strong> URL-ovi razdvojeni sa ;
+       <strong>tip:</strong> TRAIL, ROAD ili OCR | <strong>tagovi:</strong> razdvojeni sa ; | <strong>social_media:</strong> URL-ovi razdvojeni sa ; | <strong>drzava:</strong> ser/cro/bih/reg
       </p>
      </div>
     ) : (
      <div className="mt-2 text-sm text-text-secondary">
       <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
       <code className="block rounded bg-surface p-2 text-xs">
-       event_slug,naziv,dužina,visinska_razlika,datum_start,lokacija,prijave,takmicenje
+       event_slug,naziv,duzina,visinska_razlika,datum_start,datum_zavrsetka,lokacija,prijave,takmicenje
       </code>
       <p className="mt-2 text-xs">
-       <strong>event_slug:</strong> slug postojećeg događaja | <strong>datum_start:</strong> YYYY-MM-DD HH:MM | <strong>prijave:</strong> da/ne | <strong>takmicenje:</strong> ime postojećeg takmičenja
+       <strong>event_slug:</strong> slug postojećeg događaja | <strong>datum_start/datum_zavrsetka:</strong> YYYY-MM-DD HH:MM | <strong>prijave:</strong> da/ne | <strong>takmicenje:</strong> ime postojećeg takmičenja
       </p>
      </div>
     )}
@@ -781,7 +785,7 @@ export default function ImportPage() {
      <textarea
       value={pasteText}
       onChange={(e) => setPasteText(e.target.value)}
-      placeholder={'tip_reda,naziv_dogadjaja,tip_dogadjaja,naziv_trke,duzina,visinska,datum_start,lokacija,prijave,takmicenje\ndogadjaj,Fruska Gora Trail,TRAIL,,,,,,\ntrka,,,,42,1200,2025-06-15 07:00,Irig,da,'}
+      placeholder={'tip_reda,naziv_dogadjaja,tip_dogadjaja,opis,sajt_prijava,tagovi,social_media,drzava,naziv_trke,duzina,visinska,datum_start,datum_zavrsetka,lokacija,prijave,takmicenje\ndogadjaj,Fruska Gora Trail,TRAIL,Trail trka,https://prijave.rs,trail;srbija,,ser,,,,,,,,\ntrka,,,,,,,,FGT 42K,42,1200,2025-06-15 07:00,2025-06-15 21:00,Irig,da,'}
       className="w-full rounded-lg border border-border-secondary bg-surface px-4 py-3 font-mono text-sm text-text-primary outline-none placeholder:text-text-secondary/40 focus:border-brand-green focus:ring-1 focus:ring-brand-green"
       rows={8}
      />
