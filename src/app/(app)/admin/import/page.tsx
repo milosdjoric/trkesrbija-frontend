@@ -4,6 +4,7 @@ import { useAuth } from '@/app/auth/auth-context'
 import { gql } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
 import { Button } from '@/components/button'
+import { useConfirm } from '@/components/confirm-dialog'
 import { Heading, Subheading } from '@/components/heading'
 import { useToast } from '@/components/toast'
 import {
@@ -74,10 +75,11 @@ type ParsedCombinedRow = {
 }
 
 const IMPORT_EVENTS_MUTATION = `
- mutation ImportEvents($events: [CreateRaceEventInput!]!) {
-  importEvents(events: $events) {
+ mutation ImportEvents($events: [CreateRaceEventInput!]!, $override: Boolean) {
+  importEvents(events: $events, override: $override) {
    success
    imported
+   updated
    failed
    errors
   }
@@ -85,10 +87,11 @@ const IMPORT_EVENTS_MUTATION = `
 `
 
 const IMPORT_RACES_MUTATION = `
- mutation ImportRaces($races: [ImportRaceInput!]!) {
-  importRaces(races: $races) {
+ mutation ImportRaces($races: [ImportRaceInput!]!, $override: Boolean) {
+  importRaces(races: $races, override: $override) {
    success
    imported
+   updated
    failed
    errors
   }
@@ -410,6 +413,7 @@ function parseCombined(rows: string[][]): ParsedCombinedRow[] {
 export default function ImportPage() {
  const { user, accessToken } = useAuth()
  const { toast } = useToast()
+ const { confirm } = useConfirm()
  const fileInputRef = useRef<HTMLInputElement>(null)
 
  const [importType, setImportType] = useState<ImportType>('combined')
@@ -419,9 +423,11 @@ export default function ImportPage() {
  const [importing, setImporting] = useState(false)
  const [pasteText, setPasteText] = useState('')
  const [inputMode, setInputMode] = useState<'file' | 'paste'>('file')
+ const [override, setOverride] = useState(false)
  const [importResult, setImportResult] = useState<{
   success: boolean
   imported: number
+  updated: number
   failed: number
   errors: string[]
  } | null>(null)
@@ -479,10 +485,20 @@ export default function ImportPage() {
    return
   }
 
+  // Ask for confirmation if override is enabled
+  if (override) {
+   const confirmed = await confirm({
+    title: 'Pregazi postojeće vrednosti?',
+    message: 'Postojeći podaci u bazi koji nisu prazni biće pregazeni vrednostima iz CSV-a. Da li ste sigurni?',
+    confirmText: 'Pregazi i importuj',
+    variant: 'danger',
+   })
+   if (!confirmed) return
+  }
+
   setImporting(true)
   try {
    if (importType === 'combined') {
-    // First import events, then races
     const events = parsedCombined
      .filter(r => r.rowType === 'event' && r.valid)
      .map(e => ({
@@ -512,31 +528,32 @@ export default function ImportPage() {
      }))
 
     let totalImported = 0
+    let totalUpdated = 0
     let totalFailed = 0
     const allErrors: string[] = []
 
-    // Import events first
     if (events.length > 0) {
-     const eventResult = await gql<{ importEvents: { success: boolean; imported: number; failed: number; errors: string[] } }>(
+     const eventResult = await gql<{ importEvents: { success: boolean; imported: number; updated: number; failed: number; errors: string[] } }>(
       IMPORT_EVENTS_MUTATION,
-      { events },
+      { events, override },
       { accessToken }
      )
      totalImported += eventResult.importEvents?.imported ?? 0
+     totalUpdated += eventResult.importEvents?.updated ?? 0
      totalFailed += eventResult.importEvents?.failed ?? 0
      if (eventResult.importEvents?.errors) {
       allErrors.push(...eventResult.importEvents.errors)
      }
     }
 
-    // Then import races
     if (races.length > 0) {
-     const raceResult = await gql<{ importRaces: { success: boolean; imported: number; failed: number; errors: string[] } }>(
+     const raceResult = await gql<{ importRaces: { success: boolean; imported: number; updated: number; failed: number; errors: string[] } }>(
       IMPORT_RACES_MUTATION,
-      { races },
+      { races, override },
       { accessToken }
      )
      totalImported += raceResult.importRaces?.imported ?? 0
+     totalUpdated += raceResult.importRaces?.updated ?? 0
      totalFailed += raceResult.importRaces?.failed ?? 0
      if (raceResult.importRaces?.errors) {
       allErrors.push(...raceResult.importRaces.errors)
@@ -546,12 +563,16 @@ export default function ImportPage() {
     setImportResult({
      success: totalFailed === 0,
      imported: totalImported,
+     updated: totalUpdated,
      failed: totalFailed,
      errors: allErrors,
     })
 
     if (totalFailed === 0) {
-     toast(`Uspešno importovano ${totalImported} stavki`, 'success')
+     const parts = []
+     if (totalImported > 0) parts.push(`${totalImported} kreirano`)
+     if (totalUpdated > 0) parts.push(`${totalUpdated} ažurirano`)
+     toast(`Uspešno: ${parts.join(', ')}`, 'success')
     }
    } else if (importType === 'events') {
     const eventsInput = parsedEvents.filter(e => e.valid).map(e => ({
@@ -567,13 +588,16 @@ export default function ImportPage() {
 
     const result = await gql<{ importEvents: typeof importResult }>(
      IMPORT_EVENTS_MUTATION,
-     { events: eventsInput },
+     { events: eventsInput, override },
      { accessToken }
     )
     setImportResult(result.importEvents)
 
     if (result.importEvents?.success) {
-     toast(`Uspešno importovano ${result.importEvents.imported} događaja`, 'success')
+     const parts = []
+     if (result.importEvents.imported > 0) parts.push(`${result.importEvents.imported} kreirano`)
+     if (result.importEvents.updated > 0) parts.push(`${result.importEvents.updated} ažurirano`)
+     toast(`Uspešno: ${parts.join(', ')}`, 'success')
     }
    } else {
     const racesInput = parsedRaces.filter(r => r.valid).map(r => ({
@@ -591,13 +615,16 @@ export default function ImportPage() {
 
     const result = await gql<{ importRaces: typeof importResult }>(
      IMPORT_RACES_MUTATION,
-     { races: racesInput },
+     { races: racesInput, override },
      { accessToken }
     )
     setImportResult(result.importRaces)
 
     if (result.importRaces?.success) {
-     toast(`Uspešno importovano ${result.importRaces.imported} trka`, 'success')
+     const parts = []
+     if (result.importRaces.imported > 0) parts.push(`${result.importRaces.imported} kreirano`)
+     if (result.importRaces.updated > 0) parts.push(`${result.importRaces.updated} ažurirano`)
+     toast(`Uspešno: ${parts.join(', ')}`, 'success')
     }
    }
   } catch (err: any) {
@@ -610,6 +637,7 @@ export default function ImportPage() {
    setImportResult({
     success: false,
     imported: 0,
+    updated: 0,
     failed: totalItems,
     errors: [err?.message ?? 'Nepoznata greška'],
    })
@@ -925,8 +953,28 @@ export default function ImportPage() {
       </table>
      </div>
 
+     {/* Override option */}
+     <div className="mt-6">
+      <label className="flex items-center gap-2 text-sm">
+       <input
+        type="checkbox"
+        checked={override}
+        onChange={(e) => setOverride(e.target.checked)}
+        className="size-4 rounded border-border-secondary accent-brand-green"
+       />
+       <span className="text-text-secondary">
+        Pregazi postojeće vrednosti
+       </span>
+      </label>
+      <p className="mt-1 ml-6 text-xs text-text-secondary">
+       {override
+        ? 'Sva polja iz CSV-a će pregaziti postojeće podatke u bazi'
+        : 'Popuniće se samo prazna polja kod postojećih zapisa'}
+      </p>
+     </div>
+
      {/* Import Button */}
-     <div className="mt-6 flex items-center gap-4">
+     <div className="mt-4 flex items-center gap-4">
       <Button
        onClick={handleImport}
        color="blue"
@@ -962,7 +1010,8 @@ export default function ImportPage() {
       </span>
      </div>
      <div className="mt-2 text-sm">
-      <p>Uspešno importovano: {importResult.imported}</p>
+      {importResult.imported > 0 && <p>Kreirano: {importResult.imported}</p>}
+      {importResult.updated > 0 && <p>Ažurirano: {importResult.updated}</p>}
       {importResult.failed > 0 && <p>Neuspešno: {importResult.failed}</p>}
       {importResult.errors.length > 0 && (
        <ul className="mt-2 list-disc pl-4 text-red-600">
