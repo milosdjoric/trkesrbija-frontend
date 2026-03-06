@@ -10,6 +10,10 @@ import {
   PostNajava,
   PostNajave,
   PostRezultati,
+  StoryInfo,
+  StoryNajava,
+  StoryNajave,
+  StoryRezultati,
   type NajaveEvent,
   type TemplateData,
   type TemplateFormat,
@@ -439,10 +443,21 @@ export default function AdminInstagramPage() {
             className="overflow-hidden rounded-2xl shadow-xl transition-all duration-300"
             style={{ width: format === 'post' ? 420 : 236, height: format === 'post' ? 420 : 420 }}
           >
-            {mode === 'najava' && <PostNajava data={data.najava} dark={dark} />}
-            {mode === 'najave' && <PostNajave data={data.najave} events={najaveEvents} dark={dark} />}
-            {mode === 'info' && <PostInfo data={data.info} dark={dark} />}
-            {mode === 'rezultati' && <PostRezultati data={data.rezultati} dark={dark} />}
+            {format === 'post' ? (
+              <>
+                {mode === 'najava' && <PostNajava data={data.najava} dark={dark} />}
+                {mode === 'najave' && <PostNajave data={data.najave} events={najaveEvents} dark={dark} />}
+                {mode === 'info' && <PostInfo data={data.info} dark={dark} />}
+                {mode === 'rezultati' && <PostRezultati data={data.rezultati} dark={dark} />}
+              </>
+            ) : (
+              <>
+                {mode === 'najava' && <StoryNajava data={data.najava} dark={dark} />}
+                {mode === 'najave' && <StoryNajave data={data.najave} events={najaveEvents} dark={dark} />}
+                {mode === 'info' && <StoryInfo data={data.info} dark={dark} />}
+                {mode === 'rezultati' && <StoryRezultati data={data.rezultati} dark={dark} />}
+              </>
+            )}
           </div>
 
           <div className="flex gap-2">

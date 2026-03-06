@@ -117,10 +117,14 @@ export function SiteHeader() {
                 )}
 
                 {user.role === 'ADMIN' && (
-                  <DropdownItem href="/admin">
-                    <WrenchScrewdriverIcon />
-                    <DropdownLabel>Admin Panel</DropdownLabel>
-                  </DropdownItem>
+                  <>
+                    <DropdownDivider />
+                    <DropdownItem href="/admin">
+                      <WrenchScrewdriverIcon />
+                      <DropdownLabel className="font-bold">Admin Panel</DropdownLabel>
+                    </DropdownItem>
+                    <DropdownDivider />
+                  </>
                 )}
 
                 {mounted && (
