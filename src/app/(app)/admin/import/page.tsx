@@ -699,7 +699,7 @@ export default function ImportPage() {
     {importType === 'combined' ? (
      <div className="mt-2 text-sm text-text-secondary">
       <p className="mb-2">Kolone (header u prvom redu):</p>
-      <code className="block rounded bg-surface p-2 text-xs">
+      <code className="block overflow-x-auto rounded bg-surface p-2 text-xs">
        tip_reda,naziv_dogadjaja,tip_dogadjaja,opis,sajt_prijava,tagovi,social_media,drzava,naziv_trke,duzina,visinska,datum_start,datum_zavrsetka,lokacija,prijave,takmicenje
       </code>
       <div className="mt-3 space-y-1 text-xs">
@@ -712,7 +712,7 @@ export default function ImportPage() {
     ) : importType === 'events' ? (
      <div className="mt-2 text-sm text-text-secondary">
       <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
-      <code className="block rounded bg-surface p-2 text-xs">
+      <code className="block overflow-x-auto rounded bg-surface p-2 text-xs">
        naziv,tip,opis,sajt_prijava,tagovi,social_media,drzava
       </code>
       <p className="mt-2 text-xs">
@@ -722,7 +722,7 @@ export default function ImportPage() {
     ) : (
      <div className="mt-2 text-sm text-text-secondary">
       <p className="mb-2">Potrebne kolone (header u prvom redu):</p>
-      <code className="block rounded bg-surface p-2 text-xs">
+      <code className="block overflow-x-auto rounded bg-surface p-2 text-xs">
        event_slug,naziv,duzina,visinska_razlika,datum_start,datum_zavrsetka,lokacija,prijave,takmicenje
       </code>
       <p className="mt-2 text-xs">
