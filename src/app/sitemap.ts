@@ -102,13 +102,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  // Race results pages
-  const resultPages: MetadataRoute.Sitemap = races.map((race) => ({
-    url: `${siteUrl}/races/${race.slug}/results`,
-    lastModified: new Date(race.updatedAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.6,
-  }))
+  // Note: /races/*/results and /races/*/register are excluded from sitemap.
+  // Results pages use client-side noindex when empty; register pages require auth.
 
-  return [...staticPages, ...eventPages, ...racePages, ...resultPages]
+  return [...staticPages, ...eventPages, ...racePages]
 }

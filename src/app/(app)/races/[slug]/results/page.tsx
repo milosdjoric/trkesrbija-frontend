@@ -155,6 +155,17 @@ export default function RaceResultsPage() {
     return filtered
   }, [results, genderFilter, nameSearch])
 
+  // Add noindex when there are no results (prevents Google from indexing empty pages)
+  useEffect(() => {
+    if (!loading && results.length === 0) {
+      const meta = document.createElement('meta')
+      meta.name = 'robots'
+      meta.content = 'noindex'
+      document.head.appendChild(meta)
+      return () => { document.head.removeChild(meta) }
+    }
+  }, [loading, results.length])
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">

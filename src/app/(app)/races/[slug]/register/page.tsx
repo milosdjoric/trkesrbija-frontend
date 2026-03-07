@@ -66,6 +66,15 @@ export default function RaceRegistrationPage() {
 
   const slug = params.slug as string
 
+  // Registration pages should not be indexed
+  useEffect(() => {
+    const meta = document.createElement('meta')
+    meta.name = 'robots'
+    meta.content = 'noindex'
+    document.head.appendChild(meta)
+    return () => { document.head.removeChild(meta) }
+  }, [])
+
   const [race, setRace] = useState<RaceInfo | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
