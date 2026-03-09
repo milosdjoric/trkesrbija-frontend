@@ -8,7 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: ['/admin/', '/api/', '/judge/', '/my-registrations/', '/favorites/', '/settings/', '/training/', '/instagram-preview/'],
+        disallow: ['/admin/', '/api/', '/judge/', '/my-registrations/', '/favorites/', '/settings/', '/training/', '/instagram-preview/', '/races/*/results', '/races/*/register'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
