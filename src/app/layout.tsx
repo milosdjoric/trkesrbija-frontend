@@ -97,6 +97,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       className={`${urbanist.className} bg-main text-text-primary antialiased`}
     >
       <head>
+        <link rel="preconnect" href="https://utfs.io" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://utfs.io" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <GoogleTagManager />
         <OrganizationJsonLd />
         <WebsiteJsonLd />

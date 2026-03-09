@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 
@@ -29,10 +30,13 @@ export function ImageSlider({ images, alt = 'Slika' }: ImageSliderProps) {
     <div className="relative">
       {/* Main Image */}
       <div className="relative aspect-video overflow-hidden rounded-lg bg-zinc-900">
-        <img
+        <Image
           src={images[currentIndex]}
           alt={`${alt} ${currentIndex + 1}`}
-          className="h-full w-full object-cover"
+          fill
+          sizes="(max-width: 768px) 100vw, 800px"
+          className="object-cover"
+          priority={currentIndex === 0}
         />
 
         {/* Navigation Arrows - only show if more than 1 image */}
