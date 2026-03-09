@@ -1,11 +1,17 @@
 'use client'
 
 import Script from 'next/script'
+import { usePathname } from 'next/navigation'
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
 
+// Routes excluded from analytics tracking
+const EXCLUDED_PREFIXES = ['/admin', '/judge', '/instagram-preview']
+
 export function GoogleTagManager() {
+  const pathname = usePathname()
   if (!GTM_ID) return null
+  if (EXCLUDED_PREFIXES.some((p) => pathname.startsWith(p))) return null
 
   return (
     <>
@@ -27,7 +33,9 @@ export function GoogleTagManager() {
 }
 
 export function GoogleTagManagerNoScript() {
+  const pathname = usePathname()
   if (!GTM_ID) return null
+  if (EXCLUDED_PREFIXES.some((p) => pathname.startsWith(p))) return null
 
   return (
     <noscript>
