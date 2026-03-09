@@ -415,7 +415,7 @@ export function PostNajave({
     <div style={outerStyle(bg, 36)}>
       <TemplateGlow />
 
-      <TemplateHeader badge="Najave trka" sub={sub} dark={dark} />
+      <TemplateHeader badge="Najava trka" sub={sub} dark={dark} />
       <TemplateTitle title={data.naslov} text={text} sub={sub} />
 
       <TemplateContent>
@@ -715,7 +715,7 @@ export function StoryNajave({ data, events, dark }: { data: TemplateData['najave
   return (
     <div style={outerStyle(bg, 48)}>
       <StoryGlow />
-      <StoryHeader badge="Najave trka" sub={sub} dark={dark} />
+      <StoryHeader badge="Najava trka" sub={sub} dark={dark} />
       <StoryTitle title={data.naslov} text={text} sub={sub} />
 
       <StoryContent>
