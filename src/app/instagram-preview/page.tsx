@@ -64,8 +64,8 @@ function Preview() {
   return (
     <div
       style={{
-        position: 'fixed',
-        inset: 0,
+        minHeight: '100dvh',
+        width: '100vw',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
