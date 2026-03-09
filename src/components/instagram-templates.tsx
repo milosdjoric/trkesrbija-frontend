@@ -173,23 +173,6 @@ function TemplateFooter({ cta }: { cta: string }) {
   )
 }
 
-function TemplateGlow() {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        right: -80,
-        top: -80,
-        width: 300,
-        height: 300,
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${GREEN}15 0%, transparent 70%)`,
-        pointerEvents: 'none',
-      }}
-    />
-  )
-}
-
 // ── Post Templates ──────────────────────────────────────────────────────────
 
 export function PostNajava({ data, dark }: { data: TemplateData['najava']; dark: boolean }) {
@@ -201,8 +184,6 @@ export function PostNajava({ data, dark }: { data: TemplateData['najava']; dark:
 
   return (
     <div style={outerStyle(bg, 36)}>
-      <TemplateGlow />
-
       <TemplateHeader badge="Najava trke" sub={sub} dark={dark} />
       <TemplateTitle title={data.naziv} text={text} sub={sub} />
 
@@ -259,8 +240,6 @@ export function PostInfo({ data, dark }: { data: TemplateData['info']; dark: boo
 
   return (
     <div style={outerStyle(bg, 36)}>
-      <TemplateGlow />
-
       <TemplateHeader badge="Info trke" sub={sub} dark={dark} />
       <TemplateTitle title={data.naziv} subtitle={data.podnaslov} text={text} sub={sub} />
 
@@ -336,8 +315,6 @@ export function PostRezultati({ data, dark, gender }: { data: TemplateData['rezu
 
   return (
     <div style={outerStyle(bg, 36)}>
-      <TemplateGlow />
-
       <TemplateHeader badge="Rezultati trke" sub={sub} dark={dark} />
       <TemplateTitle title={data.naziv} subtitle={`${data.datum}  ·  ${data.kategorija}`} text={text} sub={sub} />
 
@@ -413,8 +390,6 @@ export function PostNajave({
 
   return (
     <div style={outerStyle(bg, 36)}>
-      <TemplateGlow />
-
       <TemplateHeader badge="Najava trka" sub={sub} dark={dark} />
       <TemplateTitle title={data.naslov} text={text} sub={sub} />
 
@@ -537,23 +512,6 @@ function StoryFooter({ cta }: { cta: string }) {
   )
 }
 
-function StoryGlow() {
-  return (
-    <div
-      style={{
-        position: 'absolute',
-        right: -120,
-        top: -120,
-        width: 450,
-        height: 450,
-        borderRadius: '50%',
-        background: `radial-gradient(circle, ${GREEN}15 0%, transparent 70%)`,
-        pointerEvents: 'none',
-      }}
-    />
-  )
-}
-
 // ── Story Templates ────────────────────────────────────────────────────────
 
 export function StoryNajava({ data, dark }: { data: TemplateData['najava']; dark: boolean }) {
@@ -565,7 +523,6 @@ export function StoryNajava({ data, dark }: { data: TemplateData['najava']; dark
 
   return (
     <div style={outerStyle(bg, 48)}>
-      <StoryGlow />
       <StoryHeader badge="Najava trke" sub={sub} dark={dark} />
       <StoryTitle title={data.naziv} text={text} sub={sub} />
 
@@ -614,7 +571,6 @@ export function StoryInfo({ data, dark }: { data: TemplateData['info']; dark: bo
 
   return (
     <div style={outerStyle(bg, 48)}>
-      <StoryGlow />
       <StoryHeader badge="Info trke" sub={sub} dark={dark} />
       <StoryTitle title={data.naziv} subtitle={data.podnaslov} text={text} sub={sub} />
 
@@ -665,7 +621,6 @@ export function StoryRezultati({ data, dark, gender }: { data: TemplateData['rez
 
   return (
     <div style={outerStyle(bg, 48)}>
-      <StoryGlow />
       <StoryHeader badge="Rezultati trke" sub={sub} dark={dark} />
       <StoryTitle title={data.naziv} subtitle={`${data.datum}  ·  ${data.kategorija}`} text={text} sub={sub} />
 
@@ -714,7 +669,6 @@ export function StoryNajave({ data, events, dark }: { data: TemplateData['najave
 
   return (
     <div style={outerStyle(bg, 48)}>
-      <StoryGlow />
       <StoryHeader badge="Najava trka" sub={sub} dark={dark} />
       <StoryTitle title={data.naslov} text={text} sub={sub} />
 
