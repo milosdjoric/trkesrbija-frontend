@@ -1,5 +1,6 @@
 'use client'
 
+import { AdSlot } from '@/components/ad-slot'
 import { useState, useCallback } from 'react'
 import { Heading, Subheading } from '@/components/heading'
 import { Text } from '@/components/text'
@@ -113,6 +114,9 @@ export default function GpxAnalyzerPage() {
           </Button>
         )}
       </div>
+
+      {/* Ad */}
+      <AdSlot placement="RESULTS_BANNER" className="mt-6" />
 
       <div className="mt-8">
         {!parsedGpx ? (

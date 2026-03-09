@@ -8,7 +8,7 @@ import { CloudUploadIcon } from '@/components/icons/cloud-upload-icon'
 type ImageUploadProps = {
   value?: string | null
   onChange: (url: string | null) => void
-  endpoint: 'eventImage' | 'galleryImages' | 'profileImage'
+  endpoint: 'eventImage' | 'galleryImages' | 'profileImage' | 'adImage'
   label?: string
   description?: string
 }

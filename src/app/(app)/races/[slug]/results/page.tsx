@@ -8,6 +8,7 @@ import {
   type Gender,
   type RaceResult,
 } from '@/app/lib/api'
+import { AdSlot } from '@/components/ad-slot'
 import { Badge } from '@/components/badge'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
@@ -245,6 +246,9 @@ export default function RaceResultsPage() {
           <div className="text-sm text-text-secondary">Nije završilo</div>
         </div>
       </div>
+
+      {/* Results Ad */}
+      <AdSlot placement="RESULTS_BANNER" className="mt-6" />
 
       {/* Results Table */}
       <div className="mt-6 overflow-x-auto">

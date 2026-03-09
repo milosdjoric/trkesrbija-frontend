@@ -1,3 +1,4 @@
+import { AdSlot } from '@/components/ad-slot'
 import { fetchRaceEventBySlug, type RaceEventWithRaces, type Race } from '@/app/lib/api'
 import { AdminEditButton } from '@/components/admin-edit-button'
 import { TrainingEditButton } from '@/components/training-edit-button'
@@ -616,6 +617,9 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                 </div>
               </div>
             )}
+
+            {/* Event Sidebar Ad */}
+            <AdSlot placement="EVENT_SIDEBAR" />
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { AdSlot } from '@/components/ad-slot'
 import { gql } from '@/app/lib/api'
 import { Heading } from '@/components/heading'
 import { formatDateKey } from '@/lib/formatters'
@@ -113,6 +114,9 @@ export default async function CalendarPage() {
       <Heading>Kalendar trka</Heading>
       <p className="mt-2 text-sm text-text-secondary">Pregledajte sve zakazane događaje po datumu.</p>
       <div className="mt-8">
+        <div className="hidden lg:block">
+          <AdSlot placement="CALENDAR_SIDEBAR" className="mb-6" style="wide" />
+        </div>
         <CalendarView eventsByDate={eventsByDate} />
       </div>
     </>

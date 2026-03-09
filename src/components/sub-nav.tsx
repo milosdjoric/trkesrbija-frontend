@@ -13,6 +13,7 @@ const adminTabs = [
   { href: '/admin/trainings', label: 'Treninzi' },
   { href: '/admin/users', label: 'Korisnici' },
   { href: '/admin/reports', label: 'Prijave grešaka' },
+  { href: '/admin/ads', label: 'Oglasi' },
   { href: '/admin/import', label: 'Import' },
   { href: '/admin/instagram', label: 'Instagram' },
 ]

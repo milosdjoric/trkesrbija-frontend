@@ -1,3 +1,4 @@
+import { AdSlot } from '@/components/ad-slot'
 import Link from 'next/link'
 
 const linkClass = 'text-sm text-text-secondary hover:text-text-primary transition-colors'
@@ -117,6 +118,11 @@ export function SiteFooter() {
               </li>
             </ul>
           </div>
+        </div>
+
+        {/* Footer Ad */}
+        <div className="mt-8">
+          <AdSlot placement="FOOTER_BANNER" />
         </div>
 
         {/* Bottom bar */}

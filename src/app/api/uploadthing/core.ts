@@ -62,6 +62,16 @@ export const ourFileRouter = {
       return { url: file.ufsUrl, name: metadata.customName }
     }),
 
+  // Ad banner images
+  adImage: f({ image: { maxFileSize: '1MB', maxFileCount: 1 } })
+    .middleware(async () => {
+      return { uploadedBy: 'admin' }
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log('Ad image upload complete:', file.ufsUrl)
+      return { url: file.ufsUrl }
+    }),
+
   // Profile image for users
   profileImage: f({ image: { maxFileSize: '2MB', maxFileCount: 1 } })
     .middleware(async () => {

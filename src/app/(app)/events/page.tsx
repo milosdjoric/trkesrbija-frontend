@@ -1,3 +1,4 @@
+import { AdSlot } from '@/components/ad-slot'
 import { gql } from '@/app/lib/api'
 import { Divider } from '@/components/divider'
 import { EventCard } from '@/components/event-card'
@@ -7,7 +8,7 @@ import { InfoBanner } from '@/components/info-banner'
 export const revalidate = 300 // ISR: revalidate svakih 5 minuta
 import { formatDate as formatDateUtil } from '@/lib/formatters'
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
+import { Fragment, Suspense } from 'react'
 import { FiltersBar } from './filters-bar'
 
 export const metadata: Metadata = {
@@ -469,7 +470,9 @@ export default async function Events({
         return (
           <div className="mt-6 space-y-2">
             {groups.map((g, gi) => (
-              <details key={`${g.month}-${gi}`} className="rounded-xl" open>
+              <Fragment key={`${g.month}-${gi}`}>
+              {gi === 1 && <AdSlot placement="IN_FEED" className="my-4 px-4" />}
+              <details className="rounded-xl" open>
                 <summary className="cursor-pointer px-4 py-3 text-sm font-normal select-none">
                   {g.month} <span className="font-normal text-text-secondary">({g.items.length})</span>
                 </summary>
@@ -498,6 +501,7 @@ export default async function Events({
                   ))}
                 </ul>
               </details>
+              </Fragment>
             ))}
           </div>
         )

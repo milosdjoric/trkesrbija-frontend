@@ -1,3 +1,4 @@
+import { AdSlot } from '@/components/ad-slot'
 import { gql } from '@/app/lib/api'
 import { Divider } from '@/components/divider'
 import { EventCard } from '@/components/event-card'
@@ -242,6 +243,9 @@ export default async function HomePage() {
           </div>
         </form>
       </div>
+
+      {/* Hero Ad */}
+      <AdSlot placement="HERO_BANNER" className="mb-10" />
 
       {/* Kategorije */}
       <div className="mb-10 grid gap-4 sm:grid-cols-3">
