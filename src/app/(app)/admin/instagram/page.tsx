@@ -207,13 +207,17 @@ export default function AdminInstagramPage() {
           },
         }))
       } else if (mode === 'rezultati') {
+        const raceToFetch = selectedRaces[0] ?? event.races[0]
+        const raceName = raceToFetch?.raceName ?? (raceToFetch ? `${raceToFetch.length} km` : '')
+        const genderLabel = rezultatiGender === 'FEMALE' ? 'Žene' : 'Muškarci'
+        const kategorija = [raceName, genderLabel].filter(Boolean).join(' — ')
+
         setData((prev) => ({
           ...prev,
-          rezultati: { ...prev.rezultati, naziv: name, datum },
+          rezultati: { ...prev.rezultati, naziv: name, datum, kategorija },
         }))
 
         // Auto-fetch top 3 results for the first selected race
-        const raceToFetch = selectedRaces[0] ?? event.races[0]
         if (raceToFetch && accessToken) {
           fetchRaceResults(raceToFetch.id, rezultatiGender, accessToken).then((results) => {
             const sorted = results.filter((r) => r.totalTime != null).sort((a, b) => (a.totalTime ?? Infinity) - (b.totalTime ?? Infinity))
@@ -510,13 +514,23 @@ export default function AdminInstagramPage() {
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   const gender = e.target.value as 'MALE' | 'FEMALE'
                   setRezultatiGender(gender)
-                  // Re-fetch results with new gender
+
+                  // Update kategorija with new gender label
+                  const genderLabel = gender === 'FEMALE' ? 'Žene' : 'Muškarci'
                   if (selectedEvent) {
                     const selectedRaces =
                       selectedRaceIds.size > 0
                         ? selectedEvent.races.filter((r) => selectedRaceIds.has(r.id))
                         : selectedEvent.races
                     const raceToFetch = selectedRaces[0] ?? selectedEvent.races[0]
+                    const raceName = raceToFetch?.raceName ?? (raceToFetch ? `${raceToFetch.length} km` : '')
+                    const kategorija = [raceName, genderLabel].filter(Boolean).join(' — ')
+                    setData((prev) => ({
+                      ...prev,
+                      rezultati: { ...prev.rezultati, kategorija },
+                    }))
+
+                    // Re-fetch results with new gender
                     if (raceToFetch && accessToken) {
                       fetchRaceResults(raceToFetch.id, gender, accessToken).then((results) => {
                         const sorted = results
