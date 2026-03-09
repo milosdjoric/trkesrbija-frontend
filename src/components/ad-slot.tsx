@@ -110,10 +110,10 @@ export function AdSlot({
         <img
           src={ad.imageUrl}
           alt={ad.altText || ad.title}
-          className={`${style === 'wide' ? 'w-full max-w-[728px] max-h-[90px]' : PLACEMENT_STYLES[placement]} object-cover`}
+          className={`${style === 'wide' ? 'w-full max-w-[728px] max-h-[90px]' : PLACEMENT_STYLES[placement]} mx-auto object-cover`}
         />
       </a>
-      <span className="mt-1 block text-[10px] text-text-secondary opacity-50">Oglas</span>
+      <span className="mt-1 block text-center text-[10px] text-text-secondary opacity-50">Oglas</span>
     </div>
   )
 }
