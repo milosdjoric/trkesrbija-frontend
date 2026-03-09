@@ -21,7 +21,9 @@ import {
 } from '@/components/instagram-templates'
 import { Select } from '@/components/select'
 import { ArrowTopRightOnSquareIcon, ClipboardDocumentIcon } from '@heroicons/react/16/solid'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { Input } from '@/components/input'
+import { fetchRaceResults } from '@/app/lib/api'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type RaceInfo = {
   id: string
@@ -114,8 +116,38 @@ export default function AdminInstagramPage() {
   // Multi-event selection for "najave" mode
   const [selectedEventIds, setSelectedEventIds] = useState<Set<string>>(new Set())
   const [najaveEvents, setNajaveEvents] = useState<NajaveEvent[]>([])
+  const [eventSearch, setEventSearch] = useState('')
 
   const selectedEvent = events.find((e) => e.id === selectedEventId)
+
+  // Filter events: for rezultati show only past races, for others show future first
+  const filteredEvents = useMemo(() => {
+    const now = Date.now()
+    let list = events
+
+    if (mode === 'rezultati') {
+      list = events.filter((e) => {
+        const latestRace = e.races.reduce((latest, r) => {
+          const t = new Date(r.startDateTime).getTime()
+          return t > latest ? t : latest
+        }, 0)
+        return latestRace < now
+      })
+      // Sort: most recent first
+      list = [...list].sort((a, b) => {
+        const dateA = new Date(a.races[0]?.startDateTime ?? '').getTime()
+        const dateB = new Date(b.races[0]?.startDateTime ?? '').getTime()
+        return dateB - dateA
+      })
+    }
+
+    if (eventSearch.trim()) {
+      const q = eventSearch.toLowerCase()
+      list = list.filter((e) => e.eventName.toLowerCase().includes(q))
+    }
+
+    return list
+  }, [events, mode, eventSearch])
 
   useEffect(() => {
     if (!accessToken) return
@@ -178,6 +210,37 @@ export default function AdminInstagramPage() {
           ...prev,
           rezultati: { ...prev.rezultati, naziv: name, datum },
         }))
+
+        // Auto-fetch top 3 results for the first selected race
+        const raceToFetch = selectedRaces[0] ?? event.races[0]
+        if (raceToFetch && accessToken) {
+          fetchRaceResults(raceToFetch.id, undefined, accessToken).then((results) => {
+            const sorted = results.filter((r) => r.totalTime != null).sort((a, b) => (a.totalTime ?? Infinity) - (b.totalTime ?? Infinity))
+            const formatTime = (ms: number) => {
+              const h = Math.floor(ms / 3600000)
+              const m = Math.floor((ms % 3600000) / 60000)
+              const s = Math.floor((ms % 60000) / 1000)
+              return h > 0 ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}` : `${m}:${String(s).padStart(2, '0')}`
+            }
+            const top1 = sorted[0]
+            const top2 = sorted[1]
+            const top3 = sorted[2]
+            setData((prev) => ({
+              ...prev,
+              rezultati: {
+                ...prev.rezultati,
+                prvak: top1 ? `${top1.registration.firstName} ${top1.registration.lastName}` : prev.rezultati.prvak,
+                vreme: top1?.totalTime ? formatTime(top1.totalTime) : prev.rezultati.vreme,
+                top2: top2
+                  ? `${top2.registration.firstName} ${top2.registration.lastName} — ${top2.totalTime ? formatTime(top2.totalTime) : ''}`
+                  : prev.rezultati.top2,
+                top3: top3
+                  ? `${top3.registration.firstName} ${top3.registration.lastName} — ${top3.totalTime ? formatTime(top3.totalTime) : ''}`
+                  : prev.rezultati.top3,
+              },
+            }))
+          })
+        }
       }
     },
     [mode]
@@ -314,7 +377,7 @@ export default function AdminInstagramPage() {
         {types.map((t) => (
           <button
             key={t.key}
-            onClick={() => setMode(t.key)}
+            onClick={() => { setMode(t.key); setEventSearch('') }}
             className={`rounded-full border px-4 py-1.5 text-sm font-semibold transition-colors ${
               mode === t.key
                 ? 'border-brand-green bg-brand-green/10 text-brand-green'
@@ -332,13 +395,26 @@ export default function AdminInstagramPage() {
         <div className="w-full shrink-0 lg:w-72">
           {isMultiMode ? (
             <>
+              {/* Event search for najave */}
+              <div className="mb-3">
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-brand-green">
+                  Pretrazi
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Pretrazi trke..."
+                  value={eventSearch}
+                  onChange={(e) => setEventSearch(e.target.value)}
+                />
+              </div>
+
               {/* Multi-event checkboxes for "najave" */}
               <div className="mb-5">
                 <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-brand-green">
                   Izaberi dogadjaje ({selectedEventIds.size})
                 </label>
                 <div className="flex max-h-64 flex-col gap-1 overflow-y-auto rounded-lg border border-border-secondary p-2">
-                  {events.map((ev) => {
+                  {filteredEvents.map((ev) => {
                     const date = ev.races[0] ? formatDateShort(ev.races[0].startDateTime) : ''
                     const distances = [...ev.races].sort((a, b) => a.length - b.length).map((r) => `${r.length}km`).join(', ')
                     return (
@@ -366,17 +442,30 @@ export default function AdminInstagramPage() {
             </>
           ) : (
             <>
+              {/* Event search */}
+              <div className="mb-3">
+                <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-brand-green">
+                  Pretrazi
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Pretrazi trke..."
+                  value={eventSearch}
+                  onChange={(e) => setEventSearch(e.target.value)}
+                />
+              </div>
+
               {/* Single event selector */}
               <div className="mb-4">
                 <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-brand-green">
-                  Izaberi dogadjaj
+                  Izaberi dogadjaj {mode === 'rezultati' ? '(prošle trke)' : ''}
                 </label>
                 <Select
                   value={selectedEventId}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => selectEvent(e.target.value)}
                 >
                   <option value="">— Ručni unos —</option>
-                  {events.map((ev) => {
+                  {filteredEvents.map((ev) => {
                     const date = ev.races[0] ? formatDateSr(ev.races[0].startDateTime) : ''
                     return (
                       <option key={ev.id} value={ev.id}>
