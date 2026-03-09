@@ -32,6 +32,7 @@ function Preview() {
   let dark = true
   let data: TemplateData = defaultData
   let najaveEvents: NajaveEvent[] = []
+  let gender: 'MALE' | 'FEMALE' | undefined
 
   const encoded = sp.get('d')
   if (encoded) {
@@ -42,6 +43,7 @@ function Preview() {
       dark = decoded.dark ?? true
       data = { ...defaultData, ...decoded.data }
       najaveEvents = decoded.najaveEvents ?? []
+      gender = decoded.gender
     } catch {
       // fallback to defaults
     }
@@ -87,14 +89,14 @@ function Preview() {
             {mode === 'najava' && <PostNajava data={data.najava} dark={dark} />}
             {mode === 'najave' && <PostNajave data={data.najave} events={najaveEvents} dark={dark} />}
             {mode === 'info' && <PostInfo data={data.info} dark={dark} />}
-            {mode === 'rezultati' && <PostRezultati data={data.rezultati} dark={dark} />}
+            {mode === 'rezultati' && <PostRezultati data={data.rezultati} dark={dark} gender={gender} />}
           </>
         ) : (
           <>
             {mode === 'najava' && <StoryNajava data={data.najava} dark={dark} />}
             {mode === 'najave' && <StoryNajave data={data.najave} events={najaveEvents} dark={dark} />}
             {mode === 'info' && <StoryInfo data={data.info} dark={dark} />}
-            {mode === 'rezultati' && <StoryRezultati data={data.rezultati} dark={dark} />}
+            {mode === 'rezultati' && <StoryRezultati data={data.rezultati} dark={dark} gender={gender} />}
           </>
         )}
       </div>

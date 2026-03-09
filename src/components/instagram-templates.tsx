@@ -327,7 +327,7 @@ export function PostInfo({ data, dark }: { data: TemplateData['info']; dark: boo
   )
 }
 
-export function PostRezultati({ data, dark }: { data: TemplateData['rezultati']; dark: boolean }) {
+export function PostRezultati({ data, dark, gender }: { data: TemplateData['rezultati']; dark: boolean; gender?: 'MALE' | 'FEMALE' }) {
   const bg = dark ? '#0a0a0a' : '#f8f9f4'
   const text = dark ? '#f0f0f0' : '#111'
   const sub = dark ? '#888' : '#666'
@@ -365,7 +365,7 @@ export function PostRezultati({ data, dark }: { data: TemplateData['rezultati'];
               marginBottom: 3,
             }}
           >
-            🥇 Pobednik
+            🥇 {gender === 'FEMALE' ? 'Pobednica' : 'Pobednik'}
           </div>
           <div style={{ fontSize: 18, fontWeight: 900, color: text, marginBottom: 1 }}>{data.prvak}</div>
           <div style={{ fontSize: 24, fontWeight: 900, color: GREEN, letterSpacing: '-0.02em' }}>{data.vreme}</div>
@@ -656,7 +656,7 @@ export function StoryInfo({ data, dark }: { data: TemplateData['info']; dark: bo
   )
 }
 
-export function StoryRezultati({ data, dark }: { data: TemplateData['rezultati']; dark: boolean }) {
+export function StoryRezultati({ data, dark, gender }: { data: TemplateData['rezultati']; dark: boolean; gender?: 'MALE' | 'FEMALE' }) {
   const bg = dark ? '#0a0a0a' : '#f8f9f4'
   const text = dark ? '#f0f0f0' : '#111'
   const sub = dark ? '#888' : '#666'
@@ -682,7 +682,7 @@ export function StoryRezultati({ data, dark }: { data: TemplateData['rezultati']
         >
           <div style={{ position: 'absolute', right: -20, top: -20, fontSize: 100, opacity: 0.08, lineHeight: 1 }}>🥇</div>
           <div style={{ fontSize: 13, color: GREEN, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 6 }}>
-            🥇 Pobednik
+            🥇 {gender === 'FEMALE' ? 'Pobednica' : 'Pobednik'}
           </div>
           <div style={{ fontSize: 26, fontWeight: 900, color: text, marginBottom: 2 }}>{data.prvak}</div>
           <div style={{ fontSize: 34, fontWeight: 900, color: GREEN, letterSpacing: '-0.02em' }}>{data.vreme}</div>

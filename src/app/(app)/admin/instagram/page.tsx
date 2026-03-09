@@ -117,6 +117,7 @@ export default function AdminInstagramPage() {
   const [selectedEventIds, setSelectedEventIds] = useState<Set<string>>(new Set())
   const [najaveEvents, setNajaveEvents] = useState<NajaveEvent[]>([])
   const [eventSearch, setEventSearch] = useState('')
+  const [rezultatiGender, setRezultatiGender] = useState<'MALE' | 'FEMALE'>('MALE')
 
   const selectedEvent = events.find((e) => e.id === selectedEventId)
 
@@ -214,7 +215,7 @@ export default function AdminInstagramPage() {
         // Auto-fetch top 3 results for the first selected race
         const raceToFetch = selectedRaces[0] ?? event.races[0]
         if (raceToFetch && accessToken) {
-          fetchRaceResults(raceToFetch.id, undefined, accessToken).then((results) => {
+          fetchRaceResults(raceToFetch.id, rezultatiGender, accessToken).then((results) => {
             const sorted = results.filter((r) => r.totalTime != null).sort((a, b) => (a.totalTime ?? Infinity) - (b.totalTime ?? Infinity))
             const formatTime = (ms: number) => {
               const h = Math.floor(ms / 3600000)
@@ -243,7 +244,7 @@ export default function AdminInstagramPage() {
         }
       }
     },
-    [mode]
+    [mode, rezultatiGender, accessToken]
   )
 
   const selectEvent = useCallback(
@@ -316,11 +317,11 @@ export default function AdminInstagramPage() {
   }, [])
 
   const buildPreviewUrl = useCallback(() => {
-    const payload = { mode, format, dark, data, najaveEvents: mode === 'najave' ? najaveEvents : undefined }
+    const payload = { mode, format, dark, data, najaveEvents: mode === 'najave' ? najaveEvents : undefined, gender: mode === 'rezultati' ? rezultatiGender : undefined }
     const json = JSON.stringify(payload)
     const encoded = btoa(unescape(encodeURIComponent(json)))
     return `${window.location.origin}/instagram-preview?d=${encodeURIComponent(encoded)}`
-  }, [mode, format, dark, data, najaveEvents])
+  }, [mode, format, dark, data, najaveEvents, rezultatiGender])
 
   const openPreview = useCallback(() => {
     window.open(buildPreviewUrl(), '_blank')
@@ -501,6 +502,64 @@ export default function AdminInstagramPage() {
             </>
           )}
 
+          {mode === 'rezultati' && (
+            <div className="mb-4">
+              <label className="mb-1 block text-xs font-semibold uppercase tracking-wider text-brand-green">Pol</label>
+              <Select
+                value={rezultatiGender}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                  const gender = e.target.value as 'MALE' | 'FEMALE'
+                  setRezultatiGender(gender)
+                  // Re-fetch results with new gender
+                  if (selectedEvent) {
+                    const selectedRaces =
+                      selectedRaceIds.size > 0
+                        ? selectedEvent.races.filter((r) => selectedRaceIds.has(r.id))
+                        : selectedEvent.races
+                    const raceToFetch = selectedRaces[0] ?? selectedEvent.races[0]
+                    if (raceToFetch && accessToken) {
+                      fetchRaceResults(raceToFetch.id, gender, accessToken).then((results) => {
+                        const sorted = results
+                          .filter((r) => r.totalTime != null)
+                          .sort((a, b) => (a.totalTime ?? Infinity) - (b.totalTime ?? Infinity))
+                        const formatTime = (ms: number) => {
+                          const h = Math.floor(ms / 3600000)
+                          const m = Math.floor((ms % 3600000) / 60000)
+                          const s = Math.floor((ms % 60000) / 1000)
+                          return h > 0
+                            ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+                            : `${m}:${String(s).padStart(2, '0')}`
+                        }
+                        const top1 = sorted[0]
+                        const top2 = sorted[1]
+                        const top3 = sorted[2]
+                        setData((prev) => ({
+                          ...prev,
+                          rezultati: {
+                            ...prev.rezultati,
+                            prvak: top1
+                              ? `${top1.registration.firstName} ${top1.registration.lastName}`
+                              : prev.rezultati.prvak,
+                            vreme: top1?.totalTime ? formatTime(top1.totalTime) : prev.rezultati.vreme,
+                            top2: top2
+                              ? `${top2.registration.firstName} ${top2.registration.lastName} — ${top2.totalTime ? formatTime(top2.totalTime) : ''}`
+                              : prev.rezultati.top2,
+                            top3: top3
+                              ? `${top3.registration.firstName} ${top3.registration.lastName} — ${top3.totalTime ? formatTime(top3.totalTime) : ''}`
+                              : prev.rezultati.top3,
+                          },
+                        }))
+                      })
+                    }
+                  }
+                }}
+              >
+                <option value="MALE">Muški</option>
+                <option value="FEMALE">Ženski</option>
+              </Select>
+            </div>
+          )}
+
           <div className="mb-4 text-xs font-semibold uppercase tracking-widest text-text-secondary">Uredi sadrzaj</div>
           {fieldConfig[mode].map((f) => (
             <Field
@@ -532,14 +591,14 @@ export default function AdminInstagramPage() {
                 {mode === 'najava' && <PostNajava data={data.najava} dark={dark} />}
                 {mode === 'najave' && <PostNajave data={data.najave} events={najaveEvents} dark={dark} />}
                 {mode === 'info' && <PostInfo data={data.info} dark={dark} />}
-                {mode === 'rezultati' && <PostRezultati data={data.rezultati} dark={dark} />}
+                {mode === 'rezultati' && <PostRezultati data={data.rezultati} dark={dark} gender={rezultatiGender} />}
               </>
             ) : (
               <>
                 {mode === 'najava' && <StoryNajava data={data.najava} dark={dark} />}
                 {mode === 'najave' && <StoryNajave data={data.najave} events={najaveEvents} dark={dark} />}
                 {mode === 'info' && <StoryInfo data={data.info} dark={dark} />}
-                {mode === 'rezultati' && <StoryRezultati data={data.rezultati} dark={dark} />}
+                {mode === 'rezultati' && <StoryRezultati data={data.rezultati} dark={dark} gender={rezultatiGender} />}
               </>
             )}
           </div>
