@@ -8,7 +8,7 @@ export interface LocalTiming {
   timestamp: string // ISO string
   checkpointId: string
   raceId: string
-  synced: boolean
+  synced: number // 0 = pending, 1 = synced (number za IndexedDB kompatibilnost)
   syncedAt?: string
   serverId?: string
   error?: string
@@ -19,7 +19,7 @@ interface TimingDB extends DBSchema {
     key: string
     value: LocalTiming
     indexes: {
-      'by-synced': boolean
+      'by-synced': number
       'by-timestamp': string
     }
   }
@@ -54,14 +54,14 @@ export async function saveTiming(timing: LocalTiming): Promise<void> {
 
 export async function getPendingTimings(): Promise<LocalTiming[]> {
   const db = await getDB()
-  return db.getAllFromIndex('timings', 'by-synced', false)
+  return db.getAllFromIndex('timings', 'by-synced', 0)
 }
 
 export async function markAsSynced(localId: string, serverId: string): Promise<void> {
   const db = await getDB()
   const timing = await db.get('timings', localId)
   if (timing) {
-    timing.synced = true
+    timing.synced = 1
     timing.syncedAt = new Date().toISOString()
     timing.serverId = serverId
     timing.error = undefined
@@ -97,13 +97,13 @@ export async function deletePendingTiming(localId: string): Promise<boolean> {
 
 export async function getPendingCount(): Promise<number> {
   const db = await getDB()
-  return db.countFromIndex('timings', 'by-synced', false)
+  return db.countFromIndex('timings', 'by-synced', 0)
 }
 
 export async function clearSyncedTimings(olderThanMs = 24 * 60 * 60 * 1000): Promise<number> {
   const db = await getDB()
   const cutoff = new Date(Date.now() - olderThanMs).toISOString()
-  const all = await db.getAllFromIndex('timings', 'by-synced', true)
+  const all = await db.getAllFromIndex('timings', 'by-synced', 1)
   let deleted = 0
 
   const tx = db.transaction('timings', 'readwrite')

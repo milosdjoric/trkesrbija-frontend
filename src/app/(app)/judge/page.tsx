@@ -59,7 +59,7 @@ function localTimingToDisplay(t: LocalTiming): DisplayTiming {
     id: t.localId,
     bibNumber: t.bibNumber,
     timestamp: t.timestamp,
-    synced: t.synced,
+    synced: !!t.synced,
     error: t.error,
     isLocal: true,
   }
@@ -211,7 +211,7 @@ export default function JudgePage() {
       timestamp,
       checkpointId: checkpoint.id,
       raceId: checkpoint.race.id,
-      synced: false,
+      synced: 0,
     }
 
     try {
