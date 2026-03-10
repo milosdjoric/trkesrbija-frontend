@@ -45,7 +45,7 @@ type DisplayTiming = {
 function serverTimingToDisplay(t: Timing): DisplayTiming {
   return {
     id: t.id,
-    bibNumber: t.registration.bibNumber,
+    bibNumber: t.registration.bibNumber ?? '',
     firstName: t.registration.firstName,
     lastName: t.registration.lastName,
     timestamp: t.timestamp,
