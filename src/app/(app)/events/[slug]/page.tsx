@@ -378,6 +378,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                       {!event.isTraining && <TableHeader>Distanca</TableHeader>}
                       {!event.isTraining && <TableHeader>Vis. razlika</TableHeader>}
                       <TableHeader>Start</TableHeader>
+                      {!event.isTraining && <TableHeader>Rezultati</TableHeader>}
                       <TableHeader className="text-right">Akcije</TableHeader>
                     </TableRow>
                   </TableHead>
@@ -411,6 +412,20 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
                         {!event.isTraining && <TableCell>{race.length > 0 ? `${race.length} km` : '–'}</TableCell>}
                         {!event.isTraining && <TableCell>{race.elevation != null && race.elevation > 0 ? `${race.elevation} m` : '–'}</TableCell>}
                         <TableCell>{formatTime(race.startDateTime)}</TableCell>
+                        {!event.isTraining && (
+                          <TableCell>
+                            {new Date(race.startDateTime) < new Date() ? (
+                              <Link
+                                href={`/races/${race.slug}/results`}
+                                className="text-sm font-medium text-brand-green hover:underline"
+                              >
+                                Rezultati
+                              </Link>
+                            ) : (
+                              <span className="text-text-secondary">–</span>
+                            )}
+                          </TableCell>
+                        )}
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
                             <RegisterRaceButton raceId={race.id} raceSlug={race.slug} size="sm" />

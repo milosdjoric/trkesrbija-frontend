@@ -15,7 +15,6 @@ import { ExpandableText } from '@/components/expandable-text'
 import { FavoriteButtonServer } from '@/components/favorite-button-server'
 import { GpxMapWrapper } from '@/components/gpx-map-wrapper'
 import { Subheading } from '@/components/heading'
-import { RaceResults } from '@/components/race-results'
 import {
   CalendarIcon,
   ClockIcon,
@@ -669,8 +668,6 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
         </div>
       </div>
 
-      {/* Results Section - Full Width */}
-      <RaceResults raceId={race.id} raceName={race.raceName} />
     </>
   )
 }
