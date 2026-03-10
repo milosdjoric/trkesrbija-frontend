@@ -9,7 +9,6 @@ import {
   type Timing,
 } from '@/app/lib/api'
 import { Badge } from '@/components/badge'
-import { Button } from '@/components/button'
 import { Heading } from '@/components/heading'
 import { LoadingState } from '@/components/loading-state'
 import { Text } from '@/components/text'
@@ -26,7 +25,7 @@ import {
   SignalSlashIcon,
 } from '@heroicons/react/16/solid'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 // ── Unified timing type za prikaz ────────────────────────────────────────────
 // Kombinuje server timinge i lokalne pending timinge u jednu listu.
@@ -70,14 +69,12 @@ function localTimingToDisplay(t: LocalTiming): DisplayTiming {
 export default function JudgePage() {
   const router = useRouter()
   const { user, accessToken, isLoading: authLoading } = useAuth()
-  const inputRef = useRef<HTMLInputElement>(null)
   const { isOnline, pendingCount, refreshPendingCount } = useOnlineStatus()
 
   const [checkpoint, setCheckpoint] = useState<CheckpointWithRace | null>(null)
   const [displayTimings, setDisplayTimings] = useState<DisplayTiming[]>([])
   const [loading, setLoading] = useState(true)
   const [bibNumber, setBibNumber] = useState('')
-  const [inputFocused, setInputFocused] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [syncing, setSyncing] = useState(false)
   const [lastResult, setLastResult] = useState<{ success: boolean; message: string; timestamp?: string } | null>(null)
@@ -193,8 +190,7 @@ export default function JudgePage() {
 
   // ── Submit handler (offline-first) ───────────────────────────────────────
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
+  async function handleSubmit() {
     if (!bibNumber.trim() || submitting || !checkpoint) return
 
     setSubmitting(true)
@@ -270,7 +266,6 @@ export default function JudgePage() {
     }
 
     setSubmitting(false)
-    inputRef.current?.focus()
   }
 
   // ── Delete error timing ──────────────────────────────────────────────────
@@ -374,38 +369,51 @@ export default function JudgePage() {
         </div>
       </div>
 
-      {/* Main Input Area */}
-      <form onSubmit={handleSubmit} className="space-y-5">
-        <div>
-          <label className="mb-3 block text-base font-medium text-zinc-700 dark:text-zinc-300">
-            Startni broj
-          </label>
-          <input
-            ref={inputRef}
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            value={bibNumber}
-            onChange={(e) => setBibNumber(e.target.value)}
-            onFocus={() => setInputFocused(true)}
-            onBlur={() => setInputFocused(false)}
-            placeholder={inputFocused ? '' : '000'}
-            className="w-full rounded-2xl border-2 border-emerald-200 bg-white px-6 py-8 text-center font-mono text-6xl font-bold tracking-[0.2em] text-zinc-900 placeholder:text-zinc-300 focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/20 dark:border-emerald-800 dark:bg-zinc-900 dark:text-white dark:placeholder:text-zinc-600 dark:focus:border-emerald-400"
-            autoFocus
-            autoComplete="off"
-            disabled={submitting}
-          />
+      {/* Bib Number Display */}
+      <div className="mb-3">
+        <div className="flex h-20 items-center justify-center rounded-2xl border-2 border-emerald-200 bg-white font-mono text-5xl font-bold tracking-[0.2em] text-zinc-900 dark:border-emerald-800 dark:bg-zinc-900 dark:text-white">
+          {bibNumber || <span className="text-zinc-300 dark:text-zinc-600">000</span>}
         </div>
+      </div>
 
-        <Button
-          type="submit"
-          disabled={!bibNumber.trim() || submitting}
-          color="emerald"
-          className="items-center !h-16 w-full !rounded-2xl !text-lg !font-semibold"
+      {/* Numpad */}
+      <div className="grid grid-cols-3 gap-2">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+          <button
+            key={n}
+            type="button"
+            onClick={() => setBibNumber((prev) => prev + n)}
+            disabled={submitting}
+            className="flex h-14 items-center justify-center rounded-xl bg-zinc-100 text-2xl font-semibold text-zinc-900 transition-colors active:bg-zinc-200 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-100 dark:active:bg-zinc-700"
+          >
+            {n}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => setBibNumber((prev) => prev.slice(0, -1))}
+          disabled={submitting || !bibNumber}
+          className="flex h-14 items-center justify-center rounded-xl bg-zinc-200 text-xl font-semibold text-zinc-600 transition-colors active:bg-zinc-300 disabled:opacity-30 dark:bg-zinc-700 dark:text-zinc-400 dark:active:bg-zinc-600"
         >
-          {submitting ? 'Čuvam...' : 'Zabeleži vreme'}
-        </Button>
-      </form>
+          ⌫
+        </button>
+        <button
+          type="button"
+          onClick={() => setBibNumber((prev) => prev + '0')}
+          disabled={submitting}
+          className="flex h-14 items-center justify-center rounded-xl bg-zinc-100 text-2xl font-semibold text-zinc-900 transition-colors active:bg-zinc-200 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-100 dark:active:bg-zinc-700"
+        >
+          0
+        </button>
+        <button
+          type="button"
+          onClick={handleSubmit}
+          disabled={!bibNumber.trim() || submitting}
+          className="flex h-14 items-center justify-center rounded-xl bg-emerald-500 text-lg font-bold text-white transition-colors active:bg-emerald-600 disabled:opacity-30 dark:bg-emerald-600 dark:active:bg-emerald-700"
+        >
+          {submitting ? '...' : '✓'}
+        </button>
+      </div>
 
       {/* Result feedback */}
       {lastResult && (
