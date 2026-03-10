@@ -327,7 +327,7 @@ export default function JudgePage() {
     <div className="mx-auto max-w-lg pb-8">
       {/* Online/Offline Status Bar */}
       <div
-        className={`mb-4 flex items-center justify-between rounded-xl px-4 py-2.5 text-sm font-medium ${
+        className={`mb-2 flex items-center justify-between rounded-lg px-3 py-1.5 text-xs font-medium ${
           isOnline
             ? pendingCount > 0
               ? 'bg-amber-50 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200'
@@ -335,43 +335,39 @@ export default function JudgePage() {
             : 'bg-red-50 text-red-800 dark:bg-red-900/20 dark:text-red-200'
         }`}
       >
-        <div className="flex items-center gap-2">
-          {isOnline ? (
-            <SignalIcon className="size-4" />
-          ) : (
-            <SignalSlashIcon className="size-4" />
-          )}
+        <div className="flex items-center gap-1.5">
+          {isOnline ? <SignalIcon className="size-3" /> : <SignalSlashIcon className="size-3" />}
           <span>
             {isOnline
               ? pendingCount > 0
                 ? `Online — ${pendingCount} čeka sync`
-                : 'Online — sinhronizovano'
-              : `Offline — ${pendingCount > 0 ? `${pendingCount} čeka sync` : 'podaci se čuvaju lokalno'}`}
+                : 'Online'
+              : `Offline${pendingCount > 0 ? ` — ${pendingCount} čeka sync` : ''}`}
           </span>
         </div>
         {isOnline && pendingCount > 0 && (
           <button
             onClick={handleManualSync}
             disabled={syncing}
-            className="flex items-center gap-1 rounded-lg bg-white/50 px-2.5 py-1 text-xs font-semibold transition-colors hover:bg-white/80 dark:bg-white/10 dark:hover:bg-white/20"
+            className="flex items-center gap-1 rounded bg-white/50 px-2 py-0.5 text-[11px] font-semibold transition-colors hover:bg-white/80 dark:bg-white/10 dark:hover:bg-white/20"
           >
-            <ArrowPathIcon className={`size-3.5 ${syncing ? 'animate-spin' : ''}`} />
-            {syncing ? 'Sync...' : 'Sync'}
+            <ArrowPathIcon className={`size-3 ${syncing ? 'animate-spin' : ''}`} />
+            Sync
           </button>
         )}
       </div>
 
       {/* Checkpoint Header */}
-      <div className="mb-6 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 p-4 shadow-lg dark:from-emerald-600 dark:to-emerald-700">
-        <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded-xl bg-white/20 text-2xl font-bold text-white">
+      <div className="mb-5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-3 shadow-md dark:from-emerald-600 dark:to-emerald-700">
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 items-center justify-center rounded-lg bg-white/20 text-lg font-bold text-white">
             {checkpoint.orderIndex}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-lg font-bold text-text-primary">
+            <div className="truncate text-base font-bold text-text-primary">
               {checkpoint.name}
             </div>
-            <div className="truncate text-sm text-emerald-100">
+            <div className="truncate text-xs text-emerald-100">
               {checkpoint.race.raceName ?? checkpoint.race.raceEvent.eventName}
             </div>
           </div>
