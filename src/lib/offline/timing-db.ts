@@ -8,7 +8,7 @@ export interface LocalTiming {
   timestamp: string // ISO string
   checkpointId: string
   raceId: string
-  synced: number // 0 = pending, 1 = synced (number za IndexedDB kompatibilnost)
+  synced: number // 0 = pending, 1 = synced, 2 = permanent error (number za IndexedDB kompatibilnost)
   syncedAt?: string
   serverId?: string
   error?: string
@@ -78,6 +78,16 @@ export async function markAsError(localId: string, error: string): Promise<void>
   }
 }
 
+export async function markAsPermanentError(localId: string, error: string): Promise<void> {
+  const db = await getDB()
+  const timing = await db.get('timings', localId)
+  if (timing) {
+    timing.synced = 2
+    timing.error = error
+    await db.put('timings', timing)
+  }
+}
+
 export async function getAllTimings(limit = 50): Promise<LocalTiming[]> {
   const db = await getDB()
   const all = await db.getAllFromIndex('timings', 'by-timestamp')
@@ -85,10 +95,10 @@ export async function getAllTimings(limit = 50): Promise<LocalTiming[]> {
   return all.reverse().slice(0, limit)
 }
 
-export async function deletePendingTiming(localId: string): Promise<boolean> {
+export async function deleteTiming(localId: string): Promise<boolean> {
   const db = await getDB()
   const timing = await db.get('timings', localId)
-  if (timing && !timing.synced) {
+  if (timing) {
     await db.delete('timings', localId)
     return true
   }

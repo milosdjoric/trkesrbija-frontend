@@ -1,5 +1,5 @@
 import { recordTime } from '@/app/lib/api'
-import { getPendingTimings, markAsError, markAsSynced } from './timing-db'
+import { getPendingTimings, markAsError, markAsPermanentError, markAsSynced } from './timing-db'
 
 // ── Sync Queue ───────────────────────────────────────────────────────────────
 // Sekvencijalno šalje pending timinge na server kad je online.
@@ -51,7 +51,7 @@ export async function syncPendingTimings(accessToken: string | null): Promise<{ 
 
         // Participant not found — trajni error, ne pokušavaj ponovo
         if (message.includes('nije pronađen') || message.includes('not found')) {
-          await markAsError(timing.localId, message)
+          await markAsPermanentError(timing.localId, message)
           failedCount++
           continue
         }
@@ -61,7 +61,7 @@ export async function syncPendingTimings(accessToken: string | null): Promise<{ 
         const currentRetry = parseInt(retryCount, 10)
 
         if (currentRetry >= MAX_RETRIES) {
-          await markAsError(timing.localId, message)
+          await markAsPermanentError(timing.localId, message)
           failedCount++
         } else {
           await markAsError(timing.localId, `${message} [retry:${currentRetry + 1}]`)

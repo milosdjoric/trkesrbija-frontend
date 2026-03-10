@@ -15,7 +15,7 @@ import { LoadingState } from '@/components/loading-state'
 import { Text } from '@/components/text'
 import { useOnlineStatus } from '@/hooks/use-online-status'
 import { formatTime } from '@/lib/formatters'
-import { getAllTimings, saveTiming, type LocalTiming } from '@/lib/offline/timing-db'
+import { deleteTiming, getAllTimings, saveTiming, type LocalTiming } from '@/lib/offline/timing-db'
 import { initAutoSync, setSyncCallback, syncPendingTimings, cleanupAutoSync } from '@/lib/offline/sync-queue'
 import {
   ArrowPathIcon,
@@ -59,7 +59,7 @@ function localTimingToDisplay(t: LocalTiming): DisplayTiming {
     id: t.localId,
     bibNumber: t.bibNumber,
     timestamp: t.timestamp,
-    synced: !!t.synced,
+    synced: t.synced === 1,
     error: t.error,
     isLocal: true,
   }
@@ -88,14 +88,14 @@ export default function JudgePage() {
     async (serverTimings?: Timing[]) => {
       const localTimings = await getAllTimings(50)
 
-      // Lokalne pending stavke (nisu synced)
-      const pendingLocal = localTimings.filter((t) => !t.synced).map(localTimingToDisplay)
+      // Lokalne pending i error stavke (synced !== 1)
+      const pendingLocal = localTimings.filter((t) => t.synced !== 1).map(localTimingToDisplay)
 
       // Server timings (ili prazan niz ako offline)
       const serverDisplay = (serverTimings ?? []).map(serverTimingToDisplay)
 
-      // Merge: pending lokalni na vrhu, pa server timings (bez duplikata)
-      const syncedLocalIds = new Set(localTimings.filter((t) => t.synced && t.serverId).map((t) => t.serverId))
+      // Merge: pending/error lokalni na vrhu, pa server timings (bez duplikata)
+      const syncedLocalIds = new Set(localTimings.filter((t) => t.synced === 1 && t.serverId).map((t) => t.serverId))
       const filteredServer = serverDisplay.filter((t) => !syncedLocalIds.has(t.id))
 
       // Sortiraj sve po timestamp DESC
@@ -244,8 +244,14 @@ export default function JudgePage() {
         await refreshDisplayTimings(timings)
       } catch (err: any) {
         const message = err?.message ?? 'Greška pri slanju na server'
-        const { markAsError } = await import('@/lib/offline/timing-db')
-        await markAsError(localId, message)
+        // Permanentne greške (not found) ne pokušavaj ponovo
+        if (message.includes('nije pronađen') || message.includes('not found')) {
+          const { markAsPermanentError } = await import('@/lib/offline/timing-db')
+          await markAsPermanentError(localId, message)
+        } else {
+          const { markAsError } = await import('@/lib/offline/timing-db')
+          await markAsError(localId, message)
+        }
 
         setLastResult({
           success: false,
@@ -265,6 +271,13 @@ export default function JudgePage() {
 
     setSubmitting(false)
     inputRef.current?.focus()
+  }
+
+  // ── Delete error timing ──────────────────────────────────────────────────
+
+  async function handleDeleteTiming(id: string) {
+    await deleteTiming(id)
+    await refreshDisplayTimings()
   }
 
   // ── Manual sync ──────────────────────────────────────────────────────────
@@ -484,10 +497,17 @@ export default function JudgePage() {
                   <span className="font-mono text-base font-semibold tabular-nums text-zinc-700 dark:text-zinc-300">
                     {formatTime(timing.timestamp, true)}
                   </span>
-                  {!timing.synced && (
-                    <span className={`text-xs ${timing.error ? 'text-red-500' : 'text-amber-500'}`}>
-                      {timing.error ? '!' : '⏳'}
-                    </span>
+                  {!timing.synced && !timing.error && (
+                    <span className="text-xs text-amber-500">⏳</span>
+                  )}
+                  {timing.error && timing.isLocal && (
+                    <button
+                      onClick={() => handleDeleteTiming(timing.id)}
+                      className="flex size-6 items-center justify-center rounded-full bg-red-100 text-red-500 transition-colors hover:bg-red-200 dark:bg-red-900/30 dark:hover:bg-red-900/50"
+                      title="Obriši"
+                    >
+                      <span className="text-sm font-bold leading-none">✕</span>
+                    </button>
                   )}
                 </div>
               </div>
