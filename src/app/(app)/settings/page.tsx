@@ -15,7 +15,7 @@ import {
   UserCircleIcon,
 } from '@heroicons/react/16/solid'
 import { useTheme } from 'next-themes'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 const UPDATE_EMAIL_PREFS_MUTATION = `
@@ -55,13 +55,54 @@ const THEME_OPTIONS = [
   { value: 'system', label: 'Sistem', icon: ComputerDesktopIcon },
 ] as const
 
+const STRAVA_CONNECTION_QUERY = `
+  query MyStravaConnection {
+    myStravaConnection {
+      connected
+      athleteId
+      connectedAt
+    }
+  }
+`
+
+const DISCONNECT_STRAVA = `
+  mutation DisconnectStrava {
+    disconnectStrava
+  }
+`
+
 export default function Settings() {
-  const { user, isLoading, refreshSession } = useAuth()
+  const { user, isLoading, refreshSession, accessToken } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
+  // Strava state
+  const [stravaConnected, setStravaConnected] = useState(false)
+  const [stravaLoading, setStravaLoading] = useState(true)
+  const [stravaMessage, setStravaMessage] = useState<string | null>(null)
+
   useEffect(() => setMounted(true), [])
+
+  // Strava callback status iz URL parametra
+  useEffect(() => {
+    const stravaStatus = searchParams.get('strava')
+    if (stravaStatus === 'connected') setStravaMessage('Strava nalog je uspešno povezan!')
+    else if (stravaStatus === 'denied') setStravaMessage('Strava pristup je odbijen.')
+    else if (stravaStatus === 'error') setStravaMessage('Greška pri povezivanju sa Stravom.')
+  }, [searchParams])
+
+  // Učitaj Strava connection status
+  useEffect(() => {
+    if (!accessToken) return
+    gql<{ myStravaConnection: { connected: boolean } }>(STRAVA_CONNECTION_QUERY, {}, { accessToken })
+      .then((data) => {
+        setStravaConnected(data.myStravaConnection.connected)
+      })
+      .catch(() => {})
+      .finally(() => setStravaLoading(false))
+  }, [accessToken, searchParams])
 
   const [prefs, setPrefs] = useState<Record<Pref, boolean>>({
     emailSubMonthly: false,
@@ -230,6 +271,64 @@ export default function Settings() {
           )}
           {saveError && (
             <span className="text-sm text-red-600">{saveError}</span>
+          )}
+        </div>
+      </section>
+
+      {/* Strava integration */}
+      <section className="mt-6 rounded-lg border border-border-primary p-6">
+        <Subheading>Strava integracija</Subheading>
+        <Text className="mt-1 text-sm text-text-secondary">
+          Poveži Strava nalog da bi se tvoje aktivnosti automatski sinhronizovale sa ligama.
+        </Text>
+
+        {stravaMessage && (
+          <div
+            className={`mt-3 rounded-lg px-4 py-2 text-sm ${
+              stravaMessage.includes('uspešno')
+                ? 'border border-green-500/20 bg-green-500/10 text-green-400'
+                : 'border border-red-500/20 bg-red-500/10 text-red-400'
+            }`}
+          >
+            {stravaMessage}
+          </div>
+        )}
+
+        <div className="mt-4">
+          {stravaLoading ? (
+            <div className="animate-pulse text-sm text-text-secondary">Učitavanje...</div>
+          ) : stravaConnected ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Badge color="green">Povezan</Badge>
+                <span className="text-sm text-text-secondary">Strava nalog je aktivan</span>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await gql(DISCONNECT_STRAVA, {}, { accessToken })
+                    setStravaConnected(false)
+                    setStravaMessage('Strava nalog je odvojen.')
+                  } catch {
+                    setStravaMessage('Greška pri odvajanju Strave.')
+                  }
+                }}
+                className="rounded-lg border border-red-700 px-3 py-1.5 text-sm text-red-400 hover:bg-red-900/20"
+              >
+                Odvoji Strava
+              </button>
+            </div>
+          ) : (
+            <a
+              href={`${process.env.NEXT_PUBLIC_API_URL}/strava/auth?token=${accessToken}`}
+              className="inline-flex items-center gap-2 rounded-lg bg-[#FC4C02] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#e04402]"
+            >
+              <svg className="size-5" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
+              </svg>
+              Poveži Strava nalog
+            </a>
           )}
         </div>
       </section>
