@@ -16,7 +16,7 @@ import { Select } from '@/components/select'
 import { Text } from '@/components/text'
 import { ChevronLeftIcon, TrophyIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 type RaceInfo = {
@@ -99,13 +99,28 @@ function getMedalColor(position: number): 'yellow' | 'zinc' | 'amber' | null {
 export default function RaceResultsPage() {
   const params = useParams()
   const slug = params.slug as string
+  const router = useRouter()
+  const searchParams = useSearchParams()
 
   const [race, setRace] = useState<RaceInfo | null>(null)
   const [checkpoints, setCheckpoints] = useState<Checkpoint[]>([])
   const [results, setResults] = useState<RaceResult[]>([])
   const [loading, setLoading] = useState(true)
-  const [genderFilter, setGenderFilter] = useState<Gender | ''>('')
-  const [nameSearch, setNameSearch] = useState('')
+
+  // Čitaj filtere iz URL query parametara
+  const genderFilter = (searchParams.get('gender') as Gender | null) ?? ''
+  const nameSearch = searchParams.get('q') ?? ''
+
+  // Ažuriraj URL kad se filter promeni
+  function updateFilter(key: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) {
+      params.set(key, value)
+    } else {
+      params.delete(key)
+    }
+    router.replace(`?${params.toString()}`, { scroll: false })
+  }
 
   const loadData = useCallback(async () => {
     try {
@@ -211,12 +226,12 @@ export default function RaceResultsPage() {
             type="search"
             placeholder="Pretraži ime..."
             value={nameSearch}
-            onChange={(e) => setNameSearch(e.target.value)}
+            onChange={(e) => updateFilter('q', e.target.value)}
             className="w-44"
           />
           <Select
             value={genderFilter}
-            onChange={(e) => setGenderFilter(e.target.value as Gender | '')}
+            onChange={(e) => updateFilter('gender', e.target.value)}
           >
             <option value="">Svi učesnici</option>
             <option value="MALE">Muškarci</option>
