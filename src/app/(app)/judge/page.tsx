@@ -91,12 +91,9 @@ export default function JudgePage() {
       // Server timings (ili prazan niz ako offline)
       const serverDisplay = (serverTimings ?? []).map(serverTimingToDisplay)
 
-      // Merge: pending/error lokalni na vrhu, pa server timings (bez duplikata)
-      const syncedLocalIds = new Set(localTimings.filter((t) => t.synced === 1 && t.serverId).map((t) => t.serverId))
-      const filteredServer = serverDisplay.filter((t) => !syncedLocalIds.has(t.id))
-
+      // Merge: pending/error lokalni na vrhu, pa svi server timings
       // Sortiraj sve po timestamp DESC
-      const merged = [...pendingLocal, ...filteredServer].sort(
+      const merged = [...pendingLocal, ...serverDisplay].sort(
         (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
       )
 
