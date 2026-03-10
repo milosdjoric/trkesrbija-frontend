@@ -766,8 +766,10 @@ export async function fetchCheckpoints(raceId: string, accessToken?: string | nu
   }))
 }
 
-export async function recordTime(bibNumber: string, accessToken?: string | null): Promise<Timing> {
-  const data = await gql<{ recordTime: Timing }>(RECORD_TIME_MUTATION, { input: { bibNumber } }, { accessToken })
+export async function recordTime(bibNumber: string, accessToken?: string | null, timestamp?: string): Promise<Timing> {
+  const input: { bibNumber: string; timestamp?: string } = { bibNumber }
+  if (timestamp) input.timestamp = timestamp
+  const data = await gql<{ recordTime: Timing }>(RECORD_TIME_MUTATION, { input }, { accessToken })
   return data.recordTime
 }
 
