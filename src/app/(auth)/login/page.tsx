@@ -8,7 +8,6 @@ import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Strong, Text, TextLink } from '@/components/text'
 import { GoogleLogin } from '@react-oauth/google'
-import { useTheme } from 'next-themes'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -16,7 +15,6 @@ export default function Login() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { login, loginWithGoogle, isLoading, user } = useAuth()
-  const { resolvedTheme } = useTheme()
   const loading = isLoading
 
   const [email, setEmail] = useState('')
@@ -116,7 +114,7 @@ export default function Login() {
           onError={() => setError('Google prijava nije uspela')}
           useOneTap={false}
           width="368"
-          theme={resolvedTheme === 'dark' ? 'filled_black' : 'outline'}
+          theme="outline"
           shape="pill"
         />
       </div>

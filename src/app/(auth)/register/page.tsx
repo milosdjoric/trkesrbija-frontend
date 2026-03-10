@@ -10,14 +10,12 @@ import { Input } from '@/components/input'
 import { PasswordStrength, validatePassword } from '@/components/password-strength'
 import { Strong, Text, TextLink } from '@/components/text'
 import { GoogleLogin } from '@react-oauth/google'
-import { useTheme } from 'next-themes'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Register() {
   const router = useRouter()
   const { register, loginWithGoogle } = useAuth()
-  const { resolvedTheme } = useTheme()
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
@@ -144,7 +142,7 @@ export default function Register() {
           useOneTap={false}
           width="368"
           text="signup_with"
-          theme={resolvedTheme === 'dark' ? 'filled_black' : 'outline'}
+          theme="outline"
           shape="pill"
         />
       </div>
