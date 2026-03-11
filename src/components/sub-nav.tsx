@@ -16,6 +16,7 @@ const adminTabs = [
   { href: '/admin/ads', label: 'Oglasi' },
   { href: '/admin/import', label: 'Import' },
   { href: '/admin/instagram', label: 'Instagram' },
+  { href: '/admin/leagues', label: 'Lige' },
 ]
 
 export function SubNav() {
