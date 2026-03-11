@@ -78,7 +78,7 @@ export function SiteHeader() {
                 key={link.href}
                 href={link.href}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive ? 'text-text-primary font-semibold' : 'text-text-primary hover:text-brand-green'
+                  isActive ? 'text-text-primary' : 'text-text-primary hover:text-brand-green'
                 }`}
               >
                 {link.label}
