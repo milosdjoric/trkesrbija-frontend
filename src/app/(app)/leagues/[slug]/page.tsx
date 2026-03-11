@@ -50,6 +50,19 @@ type LeaderboardEntry = {
   gender: Gender | null
 }
 
+type MyActivity = {
+  id: string
+  name: string | null
+  distance: number
+  movingTime: number
+  elevationGain: number | null
+  startDate: string
+  source: string
+  stravaActivityId: string | null
+  status: string
+  rejectionReason: string | null
+}
+
 const LEAGUE_QUERY = `
   query League($slug: String!) {
     league(slug: $slug) {
@@ -101,6 +114,23 @@ const JOIN_LEAGUE = `
 const LEAVE_LEAGUE = `
   mutation LeaveLeague($leagueId: ID!) {
     leaveLeague(leagueId: $leagueId)
+  }
+`
+
+const MY_ACTIVITIES_QUERY = `
+  query MyLeagueActivities($leagueId: ID!, $userId: ID!, $limit: Int) {
+    leagueActivities(leagueId: $leagueId, userId: $userId, limit: $limit) {
+      id
+      name
+      distance
+      movingTime
+      elevationGain
+      startDate
+      source
+      stravaActivityId
+      status
+      rejectionReason
+    }
   }
 `
 
@@ -166,6 +196,8 @@ export default function LeagueDetailPage() {
   const [inviteCode, setInviteCode] = useState(searchParams.get('invite') ?? '')
   const [joinError, setJoinError] = useState<string | null>(null)
   const [showJoinForm, setShowJoinForm] = useState(!!searchParams.get('invite'))
+  const [myActivities, setMyActivities] = useState<MyActivity[]>([])
+  const [myActivitiesLoading, setMyActivitiesLoading] = useState(false)
 
   const genderFilter = (searchParams.get('gender') as Gender | null) ?? ''
   const nameSearch = searchParams.get('q') ?? ''
@@ -195,13 +227,30 @@ export default function LeagueDetailPage() {
           { accessToken },
         )
         setLeaderboard(lb.leagueLeaderboard)
+
+        // Učitaj moje aktivnosti ako sam član
+        if (leagueData.league.isMember && user) {
+          setMyActivitiesLoading(true)
+          try {
+            const ma = await gql<{ leagueActivities: MyActivity[] }>(
+              MY_ACTIVITIES_QUERY,
+              { leagueId: leagueData.league.id, userId: user.id, limit: 20 },
+              { accessToken },
+            )
+            setMyActivities(ma.leagueActivities)
+          } catch {
+            // ne prikazuj grešku za moje aktivnosti
+          } finally {
+            setMyActivitiesLoading(false)
+          }
+        }
       }
     } catch (err) {
       console.error('Failed to load league:', err)
     } finally {
       setLoading(false)
     }
-  }, [slug, accessToken, genderFilter])
+  }, [slug, accessToken, genderFilter, user])
 
   useEffect(() => {
     loadData()
@@ -501,6 +550,73 @@ export default function LeagueDetailPage() {
           </table>
         )}
       </div>
+
+      {/* Moje aktivnosti */}
+      {league.isMember && user && (
+        <div className="mt-8">
+          <Heading level={2}>Moje aktivnosti</Heading>
+          {myActivitiesLoading ? (
+            <div className="mt-3 animate-pulse text-sm text-text-secondary">Učitavanje...</div>
+          ) : myActivities.length === 0 ? (
+            <div className="mt-3 rounded-lg border border-dashed border-border-primary p-6 text-center">
+              <Text>Nemaš još aktivnosti u ovoj ligi. Istrči trku i poveži Strava nalog!</Text>
+            </div>
+          ) : (
+            <div className="mt-3 overflow-x-auto">
+              <table className="min-w-full divide-y divide-border-primary">
+                <thead>
+                  <tr className="text-left text-sm font-medium text-text-secondary">
+                    <th className="px-4 py-3">Naziv</th>
+                    <th className="px-4 py-3 text-right">Distanca</th>
+                    <th className="px-4 py-3 text-right">Vreme</th>
+                    <th className="px-4 py-3">Datum</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3">Strava</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border-primary">
+                  {myActivities.map((a) => (
+                    <tr key={a.id} className="text-sm">
+                      <td className="px-4 py-3 font-medium text-text-primary">{a.name ?? '—'}</td>
+                      <td className="px-4 py-3 text-right font-mono">{formatDistance(a.distance)}</td>
+                      <td className="px-4 py-3 text-right font-mono">{formatTime(a.movingTime)}</td>
+                      <td className="px-4 py-3 text-text-secondary">
+                        {formatDate(a.startDate).split(',')[0]}
+                      </td>
+                      <td className="px-4 py-3">
+                        <Badge
+                          color={a.status === 'VALID' ? 'green' : a.status === 'REJECTED' ? 'red' : 'yellow'}
+                        >
+                          {a.status === 'VALID' ? 'Validna' : a.status === 'REJECTED' ? 'Odbijena' : 'Na čekanju'}
+                        </Badge>
+                        {a.rejectionReason && (
+                          <span className="ml-1 text-xs text-red-400" title={a.rejectionReason}>
+                            ⓘ
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3">
+                        {a.stravaActivityId ? (
+                          <a
+                            href={`https://www.strava.com/activities/${a.stravaActivityId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-semibold text-[#FC5200] underline hover:text-[#e04402]"
+                          >
+                            View on Strava
+                          </a>
+                        ) : (
+                          <span className="text-text-secondary">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Strava attribution — required by Strava API Brand Guidelines */}
       <div className="mt-6 flex justify-end">
