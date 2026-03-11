@@ -25,7 +25,6 @@ export default function GuidePage() {
 
   useEffect(() => {
     const onScroll = () => {
-      // TOC: poslednja sekcija čiji je vrh prošao 130px = aktivna
       let current = sections[0].id
       for (const s of sections) {
         const el = document.getElementById(s.id)
@@ -34,8 +33,6 @@ export default function GuidePage() {
         }
       }
       setActiveId(current)
-
-      // Back to top visibility
       setShowBackToTop(window.scrollY > 400)
     }
 
