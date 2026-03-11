@@ -84,6 +84,11 @@ export function SiteFooter() {
             <h3 className="text-sm font-semibold text-text-primary">Kontakt</h3>
             <ul className="mt-3 space-y-2">
               <li>
+                <Link href="/guide" className={linkClass}>
+                  Vodič za korišćenje
+                </Link>
+              </li>
+              <li>
                 <a
                   href="mailto:djoric.inbox@gmail.com?subject=Trke%20Srbija%20Support%20request"
                   className={linkClass}
