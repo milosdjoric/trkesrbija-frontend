@@ -133,7 +133,7 @@ export function SiteFooter() {
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-border-primary pt-6 sm:flex-row">
           <p className="text-xs text-text-muted">
-            v1.0 · © {new Date().getFullYear()} Trke Srbija · Napravio{' '}
+            v1.1 · © {new Date().getFullYear()} Trke Srbija · Napravio{' '}
             <a
               href="https://milosdjoric.com"
               target="_blank"
