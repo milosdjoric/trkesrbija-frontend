@@ -16,6 +16,15 @@ export type Scalars = {
   JSON: { input: any; output: any; }
 };
 
+export type ActivitySource =
+  | 'MANUAL'
+  | 'STRAVA';
+
+export type ActivityStatus =
+  | 'PENDING'
+  | 'REJECTED'
+  | 'VALID';
+
 export type Ad = {
   altText?: Maybe<Scalars['String']['output']>;
   clicks: Scalars['Int']['output'];
@@ -187,6 +196,19 @@ export type CreateCompetitionInput = {
   name: Scalars['String']['input'];
 };
 
+export type CreateLeagueInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  endDate: Scalars['DateTime']['input'];
+  isPublic?: InputMaybe<Scalars['Boolean']['input']>;
+  maxDistance?: InputMaybe<Scalars['Float']['input']>;
+  minDistance?: InputMaybe<Scalars['Float']['input']>;
+  name: Scalars['String']['input'];
+  period: LeaguePeriod;
+  scoringMode?: InputMaybe<ScoringMode>;
+  startDate: Scalars['DateTime']['input'];
+  type: LeagueType;
+};
+
 export type CreateOrganizerInput = {
   contactEmail?: InputMaybe<Scalars['String']['input']>;
   contactPhone?: InputMaybe<Scalars['String']['input']>;
@@ -290,6 +312,81 @@ export type JudgeUser = {
   name?: Maybe<Scalars['String']['output']>;
 };
 
+export type League = {
+  createdAt: Scalars['DateTime']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  endDate: Scalars['DateTime']['output'];
+  gpsFile?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  inviteCode?: Maybe<Scalars['String']['output']>;
+  isLeagueAdmin: Scalars['Boolean']['output'];
+  isMember: Scalars['Boolean']['output'];
+  isPublic: Scalars['Boolean']['output'];
+  maxDistance?: Maybe<Scalars['Float']['output']>;
+  memberCount: Scalars['Int']['output'];
+  minDistance?: Maybe<Scalars['Float']['output']>;
+  name: Scalars['String']['output'];
+  period: LeaguePeriod;
+  scoringMode: ScoringMode;
+  slug: Scalars['String']['output'];
+  startDate: Scalars['DateTime']['output'];
+  status: LeagueStatus;
+  type: LeagueType;
+  updatedAt: Scalars['DateTime']['output'];
+};
+
+export type LeagueActivity = {
+  createdAt: Scalars['DateTime']['output'];
+  distance: Scalars['Float']['output'];
+  elapsedTime: Scalars['Int']['output'];
+  elevationGain?: Maybe<Scalars['Float']['output']>;
+  id: Scalars['ID']['output'];
+  movingTime: Scalars['Int']['output'];
+  name?: Maybe<Scalars['String']['output']>;
+  rejectionReason?: Maybe<Scalars['String']['output']>;
+  source: ActivitySource;
+  startDate: Scalars['DateTime']['output'];
+  status: ActivityStatus;
+  stravaActivityId?: Maybe<Scalars['String']['output']>;
+  user: User;
+};
+
+export type LeagueLeaderboardEntry = {
+  activityCount: Scalars['Int']['output'];
+  bestTime?: Maybe<Scalars['Int']['output']>;
+  gender?: Maybe<Gender>;
+  lastActivityDate?: Maybe<Scalars['DateTime']['output']>;
+  position: Scalars['Int']['output'];
+  totalDistance: Scalars['Float']['output'];
+  userEmail: Scalars['String']['output'];
+  userId: Scalars['ID']['output'];
+  userName?: Maybe<Scalars['String']['output']>;
+};
+
+export type LeagueMembership = {
+  gender?: Maybe<Gender>;
+  id: Scalars['ID']['output'];
+  joinedAt: Scalars['DateTime']['output'];
+  league: League;
+  role: Scalars['String']['output'];
+  user: User;
+};
+
+export type LeaguePeriod =
+  | 'MONTHLY'
+  | 'SEASONAL'
+  | 'WEEKLY';
+
+export type LeagueStatus =
+  | 'ACTIVE'
+  | 'ARCHIVED'
+  | 'COMPLETED'
+  | 'DRAFT';
+
+export type LeagueType =
+  | 'DISTANCE'
+  | 'ROUTE';
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -304,6 +401,7 @@ export type Mutation = {
   createAd: Ad;
   createCheckpoint: Checkpoint;
   createCompetition: Competition;
+  createLeague: League;
   createOrganizer: Organizer;
   createRace: Race;
   createRaceEvent: RaceEvent;
@@ -312,6 +410,7 @@ export type Mutation = {
   deleteAd: Scalars['Boolean']['output'];
   deleteCheckpoint: Scalars['Boolean']['output'];
   deleteCompetition: Scalars['Boolean']['output'];
+  deleteLeague: Scalars['Boolean']['output'];
   deleteRace: Scalars['Boolean']['output'];
   deleteRaceEvent: Scalars['Boolean']['output'];
   deleteRegistration: Scalars['Boolean']['output'];
@@ -319,11 +418,14 @@ export type Mutation = {
   deleteTrainingEvent: Scalars['Boolean']['output'];
   deleteTrainingRace: Scalars['Boolean']['output'];
   deleteUser: Scalars['Boolean']['output'];
+  disconnectStrava: Scalars['Boolean']['output'];
   duplicateRace: Race;
   duplicateRaceEvent: RaceEvent;
   forgotPassword: ForgotPasswordPayload;
   importEvents: ImportResult;
   importRaces: ImportResult;
+  joinLeague: LeagueMembership;
+  leaveLeague: Scalars['Boolean']['output'];
   login: AuthPayload;
   loginWithGoogle: AuthPayload;
   logout: Scalars['Boolean']['output'];
@@ -343,6 +445,7 @@ export type Mutation = {
   updateAd: Ad;
   updateCheckpoint: Checkpoint;
   updateEmailPreferences: User;
+  updateLeague: League;
   updateRace: Race;
   updateRaceEvent: RaceEvent;
   updateRegistration: RaceRegistration;
@@ -398,6 +501,11 @@ export type MutationCreateCompetitionArgs = {
 };
 
 
+export type MutationCreateLeagueArgs = {
+  input: CreateLeagueInput;
+};
+
+
 export type MutationCreateOrganizerArgs = {
   input: CreateOrganizerInput;
 };
@@ -439,6 +547,11 @@ export type MutationDeleteCheckpointArgs = {
 
 export type MutationDeleteCompetitionArgs = {
   id: Scalars['ID']['input'];
+};
+
+
+export type MutationDeleteLeagueArgs = {
+  leagueId: Scalars['ID']['input'];
 };
 
 
@@ -501,6 +614,18 @@ export type MutationImportEventsArgs = {
 export type MutationImportRacesArgs = {
   override?: InputMaybe<Scalars['Boolean']['input']>;
   races: Array<ImportRaceInput>;
+};
+
+
+export type MutationJoinLeagueArgs = {
+  gender?: InputMaybe<Gender>;
+  inviteCode?: InputMaybe<Scalars['String']['input']>;
+  leagueId: Scalars['ID']['input'];
+};
+
+
+export type MutationLeaveLeagueArgs = {
+  leagueId: Scalars['ID']['input'];
 };
 
 
@@ -588,6 +713,12 @@ export type MutationUpdateCheckpointArgs = {
 
 export type MutationUpdateEmailPreferencesArgs = {
   input: UpdateEmailPreferencesInput;
+};
+
+
+export type MutationUpdateLeagueArgs = {
+  input: UpdateLeagueInput;
+  leagueId: Scalars['ID']['input'];
 };
 
 
@@ -690,10 +821,16 @@ export type Query = {
   competitions: Array<Competition>;
   eventCheckpoints: Array<Checkpoint>;
   health: Scalars['String']['output'];
+  league?: Maybe<League>;
+  leagueActivities: Array<LeagueActivity>;
+  leagueLeaderboard: Array<LeagueLeaderboardEntry>;
+  leagues: Array<League>;
   me?: Maybe<User>;
   myAssignedCheckpoint?: Maybe<CheckpointWithRace>;
   myFavorites: Array<Favorite>;
+  myLeagues: Array<League>;
   myRaceRegistrations: Array<RaceRegistration>;
+  myStravaConnection: StravaConnectionInfo;
   myTrainingEvents: Array<RaceEvent>;
   organizer?: Maybe<Organizer>;
   organizers: Array<Organizer>;
@@ -748,6 +885,34 @@ export type QueryCompetitionsArgs = {
 
 export type QueryEventCheckpointsArgs = {
   raceEventId: Scalars['ID']['input'];
+};
+
+
+export type QueryLeagueArgs = {
+  id?: InputMaybe<Scalars['ID']['input']>;
+  slug?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryLeagueActivitiesArgs = {
+  leagueId: Scalars['ID']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  userId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+
+export type QueryLeagueLeaderboardArgs = {
+  gender?: InputMaybe<Gender>;
+  leagueId: Scalars['ID']['input'];
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+
+export type QueryLeaguesArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  status?: InputMaybe<LeagueStatus>;
 };
 
 
@@ -970,6 +1135,7 @@ export type RaceWithEvent = {
 
 export type RecordTimeInput = {
   bibNumber: Scalars['String']['input'];
+  timestamp?: InputMaybe<Scalars['DateTime']['input']>;
 };
 
 export type RegisterInput = {
@@ -1027,6 +1193,10 @@ export type Role =
   | 'ADMIN'
   | 'STANDARD';
 
+export type ScoringMode =
+  | 'BEST_TIME'
+  | 'TOTAL_DISTANCE';
+
 export type SelfRegistrationInput = {
   dateOfBirth: Scalars['DateTime']['input'];
   firstName: Scalars['String']['input'];
@@ -1060,6 +1230,12 @@ export type SimilarityScore = {
   location: Scalars['Int']['output'];
   name: Scalars['Int']['output'];
   total: Scalars['Int']['output'];
+};
+
+export type StravaConnectionInfo = {
+  athleteId?: Maybe<Scalars['Int']['output']>;
+  connected: Scalars['Boolean']['output'];
+  connectedAt?: Maybe<Scalars['DateTime']['output']>;
 };
 
 export type Timing = {
@@ -1101,6 +1277,16 @@ export type UpdateEmailPreferencesInput = {
   emailSubMonthly: Scalars['Boolean']['input'];
   emailSubNewEvents: Scalars['Boolean']['input'];
   emailSubNews: Scalars['Boolean']['input'];
+};
+
+export type UpdateLeagueInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  endDate?: InputMaybe<Scalars['DateTime']['input']>;
+  isPublic?: InputMaybe<Scalars['Boolean']['input']>;
+  maxDistance?: InputMaybe<Scalars['Float']['input']>;
+  minDistance?: InputMaybe<Scalars['Float']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<LeagueStatus>;
 };
 
 export type UpdateRaceEventInput = {

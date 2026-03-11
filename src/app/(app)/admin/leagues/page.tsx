@@ -86,6 +86,7 @@ export default function AdminLeaguesPage() {
     description: '',
     type: 'DISTANCE' as const,
     period: 'MONTHLY' as const,
+    scoringMode: 'TOTAL_DISTANCE' as const,
     minDistance: '',
     maxDistance: '',
     startDate: '',
@@ -130,6 +131,7 @@ export default function AdminLeaguesPage() {
             description: form.description.trim() || null,
             type: form.type,
             period: form.period,
+            scoringMode: form.scoringMode,
             minDistance: form.minDistance ? parseFloat(form.minDistance) : null,
             maxDistance: form.maxDistance ? parseFloat(form.maxDistance) : null,
             startDate: new Date(form.startDate).toISOString(),
@@ -146,6 +148,7 @@ export default function AdminLeaguesPage() {
         description: '',
         type: 'DISTANCE',
         period: 'MONTHLY',
+        scoringMode: 'TOTAL_DISTANCE',
         minDistance: '',
         maxDistance: '',
         startDate: '',
@@ -240,6 +243,17 @@ export default function AdminLeaguesPage() {
                 <option value="WEEKLY">Nedeljno</option>
                 <option value="MONTHLY">Mesečno</option>
                 <option value="SEASONAL">Sezonski</option>
+              </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-text-secondary">Scoring</label>
+              <Select
+                value={form.scoringMode}
+                onChange={(e) => setForm({ ...form, scoringMode: e.target.value as any })}
+                className="mt-1"
+              >
+                <option value="TOTAL_DISTANCE">Ukupna distanca</option>
+                <option value="BEST_TIME">Najbolje vreme</option>
               </Select>
             </div>
             <div>

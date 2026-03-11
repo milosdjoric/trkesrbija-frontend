@@ -26,11 +26,13 @@ type League = {
   type: string
   status: string
   period: string
+  scoringMode: string
   minDistance: number | null
   maxDistance: number | null
   startDate: string
   endDate: string
   isPublic: boolean
+  inviteCode: string | null
   memberCount: number
   isMember: boolean
   isLeagueAdmin: boolean
@@ -42,6 +44,7 @@ type LeaderboardEntry = {
   userName: string | null
   userEmail: string
   totalDistance: number
+  bestTime: number | null
   activityCount: number
   lastActivityDate: string | null
   gender: Gender | null
@@ -57,11 +60,13 @@ const LEAGUE_QUERY = `
       type
       status
       period
+      scoringMode
       minDistance
       maxDistance
       startDate
       endDate
       isPublic
+      inviteCode
       memberCount
       isMember
       isLeagueAdmin
@@ -77,6 +82,7 @@ const LEADERBOARD_QUERY = `
       userName
       userEmail
       totalDistance
+      bestTime
       activityCount
       lastActivityDate
       gender
@@ -112,6 +118,14 @@ function formatDate(iso: string) {
 function formatDistance(meters: number) {
   const km = meters / 1000
   return `${km.toFixed(1)} km`
+}
+
+function formatTime(seconds: number) {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  const s = seconds % 60
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+  return `${m}:${String(s).padStart(2, '0')}`
 }
 
 function getMedalColor(position: number): 'yellow' | 'zinc' | 'amber' | null {
@@ -278,6 +292,9 @@ export default function LeagueDetailPage() {
             <Badge color={league.status === 'ACTIVE' ? 'green' : 'zinc'}>
               {league.status === 'ACTIVE' ? 'Aktivna' : league.status === 'COMPLETED' ? 'Završena' : league.status}
             </Badge>
+            <Badge color="purple">
+              {league.scoringMode === 'BEST_TIME' ? 'Najbolje vreme' : 'Ukupna distanca'}
+            </Badge>
           </div>
         </div>
 
@@ -306,15 +323,48 @@ export default function LeagueDetailPage() {
         </div>
         <div className="rounded-lg border border-border-primary bg-card p-4">
           <div className="text-2xl font-semibold">
-            {leaderboard.length > 0 ? formatDistance(leaderboard[0].totalDistance) : '—'}
+            {leaderboard.length > 0
+              ? league.scoringMode === 'BEST_TIME' && leaderboard[0].bestTime
+                ? formatTime(leaderboard[0].bestTime)
+                : formatDistance(leaderboard[0].totalDistance)
+              : '—'}
           </div>
-          <div className="text-sm text-text-secondary">Najviše km</div>
+          <div className="text-sm text-text-secondary">
+            {league.scoringMode === 'BEST_TIME' ? 'Najbolje vreme' : 'Najviše km'}
+          </div>
         </div>
       </div>
 
+      {/* Invite code za admina privatne lige */}
+      {league.isLeagueAdmin && !league.isPublic && league.inviteCode && (
+        <div className="mt-4 rounded-lg border border-border-primary bg-card p-4">
+          <div className="text-sm font-medium text-text-primary">Pozivni kod (samo za članove)</div>
+          <div className="mt-1 flex items-center gap-3">
+            <code className="rounded bg-surface px-3 py-1.5 font-mono text-lg font-bold text-brand-green">
+              {league.inviteCode}
+            </code>
+            <button
+              type="button"
+              onClick={() => navigator.clipboard.writeText(league.inviteCode!)}
+              className="text-sm text-text-secondary hover:text-text-primary"
+            >
+              Kopiraj
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-        <Heading level={2}>Leaderboard</Heading>
+        <div className="flex items-center gap-4">
+          <Heading level={2}>Leaderboard</Heading>
+          <Link
+            href={`/leagues/${league.slug}/activities`}
+            className="text-sm text-text-secondary underline hover:text-text-primary"
+          >
+            Sve aktivnosti
+          </Link>
+        </div>
         <div className="flex items-center gap-3">
           <Input
             type="search"
@@ -344,7 +394,9 @@ export default function LeagueDetailPage() {
                 <th className="px-4 py-3">Poz.</th>
                 <th className="px-4 py-3">Takmičar</th>
                 <th className="px-4 py-3">Pol</th>
-                <th className="px-4 py-3 text-right">Ukupno km</th>
+                <th className="px-4 py-3 text-right">
+                  {league.scoringMode === 'BEST_TIME' ? 'Najbolje vreme' : 'Ukupno km'}
+                </th>
                 <th className="px-4 py-3 text-right">Trka</th>
               </tr>
             </thead>
@@ -376,7 +428,9 @@ export default function LeagueDetailPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right font-mono font-bold text-brand-green">
-                      {formatDistance(entry.totalDistance)}
+                      {league.scoringMode === 'BEST_TIME' && entry.bestTime
+                        ? formatTime(entry.bestTime)
+                        : formatDistance(entry.totalDistance)}
                     </td>
                     <td className="px-4 py-3 text-right text-text-secondary">
                       {entry.activityCount}
