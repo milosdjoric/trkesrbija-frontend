@@ -9,7 +9,6 @@ import {
   ClockIcon,
   MoonIcon,
   SunIcon,
-  WrenchScrewdriverIcon,
 } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import { useTheme } from 'next-themes'
@@ -40,13 +39,16 @@ const userLinks = [
 ]
 
 const adminLinks = [
-  { href: '/admin/stats', label: 'Statistika' },
+  { href: '/admin/stats', label: 'Statistike', exact: true },
   { href: '/admin/events', label: 'Događaji' },
   { href: '/admin/races', label: 'Trke' },
-  { href: '/admin/leagues', label: 'Lige' },
+  { href: '/admin/trainings', label: 'Treninzi' },
   { href: '/admin/users', label: 'Korisnici' },
+  { href: '/admin/reports', label: 'Prijave grešaka' },
+  { href: '/admin/ads', label: 'Oglasi' },
   { href: '/admin/import', label: 'Import' },
-  { href: '/admin/reports', label: 'Prijave' },
+  { href: '/admin/instagram', label: 'Instagram' },
+  { href: '/admin/leagues', label: 'Lige' },
 ]
 
 export function SiteHeader() {
@@ -189,17 +191,16 @@ export function SiteHeader() {
 
       {/* Red 3: Admin linkovi (samo za admine) */}
       {isAdmin && (
-        <div className="hidden border-t border-border-primary bg-surface/50 lg:block">
-          <nav className="mx-auto flex max-w-4xl items-center gap-1 px-6 py-1.5">
-            <WrenchScrewdriverIcon className="mr-1 size-3.5 text-text-muted" />
+        <div className="hidden border-t border-border-primary lg:block">
+          <nav className="mx-auto flex max-w-4xl flex-wrap items-center gap-1 px-6 py-1.5">
             {adminLinks.map((link) => {
-              const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
+              const isActive = link.exact ? pathname === link.href : pathname === link.href || pathname.startsWith(link.href + '/')
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
-                    isActive ? 'text-text-primary font-semibold' : 'text-text-secondary hover:text-text-primary'
+                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                    isActive ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
                   }`}
                 >
                   {link.label}
