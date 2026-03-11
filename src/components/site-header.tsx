@@ -30,12 +30,23 @@ const publicLinks = [
   { href: '/events', label: 'Događaji' },
   { href: '/calendar', label: 'Kalendar' },
   { href: '/gpx-analyzer', label: 'GPX Analyzer' },
+  { href: '/guide', label: 'Dokumentacija' },
 ]
 
 const userLinks = [
   { href: '/favorites', label: 'Omiljene trke' },
   { href: '/my-registrations', label: 'Moje prijave' },
   { href: '/training', label: 'Moji treninzi' },
+]
+
+const adminLinks = [
+  { href: '/admin/stats', label: 'Statistika' },
+  { href: '/admin/events', label: 'Događaji' },
+  { href: '/admin/races', label: 'Trke' },
+  { href: '/admin/leagues', label: 'Lige' },
+  { href: '/admin/users', label: 'Korisnici' },
+  { href: '/admin/import', label: 'Import' },
+  { href: '/admin/reports', label: 'Prijave' },
 ]
 
 export function SiteHeader() {
@@ -46,16 +57,19 @@ export function SiteHeader() {
 
   useEffect(() => setMounted(true), [])
 
+  const isAdmin = user?.role === 'ADMIN'
+
   return (
     <header className="sticky top-0 z-50 border-b border-border-primary bg-main/95 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-4xl items-center justify-between px-6">
+      {/* Red 1: Logo + javni linkovi + Dokumentacija + user dropdown */}
+      <div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-6">
         {/* Logo */}
         <Link href="/" className="flex items-baseline">
           <span className="text-xl font-extrabold tracking-tight text-brand-green">trke</span>
           <span className="text-xl font-light tracking-tight text-text-secondary">srbija</span>
         </Link>
 
-        {/* Desktop nav */}
+        {/* Desktop nav — javni linkovi */}
         <nav className="hidden items-center gap-1 lg:flex">
           {publicLinks.map((link) => {
             const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
@@ -71,26 +85,6 @@ export function SiteHeader() {
               </Link>
             )
           })}
-
-          {user && (
-            <>
-              <div className="mx-1 h-4 w-px bg-border-secondary" />
-              {userLinks.map((link) => {
-                const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      isActive ? 'text-brand-green font-semibold' : 'text-brand-green hover:text-brand-green-dark'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                )
-              })}
-            </>
-          )}
         </nav>
 
         {/* User / Auth */}
@@ -114,17 +108,6 @@ export function SiteHeader() {
                     <ClockIcon />
                     <DropdownLabel>Sudijska tabla</DropdownLabel>
                   </DropdownItem>
-                )}
-
-                {user.role === 'ADMIN' && (
-                  <>
-                    <DropdownDivider />
-                    <DropdownItem href="/admin">
-                      <WrenchScrewdriverIcon />
-                      <DropdownLabel className="font-bold">Admin Panel</DropdownLabel>
-                    </DropdownItem>
-                    <DropdownDivider />
-                  </>
                 )}
 
                 {mounted && (
@@ -181,6 +164,51 @@ export function SiteHeader() {
           )}
         </div>
       </div>
+
+      {/* Red 2: User linkovi (samo za ulogovane) */}
+      {user && (
+        <div className="hidden border-t border-border-primary lg:block">
+          <nav className="mx-auto flex max-w-4xl items-center gap-1 px-6 py-1.5">
+            {userLinks.map((link) => {
+              const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                    isActive ? 'text-brand-green font-semibold' : 'text-brand-green hover:text-brand-green-dark'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
+          </nav>
+        </div>
+      )}
+
+      {/* Red 3: Admin linkovi (samo za admine) */}
+      {isAdmin && (
+        <div className="hidden border-t border-border-primary bg-surface/50 lg:block">
+          <nav className="mx-auto flex max-w-4xl items-center gap-1 px-6 py-1.5">
+            <WrenchScrewdriverIcon className="mr-1 size-3.5 text-text-muted" />
+            {adminLinks.map((link) => {
+              const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                    isActive ? 'text-text-primary font-semibold' : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              )
+            })}
+          </nav>
+        </div>
+      )}
     </header>
   )
 }
