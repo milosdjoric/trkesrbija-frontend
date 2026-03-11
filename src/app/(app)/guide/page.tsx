@@ -312,7 +312,7 @@ export default function GuidePage() {
 
       {/* Floating sidebar — table of contents */}
       <aside className="hidden w-52 shrink-0 lg:block">
-        <nav className="sticky top-20">
+        <nav className="sticky top-[50vh] -translate-y-1/2">
           <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-muted">Sadržaj</p>
           <ul className="space-y-0.5 border-l border-border-primary">
             {sections.map((s) => (
