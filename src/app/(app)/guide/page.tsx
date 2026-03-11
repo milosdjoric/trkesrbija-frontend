@@ -24,35 +24,23 @@ export default function GuidePage() {
   const [showBackToTop, setShowBackToTop] = useState(false)
 
   useEffect(() => {
-    // Set čuva ID-jeve svih sekcija koje su trenutno vidljive u viewportu.
-    // Kad IO javi da je sekcija ušla/izašla, ažuriramo set.
-    // Aktivna sekcija = prva vidljiva po redosledu u `sections` nizu.
-    const visibleIds = new Set<string>()
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            visibleIds.add(entry.target.id)
-          } else {
-            visibleIds.delete(entry.target.id)
-          }
+    // Scroll listener: poslednja sekcija čiji je vrh prošao offset = aktivna.
+    // Pouzdanije od IO za TOC sa mnogo kratkih sekcija različitih visina.
+    const offset = 130
+    const updateActive = () => {
+      let current = sections[0].id
+      for (const section of sections) {
+        const el = document.getElementById(section.id)
+        if (el && el.getBoundingClientRect().top <= offset) {
+          current = section.id
         }
-        // Prva vidljiva sekcija po DOM redosledu = aktivna
-        const first = sections.find((s) => visibleIds.has(s.id))
-        if (first) setActiveId(first.id)
-      },
-      // rootMargin: gornji offset za sticky header, donji -40% da sekcija
-      // postane aktivna čim joj se heading pojavi u gornjoj polovini ekrana
-      { rootMargin: '-100px 0px -40% 0px', threshold: 0 }
-    )
-
-    for (const section of sections) {
-      const el = document.getElementById(section.id)
-      if (el) observer.observe(el)
+      }
+      setActiveId(current)
     }
 
-    return () => observer.disconnect()
+    updateActive()
+    window.addEventListener('scroll', updateActive, { passive: true })
+    return () => window.removeEventListener('scroll', updateActive)
   }, [])
 
   useEffect(() => {
