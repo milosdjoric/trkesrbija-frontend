@@ -41,7 +41,7 @@ type LeaderboardEntry = {
   userId: string
   userName: string | null
   userEmail: string
-  bestTime: number
+  totalDistance: number
   activityCount: number
   lastActivityDate: string | null
   gender: Gender | null
@@ -76,7 +76,7 @@ const LEADERBOARD_QUERY = `
       userId
       userName
       userEmail
-      bestTime
+      totalDistance
       activityCount
       lastActivityDate
       gender
@@ -109,12 +109,9 @@ function formatDate(iso: string) {
   })
 }
 
-function formatDuration(seconds: number) {
-  const h = Math.floor(seconds / 3600)
-  const m = Math.floor((seconds % 3600) / 60)
-  const s = seconds % 60
-  if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
-  return `${m}:${s.toString().padStart(2, '0')}`
+function formatDistance(meters: number) {
+  const km = meters / 1000
+  return `${km.toFixed(1)} km`
 }
 
 function getMedalColor(position: number): 'yellow' | 'zinc' | 'amber' | null {
@@ -309,9 +306,9 @@ export default function LeagueDetailPage() {
         </div>
         <div className="rounded-lg border border-border-primary bg-card p-4">
           <div className="text-2xl font-semibold">
-            {leaderboard.length > 0 ? formatDuration(leaderboard[0].bestTime) : '—'}
+            {leaderboard.length > 0 ? formatDistance(leaderboard[0].totalDistance) : '—'}
           </div>
-          <div className="text-sm text-text-secondary">Najbolje vreme</div>
+          <div className="text-sm text-text-secondary">Najviše km</div>
         </div>
       </div>
 
@@ -347,7 +344,7 @@ export default function LeagueDetailPage() {
                 <th className="px-4 py-3">Poz.</th>
                 <th className="px-4 py-3">Takmičar</th>
                 <th className="px-4 py-3">Pol</th>
-                <th className="px-4 py-3 text-right">Najbolje vreme</th>
+                <th className="px-4 py-3 text-right">Ukupno km</th>
                 <th className="px-4 py-3 text-right">Trka</th>
               </tr>
             </thead>
@@ -379,7 +376,7 @@ export default function LeagueDetailPage() {
                       )}
                     </td>
                     <td className="px-4 py-3 text-right font-mono font-bold text-brand-green">
-                      {formatDuration(entry.bestTime)}
+                      {formatDistance(entry.totalDistance)}
                     </td>
                     <td className="px-4 py-3 text-right text-text-secondary">
                       {entry.activityCount}
