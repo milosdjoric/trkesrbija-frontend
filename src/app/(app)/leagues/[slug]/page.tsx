@@ -388,6 +388,16 @@ export default function LeagueDetailPage() {
           </table>
         )}
       </div>
+
+      {/* Strava attribution — required by Strava API Brand Guidelines */}
+      <div className="mt-6 flex justify-end">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/strava/powered_by_strava_white.svg"
+          alt="Powered by Strava"
+          className="h-8 opacity-60"
+        />
+      </div>
     </>
   )
 }

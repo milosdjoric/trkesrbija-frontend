@@ -322,12 +322,14 @@ export default function Settings() {
           ) : (
             <a
               href={`${(process.env.NEXT_PUBLIC_API_URL || '').replace(/\/+$/, '')}/strava/auth?token=${accessToken}`}
-              className="inline-flex items-center gap-2 rounded-lg bg-[#FC4C02] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#e04402]"
             >
-              <svg className="size-5" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
-              </svg>
-              Poveži Strava nalog
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/strava/btn_strava_connect_orange.svg"
+                alt="Connect with Strava"
+                height={48}
+                className="h-12"
+              />
             </a>
           )}
         </div>
