@@ -24,23 +24,21 @@ export default function GuidePage() {
   const [showBackToTop, setShowBackToTop] = useState(false)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setActiveId(entry.target.id)
-          }
+    const handleScroll2 = () => {
+      const offset = 120
+      let current = sections[0].id
+      for (const section of sections) {
+        const el = document.getElementById(section.id)
+        if (el && el.getBoundingClientRect().top <= offset) {
+          current = section.id
         }
-      },
-      { rootMargin: '-80px 0px -60% 0px', threshold: 0 }
-    )
-
-    for (const section of sections) {
-      const el = document.getElementById(section.id)
-      if (el) observer.observe(el)
+      }
+      setActiveId(current)
     }
 
-    return () => observer.disconnect()
+    handleScroll2()
+    window.addEventListener('scroll', handleScroll2, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll2)
   }, [])
 
   useEffect(() => {
