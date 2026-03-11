@@ -321,7 +321,7 @@ export default function Settings() {
             </div>
           ) : (
             <a
-              href={`${process.env.NEXT_PUBLIC_API_URL}/strava/auth?token=${accessToken}`}
+              href={`${(process.env.NEXT_PUBLIC_API_URL || '').replace(/\/+$/, '')}/strava/auth?token=${accessToken}`}
               className="inline-flex items-center gap-2 rounded-lg bg-[#FC4C02] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#e04402]"
             >
               <svg className="size-5" viewBox="0 0 24 24" fill="currentColor">
