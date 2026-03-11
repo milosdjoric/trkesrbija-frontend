@@ -170,7 +170,7 @@ export function SiteHeader() {
       {/* Red 2: User linkovi (samo za ulogovane) */}
       {user && (
         <div className="hidden border-t border-border-primary lg:block">
-          <nav className="mx-auto flex max-w-4xl items-center gap-1 px-6 py-1.5">
+          <nav className="mx-auto flex max-w-4xl items-center justify-center gap-1 px-6 py-1.5">
             {userLinks.map((link) => {
               const isActive = pathname === link.href || pathname.startsWith(link.href + '/')
               return (
@@ -192,7 +192,7 @@ export function SiteHeader() {
       {/* Red 3: Admin linkovi (samo za admine) */}
       {isAdmin && (
         <div className="hidden border-t border-border-primary lg:block">
-          <nav className="mx-auto flex max-w-4xl flex-wrap items-center gap-1 px-6 py-1.5">
+          <nav className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-1 px-6 py-1.5">
             {adminLinks.map((link) => {
               const isActive = link.exact ? pathname === link.href : pathname === link.href || pathname.startsWith(link.href + '/')
               return (
