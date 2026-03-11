@@ -6,9 +6,9 @@
 @theme {
   --font-sans: 'Urbanist', sans-serif;
 
-  /* Brand boje (ne menjaju se po temi) */
-  --color-brand-green: #00D084;
-  --color-brand-green-dark: #00A86B;
+  /* Brand boje — semantic, čitaju CSS varijable */
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-dark: var(--brand-green-dark);
   --color-brand-red: #FF4136;
 
   /* Semantic tokeni — čitaju CSS varijable iz :root */
@@ -26,6 +26,8 @@
 
 /* Dark tema (default) */
 :root {
+  --brand-green: #00D084;
+  --brand-green-dark: #00A86B;
   --bg-main: #121212;
   --bg-card: #1A1A1A;
   --bg-card-hover: #1F1F1F;
@@ -40,6 +42,8 @@
 
 /* Light tema */
 :root.light {
+  --brand-green: #059669;
+  --brand-green-dark: #047857;
   --bg-main: #F0F0EB;
   --bg-card: #F7F7F2;
   --bg-card-hover: #F0F0EB;
