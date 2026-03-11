@@ -91,8 +91,8 @@ const LEADERBOARD_QUERY = `
 `
 
 const JOIN_LEAGUE = `
-  mutation JoinLeague($leagueId: ID!, $gender: Gender) {
-    joinLeague(leagueId: $leagueId, gender: $gender) {
+  mutation JoinLeague($leagueId: ID!, $inviteCode: String, $gender: Gender) {
+    joinLeague(leagueId: $leagueId, inviteCode: $inviteCode, gender: $gender) {
       id
     }
   }
@@ -163,6 +163,9 @@ export default function LeagueDetailPage() {
   const [loading, setLoading] = useState(true)
   const [joining, setJoining] = useState(false)
   const [leaving, setLeaving] = useState(false)
+  const [inviteCode, setInviteCode] = useState(searchParams.get('invite') ?? '')
+  const [joinError, setJoinError] = useState<string | null>(null)
+  const [showJoinForm, setShowJoinForm] = useState(!!searchParams.get('invite'))
 
   const genderFilter = (searchParams.get('gender') as Gender | null) ?? ''
   const nameSearch = searchParams.get('q') ?? ''
@@ -225,10 +228,21 @@ export default function LeagueDetailPage() {
   async function handleJoin() {
     if (!league || !user) return
     setJoining(true)
+    setJoinError(null)
     try {
-      await gql(JOIN_LEAGUE, { leagueId: league.id }, { accessToken })
+      await gql(
+        JOIN_LEAGUE,
+        {
+          leagueId: league.id,
+          inviteCode: inviteCode.trim() || null,
+        },
+        { accessToken },
+      )
+      setShowJoinForm(false)
       await loadData()
-    } catch (err) {
+    } catch (err: any) {
+      const msg = err?.message ?? 'Greška pri pridruživanju'
+      setJoinError(msg)
       console.error('Failed to join league:', err)
     } finally {
       setJoining(false)
@@ -304,12 +318,43 @@ export default function LeagueDetailPage() {
               {leaving ? 'Napuštam...' : 'Napusti ligu'}
             </Button>
           ) : league.status === 'ACTIVE' && user ? (
-            <Button color="green" onClick={handleJoin} disabled={joining}>
-              {joining ? 'Pridruživanje...' : 'Pridruži se'}
-            </Button>
+            !league.isPublic ? (
+              <Button color="green" onClick={() => setShowJoinForm(true)}>
+                Pridruži se
+              </Button>
+            ) : (
+              <Button color="green" onClick={handleJoin} disabled={joining}>
+                {joining ? 'Pridruživanje...' : 'Pridruži se'}
+              </Button>
+            )
           ) : null}
         </div>
       </div>
+
+      {/* Invite code forma za privatne lige */}
+      {showJoinForm && !league.isMember && !league.isPublic && (
+        <div className="mt-4 rounded-lg border border-brand-green/30 bg-brand-green/5 p-4">
+          <div className="text-sm font-medium text-text-primary">Ova liga je privatna — unesite pozivni kod</div>
+          <div className="mt-2 flex items-center gap-3">
+            <Input
+              value={inviteCode}
+              onChange={(e) => {
+                setInviteCode(e.target.value.toUpperCase())
+                setJoinError(null)
+              }}
+              placeholder="Pozivni kod"
+              className="w-44 font-mono uppercase"
+            />
+            <Button color="green" onClick={handleJoin} disabled={joining || !inviteCode.trim()}>
+              {joining ? 'Pridruživanje...' : 'Pridruži se'}
+            </Button>
+            <Button color="zinc" onClick={() => setShowJoinForm(false)}>
+              Otkaži
+            </Button>
+          </div>
+          {joinError && <div className="mt-2 text-sm text-red-400">{joinError}</div>}
+        </div>
+      )}
 
       {/* Stats */}
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
@@ -338,7 +383,7 @@ export default function LeagueDetailPage() {
       {/* Invite code za admina privatne lige */}
       {league.isLeagueAdmin && !league.isPublic && league.inviteCode && (
         <div className="mt-4 rounded-lg border border-border-primary bg-card p-4">
-          <div className="text-sm font-medium text-text-primary">Pozivni kod (samo za članove)</div>
+          <div className="text-sm font-medium text-text-primary">Pozivni kod</div>
           <div className="mt-1 flex items-center gap-3">
             <code className="rounded bg-surface px-3 py-1.5 font-mono text-lg font-bold text-brand-green">
               {league.inviteCode}
@@ -348,8 +393,22 @@ export default function LeagueDetailPage() {
               onClick={() => navigator.clipboard.writeText(league.inviteCode!)}
               className="text-sm text-text-secondary hover:text-text-primary"
             >
-              Kopiraj
+              Kopiraj kod
             </button>
+            <button
+              type="button"
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  `${window.location.origin}/leagues/${league.slug}?invite=${league.inviteCode}`,
+                )
+              }
+              className="text-sm text-text-secondary hover:text-text-primary"
+            >
+              Kopiraj link
+            </button>
+          </div>
+          <div className="mt-1 text-xs text-text-secondary">
+            Podeli link sa pozivnim kodom da bi se drugi pridružili ligi.
           </div>
         </div>
       )}
