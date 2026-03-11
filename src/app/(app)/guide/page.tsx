@@ -24,29 +24,24 @@ export default function GuidePage() {
   const [showBackToTop, setShowBackToTop] = useState(false)
 
   useEffect(() => {
-    // Scroll listener: poslednja sekcija čiji je vrh prošao offset = aktivna.
-    // Pouzdanije od IO za TOC sa mnogo kratkih sekcija različitih visina.
-    const offset = 130
-    const updateActive = () => {
+    const onScroll = () => {
+      // TOC: poslednja sekcija čiji je vrh prošao 130px = aktivna
       let current = sections[0].id
-      for (const section of sections) {
-        const el = document.getElementById(section.id)
-        if (el && el.getBoundingClientRect().top <= offset) {
-          current = section.id
+      for (const s of sections) {
+        const el = document.getElementById(s.id)
+        if (el && el.getBoundingClientRect().top <= 130) {
+          current = s.id
         }
       }
       setActiveId(current)
+
+      // Back to top visibility
+      setShowBackToTop(window.scrollY > 400)
     }
 
-    updateActive()
-    window.addEventListener('scroll', updateActive, { passive: true })
-    return () => window.removeEventListener('scroll', updateActive)
-  }, [])
-
-  useEffect(() => {
-    const handleScroll = () => setShowBackToTop(window.scrollY > 400)
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (
