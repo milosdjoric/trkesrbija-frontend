@@ -162,3 +162,52 @@ Sistem automatski računa:
 - [ ] Internet konekcija na svakom checkpoint-u
 - [ ] Test unos (jedan probni startni broj)
 - [ ] Posle trke: provera rezultata na `/races/[slug]/results`
+
+---
+
+## Demo podaci za testiranje
+
+Demo podaci se mogu kreirati skriptom `backend/scripts/seed-judge-demo.js`.
+
+```bash
+node scripts/seed-judge-demo.js          # Dry run — prikaži šta će se kreirati
+node scripts/seed-judge-demo.js --apply  # Upiši u bazu
+```
+
+### Demo event
+
+| | |
+|---|---|
+| **Događaj** | RCN Trail 2026 |
+| **Organizator** | Staza Srbije |
+| **Tip** | TRAIL |
+| **Trke** | RCN Trail 15K (15km, 480m D+) · RCN Trail 30K (30km, 1150m D+) |
+| **Checkpoints** | Start — RCN baza · CP1 — Vidikovac · Cilj — RCN baza |
+
+### Demo nalozi
+
+| Uloga | Email | Lozinka | Opis |
+|-------|-------|---------|------|
+| **Sudija** | sudija@trkesrbija.rs | sudija123! | Dodeljen na CP1 — Vidikovac. Otvara `/judge` i unosi startne brojeve. |
+| **Takmičar** | takmicar@trkesrbija.rs | takmicar123! | Povezan sa registracijom #101 na 15K trku. Vidi svoju prijavu u `/my-registrations` i rezultate. |
+| **Posetilac** | posetilac@trkesrbija.rs | posetilac123! | Samo nalog bez prijava. Gleda događaje, kalendar i rezultate. |
+
+### Demo učesnici
+
+| Startni broj | Ime | Pol | Trka |
+|:---:|---|---|---|
+| 101 | Nikola Jovanović | M | RCN Trail 15K |
+| 102 | Stefan Petrović | M | RCN Trail 15K |
+| 103 | Ana Đorđević | Ž | RCN Trail 15K |
+| 104 | Milica Nikolić | Ž | RCN Trail 15K |
+| 201 | Luka Stojanović | M | RCN Trail 30K |
+| 202 | Jelena Ilić | Ž | RCN Trail 30K |
+| 203 | Marko Popović | M | RCN Trail 30K |
+| 204 | Tamara Stanković | Ž | RCN Trail 30K |
+
+### Scenario za testiranje
+
+1. **Sudija:** Uloguj se kao `sudija@trkesrbija.rs` → otvori `/judge` → unesi brojeve 101, 102, 103
+2. **Takmičar:** Uloguj se kao `takmicar@trkesrbija.rs` → otvori `/my-registrations` → vidi prijavu na 15K
+3. **Posetilac:** Uloguj se kao `posetilac@trkesrbija.rs` → pretraži događaje, otvori RCN Trail, pogledaj rezultate
+4. **Offline test:** Kao sudija, isključi internet → unesi broj 104 → uključi internet → proveri da se sinhronizovao

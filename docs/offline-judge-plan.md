@@ -25,55 +25,42 @@ Online? ──→ Da ──→ Pošalji na server → Markiraj kao synced
 
 ---
 
-## Ograničenja po uređajima
+## Faze implementacije
 
-### File System Access API (auto-save u fajl)
+Plan je podeljen u **3 faze** po prioritetu. Svaka faza je nezavisno deployable.
 
-| Uređaj | Podrška | Gde se čuva |
-|--------|---------|-------------|
-| **Windows** (Chrome/Edge) | ✅ | Korisnik bira folder (Desktop, Documents...) |
-| **MacBook** (Chrome/Edge) | ✅ | Korisnik bira folder |
-| **MacBook** (Safari) | ⚠️ Delimično | Samo download, ne može append u isti fajl |
-| **Android** (Chrome) | ❌ | Nema File System Access API |
-| **iPhone** (Safari) | ❌ | Nema File System Access API |
+### Faza 1: Core offline (MUST HAVE)
+IndexedDB + sync queue + backend timestamp podrška. Ovo je minimum da sudija može da radi offline.
 
-### IndexedDB (browser storage)
+### Faza 2: UI poboljšanja
+Status bar, pending/synced oznake u listi, ručni retry dugme, CSV export.
 
-| Uređaj | Podrška | Kapacitet |
-|--------|---------|-----------|
-| Svi moderni browseri | ✅ 98%+ | 50MB+ (dovoljno za hiljade timinga) |
-
-**Zaključak:** Na telefonu (Android/iPhone) jedini automatski backup je IndexedDB. Za pravi file auto-save na telefonu potreban je native wrapper (Capacitor/React Native) što zahteva App Store deploy.
-
-### Opcije za backup na telefonu
-
-1. **IndexedDB + ručni CSV export** — dugme "Preuzmi backup" na stranici (najjednostavnije)
-2. **IndexedDB + auto-file samo na desktopu** — kombinovani pristup
-3. **Capacitor native wrapper** — pravi file access svuda, ali zahteva App Store/Play Store (mnogo više posla)
+### Faza 3: Bonus (NICE TO HAVE)
+Service worker (PWA) za offline page load, File System Access API za desktop auto-backup.
 
 ---
 
-## Fajlovi za kreiranje
+## Faza 1: Core offline
 
-| Fajl | Opis |
-|------|------|
-| `src/lib/offline/timing-db.ts` | IndexedDB wrapper (`idb` biblioteka) — CRUD za pending/synced timinge |
-| `src/lib/offline/file-backup.ts` | File System Access API — append timing u lokalni JSONL fajl |
-| `src/lib/offline/sync-queue.ts` | Queue manager — auto-sync pending timinga kad je online |
-| `src/hooks/use-online-status.ts` | Hook za praćenje online/offline statusa |
+### 1.1 Backend: timestamp podrška u `recordTime`
 
-## Fajlovi za izmenu
+`recordTime` mutacija treba da prihvati opcioni `timestamp` parametar — da offline timings dobiju tačno vreme kad je sudija uneo broj, ne kad je sync stigao na server.
 
-| Fajl | Izmena |
-|------|--------|
-| `src/app/(app)/judge/page.tsx` | Offline-first logika, status indikator, pending lista |
-| `package.json` | Dodati `idb` biblioteku |
+```graphql
+input RecordTimeInput {
+  bibNumber: String!
+  timestamp: DateTime  # novo — opciono, za offline sync
+}
+```
 
----
+Backend logika: `const timestamp = input.timestamp ?? new Date()`
 
-## Detaljan plan implementacije
+**Fajlovi:**
+- `backend/src/graphql/schema.ts` — dodati `timestamp` u `RecordTimeInput`
+- `backend/src/services/checkpoint.service.ts` — koristiti `input.timestamp` ako postoji
+- `frontend/src/app/lib/api.ts` — proslediti `timestamp` u `RECORD_TIME_MUTATION` i `recordTime()` funkciju
 
-### 1. `timing-db.ts` — IndexedDB storage
+### 1.2 IndexedDB storage (`src/lib/offline/timing-db.ts`)
 
 Koristi `idb` biblioteku (lightweight IndexedDB wrapper, ~1KB gzipped).
 
@@ -90,116 +77,199 @@ Stores:
       syncedAt?: string
       serverId?: string
       error?: string
-      participantName?: string  // za offline prikaz
     }
+  Indexes:
+    - "by-synced": synced (za brzo filtriranje pending stavki)
+    - "by-timestamp": timestamp (za sortiran prikaz)
 ```
 
 Funkcije:
 - `saveTiming(timing)` — čuva novi timing
-- `getPendingTimings()` — vraća sve nesinkovane
+- `getPendingTimings()` — vraća sve nesinkovane (synced === false)
 - `markAsSynced(localId, serverId)` — markiraj kao synced
 - `markAsError(localId, error)` — markiraj grešku
-- `getAllTimings(limit?)` — za prikaz u listi
-- `clearSyncedTimings()` — čišćenje starih
+- `getAllTimings(limit?)` — za prikaz u listi (sortirano po timestamp DESC)
+- `deletePendingTiming(localId)` — za brisanje pogrešnog unosa pre synca
+- `clearSyncedTimings(olderThan?)` — čišćenje starih synced stavki
 
-### 2. `file-backup.ts` — Lokalni fajl backup
+### 1.3 Online status hook (`src/hooks/use-online-status.ts`)
 
+```typescript
+function useOnlineStatus(): {
+  isOnline: boolean
+  pendingCount: number
+}
+```
+
+Prati `navigator.onLine` + `online`/`offline` eventove + broji pending iz IndexedDB.
+
+### 1.4 Sync queue (`src/lib/offline/sync-queue.ts`)
+
+Logika:
+1. Registruj `online` event listener
+2. Kad postane online → uzmi sve pending timinge iz IndexedDB
+3. Za svaki pending: pozovi `recordTime(bibNumber, timestamp)` sa originalnim timestamp-om
+4. Na success → `markAsSynced(localId, serverId)`
+5. Na error (duplikat, tj. "already recorded") → `markAsSynced` (već postoji na serveru)
+6. Na error (ostalo) → `markAsError(localId, message)`, retry later
+
+Retry: exponential backoff (1s, 2s, 4s, max 30s), max 5 pokušaja po timing-u.
+
+**Važno:** Sync radi sekvencijalno (jedan po jedan), ne paralelno — da se izbegnu race conditions na serveru.
+
+### 1.5 Izmena `judge/page.tsx` — offline-first flow
+
+**Izmenjen `handleSubmit` flow:**
+```
+1. Generiši localId (crypto.randomUUID()) i timestamp (new Date().toISOString())
+2. Sačuvaj u IndexedDB (synced: false)
+3. Optimistic UI update (prikaži odmah u lokalnoj listi)
+4. Ako online → pošalji na server
+   - Success → markAsSynced
+   - Error → markAsError (stavka ostaje u listi sa error oznakom)
+5. Ako offline → ostaje pending, sync queue će poslati kad bude online
+```
+
+**Promena u prikazivanju liste:**
+Umesto da se lista učitava isključivo sa servera (`fetchRecentTimings`), lista se gradi iz IndexedDB + server podataka:
+- Lokalne pending stavke se prikazuju odmah (žuta oznaka)
+- Server timings se mergeuju pri online refreshu
+- Auto-refresh (svaki 10s) ostaje ali samo kad je online
+
+---
+
+## Faza 2: UI poboljšanja
+
+### 2.1 Status bar
+Na vrhu judge stranice, ispod checkpoint headera:
+- **Online:** zeleni bar "Online — sve sinhronizovano"
+- **Offline:** žuti bar "Offline — N unosa čeka sinhronizaciju"
+- **Greška:** crveni bar "Greška pri sinhronizaciji — pokušaj ponovo"
+
+### 2.2 Oznake u listi
+- Pending stavke: žuta `⏳` oznaka
+- Synced stavke: zelena `✓` oznaka
+- Error stavke: crvena `!` oznaka sa tooltip-om greške
+
+### 2.3 Brisanje pending stavki
+Swipe-to-delete ili dugme `✕` samo za pending stavke (koje još nisu synced).
+Za slučaj kad sudija pogrešno unese broj offline.
+
+### 2.4 Ručni retry dugme
+"Sinhronizuj sada" dugme — trigeruje sync queue ručno (za slučaj kad auto-sync ne radi).
+
+### 2.5 CSV export
+Dugme "Preuzmi CSV" — generise CSV sa svim timingima iz IndexedDB. Radi na svim uređajima (telefon + desktop). Format:
+```csv
+bibNumber,timestamp,synced,serverId
+42,2026-03-04T10:15:22.000Z,true,abc123
+103,2026-03-04T10:16:45.000Z,false,
+```
+
+---
+
+## Faza 3: Bonus (PWA + File backup)
+
+### 3.1 Service Worker / PWA
+Bez service workera, stranica se neće ni učitati kad je offline. Next.js opcije:
+- **`next-pwa`** paket — automatski generiše SW koji kešira app shell
+- **`@serwist/next`** — modernija alternativa za `next-pwa` (aktivno održavana)
+- **Ručni SW** — precache samo `/judge` route i njen JS bundle
+
+Minimum: keširati `/judge` stranicu + JS/CSS bundle + ikonice tako da se stranica otvori offline.
+
+> **Napomena:** PWA zahteva HTTPS u produkciji (već imamo) i `manifest.json` fajl.
+
+### 3.2 File System Access API (samo desktop)
 Koristi File System Access API (`showSaveFilePicker` / `createWritable`).
 
 Flow:
 1. Sudija jednom klikne "Izaberi folder za backup" → bira folder
 2. App kreira fajl `timings-[checkpoint]-[datum].jsonl`
-3. Posle SVAKOG unosa — append red u fajl:
-   ```jsonl
-   {"bib":"42","time":"2026-03-04T10:15:22.000Z","synced":false}
-   {"bib":"103","time":"2026-03-04T10:16:45.000Z","synced":true,"serverId":"xyz"}
-   ```
+3. Posle SVAKOG unosa — append red u fajl
 4. File handle se čuva u memoriji (ne traži dozvolu ponovo)
 
-> **Fallback za telefone:** Dugme "Preuzmi backup (CSV)" — ručni download, radi svuda.
+| Uređaj | Podrška |
+|--------|---------|
+| **Windows/Mac** (Chrome/Edge) | ✅ |
+| **Safari** | ⚠️ Samo download |
+| **Android/iPhone** | ❌ |
 
-### 3. `sync-queue.ts` — Sinhronizacija
-
-Logika:
-1. Registruj `online` event listener
-2. Kad postane online → uzmi sve pending timinge iz IndexedDB
-3. Za svaki pending: pozovi `recordTime(bibNumber)` sa originalnim timestamp-om
-4. Na success → `markAsSynced(localId, serverId)`
-5. Na error (duplikat) → `markAsSynced` (već postoji na serveru)
-6. Na error (ostalo) → `markAsError(localId, message)`, retry later
-
-Retry: exponential backoff (1s, 2s, 4s, max 30s)
-
-### 4. `use-online-status.ts` — Hook
-
-```typescript
-function useOnlineStatus(): { isOnline: boolean; pendingCount: number }
-```
-
-Prati `navigator.onLine` + `online`/`offline` eventove + broji pending iz IndexedDB.
-
-### 5. Izmene u `judge/page.tsx`
-
-**Novi UI elementi:**
-- Status bar na vrhu: 🟢 Online / 🟡 Offline (N čeka sync) / 🔴 Greška
-- Dugme "Backup fajl" za aktiviranje File System Access API (samo desktop)
-- Dugme "Preuzmi CSV" za ručni export (radi svuda)
-- U listi timinga: pending stavke imaju žutu oznaku, synced zelenu
-- "Sinhronizuj" dugme za ručni retry
-
-**Izmenjen flow recordTime:**
-```
-1. Generiši localId (UUID) i timestamp (Date.now())
-2. Sačuvaj u IndexedDB (synced: false)
-3. Append u lokalni fajl (ako je aktivan)
-4. Optimistic UI update (prikaži odmah u listi)
-5. Ako online → pošalji na server
-   - Success → markAsSynced
-   - Error → markAsError, prikaži grešku
-6. Ako offline → ostaje pending, sync queue će poslati kad bude online
-```
+> Za telefone CSV export iz Faze 2 je dovoljan.
 
 ---
 
-## Backend izmena (mala)
+## Fajlovi — pregled
 
-`recordTime` mutacija treba da prihvati opcioni `timestamp` parametar — da offline timings dobiju tačno vreme kad je sudija uneo broj, ne kad je sync stigao na server.
+### Novi fajlovi
+| Fajl | Faza | Opis |
+|------|------|------|
+| `src/lib/offline/timing-db.ts` | 1 | IndexedDB wrapper — CRUD za timinge |
+| `src/lib/offline/sync-queue.ts` | 1 | Auto-sync pending timinga kad je online |
+| `src/hooks/use-online-status.ts` | 1 | Hook za online/offline + pending count |
+| `src/lib/offline/file-backup.ts` | 3 | File System Access API (desktop only) |
 
-```graphql
-input RecordTimeInput {
-  bibNumber: String!
-  timestamp: DateTime  # novo — opciono, za offline sync
-}
-```
-
-Backend: `const timestamp = input.timestamp ?? new Date()`
-
-**Fajl:** `backend/src/services/checkpoint.service.ts` — izmena u `recordTime()`
-**Fajl:** `backend/src/graphql/schema.ts` — dodati `timestamp` u `RecordTimeInput`
+### Izmene postojećih
+| Fajl | Faza | Izmena |
+|------|------|--------|
+| `backend/src/graphql/schema.ts` | 1 | `timestamp` u `RecordTimeInput` |
+| `backend/src/services/checkpoint.service.ts` | 1 | Koristiti custom timestamp |
+| `frontend/src/app/lib/api.ts` | 1 | Proslediti `timestamp` u mutaciju |
+| `frontend/src/app/(app)/judge/page.tsx` | 1+2 | Offline-first logika + UI |
+| `frontend/package.json` | 1 | Dodati `idb` |
+| `frontend/next.config.mjs` | 3 | PWA konfiguracija |
 
 ---
 
 ## Procena kompleksnosti
 
-| Deo | Kompleksnost | Vreme |
-|-----|-------------|-------|
-| IndexedDB storage | Srednja | ~1h |
-| Online/offline detekcija | Niska | ~30min |
-| Sync queue | Srednja | ~1-2h |
-| File System Access (desktop) | Srednja | ~1h |
-| CSV export fallback (telefon) | Niska | ~30min |
-| UI izmene (judge page) | Srednja | ~1-2h |
-| Backend timestamp podrška | Niska | ~15min |
-| **Ukupno** | | **~5-7h (1-2 sesije)** |
+| Deo | Faza | Kompleksnost |
+|-----|------|-------------|
+| Backend timestamp podrška | 1 | Niska |
+| IndexedDB storage + `idb` | 1 | Srednja |
+| Online/offline hook | 1 | Niska |
+| Sync queue | 1 | Srednja-Visoka |
+| Judge page refaktor (offline-first) | 1 | Srednja |
+| **Faza 1 ukupno** | | **~4-5h** |
+| Status bar + oznake | 2 | Niska |
+| Delete pending + retry | 2 | Niska |
+| CSV export | 2 | Niska |
+| **Faza 2 ukupno** | | **~2h** |
+| Service worker / PWA | 3 | Srednja |
+| File System Access | 3 | Srednja |
+| **Faza 3 ukupno** | | **~3h** |
+| **SVE UKUPNO** | | **~9-10h (2-3 sesije)** |
+
+---
+
+## Edge cases za testiranje
+
+1. **Browser tab close mid-sync** — pending stavke ostaju u IndexedDB, sync nastavlja pri sledećem otvaranju
+2. **Dupli tab** — dva taba otvorena istovremeno, oba pišu u istu IndexedDB → sync queue mora biti idempotent
+3. **Pogrešan bib number offline** — sudija mora moći da obriše pending stavku pre synca
+4. **Server vrati duplikat** — "already recorded" error treba tretirati kao success (markAsSynced)
+5. **IndexedDB nedostupan** — Safari private browsing ne dozvoljava IndexedDB → fallback na in-memory niz + upozorenje korisniku
+6. **Veliki broj pending stavki** — ako se nakupi 100+ offline unosa, sync ne sme blokirati UI
 
 ---
 
 ## Verifikacija
 
+### Faza 1
 1. Pokreni frontend, otvori `/judge`
-2. Unesi startni broj online → proveri da se sačuva u IndexedDB + fajl + server
+2. Unesi startni broj online → proveri da se sačuva u IndexedDB + server
 3. Isključi WiFi (ili DevTools → Network → Offline)
-4. Unesi 3 startna broja offline → proveri da se sačuvaju lokalno + u fajl
-5. Uključi WiFi → proveri da se sva 3 auto-sinhronizuju
-6. Proveri rezultate na `/races/[slug]/results` — svi timings treba da budu tu
+4. Unesi 3 startna broja offline → proveri da se sačuvaju u IndexedDB
+5. Uključi WiFi → proveri da se sva 3 auto-sinhronizuju sa tačnim timestamp-om
+6. Proveri da server timings imaju originalno vreme unosa, ne vreme synca
 7. `npm run build` — bez grešaka
+
+### Faza 2
+8. Proveri status bar menja boju (zelena/žuta/crvena)
+9. Obriši pending stavku — proveri da nestane iz liste i IndexedDB
+10. Preuzmi CSV — proveri format i podatke
+11. Klikni "Sinhronizuj" — proveri da trigeruje sync
+
+### Faza 3
+12. Otvori `/judge` → isključi WiFi → refreshuj stranicu → stranica se mora učitati iz cache-a
+13. Na desktopu: aktiviraj file backup → unesi timing → proveri da se append-uje u fajl
