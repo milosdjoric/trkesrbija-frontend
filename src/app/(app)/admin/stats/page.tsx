@@ -523,31 +523,9 @@ export default function AdminStatsPage() {
             {/* Rast korisnika po danu */}
             <section>
               <Subheading>Novi korisnici po danu</Subheading>
-              {stats.userGrowthPerDay.length === 0 ? (
-                <EmptyState text="Nema novih korisnika u periodu." />
-              ) : (
-                <div className="mt-1 overflow-x-auto">
-                  <Table dense striped>
-                    <TableHead>
-                      <TableRow>
-                        <TableHeader>Datum</TableHeader>
-                        <TableHeader className="text-right">Registracija</TableHeader>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {[...stats.userGrowthPerDay]
-                        .reverse()
-                        .slice(0, 7)
-                        .map((d) => (
-                          <TableRow key={d.date}>
-                            <TableCell className="text-sm">{d.date}</TableCell>
-                            <TableCell className="text-right font-medium tabular-nums">{d.count}</TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
+              <div className="mt-2">
+                <BarChart data={stats.userGrowthPerDay.map((d) => ({ date: d.date, value: d.count }))} label="Nove korisnike" />
+              </div>
             </section>
 
             {/* Verifikovani vs neverifikovani */}
