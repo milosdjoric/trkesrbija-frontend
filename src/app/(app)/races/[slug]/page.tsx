@@ -64,6 +64,8 @@ type RaceWithEvent = {
   endDateTime: string | null
   registrationEnabled: boolean
   registrationSite: string | null
+  registrationOpenDate: string | null
+  registrationCloseDate: string | null
   registrationCount: number
   competitionId: string | null
   competition: Competition | null
@@ -97,6 +99,8 @@ const RACE_BY_SLUG_QUERY = `
       endDateTime
       registrationEnabled
       registrationSite
+      registrationOpenDate
+      registrationCloseDate
       registrationCount
       competitionId
       competition {
@@ -325,6 +329,13 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
   const days = daysUntil(race.startDateTime)
   const isPast = days < 0
 
+  // Registration date logic
+  const now = new Date()
+  const regOpen = race.registrationOpenDate ? new Date(race.registrationOpenDate) : null
+  const regClose = race.registrationCloseDate ? new Date(race.registrationCloseDate) : null
+  const isRegClosed = regClose ? now > regClose : false
+  const isRegNotYetOpen = regOpen ? now < regOpen : false
+
   const title = race.raceName ?? race.raceEvent.eventName
 
   return (
@@ -418,6 +429,15 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                   <div className="flex items-center gap-2">
                     <UserGroupIcon className="size-4 text-text-secondary" />
                     <span>Prijavljenih: {race.registrationCount}</span>
+                  </div>
+                )}
+                {regClose && (
+                  <div className="flex items-center gap-2">
+                    <ClockIcon className="size-4 text-text-secondary" />
+                    <span>
+                      Rok za prijave:{' '}
+                      {regClose.toLocaleDateString('sr-Latn-RS', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Belgrade' })}
+                    </span>
                   </div>
                 )}
               </div>
@@ -620,16 +640,40 @@ export default async function RacePage({ params }: { params: Promise<{ slug: str
                 )}
 
                 {/* Registration or Results button */}
-                {!isPast && race.registrationEnabled && (
+                {!isPast && race.registrationEnabled && !isRegClosed && !isRegNotYetOpen && (
                   <Button href={`/races/${race.slug}/register`} color="emerald" className="w-full">
                     Prijavi se za trku
                   </Button>
                 )}
+                {!isPast && race.registrationEnabled && isRegNotYetOpen && regOpen && (
+                  <div className="rounded-lg border border-border-primary px-3 py-2 text-center text-sm text-text-secondary">
+                    Prijave se otvaraju{' '}
+                    {regOpen.toLocaleDateString('sr-Latn-RS', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Belgrade' })}
+                  </div>
+                )}
+                {!isPast && race.registrationEnabled && isRegClosed && (
+                  <div className="rounded-lg border border-amber-700/50 bg-amber-900/20 px-3 py-2 text-center text-sm text-amber-400">
+                    Prijave su zatvorene
+                  </div>
+                )}
                 {!isPast && !race.registrationEnabled && !race.raceEvent.isTraining && (race.registrationSite || race.raceEvent.registrationSite) && (
-                  <Button href={race.registrationSite || race.raceEvent.registrationSite!} target="_blank" color="emerald" className="w-full">
-                    <ArrowTopRightOnSquareIcon data-slot="icon" />
-                    Prijavi se na sajtu organizatora
-                  </Button>
+                  <>
+                    <Button href={race.registrationSite || race.raceEvent.registrationSite!} target="_blank" color={isRegClosed ? 'zinc' : 'emerald'} className="w-full">
+                      <ArrowTopRightOnSquareIcon data-slot="icon" />
+                      Prijavi se na sajtu organizatora
+                    </Button>
+                    {isRegClosed && (
+                      <div className="rounded-lg border border-amber-700/50 bg-amber-900/20 px-3 py-2 text-center text-sm text-amber-400">
+                        Prijave su zatvorene
+                      </div>
+                    )}
+                    {isRegNotYetOpen && regOpen && (
+                      <div className="rounded-lg border border-border-primary px-3 py-2 text-center text-sm text-text-secondary">
+                        Prijave se otvaraju{' '}
+                        {regOpen.toLocaleDateString('sr-Latn-RS', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Belgrade' })}
+                      </div>
+                    )}
+                  </>
                 )}
                 {isPast && (
                   <Button href={`/races/${race.slug}/results`} outline className="w-full">

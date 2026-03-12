@@ -48,6 +48,8 @@ type RaceData = {
  startLocation: string | null
  registrationEnabled: boolean
  registrationSite: string | null
+ registrationOpenDate: string | null
+ registrationCloseDate: string | null
  competitionId: string | null
  competition: Competition | null
  raceEvent: {
@@ -72,6 +74,8 @@ const RACE_BY_ID_QUERY = `
    startLocation
    registrationEnabled
    registrationSite
+   registrationOpenDate
+   registrationCloseDate
    competitionId
    competition {
     id
@@ -118,6 +122,8 @@ const UPDATE_RACE_MUTATION = `
    startLocation
    registrationEnabled
    registrationSite
+   registrationOpenDate
+   registrationCloseDate
    competitionId
   }
  }
@@ -149,6 +155,8 @@ export default function EditRacePage() {
  const [startLocation, setStartLocation] = useState('')
  const [registrationEnabled, setRegistrationEnabled] = useState(true)
  const [registrationSite, setRegistrationSite] = useState('')
+ const [registrationOpenDate, setRegistrationOpenDate] = useState('')
+ const [registrationCloseDate, setRegistrationCloseDate] = useState('')
  const [competitionId, setCompetitionId] = useState('')
  const [raceEventId, setRaceEventId] = useState('')
 
@@ -186,6 +194,12 @@ export default function EditRacePage() {
     setStartLocation(raceData.race.startLocation || '')
     setRegistrationEnabled(raceData.race.registrationEnabled)
     setRegistrationSite(raceData.race.registrationSite || '')
+    if (raceData.race.registrationOpenDate) {
+     setRegistrationOpenDate(toDateTimeLocalString(new Date(raceData.race.registrationOpenDate)))
+    }
+    if (raceData.race.registrationCloseDate) {
+     setRegistrationCloseDate(toDateTimeLocalString(new Date(raceData.race.registrationCloseDate)))
+    }
     setCompetitionId(raceData.race.competitionId || '')
     setRaceEventId(raceData.race.raceEvent.id)
 
@@ -244,6 +258,8 @@ export default function EditRacePage() {
       startLocation: startLocation.trim() || null,
       registrationEnabled,
       registrationSite: registrationSite.trim() || null,
+      registrationOpenDate: registrationOpenDate ? new Date(registrationOpenDate).toISOString() : null,
+      registrationCloseDate: registrationCloseDate ? new Date(registrationCloseDate).toISOString() : null,
       competitionId: competitionId || null,
       raceEventId: raceEventId || null,
      },
@@ -506,6 +522,34 @@ export default function EditRacePage() {
          </a>
         </p>
        )}
+      </div>
+
+      {/* Registration open date */}
+      <div>
+       <label className="block text-sm font-medium text-text-secondary">
+        Početak prijava
+       </label>
+       <input
+        type="datetime-local"
+        value={registrationOpenDate}
+        onChange={(e) => setRegistrationOpenDate(e.target.value)}
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
+       />
+       <p className="mt-1 text-xs text-text-secondary">Opciono — od kad se primaju prijave</p>
+      </div>
+
+      {/* Registration close date */}
+      <div>
+       <label className="block text-sm font-medium text-text-secondary">
+        Kraj prijava
+       </label>
+       <input
+        type="datetime-local"
+        value={registrationCloseDate}
+        onChange={(e) => setRegistrationCloseDate(e.target.value)}
+        className="mt-1 w-full rounded-lg border border-border-secondary px-3 py-2 focus:border-brand-green focus:outline-none focus:ring-1 focus:ring-brand-green bg-surface"
+       />
+       <p className="mt-1 text-xs text-text-secondary">Opciono — deadline za prijave</p>
       </div>
      </div>
     </div>
