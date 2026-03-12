@@ -130,6 +130,21 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     if (q.trim()) {
       trackEvent({ type: 'SEARCH', metadata: { query: q.trim(), eventType } })
     }
+    // Track active filters
+    const activeFilters: Record<string, string> = {}
+    if (eventType.trim()) activeFilters.eventType = eventType.trim()
+    if (lenMin.trim()) activeFilters.lenMin = lenMin.trim()
+    if (lenMax.trim()) activeFilters.lenMax = lenMax.trim()
+    if (elevMin.trim()) activeFilters.elevMin = elevMin.trim()
+    if (elevMax.trim()) activeFilters.elevMax = elevMax.trim()
+    if (competitionId.trim()) activeFilters.competitionId = competitionId.trim()
+    if (country.trim()) activeFilters.country = country.trim()
+    if (sortBy.trim()) activeFilters.sortBy = sortBy.trim()
+    if (verified.trim()) activeFilters.verified = verified.trim()
+    if (showPast) activeFilters.showPast = 'true'
+    if (Object.keys(activeFilters).length > 0) {
+      trackEvent({ type: 'FILTER', metadata: activeFilters })
+    }
     startTransition(() => {
       router.push(`/events${buildQueryString()}`)
     })

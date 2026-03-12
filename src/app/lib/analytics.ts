@@ -5,7 +5,7 @@ const TRACK_EVENT_MUTATION = `
 `
 
 export function trackEvent(input: {
-  type: 'PAGE_VIEW' | 'SEARCH'
+  type: 'PAGE_VIEW' | 'SEARCH' | 'FILTER'
   entityId?: string
   entityType?: 'EVENT' | 'RACE'
   metadata?: Record<string, unknown>

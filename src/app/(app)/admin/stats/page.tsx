@@ -13,11 +13,10 @@ import { useCallback, useEffect, useState } from 'react'
 
 type EntityStat = { entityId: string; name: string; slug: string | null; count: number; uniqueCount: number }
 type SearchStat = { query: string; count: number }
+type FilterStat = { key: string; value: string; count: number }
 type DayStat = { date: string; count: number; uniqueCount: number }
 type UserStat = { userId: string; email: string; name: string | null; count: number }
 type LoginStat = { email: string; userId: string | null; name: string | null; loginCount: number; lastLogin: string }
-type RegStatusStat = { status: string; count: number }
-type RegByEventStat = { eventId: string; eventName: string; slug: string | null; count: number }
 type ActivityEntry = {
   type: string
   entityType: string | null
@@ -31,6 +30,7 @@ type AnalyticsStats = {
   topEvents: EntityStat[]
   topRaces: EntityStat[]
   topSearches: SearchStat[]
+  topFilters: FilterStat[]
   topFavorites: EntityStat[]
   viewsPerDay: DayStat[]
   topUsers: UserStat[]
@@ -42,9 +42,6 @@ type AnalyticsStats = {
   userGrowthPerDay: DayStat[]
   verifiedUsersCount: number
   unverifiedUsersCount: number
-  totalRegistrations: number
-  registrationsByStatus: RegStatusStat[]
-  registrationsByEvent: RegByEventStat[]
 }
 
 // ── Queries ──────────────────────────────────────────────────────────────────
@@ -52,23 +49,21 @@ type AnalyticsStats = {
 const ANALYTICS_QUERY = `
   query AnalyticsStats($days: Int) {
     analyticsStats(days: $days) {
-      topEvents { entityId name slug count uniqueCount }
-      topRaces { entityId name slug count uniqueCount }
       topSearches { query count }
+      topFilters { key value count }
+      topRaces { entityId name slug count uniqueCount }
+      topEvents { entityId name slug count uniqueCount }
       topFavorites { entityId name slug count uniqueCount }
-      viewsPerDay { date count uniqueCount }
+      viewsPerDay { date count }
+      newVisitorsPerDay { date count }
       topUsers { userId email name count }
-      recentLogins { email userId name loginCount lastLogin }
-      totalUniqueVisitors
-      newVisitorCount
-      newVisitorsPerDay { date count uniqueCount }
-      totalUsers
       userGrowthPerDay { date count }
+      totalUsers
       verifiedUsersCount
       unverifiedUsersCount
-      totalRegistrations
-      registrationsByStatus { status count }
-      registrationsByEvent { eventId eventName slug count }
+      totalUniqueVisitors
+      newVisitorCount
+      recentLogins { email userId name loginCount lastLogin }
     }
   }
 `
@@ -83,17 +78,23 @@ const USER_ACTIVITY_QUERY = `
 
 const DAY_OPTIONS = [
   { label: 'Danas', value: 1 },
-  { label: 'Juce', value: -1 },
+  { label: 'Juče', value: -1 },
   { label: 'Poslednjih 7 dana', value: 7 },
   { label: 'Poslednjih 30 dana', value: 30 },
   { label: 'Poslednjih 90 dana', value: 90 },
 ]
 
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: 'Na cekanju',
-  CONFIRMED: 'Potvrdjeno',
-  PAID: 'Placeno',
-  CANCELLED: 'Otkazano',
+const FILTER_LABELS: Record<string, string> = {
+  eventType: 'Tip',
+  lenMin: 'Dužina od',
+  lenMax: 'Dužina do',
+  elevMin: 'Vis. razlika od',
+  elevMax: 'Vis. razlika do',
+  competitionId: 'Takmičenje',
+  country: 'Država',
+  sortBy: 'Sortiranje',
+  verified: 'Verifikovan',
+  showPast: 'Istekli',
 }
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -107,15 +108,6 @@ function formatTime(iso: string) {
 }
 
 // ── Small Components ─────────────────────────────────────────────────────────
-
-function KpiCard({ label, value }: { label: string; value: number | string }) {
-  return (
-    <div className="rounded-lg border border-border-secondary bg-surface p-4">
-      <p className="text-xs font-medium text-text-secondary">{label}</p>
-      <p className="mt-1 text-2xl font-bold tabular-nums text-text-primary">{value}</p>
-    </div>
-  )
-}
 
 function CountCell({ count, uniqueCount }: { count: number; uniqueCount: number }) {
   return (
@@ -136,6 +128,41 @@ function SectionDivider({ title }: { title: string }) {
 
 function EmptyState({ text }: { text: string }) {
   return <p className="mt-1 text-sm text-text-secondary">{text}</p>
+}
+
+function BarChart({ data, label }: { data: { date: string; value: number }[]; label: string }) {
+  if (data.length === 0) return <EmptyState text={`Nema podataka za ${label.toLowerCase()}.`} />
+  const max = Math.max(...data.map((d) => d.value), 1)
+  const total = data.reduce((s, d) => s + d.value, 0)
+  const avg = data.length > 0 ? (total / data.length).toFixed(1) : '0'
+
+  return (
+    <div>
+      <div className="mb-2 flex items-baseline gap-3 text-sm">
+        <span className="text-text-secondary">Ukupno:</span>
+        <span className="font-bold tabular-nums text-text-primary">{total}</span>
+        <span className="text-text-secondary">Prosek/dan:</span>
+        <span className="font-bold tabular-nums text-text-primary">{avg}</span>
+      </div>
+      <div className="flex items-end gap-[2px]" style={{ height: 120 }}>
+        {data.map((d) => (
+          <div key={d.date} className="group relative flex-1" style={{ height: '100%' }}>
+            <div
+              className="absolute bottom-0 w-full rounded-t bg-brand-green/70 transition-colors group-hover:bg-brand-green"
+              style={{ height: `${(d.value / max) * 100}%`, minHeight: d.value > 0 ? 2 : 0 }}
+            />
+            <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded bg-surface-secondary px-1.5 py-0.5 text-[10px] tabular-nums text-text-primary shadow group-hover:block">
+              {d.date}: {d.value}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-1 flex justify-between text-[10px] tabular-nums text-text-tertiary">
+        <span>{data[0]?.date}</span>
+        <span>{data[data.length - 1]?.date}</span>
+      </div>
+    </div>
+  )
 }
 
 // ── User Activity Row ────────────────────────────────────────────────────────
@@ -193,9 +220,9 @@ function LoginRow({
         <TableRow>
           <TableCell colSpan={3} className="bg-surface-secondary px-6 py-2">
             {loading ? (
-              <p className="text-xs text-text-secondary">Ucitavanje...</p>
+              <p className="text-xs text-text-secondary">Učitavanje...</p>
             ) : !activity || activity.length === 0 ? (
-              <p className="text-xs text-text-secondary">Nema zabelezene aktivnosti.</p>
+              <p className="text-xs text-text-secondary">Nema zabeležene aktivnosti.</p>
             ) : (
               <ul className="space-y-0.5 text-xs">
                 {activity.map((a, i) => (
@@ -247,8 +274,6 @@ export default function AdminStatsPage() {
 
   if (!user || loading) return <LoadingState />
 
-  const totalViews = stats?.viewsPerDay.reduce((sum, d) => sum + d.count, 0) ?? 0
-
   return (
     <div className="space-y-6">
       {/* Header + Period Filter */}
@@ -273,78 +298,9 @@ export default function AdminStatsPage() {
         <p className="text-sm text-text-secondary">Nema podataka.</p>
       ) : (
         <>
-          {/* ═══════════ KPI CARDS ═══════════ */}
-          <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-            <KpiCard label="Pregledi" value={totalViews} />
-            <KpiCard label="Jedinstveni posetioci" value={stats.totalUniqueVisitors} />
-            <KpiCard label="Novi posetioci" value={stats.newVisitorCount} />
-            <KpiCard label="Ukupno korisnika" value={stats.totalUsers} />
-            <KpiCard label="Prijave u periodu" value={stats.totalRegistrations} />
-          </div>
-
-          {/* ═══════════ GRUPA 1: SAOBRACAJ ═══════════ */}
-          <SectionDivider title="Saobracaj" />
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {/* Pregledi po danu */}
-            <section>
-              <Subheading>Pregledi po danu</Subheading>
-              {stats.viewsPerDay.length === 0 ? (
-                <EmptyState text="Nema pregleda." />
-              ) : (
-                <div className="mt-1 overflow-x-auto">
-                  <Table dense striped>
-                    <TableHead>
-                      <TableRow>
-                        <TableHeader>Datum</TableHeader>
-                        <TableHeader className="text-right">Ukupno / Uniq.</TableHeader>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {[...stats.viewsPerDay]
-                        .reverse()
-                        .slice(0, 7)
-                        .map((d) => (
-                          <TableRow key={d.date}>
-                            <TableCell className="text-sm">{d.date}</TableCell>
-                            <CountCell count={d.count} uniqueCount={d.uniqueCount} />
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </section>
-
-            {/* Novi posetioci po danu */}
-            <section>
-              <Subheading>Novi posetioci po danu</Subheading>
-              {stats.newVisitorsPerDay.length === 0 ? (
-                <EmptyState text="Nema novih posetilaca." />
-              ) : (
-                <div className="mt-1 overflow-x-auto">
-                  <Table dense striped>
-                    <TableHead>
-                      <TableRow>
-                        <TableHeader>Datum</TableHeader>
-                        <TableHeader className="text-right">Novi</TableHeader>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {[...stats.newVisitorsPerDay]
-                        .reverse()
-                        .slice(0, 7)
-                        .map((d) => (
-                          <TableRow key={d.date}>
-                            <TableCell className="text-sm">{d.date}</TableCell>
-                            <TableCell className="text-right font-medium tabular-nums">{d.count}</TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </section>
-
+          {/* ═══════════ SEKCIJA 1: PRETRAGE I FILTERI ═══════════ */}
+          <SectionDivider title="Pretrage i filteri" />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {/* Top pretrage */}
             <section>
               <Subheading>Top pretrage</Subheading>
@@ -360,7 +316,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topSearches.slice(0, 7).map((s) => (
+                      {stats.topSearches.map((s) => (
                         <TableRow key={s.query}>
                           <TableCell className="font-mono text-xs">&ldquo;{s.query}&rdquo;</TableCell>
                           <TableCell className="text-right font-medium tabular-nums">{s.count}</TableCell>
@@ -371,38 +327,28 @@ export default function AdminStatsPage() {
                 </div>
               )}
             </section>
-          </div>
 
-          {/* ═══════════ GRUPA 2: SADRZAJ ═══════════ */}
-          <SectionDivider title="Sadrzaj" />
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {/* Top dogadjaji */}
+            {/* Top filteri */}
             <section>
-              <Subheading>Top dogadjaji</Subheading>
-              {stats.topEvents.length === 0 ? (
-                <EmptyState text="Nema podataka." />
+              <Subheading>Top filteri</Subheading>
+              {stats.topFilters.length === 0 ? (
+                <EmptyState text="Nema podataka o filterima." />
               ) : (
                 <div className="mt-1 overflow-x-auto">
                   <Table dense striped>
                     <TableHead>
                       <TableRow>
-                        <TableHeader>Dogadjaj</TableHeader>
-                        <TableHeader className="text-right">Ukupno / Uniq.</TableHeader>
+                        <TableHeader>Filter</TableHeader>
+                        <TableHeader>Vrednost</TableHeader>
+                        <TableHeader className="text-right">Puta</TableHeader>
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topEvents.slice(0, 7).map((e) => (
-                        <TableRow key={e.entityId}>
-                          <TableCell className="max-w-[180px] truncate">
-                            {e.slug ? (
-                              <Link href={`/events/${e.slug}`} className="hover:underline">
-                                {e.name}
-                              </Link>
-                            ) : (
-                              e.name
-                            )}
-                          </TableCell>
-                          <CountCell count={e.count} uniqueCount={e.uniqueCount} />
+                      {stats.topFilters.map((f, i) => (
+                        <TableRow key={`${f.key}-${f.value}-${i}`}>
+                          <TableCell className="text-sm font-medium">{FILTER_LABELS[f.key] ?? f.key}</TableCell>
+                          <TableCell className="text-sm">{f.value}</TableCell>
+                          <TableCell className="text-right font-medium tabular-nums">{f.count}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -410,7 +356,11 @@ export default function AdminStatsPage() {
                 </div>
               )}
             </section>
+          </div>
 
+          {/* ═══════════ SEKCIJA 2: NAJPOPULARNIJI SADRZAJ ═══════════ */}
+          <SectionDivider title="Najpopularniji sadržaj" />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {/* Top trke */}
             <section>
               <Subheading>Top trke</Subheading>
@@ -426,7 +376,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topRaces.slice(0, 7).map((r) => (
+                      {stats.topRaces.map((r) => (
                         <TableRow key={r.entityId}>
                           <TableCell className="max-w-[180px] truncate">
                             {r.slug ? (
@@ -438,6 +388,41 @@ export default function AdminStatsPage() {
                             )}
                           </TableCell>
                           <CountCell count={r.count} uniqueCount={r.uniqueCount} />
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </section>
+
+            {/* Top dogadjaji */}
+            <section>
+              <Subheading>Top događaji</Subheading>
+              {stats.topEvents.length === 0 ? (
+                <EmptyState text="Nema podataka." />
+              ) : (
+                <div className="mt-1 overflow-x-auto">
+                  <Table dense striped>
+                    <TableHead>
+                      <TableRow>
+                        <TableHeader>Događaj</TableHeader>
+                        <TableHeader className="text-right">Ukupno / Uniq.</TableHeader>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {stats.topEvents.map((e) => (
+                        <TableRow key={e.entityId}>
+                          <TableCell className="max-w-[180px] truncate">
+                            {e.slug ? (
+                              <Link href={`/events/${e.slug}`} className="hover:underline">
+                                {e.name}
+                              </Link>
+                            ) : (
+                              e.name
+                            )}
+                          </TableCell>
+                          <CountCell count={e.count} uniqueCount={e.uniqueCount} />
                         </TableRow>
                       ))}
                     </TableBody>
@@ -461,7 +446,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topFavorites.slice(0, 7).map((f) => (
+                      {stats.topFavorites.map((f) => (
                         <TableRow key={f.entityId}>
                           <TableCell className="max-w-[180px] truncate">
                             {f.slug ? (
@@ -482,7 +467,27 @@ export default function AdminStatsPage() {
             </section>
           </div>
 
-          {/* ═══════════ GRUPA 3: KORISNICI ═══════════ */}
+          {/* ═══════════ SEKCIJA 3: SAOBRACAJ ═══════════ */}
+          <SectionDivider title="Saobraćaj" />
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Pregledi po danu */}
+            <section>
+              <Subheading>Pregledi po danu</Subheading>
+              <div className="mt-2">
+                <BarChart data={stats.viewsPerDay.map((d) => ({ date: d.date, value: d.count }))} label="Preglede" />
+              </div>
+            </section>
+
+            {/* Novi posetioci po danu */}
+            <section>
+              <Subheading>Novi posetioci po danu</Subheading>
+              <div className="mt-2">
+                <BarChart data={stats.newVisitorsPerDay.map((d) => ({ date: d.date, value: d.count }))} label="Nove posetioce" />
+              </div>
+            </section>
+          </div>
+
+          {/* ═══════════ SEKCIJA 4: KORISNICI ═══════════ */}
           <SectionDivider title="Korisnici" />
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {/* Najaktivniji korisnici */}
@@ -500,7 +505,7 @@ export default function AdminStatsPage() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {stats.topUsers.slice(0, 7).map((u) => (
+                      {stats.topUsers.map((u) => (
                         <TableRow key={u.userId}>
                           <TableCell>
                             <span className="font-medium">{u.name ?? u.email}</span>
@@ -577,73 +582,7 @@ export default function AdminStatsPage() {
             </section>
           </div>
 
-          {/* ═══════════ GRUPA 4: PRIJAVE ═══════════ */}
-          <SectionDivider title="Prijave na trke" />
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {/* Prijave po dogadjaju */}
-            <section>
-              <Subheading>Top dogadjaji po prijavama</Subheading>
-              {stats.registrationsByEvent.length === 0 ? (
-                <EmptyState text="Nema prijava u periodu." />
-              ) : (
-                <div className="mt-1 overflow-x-auto">
-                  <Table dense striped>
-                    <TableHead>
-                      <TableRow>
-                        <TableHeader>Dogadjaj</TableHeader>
-                        <TableHeader className="text-right">Prijave</TableHeader>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {stats.registrationsByEvent.slice(0, 7).map((r) => (
-                        <TableRow key={r.eventId}>
-                          <TableCell className="max-w-[180px] truncate">
-                            {r.slug ? (
-                              <Link href={`/events/${r.slug}`} className="hover:underline">
-                                {r.eventName}
-                              </Link>
-                            ) : (
-                              r.eventName
-                            )}
-                          </TableCell>
-                          <TableCell className="text-right font-medium tabular-nums">{r.count}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </section>
-
-            {/* Registracije po statusu */}
-            <section>
-              <Subheading>Prijave po statusu</Subheading>
-              {stats.registrationsByStatus.length === 0 ? (
-                <EmptyState text="Nema prijava u periodu." />
-              ) : (
-                <div className="mt-1 overflow-x-auto">
-                  <Table dense striped>
-                    <TableHead>
-                      <TableRow>
-                        <TableHeader>Status</TableHeader>
-                        <TableHeader className="text-right">Broj</TableHeader>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {stats.registrationsByStatus.map((r) => (
-                        <TableRow key={r.status}>
-                          <TableCell>{STATUS_LABELS[r.status] ?? r.status}</TableCell>
-                          <TableCell className="text-right font-medium tabular-nums">{r.count}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-            </section>
-          </div>
-
-          {/* ═══════════ GRUPA 5: AKTIVNOST ═══════════ */}
+          {/* ═══════════ SEKCIJA 5: AKTIVNOST (DANAS) ═══════════ */}
           {stats.recentLogins.length > 0 && (
             <>
               <SectionDivider title="Aktivnost (danas)" />
