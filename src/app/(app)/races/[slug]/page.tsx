@@ -203,13 +203,13 @@ export async function generateMetadata({
       title,
       description,
       type: 'website',
-      images: [{ url: race.raceEvent.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v2.png` }],
+      images: [{ url: race.raceEvent.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v3.png` }],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [race.raceEvent.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v2.png`],
+      images: [race.raceEvent.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v3.png`],
     },
   }
 }

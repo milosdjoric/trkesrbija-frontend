@@ -150,13 +150,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: event.eventName,
       description,
       type: 'website',
-      images: [{ url: event.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v2.png` }],
+      images: [{ url: event.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v3.png` }],
     },
     twitter: {
       card: 'summary_large_image',
       title: event.eventName,
       description,
-      images: [event.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v2.png`],
+      images: [event.mainImage || `${process.env.NEXT_PUBLIC_SITE_URL || 'https://trkesrbija.rs'}/og-image-v3.png`],
     },
   }
 }

@@ -144,7 +144,7 @@ export function EventJsonLd({
       },
     },
     url,
-    image: image ?? `${siteUrl}/og-image-v2.png`,
+    image: image ?? `${siteUrl}/og-image-v3.png`,
     organizer: organizer
       ? {
           '@type': 'Organization',
