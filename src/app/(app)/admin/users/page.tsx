@@ -137,22 +137,33 @@ export default function AdminUsersPage() {
   return <LoadingState />
  }
 
- // Filter users
- const filteredUsers = users.filter((u) => {
-  const searchLower = search.toLowerCase()
-  const matchesSearch =
-   !search ||
-   u.email.toLowerCase().includes(searchLower) ||
-   (u.name ?? '').toLowerCase().includes(searchLower)
+ // Filter and sort users
+ const filteredUsers = users
+  .filter((u) => {
+   const searchLower = search.toLowerCase()
+   const matchesSearch =
+    !search ||
+    u.email.toLowerCase().includes(searchLower) ||
+    (u.name ?? '').toLowerCase().includes(searchLower)
 
-  const matchesRole =
-   filterRole === 'ALL' ||
-   (filterRole === 'ADMIN' && u.role === 'ADMIN') ||
-   (filterRole === 'STANDARD' && u.role === 'STANDARD' && !u.assignedCheckpointId) ||
-   (filterRole === 'JUDGE' && u.assignedCheckpointId)
+   const matchesRole =
+    filterRole === 'ALL' ||
+    (filterRole === 'ADMIN' && u.role === 'ADMIN') ||
+    (filterRole === 'STANDARD' && u.role === 'STANDARD' && !u.assignedCheckpointId) ||
+    (filterRole === 'JUDGE' && u.assignedCheckpointId)
 
-  return matchesSearch && matchesRole
- })
+   return matchesSearch && matchesRole
+  })
+  .sort((a, b) => {
+   // 1. Sort by role priority: Admin (0) → Judge (1) → Standard (2)
+   const rolePriority = (u: User) =>
+    u.role === 'ADMIN' ? 0 : u.assignedCheckpointId ? 1 : 2
+   const roleDiff = rolePriority(a) - rolePriority(b)
+   if (roleDiff !== 0) return roleDiff
+
+   // 2. Within same role group, sort by registration date (newest first)
+   return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  })
 
  function formatDate(iso: string) {
   const d = new Date(iso)
