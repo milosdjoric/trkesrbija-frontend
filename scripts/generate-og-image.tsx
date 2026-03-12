@@ -22,15 +22,22 @@ async function generate() {
           fontFamily: 'Inter, sans-serif',
         }}
       >
-        {/* Logo icon — open circle with gap at top-right */}
-        <svg width="72" height="72" viewBox="0 0 100 100" style={{ marginBottom: 20 }}>
-          <circle cx="50" cy="50" r="40" fill="none" stroke="#00D084" strokeWidth="10" strokeLinecap="round" strokeDasharray="210" strokeDashoffset="30" transform="rotate(-90 50 50)" />
+        {/* Logo icon — matching icon.svg: arc with dots */}
+        <svg width="80" height="80" viewBox="0 0 64 64" style={{ marginBottom: 20 }}>
+          {/* Background ring */}
+          <circle cx="32" cy="32" r="18" fill="none" stroke="#333" strokeWidth="7" />
+          {/* Green arc: 270° from top to left */}
+          <path d="M32 14 A18 18 0 1 1 14 32" fill="none" stroke="#22c55e" strokeWidth="7" strokeLinecap="round" />
+          {/* Dot at start (top) */}
+          <circle cx="32" cy="14" r="4.5" fill="#22c55e" />
+          {/* Dot at end (left) */}
+          <circle cx="14" cy="32" r="4.5" fill="#22c55e" />
         </svg>
 
-        {/* Brand name */}
-        <div style={{ display: 'flex', fontSize: 62, fontWeight: 800, letterSpacing: '-1px' }}>
-          <span style={{ color: '#00D084' }}>trke</span>
-          <span style={{ color: '#ffffff' }}>srbija</span>
+        {/* Brand name — trke: extrabold, srbija: light */}
+        <div style={{ display: 'flex', fontSize: 62, letterSpacing: '-1px' }}>
+          <span style={{ color: '#00D084', fontWeight: 900 }}>trke</span>
+          <span style={{ color: '#9ca3af', fontWeight: 300 }}>srbija</span>
         </div>
 
         {/* Subtitle */}
