@@ -115,7 +115,7 @@ export default function JudgePage() {
   // ── Load checkpoint + initial data ───────────────────────────────────────
 
   const loadData = useCallback(async () => {
-    // Online sa tokenom — učitaj sa servera i keširaj checkpoint
+    // Ima token — učitaj sa servera i keširaj checkpoint
     if (accessToken) {
       try {
         const cp = await fetchMyAssignedCheckpoint(accessToken)
@@ -154,39 +154,33 @@ export default function JudgePage() {
       return
     }
 
-    // Offline bez tokena — probaj keširani checkpoint iz IndexedDB
-    if (!navigator.onLine) {
-      try {
-        const cached = await getCheckpointCache()
-        if (cached) {
-          setCheckpoint(cached)
-          setOfflineMode(true)
-          await refreshDisplayTimings()
-        }
-      } catch (err) {
-        console.error('Failed to load cached checkpoint:', err)
-      } finally {
+    // Nema tokena — probaj keširani checkpoint iz IndexedDB
+    // (navigator.onLine je nepouzdan, pa uvek probamo cache)
+    try {
+      const cached = await getCheckpointCache()
+      if (cached) {
+        setCheckpoint(cached)
+        setOfflineMode(true)
+        await refreshDisplayTimings()
         setLoading(false)
+        return
       }
-      return
+    } catch (err) {
+      console.error('Failed to load cached checkpoint:', err)
     }
 
-    // Online bez tokena — čekaj auth (ne radi ništa)
+    // Nema ni tokena ni keša — redirect na login
+    router.push('/login')
     setLoading(false)
-  }, [accessToken, refreshDisplayTimings])
+  }, [accessToken, refreshDisplayTimings, router])
 
   useEffect(() => {
     if (authLoading) return
 
-    if (!user && navigator.onLine) {
-      // Online bez korisnika — redirectuj na login
-      router.push('/login')
-      return
-    }
-
-    // Ulogovani ili offline — loadData rešava oba slučaja
+    // loadData() sam odlučuje: ako ima token — server flow,
+    // ako nema — probaj cache, ako ni to — redirect na login
     loadData()
-  }, [authLoading, user, loadData, router])
+  }, [authLoading, loadData])
 
   // ── Init auto-sync ───────────────────────────────────────────────────────
 
