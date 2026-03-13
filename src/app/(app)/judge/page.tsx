@@ -14,7 +14,15 @@ import { LoadingState } from '@/components/loading-state'
 import { Text } from '@/components/text'
 import { useOnlineStatus } from '@/hooks/use-online-status'
 import { formatTime } from '@/lib/formatters'
-import { deleteTiming, getAllTimings, saveTiming, type LocalTiming } from '@/lib/offline/timing-db'
+import {
+  deleteTiming,
+  getAllTimings,
+  getCheckpointCache,
+  saveCheckpointCache,
+  saveTiming,
+  type CachedCheckpoint,
+  type LocalTiming,
+} from '@/lib/offline/timing-db'
 import { initAutoSync, setSyncCallback, syncPendingTimings, cleanupAutoSync } from '@/lib/offline/sync-queue'
 import {
   ArrowPathIcon,
@@ -71,7 +79,8 @@ export default function JudgePage() {
   const { user, accessToken, isLoading: authLoading } = useAuth()
   const { isOnline, pendingCount, refreshPendingCount } = useOnlineStatus()
 
-  const [checkpoint, setCheckpoint] = useState<CheckpointWithRace | null>(null)
+  const [checkpoint, setCheckpoint] = useState<CheckpointWithRace | CachedCheckpoint | null>(null)
+  const [offlineMode, setOfflineMode] = useState(false)
   const [displayTimings, setDisplayTimings] = useState<DisplayTiming[]>([])
   const [loading, setLoading] = useState(true)
   const [bibNumber, setBibNumber] = useState('')
@@ -106,45 +115,78 @@ export default function JudgePage() {
   // ── Load checkpoint + initial data ───────────────────────────────────────
 
   const loadData = useCallback(async () => {
-    if (!accessToken) return
+    // Online sa tokenom — učitaj sa servera i keširaj checkpoint
+    if (accessToken) {
+      try {
+        const cp = await fetchMyAssignedCheckpoint(accessToken)
+        setCheckpoint(cp)
 
-    try {
-      const cp = await fetchMyAssignedCheckpoint(accessToken)
-      setCheckpoint(cp)
+        if (cp) {
+          // Keširaj checkpoint u IndexedDB za offline upotrebu
+          await saveCheckpointCache({
+            id: cp.id,
+            name: cp.name,
+            orderIndex: cp.orderIndex,
+            race: {
+              id: cp.race.id,
+              raceName: cp.race.raceName ?? null,
+              raceEvent: { eventName: cp.race.raceEvent.eventName },
+            },
+          })
 
-      if (cp) {
-        // Probaj učitati sa servera ako smo online
-        if (navigator.onLine) {
-          try {
-            const timings = await fetchRecentTimings(cp.id, 20, accessToken)
-            await refreshDisplayTimings(timings)
-          } catch {
-            // Server nedostupan, prikaži samo lokalne
+          if (navigator.onLine) {
+            try {
+              const timings = await fetchRecentTimings(cp.id, 20, accessToken)
+              await refreshDisplayTimings(timings)
+            } catch {
+              await refreshDisplayTimings()
+            }
+          } else {
             await refreshDisplayTimings()
           }
-        } else {
+        }
+      } catch (err) {
+        console.error('Failed to load data:', err)
+        await refreshDisplayTimings()
+      } finally {
+        setLoading(false)
+      }
+      return
+    }
+
+    // Offline bez tokena — probaj keširani checkpoint iz IndexedDB
+    if (!navigator.onLine) {
+      try {
+        const cached = await getCheckpointCache()
+        if (cached) {
+          setCheckpoint(cached)
+          setOfflineMode(true)
           await refreshDisplayTimings()
         }
+      } catch (err) {
+        console.error('Failed to load cached checkpoint:', err)
+      } finally {
+        setLoading(false)
       }
-    } catch (err) {
-      console.error('Failed to load data:', err)
-      // Ako je offline, prikaži lokalne podatke
-      await refreshDisplayTimings()
-    } finally {
-      setLoading(false)
+      return
     }
+
+    // Online bez tokena — čekaj auth (ne radi ništa)
+    setLoading(false)
   }, [accessToken, refreshDisplayTimings])
 
   useEffect(() => {
-    if (!authLoading && !user) {
+    if (authLoading) return
+
+    if (!user && navigator.onLine) {
+      // Online bez korisnika — redirectuj na login
       router.push('/login')
       return
     }
 
-    if (accessToken) {
-      loadData()
-    }
-  }, [authLoading, user, accessToken, loadData, router])
+    // Ulogovani ili offline — loadData rešava oba slučaja
+    loadData()
+  }, [authLoading, user, loadData, router])
 
   // ── Init auto-sync ───────────────────────────────────────────────────────
 
@@ -299,7 +341,7 @@ export default function JudgePage() {
     return <LoadingState className="min-h-[50vh]" />
   }
 
-  if (!user) {
+  if (!user && !offlineMode) {
     return null
   }
 
@@ -348,6 +390,13 @@ export default function JudgePage() {
           </button>
         )}
       </div>
+
+      {/* Offline Mode Banner */}
+      {offlineMode && (
+        <div className="mb-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+          <span className="font-semibold">Offline režim</span> — koristite keširane podatke. Timings se čuvaju lokalno i sinhronizuju kad se vrati signal.
+        </div>
+      )}
 
       {/* Checkpoint Header */}
       <div className="mb-5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-4 py-3 shadow-md dark:from-emerald-600 dark:to-emerald-700">

@@ -14,6 +14,17 @@ export interface LocalTiming {
   error?: string
 }
 
+export interface CachedCheckpoint {
+  id: string
+  name: string
+  orderIndex: number
+  race: {
+    id: string
+    raceName: string | null
+    raceEvent: { eventName: string }
+  }
+}
+
 interface TimingDB extends DBSchema {
   timings: {
     key: string
@@ -23,22 +34,31 @@ interface TimingDB extends DBSchema {
       'by-timestamp': string
     }
   }
+  checkpointCache: {
+    key: string
+    value: CachedCheckpoint & { cachedAt: string }
+  }
 }
 
 // ── Database ─────────────────────────────────────────────────────────────────
 
 const DB_NAME = 'judge-timings'
-const DB_VERSION = 1
+const DB_VERSION = 2
 
 let dbPromise: Promise<IDBPDatabase<TimingDB>> | null = null
 
 function getDB(): Promise<IDBPDatabase<TimingDB>> {
   if (!dbPromise) {
     dbPromise = openDB<TimingDB>(DB_NAME, DB_VERSION, {
-      upgrade(db) {
-        const store = db.createObjectStore('timings', { keyPath: 'localId' })
-        store.createIndex('by-synced', 'synced')
-        store.createIndex('by-timestamp', 'timestamp')
+      upgrade(db, oldVersion) {
+        if (oldVersion < 1) {
+          const store = db.createObjectStore('timings', { keyPath: 'localId' })
+          store.createIndex('by-synced', 'synced')
+          store.createIndex('by-timestamp', 'timestamp')
+        }
+        if (oldVersion < 2) {
+          db.createObjectStore('checkpointCache', { keyPath: 'id' })
+        }
       },
     })
   }
@@ -109,6 +129,21 @@ export async function getPendingCount(): Promise<number> {
   const db = await getDB()
   return db.countFromIndex('timings', 'by-synced', 0)
 }
+
+// ── Checkpoint Cache ─────────────────────────────────────────────────────────
+
+export async function saveCheckpointCache(checkpoint: CachedCheckpoint): Promise<void> {
+  const db = await getDB()
+  await db.put('checkpointCache', { ...checkpoint, cachedAt: new Date().toISOString() })
+}
+
+export async function getCheckpointCache(): Promise<CachedCheckpoint | null> {
+  const db = await getDB()
+  const all = await db.getAll('checkpointCache')
+  return all[0] ?? null
+}
+
+// ── Cleanup ──────────────────────────────────────────────────────────────────
 
 export async function clearSyncedTimings(olderThanMs = 24 * 60 * 60 * 1000): Promise<number> {
   const db = await getDB()
