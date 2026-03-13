@@ -58,7 +58,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!silent) setIsLoading(true)
 
       try {
-        const refreshed = await authApi.refresh()
+        // Timeout za boot refresh — mobilni fetch može visiti 30-60s kad nema signala.
+        // Kratak timeout osigurava da judge stranica brzo padne na offline cache.
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), silent ? 10000 : 5000)
+
+        let refreshed: Awaited<ReturnType<typeof authApi.refresh>>
+        try {
+          refreshed = await authApi.refresh({ signal: controller.signal })
+        } finally {
+          clearTimeout(timeoutId)
+        }
 
         if (process.env.NODE_ENV !== 'production') {
           // eslint-disable-next-line no-console

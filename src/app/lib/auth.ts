@@ -142,8 +142,8 @@ export async function register(payload: { email: string; password: string; name?
 }
 
 // Refresh uses httpOnly cookie (credentials: include is set in gql())
-export async function refresh() {
-  const data = await gql<{ refresh: AuthResponse }>(REFRESH_MUTATION)
+export async function refresh(opts?: { signal?: AbortSignal }) {
+  const data = await gql<{ refresh: AuthResponse }>(REFRESH_MUTATION, undefined, { signal: opts?.signal })
   return data.refresh
 }
 
