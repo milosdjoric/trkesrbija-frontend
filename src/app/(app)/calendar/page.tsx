@@ -70,15 +70,22 @@ const RACE_EVENTS_QUERY = `
 `
 
 export default async function CalendarPage() {
-  const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, {
-    limit: 2000,
-    skip: 0,
-  })
+  let raceEvents: BackendRaceEvent[] = []
+
+  try {
+    const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, {
+      limit: 2000,
+      skip: 0,
+    })
+    raceEvents = data?.raceEvents ?? []
+  } catch (err) {
+    console.warn('[calendar] Failed to fetch data from API:', (err as Error).message)
+  }
 
   // Group by date, then by event within each date
   const eventsByDate: Record<string, EventOnDate[]> = {}
 
-  for (const event of data.raceEvents ?? []) {
+  for (const event of raceEvents) {
     const byDate: Record<string, BackendRace[]> = {}
     for (const race of event.races ?? []) {
       const d = new Date(race.startDateTime)

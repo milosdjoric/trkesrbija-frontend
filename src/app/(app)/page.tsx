@@ -122,8 +122,14 @@ function allSameDateTime(values: Array<string | null | undefined>) {
 
 export default async function HomePage() {
   // Fetch upcoming events with races
-  const eventsData = await gql<{ raceEvents: BackendRaceEvent[] }>(UPCOMING_EVENTS_QUERY, { limit: 100 })
-  const allEvents = eventsData.raceEvents ?? []
+  let allEvents: BackendRaceEvent[] = []
+
+  try {
+    const eventsData = await gql<{ raceEvents: BackendRaceEvent[] }>(UPCOMING_EVENTS_QUERY, { limit: 100 })
+    allEvents = eventsData?.raceEvents ?? []
+  } catch (err) {
+    console.warn('[homepage] Failed to fetch data from API:', (err as Error).message)
+  }
 
   // Process events with computed fields
   const now = new Date()

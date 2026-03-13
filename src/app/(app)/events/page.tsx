@@ -116,9 +116,17 @@ export default async function Events({
     return { allSame, value: allSame ? first : null }
   }
 
-  const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, { limit: 1000, skip: 0 })
-  const competitionsData = await gql<{ competitions: BackendCompetition[] }>(COMPETITIONS_QUERY)
-  const competitions = competitionsData.competitions ?? []
+  let allRaceEvents: BackendRaceEvent[] = []
+  let competitions: BackendCompetition[] = []
+
+  try {
+    const data = await gql<{ raceEvents: BackendRaceEvent[] }>(RACE_EVENTS_QUERY, { limit: 1000, skip: 0 })
+    allRaceEvents = data?.raceEvents ?? []
+    const competitionsData = await gql<{ competitions: BackendCompetition[] }>(COMPETITIONS_QUERY)
+    competitions = competitionsData?.competitions ?? []
+  } catch (err) {
+    console.warn('[events] Failed to fetch data from API:', (err as Error).message)
+  }
   const competitionNameById = new Map<string, string>(competitions.map((c) => [c.id, c.name]))
 
   function getParam(name: string): string {
@@ -192,7 +200,7 @@ export default async function Events({
 
   // Map backend RaceEvents into the existing UI-friendly `events` shape.
   // Fields that do not exist in the DB yet are filled with reasonable placeholders.
-  let events = (data.raceEvents ?? []).map((re) => {
+  let events = allRaceEvents.map((re) => {
     const racesAll = re.races ?? []
 
     const eventStartTs = (() => {
