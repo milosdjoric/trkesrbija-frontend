@@ -15,6 +15,7 @@ const urbanist = Urbanist({
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://trkesrbija.rs'
 
 export const metadata: Metadata = {
+  manifest: '/manifest.json',
   title: {
     template: '%s - Trke Srbija',
     default: 'Trke Srbija - Trail i ulične trke u Srbiji',
