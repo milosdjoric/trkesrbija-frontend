@@ -11,7 +11,7 @@ import { LoadingState } from '@/components/loading-state'
 import { Select } from '@/components/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
 import { useToast } from '@/components/toast'
-import { ChevronLeftIcon, PlusIcon, TrashIcon } from '@heroicons/react/16/solid'
+import { CheckIcon, ChevronLeftIcon, PlusIcon, TrashIcon, XMarkIcon } from '@heroicons/react/16/solid'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 type League = {
@@ -27,6 +27,8 @@ type League = {
   endDate: string
   isPublic: boolean
   memberCount: number
+  approvalNote: string | null
+  createdBy: { id: string; name: string | null; email: string } | null
 }
 
 const LEAGUES_QUERY = `
@@ -35,6 +37,17 @@ const LEAGUES_QUERY = `
       id name slug status type period
       minDistance maxDistance startDate endDate
       isPublic memberCount
+    }
+  }
+`
+
+const PENDING_LEAGUES_QUERY = `
+  query PendingLeagues {
+    pendingLeagues {
+      id name slug status type period
+      minDistance maxDistance startDate endDate
+      isPublic memberCount description
+      createdBy { id name email }
     }
   }
 `
@@ -61,6 +74,20 @@ const DELETE_LEAGUE = `
   }
 `
 
+const APPROVE_LEAGUE = `
+  mutation ApproveLeague($leagueId: ID!) {
+    approveLeague(leagueId: $leagueId) {
+      id status
+    }
+  }
+`
+
+const REJECT_LEAGUE = `
+  mutation RejectLeague($leagueId: ID!, $note: String) {
+    rejectLeague(leagueId: $leagueId, note: $note)
+  }
+`
+
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('sr-Latn-RS', {
     day: 'numeric',
@@ -75,10 +102,16 @@ export default function AdminLeaguesPage() {
   const { toast } = useToast()
 
   const [leagues, setLeagues] = useState<League[]>([])
+  const [pendingLeagues, setPendingLeagues] = useState<League[]>([])
   const [loading, setLoading] = useState(true)
   const [creating, setCreating] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const loadedRef = useRef(false)
+
+  // Reject modal state
+  const [rejectModal, setRejectModal] = useState<{ leagueId: string; name: string } | null>(null)
+  const [rejectNote, setRejectNote] = useState('')
+  const [rejecting, setRejecting] = useState(false)
 
   // Form state
   const [form, setForm] = useState({
@@ -94,11 +127,15 @@ export default function AdminLeaguesPage() {
     isPublic: true,
   })
 
-  const loadLeagues = useCallback(async () => {
+  const loadData = useCallback(async () => {
     if (!accessToken) return
     try {
-      const data = await gql<{ leagues: League[] }>(LEAGUES_QUERY, {}, { accessToken })
-      setLeagues(data.leagues || [])
+      const [leaguesData, pendingData] = await Promise.all([
+        gql<{ leagues: League[] }>(LEAGUES_QUERY, {}, { accessToken }),
+        gql<{ pendingLeagues: League[] }>(PENDING_LEAGUES_QUERY, {}, { accessToken }),
+      ])
+      setLeagues(leaguesData.leagues || [])
+      setPendingLeagues(pendingData.pendingLeagues || [])
     } catch (err) {
       console.error('Failed to load leagues:', err)
       toast('Greška pri učitavanju liga', 'error')
@@ -110,9 +147,9 @@ export default function AdminLeaguesPage() {
   useEffect(() => {
     if (accessToken && !loadedRef.current) {
       loadedRef.current = true
-      loadLeagues()
+      loadData()
     }
-  }, [accessToken, loadLeagues])
+  }, [accessToken, loadData])
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault()
@@ -156,7 +193,7 @@ export default function AdminLeaguesPage() {
         isPublic: true,
       })
       loadedRef.current = false
-      loadLeagues()
+      loadData()
     } catch (err: any) {
       toast(err?.message ?? 'Greška pri kreiranju', 'error')
     } finally {
@@ -182,6 +219,34 @@ export default function AdminLeaguesPage() {
       toast('Liga obrisana', 'success')
     } catch (err: any) {
       toast(err?.message ?? 'Greška pri brisanju', 'error')
+    }
+  }
+
+  async function handleApprove(league: League) {
+    try {
+      await gql(APPROVE_LEAGUE, { leagueId: league.id }, { accessToken })
+      setPendingLeagues(pendingLeagues.filter((l) => l.id !== league.id))
+      loadedRef.current = false
+      loadData()
+      toast(`"${league.name}" odobrena — status: Nacrt`, 'success')
+    } catch (err: any) {
+      toast(err?.message ?? 'Greška pri odobravanju', 'error')
+    }
+  }
+
+  async function handleRejectConfirm() {
+    if (!rejectModal) return
+    setRejecting(true)
+    try {
+      await gql(REJECT_LEAGUE, { leagueId: rejectModal.leagueId, note: rejectNote.trim() || null }, { accessToken })
+      setPendingLeagues(pendingLeagues.filter((l) => l.id !== rejectModal.leagueId))
+      toast(`"${rejectModal.name}" odbijena`, 'success')
+      setRejectModal(null)
+      setRejectNote('')
+    } catch (err: any) {
+      toast(err?.message ?? 'Greška pri odbijanju', 'error')
+    } finally {
+      setRejecting(false)
     }
   }
 
@@ -319,6 +384,66 @@ export default function AdminLeaguesPage() {
         </form>
       )}
 
+      {/* Pending Leagues */}
+      {pendingLeagues.length > 0 && (
+        <div className="mt-8">
+          <div className="flex items-center gap-2">
+            <Subheading>Na čekanju</Subheading>
+            <Badge color="yellow">{pendingLeagues.length}</Badge>
+          </div>
+          <p className="mt-1 text-sm text-text-secondary">Zahtevi korisnika koji čekaju vaše odobrenje</p>
+          <div className="mt-4 space-y-3">
+            {pendingLeagues.map((league) => (
+              <div key={league.id} className="rounded-lg border border-yellow-700/40 bg-yellow-900/10 p-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0 flex-1">
+                    <div className="font-medium text-text-primary">{league.name}</div>
+                    {league.createdBy && (
+                      <div className="mt-0.5 text-xs text-text-secondary">
+                        Podneo: {league.createdBy.name ?? league.createdBy.email}
+                        {' '}
+                        <span className="text-text-tertiary">({league.createdBy.email})</span>
+                      </div>
+                    )}
+                    <div className="mt-1 flex flex-wrap gap-2 text-xs text-text-secondary">
+                      <span>{league.period}</span>
+                      <span>·</span>
+                      <span>{formatDate(league.startDate)} — {formatDate(league.endDate)}</span>
+                      {(league.minDistance != null || league.maxDistance != null) && (
+                        <>
+                          <span>·</span>
+                          <span>{league.minDistance ?? '—'} – {league.maxDistance ?? '—'} km</span>
+                        </>
+                      )}
+                      <span>·</span>
+                      <span>{league.isPublic ? 'Javna' : 'Privatna'}</span>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleApprove(league)}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-green-700 px-3 py-1.5 text-sm text-green-400 hover:bg-green-900/20"
+                    >
+                      <CheckIcon className="size-4" />
+                      Odobri
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setRejectModal({ leagueId: league.id, name: league.name }); setRejectNote('') }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-red-700 px-3 py-1.5 text-sm text-red-400 hover:bg-red-900/20"
+                    >
+                      <XMarkIcon className="size-4" />
+                      Odbij
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Leagues Table */}
       <div className="mt-8">
         <Subheading>Sve lige ({leagues.length})</Subheading>
@@ -384,6 +509,45 @@ export default function AdminLeaguesPage() {
           </div>
         )}
       </div>
+
+      {/* Reject Modal */}
+      {rejectModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-xl border border-border-primary bg-card p-6">
+            <h3 className="text-base font-semibold text-text-primary">Odbij ligu</h3>
+            <p className="mt-1 text-sm text-text-secondary">
+              Odbijaš: <span className="font-medium text-text-primary">&ldquo;{rejectModal.name}&rdquo;</span>
+            </p>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-text-secondary">Razlog (opciono)</label>
+              <textarea
+                value={rejectNote}
+                onChange={(e) => setRejectNote(e.target.value)}
+                placeholder="npr. Naziv nije jasan, molimo precizirati..."
+                rows={3}
+                className="mt-1 w-full rounded-lg border border-border-primary bg-surface px-3 py-2 text-sm text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-1 focus:ring-brand-green"
+              />
+            </div>
+            <div className="mt-4 flex justify-end gap-2">
+              <Button
+                color="zinc"
+                onClick={() => { setRejectModal(null); setRejectNote('') }}
+                disabled={rejecting}
+              >
+                Otkaži
+              </Button>
+              <button
+                type="button"
+                onClick={handleRejectConfirm}
+                disabled={rejecting}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-red-700 bg-red-900/20 px-4 py-2 text-sm font-medium text-red-400 hover:bg-red-900/30 disabled:opacity-50"
+              >
+                {rejecting ? 'Odbijanje...' : 'Odbij ligu'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   )
 }

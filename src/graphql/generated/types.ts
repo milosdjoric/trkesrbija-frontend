@@ -82,6 +82,12 @@ export type AnalyticsEntityStat = {
   uniqueCount: Scalars['Int']['output'];
 };
 
+export type AnalyticsFilterStat = {
+  count: Scalars['Int']['output'];
+  key: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
 export type AnalyticsLoginStat = {
   email: Scalars['String']['output'];
   lastLogin: Scalars['DateTime']['output'];
@@ -115,6 +121,7 @@ export type AnalyticsStats = {
   registrationsByStatus: Array<AnalyticsRegistrationStatusStat>;
   topEvents: Array<AnalyticsEntityStat>;
   topFavorites: Array<AnalyticsEntityStat>;
+  topFilters: Array<AnalyticsFilterStat>;
   topRaces: Array<AnalyticsEntityStat>;
   topSearches: Array<AnalyticsSearchStat>;
   topUsers: Array<AnalyticsUserStat>;
@@ -238,7 +245,9 @@ export type CreateRaceInput = {
   length: Scalars['Float']['input'];
   raceEventId: Scalars['ID']['input'];
   raceName?: InputMaybe<Scalars['String']['input']>;
+  registrationCloseDate?: InputMaybe<Scalars['DateTime']['input']>;
   registrationEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  registrationOpenDate?: InputMaybe<Scalars['DateTime']['input']>;
   registrationSite?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   startDateTime: Scalars['DateTime']['input'];
@@ -313,7 +322,9 @@ export type JudgeUser = {
 };
 
 export type League = {
+  approvalNote?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
+  createdBy?: Maybe<User>;
   description?: Maybe<Scalars['String']['output']>;
   endDate: Scalars['DateTime']['output'];
   gpsFile?: Maybe<Scalars['String']['output']>;
@@ -381,7 +392,9 @@ export type LeagueStatus =
   | 'ACTIVE'
   | 'ARCHIVED'
   | 'COMPLETED'
-  | 'DRAFT';
+  | 'DRAFT'
+  | 'PENDING_APPROVAL'
+  | 'REJECTED';
 
 export type LeagueType =
   | 'DISTANCE'
@@ -395,6 +408,7 @@ export type LoginInput = {
 export type Mutation = {
   addFavorite: Favorite;
   adminRegisterForRace: RaceRegistration;
+  approveLeague: League;
   assignBibNumber: RaceRegistration;
   assignJudge: User;
   cancelMyRegistration: RaceRegistration;
@@ -435,6 +449,7 @@ export type Mutation = {
   refresh: AuthPayload;
   register: AuthPayload;
   registerForRace: RaceRegistration;
+  rejectLeague: Scalars['Boolean']['output'];
   removeFavorite: Scalars['Boolean']['output'];
   resendVerificationEmail: ResendVerificationPayload;
   resetPassword: ResetPasswordPayload;
@@ -466,6 +481,11 @@ export type MutationAddFavoriteArgs = {
 
 export type MutationAdminRegisterForRaceArgs = {
   input: AdminRegistrationInput;
+};
+
+
+export type MutationApproveLeagueArgs = {
+  leagueId: Scalars['ID']['input'];
 };
 
 
@@ -664,6 +684,12 @@ export type MutationRegisterForRaceArgs = {
 };
 
 
+export type MutationRejectLeagueArgs = {
+  leagueId: Scalars['ID']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+};
+
+
 export type MutationRemoveFavoriteArgs = {
   raceId: Scalars['ID']['input'];
 };
@@ -834,6 +860,7 @@ export type Query = {
   myTrainingEvents: Array<RaceEvent>;
   organizer?: Maybe<Organizer>;
   organizers: Array<Organizer>;
+  pendingLeagues: Array<League>;
   potentialDuplicates: Array<PotentialDuplicate>;
   race?: Maybe<Race>;
   raceCheckpoints: Array<RaceCheckpoint>;
@@ -1029,8 +1056,10 @@ export type Race = {
   raceEvent?: Maybe<RaceEvent>;
   raceEventId: Scalars['ID']['output'];
   raceName?: Maybe<Scalars['String']['output']>;
+  registrationCloseDate?: Maybe<Scalars['DateTime']['output']>;
   registrationCount: Scalars['Int']['output'];
   registrationEnabled: Scalars['Boolean']['output'];
+  registrationOpenDate?: Maybe<Scalars['DateTime']['output']>;
   registrationSite?: Maybe<Scalars['String']['output']>;
   slug: Scalars['String']['output'];
   startDateTime: Scalars['DateTime']['output'];
@@ -1313,7 +1342,9 @@ export type UpdateRaceInput = {
   length?: InputMaybe<Scalars['Float']['input']>;
   raceEventId?: InputMaybe<Scalars['ID']['input']>;
   raceName?: InputMaybe<Scalars['String']['input']>;
+  registrationCloseDate?: InputMaybe<Scalars['DateTime']['input']>;
   registrationEnabled?: InputMaybe<Scalars['Boolean']['input']>;
+  registrationOpenDate?: InputMaybe<Scalars['DateTime']['input']>;
   registrationSite?: InputMaybe<Scalars['String']['input']>;
   slug?: InputMaybe<Scalars['String']['input']>;
   startDateTime?: InputMaybe<Scalars['DateTime']['input']>;

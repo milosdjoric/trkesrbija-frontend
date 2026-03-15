@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       <h1 className="text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
         Politika privatnosti
       </h1>
-      <p className="mt-1 text-sm text-text-muted">Poslednje ažuriranje: mart 2025.</p>
+      <p className="mt-1 text-sm text-text-muted">Poslednje ažuriranje: mart 2026.</p>
       <p className="mt-3 text-base text-text-secondary">
         Ova politika privatnosti opisuje kako Trke Srbija prikuplja, koristi i štiti podatke korisnika.
       </p>
@@ -69,8 +69,8 @@ export default function PrivacyPage() {
             <li>
               <Strong>Brisanje</Strong> — možete zatražiti brisanje naloga i svih povezanih podataka slanjem
               emaila na{' '}
-              <a href="mailto:djoric.inbox@gmail.com" className="text-brand-green hover:underline">
-                djoric.inbox@gmail.com
+              <a href="mailto:milos@trkesrbija.rs" className="text-brand-green hover:underline">
+                milos@trkesrbija.rs
               </a>.
             </li>
             <li>
@@ -90,8 +90,8 @@ export default function PrivacyPage() {
         <Section title="6. Kontakt">
           <P>
             Za sva pitanja u vezi sa privatnošću podataka, kontaktirajte nas na:{' '}
-            <a href="mailto:djoric.inbox@gmail.com" className="text-brand-green hover:underline">
-              djoric.inbox@gmail.com
+            <a href="mailto:milos@trkesrbija.rs" className="text-brand-green hover:underline">
+              milos@trkesrbija.rs
             </a>
           </P>
         </Section>
@@ -101,7 +101,7 @@ export default function PrivacyPage() {
           <h1 className="text-3xl font-bold tracking-tight text-text-primary sm:text-4xl">
             Privacy Policy
           </h1>
-          <p className="mt-1 text-sm text-text-muted">Last updated: March 2025.</p>
+          <p className="mt-1 text-sm text-text-muted">Last updated: March 2026.</p>
           <p className="mt-3 text-base text-text-secondary">
             This privacy policy describes how Trke Srbija collects, uses, and protects user data.
           </p>
@@ -157,8 +157,8 @@ export default function PrivacyPage() {
             <li>
               <Strong>Deletion</Strong> — you may request deletion of your account and all associated data by
               sending an email to{' '}
-              <a href="mailto:djoric.inbox@gmail.com" className="text-brand-green hover:underline">
-                djoric.inbox@gmail.com
+              <a href="mailto:milos@trkesrbija.rs" className="text-brand-green hover:underline">
+                milos@trkesrbija.rs
               </a>.
             </li>
             <li>
@@ -178,8 +178,8 @@ export default function PrivacyPage() {
         <Section title="6. Contact">
           <P>
             For any questions regarding data privacy, contact us at:{' '}
-            <a href="mailto:djoric.inbox@gmail.com" className="text-brand-green hover:underline">
-              djoric.inbox@gmail.com
+            <a href="mailto:milos@trkesrbija.rs" className="text-brand-green hover:underline">
+              milos@trkesrbija.rs
             </a>
           </P>
         </Section>

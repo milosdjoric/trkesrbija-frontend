@@ -90,7 +90,7 @@ export function SiteFooter() {
               </li>
               <li>
                 <a
-                  href="mailto:djoric.inbox@gmail.com?subject=Trke%20Srbija%20Support%20request"
+                  href="mailto:milos@trkesrbija.rs?subject=Trke%20Srbija%20Support%20request"
                   className={linkClass}
                 >
                   Podrška putem emaila
@@ -107,7 +107,7 @@ export function SiteFooter() {
             <ul className="mt-3 space-y-2">
               <li>
                 <a
-                  href="mailto:djoric.inbox@gmail.com?subject=Dodavanje%20trke%20na%20Trke%20Srbija"
+                  href="mailto:milos@trkesrbija.rs?subject=Dodavanje%20trke%20na%20Trke%20Srbija"
                   className={linkClass}
                 >
                   Dodaj svoju trku
@@ -115,7 +115,7 @@ export function SiteFooter() {
               </li>
               <li>
                 <a
-                  href="mailto:djoric.inbox@gmail.com?subject=Saradnja%20-%20Trke%20Srbija"
+                  href="mailto:milos@trkesrbija.rs?subject=Saradnja%20-%20Trke%20Srbija"
                   className={linkClass}
                 >
                   Saradnja
@@ -142,6 +142,10 @@ export function SiteFooter() {
             >
               milosdjoric.com
             </a>
+            {' · '}
+            <Link href="/privacy" className="hover:text-text-primary">
+              Politika privatnosti
+            </Link>
           </p>
           <p className="text-xs text-text-muted">Podaci o trkama se redovno ažuriraju. Za ispravke, kontaktirajte nas.</p>
         </div>
