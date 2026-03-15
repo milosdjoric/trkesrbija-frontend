@@ -1,6 +1,5 @@
 'use client'
 
-import { useAuth } from '@/app/auth/auth-context'
 import { trackEvent } from '@/app/lib/analytics'
 import { Button } from '@/components/button'
 import { Input, InputGroup } from '@/components/input'
@@ -31,7 +30,6 @@ type Initial = {
 export function FiltersBar({ initial, competitions }: { initial: Initial; competitions: Competition[] }) {
   const router = useRouter()
   const sp = useSearchParams()
-  const { user } = useAuth()
   const [isPending, startTransition] = useTransition()
 
   const [q, setQ] = useState(initial.q ?? '')
@@ -130,7 +128,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
   function onApply(e: React.FormEvent) {
     e.preventDefault()
     if (q.trim()) {
-      trackEvent({ type: 'SEARCH', metadata: { query: q.trim(), eventType }, userId: user?.id })
+      trackEvent({ type: 'SEARCH', metadata: { query: q.trim(), eventType } })
     }
     // Track active filters
     const activeFilters: Record<string, string> = {}
@@ -145,7 +143,7 @@ export function FiltersBar({ initial, competitions }: { initial: Initial; compet
     if (verified.trim()) activeFilters.verified = verified.trim()
     if (showPast) activeFilters.showPast = 'true'
     if (Object.keys(activeFilters).length > 0) {
-      trackEvent({ type: 'FILTER', metadata: activeFilters, userId: user?.id })
+      trackEvent({ type: 'FILTER', metadata: activeFilters })
     }
     startTransition(() => {
       router.push(`/events${buildQueryString()}`)
