@@ -11,18 +11,20 @@ import type { Metadata } from 'next'
 import { Fragment, Suspense } from 'react'
 import { FiltersBar } from './filters-bar'
 
-export const metadata: Metadata = {
-  title: 'Svi događaji',
-  description:
-    'Pregledajte sve trail i ulične trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
-  alternates: {
-    canonical: '/events',
-  },
-  openGraph: {
-    title: 'Svi događaji - Trke Srbija',
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Svi događaji',
     description:
       'Pregledajte sve trail i ulične trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
-  },
+    alternates: {
+      canonical: 'https://trkesrbija.rs/events',
+    },
+    openGraph: {
+      title: 'Svi događaji - Trke Srbija',
+      description:
+        'Pregledajte sve trail i ulične trke u Srbiji. Filtrirajte po dužini, elevaciji i tipu trke.',
+    },
+  }
 }
 
 export default async function Events({
