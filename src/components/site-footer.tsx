@@ -122,6 +122,15 @@ export function SiteFooter() {
                 </a>
               </li>
             </ul>
+
+            <h3 className="mt-6 text-sm font-semibold text-text-primary">Pravno</h3>
+            <ul className="mt-3 space-y-2">
+              <li>
+                <Link href="/privacy" className={linkClass}>
+                  Politika privatnosti
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
@@ -142,10 +151,6 @@ export function SiteFooter() {
             >
               milosdjoric.com
             </a>
-            {' · '}
-            <Link href="/privacy" className="hover:text-text-primary">
-              Politika privatnosti
-            </Link>
           </p>
           <p className="text-xs text-text-muted">Podaci o trkama se redovno ažuriraju. Za ispravke, kontaktirajte nas.</p>
         </div>
