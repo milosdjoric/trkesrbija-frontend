@@ -7,7 +7,7 @@ export function SiteFooter() {
   return (
     <footer className="hidden border-t border-border-primary bg-main lg:block">
       <div className="mx-auto max-w-4xl px-6 py-12">
-        <div className="grid grid-cols-2 gap-8 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-8 lg:grid-cols-5">
           {/* Brand */}
           <div className="col-span-2 lg:col-span-1">
             <Link href="/" className="flex items-baseline">
@@ -79,6 +79,18 @@ export function SiteFooter() {
             </ul>
           </div>
 
+          {/* Pravno */}
+          <div>
+            <h3 className="text-sm font-semibold text-text-primary">Pravno</h3>
+            <ul className="mt-3 space-y-2">
+              <li>
+                <Link href="/privacy" className={linkClass}>
+                  Politika privatnosti
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Kontakt & Informacije */}
           <div>
             <h3 className="text-sm font-semibold text-text-primary">Kontakt</h3>
@@ -120,15 +132,6 @@ export function SiteFooter() {
                 >
                   Saradnja
                 </a>
-              </li>
-            </ul>
-
-            <h3 className="mt-6 text-sm font-semibold text-text-primary">Pravno</h3>
-            <ul className="mt-3 space-y-2">
-              <li>
-                <Link href="/privacy" className={linkClass}>
-                  Politika privatnosti
-                </Link>
               </li>
             </ul>
           </div>
